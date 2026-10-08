@@ -1,0 +1,14 @@
+<!doctype html>
+<html><head>
+<meta property="og:title" content="Metadata title should not win">
+<meta property="og:image" content="https://m.media-amazon.com/images/I/main._AC_SX100_.jpg">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+ {"@type":"BreadcrumbList","name":"Home"},
+ {"@type":["Thing","Product"],"sku":"B012345678","name":"Portable Coffee Grinder","description":"<p>Fresh coffee <b>anywhere</b>.</p>","brand":{"@type":"Brand","name":"TrailBean"},"image":[{"@type":"ImageObject","contentUrl":"https://m.media-amazon.com/images/I/main.jpg"},"https://m.media-amazon.com/images/I/detail.jpg"],"offers":[{"@type":"Offer","price":"29.99","priceCurrency":"USD"}],"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.5","reviewCount":"526"},"video":{"@type":"VideoObject","contentUrl":"https://media.example.com/demo.mp4","thumbnailUrl":"https://media.example.com/poster.jpg"}}
+]}
+</script>
+</head><body>
+<h1 id="productTitle">DOM fallback title</h1>
+<ul id="feature-bullets"><li><span class="a-list-item">Compact travel design</span></li><li><span class="a-list-item">Adjustable grind size</span></li></ul>
+</body></html>

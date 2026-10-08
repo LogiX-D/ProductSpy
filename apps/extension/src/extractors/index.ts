@@ -1,0 +1,1 @@
+export { AmazonProductExtractor } from './AmazonProductExtractor';
