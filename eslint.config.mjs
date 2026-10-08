@@ -10,6 +10,8 @@ export default tseslint.config(
       '**/node_modules/**',
       '**/.next/**',
       '**/.test-data/**',
+      '**/artifacts/**',
+      '**/.pack-cache/**',
       '**/dist/**',
       '**/next-env.d.ts',
       '**/test-results/**',

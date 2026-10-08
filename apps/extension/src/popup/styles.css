@@ -5,7 +5,8 @@
 body {
   margin: 0;
   width: 400px;
-  min-height: 480px;
+  height: 600px;
+  overflow: hidden;
   background: #f7f9fa;
   color: #162c36;
   font-family:
@@ -24,4 +25,11 @@ button:focus-visible,
 a:focus-visible {
   outline: 2px solid #0d766e;
   outline-offset: 3px;
+}
+
+@media (max-height: 599px) {
+  body,
+  .popup-shell {
+    height: 100dvh;
+  }
 }

@@ -74,7 +74,7 @@ describe('LocalhostProductSyncAdapter', () => {
         throw new TypeError('Failed to fetch');
       }),
     );
-    await expect(new LocalhostProductSyncAdapter().save(draft)).rejects.toThrow('启动 pnpm dev');
+    await expect(new LocalhostProductSyncAdapter().save(draft)).rejects.toThrow('ProductSpy.cmd');
   });
 
   it('preserves readable API errors and validates input before contacting the workspace', async () => {

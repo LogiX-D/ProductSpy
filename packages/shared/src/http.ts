@@ -38,7 +38,9 @@ export async function apiRequest<T>(
       error instanceof TypeError ||
       (error instanceof DOMException && ['AbortError', 'TimeoutError'].includes(error.name))
     ) {
-      throw new Error('无法连接 ProductSpy 工作台，请启动 pnpm dev 并确认 3000 端口可用');
+      throw new Error(
+        '无法连接 ProductSpy 工作台。请双击 ProductSpy.cmd 启动；开发者可运行 pnpm dev。确认 3000 端口可用后重试。',
+      );
     }
     throw error;
   }

@@ -1,10 +1,26 @@
 # ProductSpy
 
-本地优先的 Amazon 竞品素材采集与 AI 分析 MVP。Chrome 扩展识别当前商品，保存到本机 Web 工作台；工作台提供商品库、图片 / 视频详情、营销分析、短视频脚本和生成 Prompt。
+本地优先的 Amazon 竞品素材采集与 AI 分析工具。Chrome 扩展识别当前商品，保存到本机 Web 工作台；工作台提供商品库、图片 / 视频详情、营销分析、短视频脚本和生成 Prompt。0.2.0 增加 Windows x64 便携分发，保留原有 Next.js / Manifest V3 架构和安全配对。
 
 仅支持 Amazon。此版本没有用户账号、支付、自动发布、价格监控、其他平台或多人协作。
 
-## 环境与安装
+## Windows 普通用户：不用安装开发工具
+
+1. 获取 `ProductSpy-0.2.0-windows-x64.zip`，**全部解压**，双击 **ProductSpy.cmd**。
+2. 启动器使用内置 Node.js，启动本机工作台并打开 **http://127.0.0.1:3000**；不用安装 Node.js、pnpm 或数据库。
+3. 在启动窗口点击「打开插件文件夹」，按 Chrome `chrome://extensions` →「开发者模式」→「加载已解压的扩展程序」加载便携包的 **extension** 目录。
+4. 在工作台扩展说明中生成一次性配对码，填入插件并「连接工作台」。身份校验保留，配对码 2 分钟有效。
+5. 打开 Amazon 商品页，点击插件；首次阅读说明后「同意并开始采集」，再保存并在工作台开始 AI 分析。没有 Key 时是完整 Mock 演示。
+
+启动窗口可打开工作台、插件与用户目录，配置 AI，或「停止并退出」。关闭窗口也会停止服务；重复双击不会新增服务。端口冲突会明确提示，不强制结束其他程序，也不改用插件无法连接的端口。
+
+数据保存在 **`%LOCALAPPDATA%\ProductSpy\data`**，和程序目录分离。AI 设置使用当前 Windows 用户的 DPAPI 保护，日志与运行状态分别位于 `logs`、`runtime`；包中没有 Key 或预置用户商品。更新时停止旧版，将新版解压到另一目录即可沿用数据，建议先备份 `data`。
+
+完整安装、首次配对、AI 设置、异常恢复、备份与更新步骤见 [Windows 首次使用指南](docs/windows-guide.md)。当前没有已发布的 Chrome Web Store 安装入口；Extension ZIP 需要解压加载，不能双击安装，也不会自动修改 Chrome 安全设置。便携包以本地 `artifacts` 产物或发布者实际上传的 GitHub Release 资产为准；不把仓库源代码 ZIP 当成可运行安装包。
+
+本次实际产物、207 项单元测试、5 项 E2E、9 项便携包测试，以及正式 Chrome / GUI 人工验收边界见 [Phase 10 验收报告](docs/phase10-validation.md)。商店材料与截图来源见 [提交材料](docs/store/README.md)。
+
+## 源码开发：环境与安装
 
 需要 Node.js 22.12+（已在 Windows / Node.js 24 验证）、pnpm 10 和 Chrome 120+。Manifest 明确限制最低安装版本；真实浏览器验收使用 Chrome for Testing 156，未逐一测试全部历史版本。所有命令从 `ProductSpy` 目录运行。
 
@@ -17,7 +33,7 @@ pnpm dev
 
 打开 **http://127.0.0.1:3000**。开发服务只绑定本机，不开放局域网访问。启动时无需数据库服务器、账号或 AI Key。
 
-## 构建并安装 Chrome 扩展
+## 开发者：构建并安装 Chrome 扩展
 
 ```powershell
 pnpm build
@@ -47,7 +63,7 @@ pnpm start
 
 未设置 Key 时，默认返回完整 Mock 分析；界面和总结明确标注 Mock。它用于演示完整流程，输出受众、痛点、角度与脚本模板，不声称已经验证产品效果。
 
-真实 AI 配置文件放在 **`apps/web/.env.local`**：
+便携用户在启动窗口「AI 设置」中填写模式、API 地址、模型及自己的 Key，保存后停止并重新启动工作台。源码开发者的真实 AI 配置文件放在 **`apps/web/.env.local`**：
 
 ```powershell
 Copy-Item apps/web/.env.example apps/web/.env.local
@@ -96,7 +112,7 @@ Amazon 当前页面
    → AIProvider（Mock / OpenAI-compatible，服务端）
 ```
 
-Chrome 扩展与普通网页不能直接共享同一个 IndexedDB，因此采用 localhost bridge。权威数据文件默认在 **`apps/web/.data/products.json`**，不需要数据库服务器；Web 的 IndexedDB 用于缓存与网络故障时回显。文件存储在本地、保持可备份。需要备份时停止服务并复制 `.data` 目录。不要清空此目录或将其提交到 Git。
+Chrome 扩展与普通网页不能直接共享同一个 IndexedDB，因此采用 localhost bridge。权威数据文件：源码开发默认在 **`apps/web/.data/products.json`**；Windows 便携版固定使用独立的 **`%LOCALAPPDATA%\ProductSpy\data\products.json`**，不需要数据库服务器。Web 的 IndexedDB 用于缓存与网络故障时回显。需要备份时停止服务并复制对应数据目录；不要清空该目录或将其提交到 Git。便携版不自动迁移源码 `.data`，迁移步骤见 Windows 指南。
 
 可在 `apps/web/.env.local` 设置 `PRODUCTSPY_DATA_DIR` 指定其他数据目录。文件读写按目录共享事务队列，临时文件写入后原子替换；损坏 JSON 会报错并保留原文件，不会静默清空。此适配器用于单个 Next.js 服务进程，不支持多个进程同时写一个目录。
 
@@ -143,6 +159,9 @@ ProductSpy/
 │  ├─ amazon-smoke.mjs       单页真实采集 / 可选隔离 Mock 完整链路
 │  └─ amazon-acceptance.mjs  多品类 / 国家站真实页面验收
 ├─ docs/phase9-validation.md  Phase 9 当前验收结果
+├─ docs/windows-guide.md      普通用户安装、配对、备份与更新
+├─ docs/store/                商店文案、权限 / 数据披露、审核复现
+├─ artifacts/                 本机构建的分发包、哈希与商店资产
 └─ pnpm-workspace.yaml
 ```
 
@@ -168,7 +187,7 @@ pnpm test
 pnpm build
 ```
 
-Vitest 覆盖：JSON-LD / metadata / 页面对象 / DOM、标题、价格、ASIN、图片去重、Bullet Points、评分、评论数量、缺失字段与异常 HTML、推荐商品过滤、并发去重、文件持久化与损坏保护、Dexie、扩展暂存 / 同步、CORS / CSRF、媒体 URL / 类型 / 大小、AI schema、Mock、真实 Provider HTTP 合约、超时、失败保留分析与版本冲突。
+Vitest 覆盖：JSON-LD / metadata / 页面对象 / DOM、标题、价格、ASIN、图片去重、Bullet Points、评分、评论数量、缺失字段与异常 HTML、推荐商品过滤、并发去重、文件持久化与损坏保护、Dexie、扩展暂存 / 同步、CORS / CSRF、媒体 URL / 类型 / 大小、AI schema、Mock、真实 Provider HTTP 合约、超时、失败保留分析与版本冲突。Windows 生命周期检查 `pnpm test:portable` 需先执行下面的 `pnpm package:windows` 生成完整便携目录；运行前先停止占用 3000 的工作台。
 
 浏览器端到端测试：先停止占用 3000 端口的工作台，然后运行：
 
@@ -198,7 +217,31 @@ pnpm exec node scripts/amazon-acceptance.mjs
 
 当前验收见 [Phase 9 真实环境报告](docs/phase9-validation.md)，其中分别记录跨品类 / 国家站真实字段、正常颜色变体切换、自动化测试和安全检查。真实 OpenAI-compatible 合约使用本地 HTTP stub 验证；未使用真实 Key 调用收费模型。早期 MVP 验收保留在 [VALIDATION.md](VALIDATION.md)，其单页结果和测试数量是 Phase 8 历史，不代表当前全部覆盖。
 
-Chrome Web Store 提交条件和待办见 [商店准备说明](docs/chrome-web-store.md)。当前完成技术与资料准备，仍需 Chrome 稳定版人工验收、商店素材与开发者 Dashboard 配置，未提交审核，也不承诺已经达到直接上架标准。
+Phase 10 分发与上架验收见 [本次报告](docs/phase10-validation.md)，不更改 Phase 9 的历史实页数量或成功率。Chrome Web Store 提交条件和待办见 [商店准备说明](docs/chrome-web-store.md)，可填写文案在 [docs/store](docs/store/README.md)。正式 Chrome 稳定版人工验收、公开下载地址与开发者 Dashboard 配置须如实记录，未提交审核，也不承诺已获商店批准。
+
+## 构建 Windows 便携版与 Extension ZIP
+
+以下仅供开发者 / 发布者运行；普通用户不需要命令行：
+
+```powershell
+pnpm install
+pnpm build
+pnpm package:extension
+pnpm package:windows
+pnpm test:portable
+```
+
+输出在 **`artifacts/`**：
+
+- `ProductSpy-0.2.0-windows-x64.zip`：Windows x64 便携工作台、内置 Node.js、Next.js standalone、启动器和已构建扩展。
+- `ProductSpy-0.2.0-extension.zip`：可供 Chrome Web Store 上传的 MV3 扩展，根目录包含 `manifest.json`。
+- 构建校验文件及商店图片：名称与哈希以构建实际输出为准。
+
+已取得真实运行截图及 `artifacts/store/asset-provenance.json` 后，可运行 `pnpm package:store` 生成商店材料 ZIP；脚本校验来源、截图尺寸与哈希，不会用模拟页面补齐截图。真实采集工具是 `scripts/capture-store.mjs`，验收时应先启动使用独立测试数据目录的便携工作台并保持 Mock 模式，避免写入自己的素材库。
+
+打包只复制允许的生产文件，不复制 `.env.local`、源码用户 `.data`、浏览器 profile、待同步商品或 AI Key。包中的运行时许可证随包保留；Windows 便携版使用系统 Windows PowerShell 5.1 / WinForms，不引入 Electron。首次构建需要下载或提供 Windows x64 Node.js 运行时，构建脚本会核对运行时完整性。
+
+`test:portable` 使用独立测试目录检查启动、停止、重复启动、端口冲突、持久化、包内容与更新兼容，不向默认用户商品库写入测试数据。它与 Vitest、E2E 都需要实际运行；商店截图不是验收结果的替代品。
 
 ## 下一阶段
 

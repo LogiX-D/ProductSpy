@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { BridgePairing } from './bridge-pairing';
+import { FirstUseGuide, OPEN_SETUP_EVENT } from './first-use-guide';
+import { PRODUCTSPY_VERSION } from '@productspy/shared';
 import {
   ArrowUpRight,
   ChevronRight,
@@ -18,9 +20,45 @@ import {
 export function WorkspaceShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [showHelp, setShowHelp] = useState(false);
+  const dialogRef = useRef<HTMLElement>(null);
+  const previousFocus = useRef<HTMLElement | null>(null);
+  const openHelp = useCallback(() => {
+    previousFocus.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    setShowHelp(true);
+  }, []);
+  useEffect(() => {
+    window.addEventListener(OPEN_SETUP_EVENT, openHelp);
+    return () => window.removeEventListener(OPEN_SETUP_EVENT, openHelp);
+  }, [openHelp]);
+  useEffect(() => {
+    if (!showHelp) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setShowHelp(false);
+      if (event.key !== 'Tab') return;
+      const controls = dialogRef.current?.querySelectorAll<HTMLElement>(
+        'button:not(:disabled), input, a[href]',
+      );
+      if (!controls?.length) return;
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      previousFocus.current?.focus();
+    };
+  }, [showHelp]);
   const productPage = pathname.startsWith('/products');
   const navigation = [
-    { href: '/', label: 'Dashboard', icon: LayoutDashboard, active: !productPage },
+    { href: '/', label: '首页', icon: LayoutDashboard, active: !productPage },
     { href: '/products', label: '商品库', icon: Library, active: productPage },
   ];
 
@@ -37,7 +75,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
           ProductSpy
         </Link>
         <div className="px-6 pb-7 text-[10px] font-semibold uppercase tracking-[.2em] text-slate-400">
-          Product intelligence
+          商品素材与内容分析
         </div>
         <nav aria-label="主导航" className="space-y-1 px-3">
           {navigation.map(({ href, label, icon: Icon, active }) => (
@@ -56,18 +94,20 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
         <div className="mt-auto px-4 pb-5">
           <div className="mb-5 flex items-center gap-2 border-b border-white/10 px-2 pb-4 text-xs text-slate-400">
             <ShieldCheck size={15} className="text-teal-300" />
-            Local first · 本机素材库
+            本地优先 · 本机素材库
           </div>
           <button
             type="button"
-            onClick={() => setShowHelp(true)}
+            onClick={openHelp}
             className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left text-sm text-slate-300 hover:text-white"
           >
             <Puzzle size={18} />
             安装 Chrome 扩展
             <ArrowUpRight size={15} className="ml-auto" />
           </button>
-          <p className="mt-4 px-2 text-[11px] text-slate-500">ProductSpy · MVP 0.1</p>
+          <p className="mt-4 px-2 text-[11px] text-slate-500">
+            ProductSpy {PRODUCTSPY_VERSION} · 仅支持 Amazon
+          </p>
         </div>
       </aside>
       <div className="md:pl-[218px]">
@@ -76,7 +116,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
             <span className="font-semibold text-slate-900 md:hidden">ProductSpy</span>
             <span className="hidden md:inline">工作台</span>
             <ChevronRight size={14} />
-            <span className="text-slate-800">{productPage ? '商品库' : 'Dashboard'}</span>
+            <span className="text-slate-800">{productPage ? '商品库' : '首页'}</span>
           </div>
           <div className="flex items-center gap-3">
             <span className="hidden items-center gap-1.5 text-xs text-slate-500 sm:flex">
@@ -85,7 +125,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
             </span>
             <button
               type="button"
-              onClick={() => setShowHelp(true)}
+              onClick={openHelp}
               aria-label="查看扩展安装说明"
               className="rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-slate-50"
             >
@@ -115,10 +155,11 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
           onClick={() => setShowHelp(false)}
         >
           <section
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="extension-help-title"
-            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+            className="max-h-[90dvh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
@@ -127,6 +168,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
               </div>
               <button
                 type="button"
+                autoFocus
                 onClick={() => setShowHelp(false)}
                 aria-label="关闭安装说明"
                 className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
@@ -135,36 +177,12 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
               </button>
             </div>
             <h2 id="extension-help-title" className="text-lg font-semibold">
-              安装 ProductSpy 扩展
+              首次使用 ProductSpy
             </h2>
-            <ol className="my-5 list-decimal space-y-3 pl-5 text-sm leading-6 text-slate-600">
-              <li>
-                在项目目录运行{' '}
-                <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs">pnpm build</code>。
-              </li>
-              <li>
-                在 Chrome 地址栏输入{' '}
-                <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs">
-                  chrome://extensions
-                </code>
-                ，打开「开发者模式」。
-              </li>
-              <li>
-                点击「加载已解压的扩展程序」，选择{' '}
-                <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs">
-                  apps/extension/dist
-                </code>
-                。
-              </li>
-              <li>先在下方生成配对码并连接插件，再打开 Amazon 商品页，点击「保存到素材库」。</li>
-            </ol>
-            <p className="rounded-lg bg-slate-50 p-3 text-xs leading-5 text-slate-500">
-              保持本地工作台运行。扩展保存成功后，商品库会自动刷新。
-            </p>
+            <FirstUseGuide />
             <BridgePairing />
             <button
               type="button"
-              autoFocus
               onClick={() => setShowHelp(false)}
               className="mt-5 w-full rounded-lg bg-teal-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-teal-800"
             >

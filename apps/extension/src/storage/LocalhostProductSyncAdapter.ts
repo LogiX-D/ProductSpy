@@ -67,7 +67,7 @@ export class LocalhostProductSyncAdapter implements ProductSyncAdapter {
       console.error('[ProductSpy] Workspace sync failed', error);
       if (error instanceof TypeError || (error instanceof Error && error.name === 'AbortError')) {
         throw new Error(
-          '暂时无法连接工作台。请在项目目录运行 pnpm dev，确认 http://127.0.0.1:3000 可访问后重试同步。',
+          '暂时无法连接工作台。请双击 ProductSpy.cmd 启动；开发者可运行 pnpm dev。确认 http://127.0.0.1:3000 可访问后重试同步。',
         );
       }
       throw error;

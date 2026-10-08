@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, CalendarDays, Library, ScanLine, Sparkles } from 'lucide-react';
+import { ArrowRight, CalendarDays, Library, Sparkles } from 'lucide-react';
 import { useProducts } from '@/lib/use-products';
 import { EmptyState, ErrorNotice, LoadingState, PageHeading } from './ui';
 import { ProductCard } from './product-card';
+import { OpenSetupButton } from './first-use-guide';
 
 function startOfWeek(): number {
   const date = new Date();
@@ -48,7 +49,7 @@ export function Dashboard() {
   return (
     <div className="space-y-8">
       <PageHeading
-        eyebrow="PRODUCT INTELLIGENCE WORKSPACE"
+        eyebrow="AMAZON 商品素材工作台"
         title="让每一份素材，都有新发现。"
         description="从 Amazon 采集竞品，用 AI 把产品信息变成内容灵感。"
       />
@@ -87,15 +88,7 @@ export function Dashboard() {
           <EmptyState
             title="还没有采集商品"
             description="打开 Amazon 商品页面，通过 ProductSpy 插件保存第一个商品。"
-            action={
-              <Link
-                href="/products"
-                className="inline-flex items-center gap-2 rounded-lg bg-teal-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-teal-800"
-              >
-                <ScanLine size={16} />
-                前往商品库
-              </Link>
-            }
+            action={<OpenSetupButton />}
           />
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">

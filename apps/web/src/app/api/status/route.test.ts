@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { PRODUCTSPY_VERSION } from '@productspy/shared';
 import { GET } from './route';
 
 describe('workspace status API', () => {
@@ -8,14 +9,20 @@ describe('workspace status API', () => {
     vi.stubEnv('AI_API_KEY', '');
     vi.stubEnv('AI_MODE', '');
     const response = await GET(new Request('http://localhost:3000/api/status'));
-    expect(await response.json()).toEqual({ ok: true, data: { mode: 'mock', version: '0.1.0' } });
+    expect(await response.json()).toEqual({
+      ok: true,
+      data: { mode: 'mock', version: PRODUCTSPY_VERSION },
+    });
   });
 
   it('treats a whitespace-only key consistently with the AI provider factory', async () => {
     vi.stubEnv('AI_API_KEY', ' \t\n');
     vi.stubEnv('AI_MODE', 'auto');
     const response = await GET(new Request('http://localhost:3000/api/status'));
-    expect(await response.json()).toEqual({ ok: true, data: { mode: 'mock', version: '0.1.0' } });
+    expect(await response.json()).toEqual({
+      ok: true,
+      data: { mode: 'mock', version: PRODUCTSPY_VERSION },
+    });
   });
 
   it('respects explicit mode and does not expose the API key', async () => {
@@ -23,13 +30,13 @@ describe('workspace status API', () => {
     vi.stubEnv('AI_MODE', 'mock');
     expect(await (await GET(new Request('http://localhost:3000/api/status'))).json()).toEqual({
       ok: true,
-      data: { mode: 'mock', version: '0.1.0' },
+      data: { mode: 'mock', version: PRODUCTSPY_VERSION },
     });
     vi.stubEnv('AI_API_KEY', '');
     vi.stubEnv('AI_MODE', 'real');
     expect(await (await GET(new Request('http://localhost:3000/api/status'))).json()).toEqual({
       ok: true,
-      data: { mode: 'real', version: '0.1.0' },
+      data: { mode: 'real', version: PRODUCTSPY_VERSION },
     });
   });
 });

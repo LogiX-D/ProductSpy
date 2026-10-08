@@ -1,0 +1,180 @@
+{
+  "version": "0.2.0",
+  "validationDate": "2026-10-09",
+  "timezone": "Asia/Shanghai",
+  "environment": {
+    "os": "Windows 11 x64 10.0.26300",
+    "powershell": "5.1",
+    "browser": "Chrome for Testing (not formal Chrome stable)",
+    "browserVersion": "156.0.8078.4"
+  },
+  "artifacts": {
+    "windows": {
+      "file": "ProductSpy-0.2.0-windows-x64.zip",
+      "sha256": "423108b1446ce5f457d1bfa63e68bb7fe074bc6a0eb897446d2958898439c530",
+      "bytes": 40317756,
+      "files": 1863
+    },
+    "extension": {
+      "file": "ProductSpy-0.2.0-extension.zip",
+      "version": "0.2.0",
+      "sha256": "c2edcf4e81b63e74ad3f5b0a8026d8c00baff27fd3415532aa78883a61c15f79",
+      "files": 226,
+      "bytes": 391275
+    },
+    "store": {
+      "file": "ProductSpy-0.2.0-store-materials.zip",
+      "hashLocation": "artifacts/SHA256SUMS.txt"
+    },
+    "privateFilesIncluded": false,
+    "zipEntrySeparator": "/"
+  },
+  "checks": {
+    "install": "passed",
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "unit": {
+      "files": 22,
+      "passed": 207
+    },
+    "productionBuild": "passed",
+    "e2e": {
+      "passed": 5,
+      "fixtures": true
+    },
+    "portable": {
+      "passed": 9,
+      "allPassed": true,
+      "checks": [
+        {
+          "name": "package inventory SHA-256, bundled runtime, MV3 permissions, no user data or env",
+          "passed": true
+        },
+        {
+          "name": "port conflict is explained, unknown listener preserved",
+          "passed": true
+        },
+        {
+          "name": "headless launcher with no installed Node.js/pnpm on PATH, localhost, Mock, authentication",
+          "passed": true
+        },
+        {
+          "name": "duplicate start creates no second service process",
+          "passed": true
+        },
+        {
+          "name": "complete Mock analysis persists; graceful stop releases port and retains user data",
+          "passed": true
+        },
+        {
+          "name": "AI settings use Windows DPAPI CurrentUser, no plaintext test key on disk",
+          "passed": true
+        },
+        {
+          "name": "restart retains complete ProductAnalysis, product ID, creation and update times",
+          "passed": true
+        },
+        {
+          "name": "same-schema reinstall/moved package retains complete analysis and single instance",
+          "passed": true
+        },
+        {
+          "name": "launcher crash cleanup and abandoned mutex recovery preserve data",
+          "passed": true
+        }
+      ],
+      "archiveActuallyExtracted": true,
+      "pathContainsChinese": true,
+      "completeAnalysisPreserved": true,
+      "scope": "headless lifecycle and same-schema reinstall; not historical or arbitrary future migrations",
+      "evidence": ".test-data/phase10-portable/2026-10-08T17-52-10-255Z/report.json",
+      "archiveEvidence": ".test-data/phase10-final-zip/2026-10-08T17-52-00-074Z/zip-validation.json"
+    }
+  },
+  "realAmazon": {
+    "uniqueProducts": 1,
+    "category": "beauty",
+    "fixture": false,
+    "capturedAt": "2026-10-08T17:13:23.600Z",
+    "pageUrl": "https://www.amazon.com/dp/B00TTD9BRC",
+    "fields": {
+      "asin": "B00TTD9BRC",
+      "title": "CeraVe 保湿霜 16 盎司（约 453.59 克）日常面部和身体保湿霜，适用于干性肌肤, 19 盎司",
+      "price": "TWD606.36",
+      "currency": "TWD",
+      "brand": "CeraVe",
+      "rating": 4.7,
+      "reviewCount": 148820,
+      "images": 12,
+      "videos": 2,
+      "bulletPoints": 5,
+      "descriptionCharacters": 293
+    },
+    "workflow": {
+      "consent": true,
+      "paired": true,
+      "saved": true,
+      "mockAnalysis": true,
+      "persistedAfterReload": true,
+      "popupActionVisible": true
+    },
+    "restart": {
+      "browser": "Chrome for Testing",
+      "browserVersion": "156.0.8078.4",
+      "fixture": false,
+      "verified": true,
+      "productId": "amazon:B00TTD9BRC",
+      "analysisSurvivedRestart": true,
+      "existingConsentRestored": true,
+      "pairingRestoredWithoutNewCode": true,
+      "savedAfterRestart": true,
+      "noDuplicate": true,
+      "createdAtUnchanged": true
+    },
+    "phase9HistoricalResults": "docs/phase9-validation.md"
+  },
+  "images": [
+    {
+      "file": "screenshots/01-dashboard.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "2b21f00c768d3497687fad0ee2528ba76754e63095a992ee243b1e215b4321b1"
+    },
+    {
+      "file": "screenshots/02-library.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "4351b9467414e1fe9d6c3ab68675676f7709eca41af93c3875c22b7a5cb4bc3d"
+    },
+    {
+      "file": "screenshots/03-analysis.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "89beacaaf301343023bb284168ead80280c8571b68c31d8419e0d04fd5e8908f"
+    }
+  ],
+  "manualAcceptance": {
+    "installedChromeStable": "pending - no installation or browser connector found",
+    "guiDoubleClickAndBrowserOpen": "pending - headless and local GUI probes only",
+    "highDpiAndCleanWindows": "pending"
+  },
+  "chromeWebStore": {
+    "formallySubmitted": false,
+    "feePaid": false,
+    "readyForFormalSubmission": false,
+    "blockers": [
+      "Installed Chrome stable complete manual acceptance",
+      "Full GUI/clean Windows/high DPI acceptance",
+      "Public no-login portable download and reviewer Windows dependency",
+      "Publisher dashboard, account, 2FA and final disclosures"
+    ]
+  },
+  "knownLimits": [
+    "Unsigned Windows x64 portable distribution",
+    "Unpacked extension may need re-pairing if extension ID changes",
+    "No real paid AI quality acceptance",
+    "Public video URL extraction is not full playback verification",
+    "Product JSON is not application-encrypted"
+  ]
+}

@@ -4,6 +4,8 @@ dist
 pnpm-lock.yaml
 .data
 .test-data
+artifacts
+.pack-cache
 test-results
 playwright-report
 next-env.d.ts

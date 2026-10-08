@@ -136,7 +136,13 @@ export function CopyButton({ value, label = 'Copy' }: { value: string; label?: s
         onClick={() => void copy()}
         aria-label={`${label} ${value.slice(0, 20)}`}
       >
-        {status === '已复制' ? '已复制' : label}
+        {status === '已复制'
+          ? '已复制'
+          : label === 'Copy'
+            ? '复制'
+            : label === 'Copy Script'
+              ? '复制脚本'
+              : label}
         <ArrowRight size={13} />
       </Button>
       {status && status !== '已复制' && (

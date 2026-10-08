@@ -1,7 +1,7 @@
 {
   "name": "productspy",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "packageManager": "pnpm@10.32.1",
   "scripts": {
     "dev": "pnpm --filter @productspy/web dev",
@@ -12,7 +12,11 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "package:windows": "pnpm build && node scripts/package-windows.mjs",
+    "package:extension": "pnpm --filter @productspy/extension build && node scripts/package-extension.mjs",
+    "package:store": "node scripts/package-store.mjs",
+    "test:portable": "node scripts/test-portable.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

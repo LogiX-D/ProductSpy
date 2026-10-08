@@ -1,5 +1,9 @@
 import type { NextConfig } from 'next';
+import { resolve } from 'node:path';
 const config: NextConfig = {
+  output: 'standalone',
+  outputFileTracingRoot: resolve(import.meta.dirname, '../..'),
+  outputFileTracingExcludes: { '/*': ['.env*', '.data/**/*', '../../.test-data/**/*'] },
   transpilePackages: ['@productspy/shared'],
   poweredByHeader: false,
   devIndicators: false,

@@ -5,6 +5,7 @@ import { Grid2X2, List, RefreshCw, Search, SlidersHorizontal } from 'lucide-reac
 import { useProducts } from '@/lib/use-products';
 import { Button, EmptyState, ErrorNotice, LoadingState, PageHeading } from './ui';
 import { ProductCard } from './product-card';
+import { OpenSetupButton } from './first-use-guide';
 
 export function ProductsLibrary() {
   const { products, loading, refreshing, error, reload, remove, pendingDeleteId } = useProducts();
@@ -26,7 +27,7 @@ export function ProductsLibrary() {
   return (
     <div className="space-y-6">
       <PageHeading
-        eyebrow="YOUR PRODUCT COLLECTION"
+        eyebrow="本机素材库"
         title="商品库"
         description="收集竞品素材，为下一条内容找到方向。"
         action={
@@ -98,6 +99,7 @@ export function ProductsLibrary() {
         <EmptyState
           title="还没有采集商品"
           description="打开 Amazon 商品页面，通过 ProductSpy 插件保存第一个商品。"
+          action={<OpenSetupButton />}
         />
       ) : filtered.length === 0 ? (
         <EmptyState

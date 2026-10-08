@@ -1,0 +1,33 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="440"
+  height="280"
+  viewBox="0 0 440 280"
+  role="img"
+  aria-labelledby="title description"
+>
+  <title id="title">ProductSpy 商店宣传图</title>
+  <desc id="description">
+    原创品牌图形：商品盒与放大镜，配文 Amazon
+    商品素材采集、本地工作台和安全配对。这是宣传图，不是产品界面截图。
+  </desc>
+  <rect width="440" height="280" fill="#132b35" />
+  <g transform="translate(32 30)" stroke-linejoin="round" stroke-linecap="round">
+    <rect width="64" height="64" rx="16" fill="#1c414a" />
+    <path d="M16 23 31 15 46 23 31 31Z" fill="#5eead4" />
+    <path d="M16 23v19l15 8V31" fill="#2dd4bf" />
+    <path d="m31 31 15-8v19l-15 8Z" fill="#0f9c91" />
+    <circle cx="42" cy="43" r="9" fill="#132b35" stroke="#f8fafc" stroke-width="3" />
+    <path d="m49 50 7 7" stroke="#f8fafc" stroke-width="4" />
+  </g>
+  <g fill="#f8fafc" font-family="'Segoe UI', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif">
+    <text x="112" y="72" font-size="31" font-weight="700" letter-spacing="-.5">ProductSpy</text>
+    <text x="32" y="142" font-size="21" font-weight="600">Amazon 商品素材采集</text>
+    <text x="32" y="176" font-size="16" fill="#b8cbd0">本地工作台 · 安全配对</text>
+  </g>
+  <path d="M32 213h376" stroke="#35545e" />
+  <g font-family="'Segoe UI', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif" font-size="13">
+    <circle cx="38" cy="239" r="4" fill="#5eead4" />
+    <text x="51" y="244" fill="#c5d5d9">商品资料 · 营销分析 · 短视频脚本</text>
+  </g>
+</svg>

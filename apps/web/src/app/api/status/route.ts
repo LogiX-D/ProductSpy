@@ -1,4 +1,5 @@
 import { preflight, withApiRequest } from '../../../lib/server/http';
+import { PRODUCTSPY_VERSION } from '@productspy/shared';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -12,7 +13,7 @@ export function GET(request: Request): Promise<Response> {
         explicitMode === 'mock' || (!process.env.AI_API_KEY?.trim() && explicitMode !== 'real')
           ? 'mock'
           : 'real';
-      return { mode, version: '0.1.0' };
+      return { mode, version: PRODUCTSPY_VERSION };
     },
     { authentication: false },
   );

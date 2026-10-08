@@ -58,7 +58,10 @@ async function openPopup(context: BrowserContext, worker: Worker, amazon: Page):
   await popup.goto(`chrome-extension://${id}/popup.html`);
   await amazon.bringToFront();
   await popup.reload();
-  await popup.setViewportSize({ width: 400, height: 780 });
+  await popup.setViewportSize({ width: 400, height: 600 });
+  await expect(popup.getByRole('button', { name: '同意并开始采集', exact: true })).toBeVisible();
+  await expect(popup.getByText('Amazon Product Captured')).toHaveCount(0);
+  await popup.getByRole('button', { name: '同意并开始采集', exact: true }).click();
   return popup;
 }
 
@@ -513,4 +516,37 @@ test('local API rejects anonymous reads, forged extension access and cross-site 
   } finally {
     await anonymous.dispose();
   }
+});
+
+test('empty workspace explains portable installation and expired pairing can recover', async ({
+  page,
+}) => {
+  // This is a UI fixture, separate from the real Amazon acceptance and store images.
+  await page.route(`${BASE}/api/products`, (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: true, data: [] }),
+    }),
+  );
+  await page.clock.install();
+  await page.goto(`${BASE}/products`);
+  await expect(page.getByRole('heading', { name: '还没有采集商品', exact: true })).toBeVisible();
+  const setup = page.getByRole('button', { name: '开始首次使用', exact: true });
+  await setup.click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog.locator('ol > li')).toHaveCount(6);
+  await expect(dialog.getByText('ProductSpy.cmd', { exact: true })).toBeVisible();
+  await dialog.getByRole('button', { name: '开发者源码版', exact: true }).click();
+  await expect(dialog.getByText('apps/extension/dist', { exact: true })).toBeVisible();
+  await dialog.getByRole('button', { name: 'Windows 便携版', exact: true }).click();
+  await dialog.getByRole('button', { name: '生成配对码', exact: true }).click();
+  await expect(dialog.getByLabel('扩展配对码')).toHaveValue(/^[a-f0-9]{32}$/);
+  await page.clock.fastForward('02:10');
+  await expect(dialog.getByText(/配对码已过期。/)).toBeVisible();
+  await expect(dialog.getByLabel('扩展配对码')).toHaveCount(0);
+  await expect(dialog.getByRole('button', { name: '生成配对码', exact: true })).toBeEnabled();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect(setup).toBeFocused();
 });

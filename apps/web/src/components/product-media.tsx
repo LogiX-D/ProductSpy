@@ -164,12 +164,13 @@ export function ProductMedia({ product }: { product: Product }) {
           <p className="small muted mt-1">保存公开图片 URL，按需下载素材。</p>
         </div>
         <Button
+          aria-label="Download All Images"
           variant="secondary"
           disabled={!images.length || busy !== undefined}
           onClick={() => void downloadAll()}
         >
-          {busy === 'all' ? <Loader2 size={15} className="spin" /> : <Images size={15} />}Download
-          All Images
+          {busy === 'all' ? <Loader2 size={15} className="spin" /> : <Images size={15} />}
+          下载全部图片
         </Button>
       </div>
       {failure && <ErrorNotice message={failure.message} onRetry={retryDownload} />}
@@ -185,12 +186,13 @@ export function ProductMedia({ product }: { product: Product }) {
               <ProductImage src={url} alt={`${product.title} 图片 ${index + 1}`} />
               <div className="media-card-footer">
                 <Button
+                  aria-label="Download Image"
                   variant="ghost"
                   disabled={busy !== undefined}
                   onClick={() => void downloadImage(index)}
                 >
                   {busy === index ? <Loader2 size={14} className="spin" /> : <Download size={14} />}
-                  Download Image
+                  下载图片
                 </Button>
                 <a
                   href={url}
