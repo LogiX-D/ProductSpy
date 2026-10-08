@@ -29,7 +29,7 @@ const registry = (globalRegistry.__productspyRepositories ??= {
   repositories: new Map(),
 });
 
-function dataDirectory(): string {
+export function dataDirectory(): string {
   return resolve(
     /* turbopackIgnore: true */ process.env.PRODUCTSPY_DATA_DIR ?? join(process.cwd(), '.data'),
   );
@@ -89,12 +89,13 @@ export class LocalJsonProductRepository implements ProductRepository {
   }
 
   private async writeProducts(products: Product[]): Promise<void> {
-    await mkdir(this.directory, { recursive: true });
+    await mkdir(this.directory, { recursive: true, mode: 0o700 });
     const temporaryFile = join(this.directory, `.products-${randomUUID()}.tmp`);
     try {
       await writeFile(temporaryFile, JSON.stringify(products, null, 2), {
         encoding: 'utf8',
         flag: 'wx',
+        mode: 0o600,
       });
       await rename(temporaryFile, this.filePath);
     } finally {

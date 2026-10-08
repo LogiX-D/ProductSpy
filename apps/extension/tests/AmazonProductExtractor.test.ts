@@ -17,7 +17,7 @@ function fixture(name: string, sourceUrl = url): AmazonProductExtractor {
 }
 
 describe('AmazonProductExtractor structured sources', () => {
-  it('reads JSON-LD graph title, price, brand, rating and reviews before DOM', () => {
+  it('reads JSON-LD graph price, brand, rating and reviews before metadata fallback', () => {
     const product = fixture('jsonld-product').extract();
     expect(product).toMatchObject({
       source: 'amazon',
@@ -63,6 +63,25 @@ describe('AmazonProductExtractor structured sources', () => {
     expect(product?.images).toEqual(['https://example.com/actual.jpg']);
   });
 
+  it('uses the selected purchase-form variant and its matching structured product', () => {
+    const product = fixture('selected-variant').extract();
+    expect(product).toMatchObject({
+      sourceId: 'B098765432',
+      url: 'https://www.amazon.com/dp/B098765432',
+      title: 'Selected blue variant',
+      price: '24.99',
+      currency: 'USD',
+      images: ['https://m.media-amazon.com/images/I/blue.jpg'],
+    });
+  });
+
+  it('falls back to the URL when the purchase form has no usable ASIN', () => {
+    const product = extractor(
+      '<input id="ASIN" value="invalid"><div data-asin="B098765432">Recommended</div><h1 id="productTitle">Current product</h1>',
+    ).extract();
+    expect(product?.sourceId).toBe('B012345678');
+  });
+
   it('reads scoped Amazon product-data price without visible DOM pricing', () => {
     const product = extractor(
       '<h1 id="productTitle">Sample</h1><script>var productData = {price:"22.00",priceCurrency:"USD"};</script>',
@@ -93,6 +112,125 @@ describe('AmazonProductExtractor structured sources', () => {
 });
 
 describe('AmazonProductExtractor DOM fallbacks', () => {
+  it('excludes the observed 360 degree gallery control icon', () => {
+    const product = extractor(
+      '<h1 id="productTitle">Current</h1><img id="landingImage" src="https://m.media-amazon.com/images/I/product.jpg"><div id="altImages"><img src="https://m.media-amazon.com/images/G/01/HomeCustomProduct/360_icon_73x73v2.png"></div>',
+    ).extract();
+    expect(product?.images).toEqual(['https://m.media-amazon.com/images/I/product.jpg']);
+  });
+
+  it('reads actual A+ content after duplicated brand-story and comparison modules', () => {
+    const html =
+      '<h1 id="productTitle">Current</h1><div id="aplus"><div class="aplus-v2"><div class="apm-brand-story-carousel-container">Other products Store</div></div></div><div id="aplus"><div class="aplus-v2"><style>.hidden{display:none}</style><p>Current product features.</p><a class="a-carousel-goto-prevpage">Previous page</a><div class="premium-module-5-comparison-table-scroller">Recommended product price 9.99</div></div></div>';
+    expect(extractor(html).extractDescription()).toBe('Current product features.');
+  });
+
+  it('leaves image-only A+ content without a fake description', () => {
+    const html =
+      '<meta name="description" content="Amazon.com: Current : Category"><h1 id="productTitle">Current</h1><div id="aplus"><div class="aplus-v2"><h2>From the manufacturer</h2><img src="https://example.com/features.jpg"><div class="video-js">Video Player is loading. Current Time 0:00</div></div></div>';
+    expect(extractor(html).extractDescription()).toBeUndefined();
+  });
+
+  it('accepts only player states bound to the current ASIN and scoped public video', () => {
+    const html =
+      '<h1 id="productTitle">Current</h1><script type="a-state">{"productAsin":"B012345678","videoUrl":"https://media.example.com/current.m3u8","imageUrl":"https://media.example.com/current.jpg"}</script><script type="a-state">{"nexusMetricsConfig":{"pageAsin":"B098765432"},"videoUrl":"https://media.example.com/other.mp4"}</script><script>var videos=[{url:"https://media.example.com/current.m3u8"},{url:"https://media.example.com/recommended.m3u8"},{asin:"B098765432",url:"https://media.example.com/other.mp4"}];</script><div id="imageBlock"><video src="https://media.example.com/other.mp4"></video><video src="https://media.example.com/public-current.mp4"></video></div><div data-video-url="https://media.example.com/unscoped.mp4"></div>';
+    expect(
+      extractor(html)
+        .extractVideos()
+        .map((video) => video.url),
+    ).toEqual([
+      'https://media.example.com/current.m3u8',
+      'https://media.example.com/public-current.mp4',
+    ]);
+  });
+
+  it('excludes observed A+ video label tooltips from product descriptions', () => {
+    const html =
+      '<h1 id="productTitle">Current</h1><div id="aplus"><div class="aplus-v2"><p>Absorbent bath mat.</p><div class="vse-player-container"><span class="ive-player-label-tooltip aok-hidden">This video shows the product in use.</span></div></div></div>';
+    expect(extractor(html).extractDescription()).toBe('Absorbent bath mat.');
+  });
+
+  it('prefers declared product ASIN over a conflicting recommendation player page context', () => {
+    const html =
+      '<h1 id="productTitle">Current</h1><script type="a-state">{"productAsin":"B098765432","nexusMetricsConfig":{"pageAsin":"B012345678"},"videoUrl":"https://media.example.com/recommended.mp4"}</script>';
+    expect(extractor(html).extractVideos()).toEqual([]);
+  });
+
+  it('uses the current DOM title, actual description and explicit displayed currency', () => {
+    const product = fixture('localized-gallery').extract();
+    expect(product).toMatchObject({
+      sourceId: 'B098765432',
+      title: 'Current blue product',
+      price: 'TWD2,142.52',
+      currency: 'TWD',
+      brand: 'Sample',
+      description: 'Actual product description.',
+    });
+  });
+
+  it('decodes the current gallery and excludes other colors and duplicate resolution aliases', () => {
+    expect(fixture('localized-gallery').extractImages()).toEqual([
+      'https://m.media-amazon.com/images/I/blue-hi._SL1500_.jpg',
+      'https://m.media-amazon.com/images/I/detail-hi._SL1500_.jpg',
+      'https://m.media-amazon.com/images/I/fallback._SX1200_.jpg',
+    ]);
+  });
+
+  it('uses only an identifiable current group when initial gallery data is unavailable', () => {
+    const product = extractor(
+      '<h1 id="productTitle">Current</h1><img id="landingImage" src="https://m.media-amazon.com/images/I/blue.jpg"><script>var data={colorImages:{Black:[{hiRes:"https://m.media-amazon.com/images/I/black.jpg"}],Blue:[{hiRes:"https://m.media-amazon.com/images/I/blue.jpg"},{hiRes:"https://m.media-amazon.com/images/I/blue-detail.jpg"}]}};</script>',
+    ).extract();
+    expect(product?.images).toEqual([
+      'https://m.media-amazon.com/images/I/blue.jpg',
+      'https://m.media-amazon.com/images/I/blue-detail.jpg',
+    ]);
+  });
+
+  it('keeps a decoded gallery when the main image node is still empty', () => {
+    const html =
+      '<h1 id="productTitle">Current</h1><img id="landingImage"><script>var data={colorImages:{initial:A.$.parseJSON(\'[{"hiRes":"https://m.media-amazon.com/images/I/ready.jpg"}]\')}};</script>';
+    expect(extractor(html).extractImages()).toEqual([
+      'https://m.media-amazon.com/images/I/ready.jpg',
+    ]);
+  });
+
+  it('uses a scoped brand value when the store link is unavailable', () => {
+    expect(
+      extractor(
+        '<h1 id="productTitle">Webcam</h1><table><tr class="po-brand"><td><span class="po-break-word">Logitech</span></td></tr></table>',
+      ).extractBrand(),
+    ).toBe('Logitech');
+  });
+
+  it.each([
+    ['访问 CeraVe 品牌旗舰店', 'CeraVe'],
+    ['品牌：CeraVe', 'CeraVe'],
+    ['访问亚马逊 Echo 和 Alexa 商店', '亚马逊 Echo 和 Alexa'],
+    ['Besuche den Logitech-Store', 'Logitech'],
+  ])('removes the observed localized store wrapper from %s', (byline, brand) => {
+    expect(extractor(`<a id="bylineInfo">${byline}</a>`).extractBrand()).toBe(brand);
+  });
+
+  it.each([
+    ['TWD604.05', 'TWD'],
+    ['NT$604.05', 'TWD'],
+    ['US$29.99', 'USD'],
+    ['$29.99', undefined],
+  ])('reads %s without guessing currency from the storefront', (price, currency) => {
+    const product = extractor(
+      `<h1 id="productTitle">Current</h1><div id="corePrice_feature_div"><span class="a-price"><span class="a-offscreen">${price}</span></span></div>`,
+    ).extract();
+    expect(product?.price).toBe(price);
+    expect(product?.currency).toBe(currency);
+  });
+
+  it('keeps explicit DOM currency when metadata refers to another display currency', () => {
+    const product = extractor(
+      '<meta property="product:price:currency" content="USD"><h1 id="productTitle">Current</h1><div id="corePrice_feature_div"><span class="a-price"><span class="a-offscreen">TWD604.05</span></span></div>',
+    ).extract();
+    expect(product?.currency).toBe('TWD');
+  });
+
   it('extracts title, visible price, ASIN, gallery, bullet points, rating and reviews', () => {
     const product = fixture(
       'dom-product',
@@ -215,5 +353,17 @@ describe('AmazonProductExtractor failure isolation', () => {
       active: true,
       value: null,
     });
+  });
+
+  it('decodes only known JSON wrappers with a single literal argument', () => {
+    expect(
+      parseLiteral('{initial:A.$.parseJSON(\'[{"hiRes":"https://example.com/a.jpg"}]\')}'),
+    ).toMatchObject({ initial: [{ hiRes: 'https://example.com/a.jpg' }] });
+    expect(parseLiteral('{initial:JSON.parse(\'{"safe":true}\')}')).toEqual({
+      initial: { safe: true },
+    });
+    expect(() => parseLiteral('{initial:A.$.parseJSON(globalThis.secret)}')).toThrow();
+    expect(() => parseLiteral("{initial:A.$.parseJSON('[]', run())}")).toThrow();
+    expect(() => parseLiteral("{initial:A.$.parseJSON('[]') + run()}")).toThrow();
   });
 });

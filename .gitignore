@@ -9,3 +9,5 @@ coverage/
 test-results/
 playwright-report/
 .test-data/
+.bridge-credentials.json
+.bridge-*.tmp

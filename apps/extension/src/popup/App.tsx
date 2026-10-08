@@ -28,11 +28,15 @@ export function App() {
   const [error, setError] = useState('');
   const [pendingCount, setPendingCount] = useState(0);
   const [imageFailed, setImageFailed] = useState(false);
+  const [paired, setPaired] = useState(false);
+  const [pairCode, setPairCode] = useState('');
 
   const refreshPending = useCallback(async () => {
     try {
       const result = await extensionRequest({ type: 'PRODUCTSPY_PENDING_COUNT' });
       if (result.status === 'pending-count') setPendingCount(result.count);
+      const bridge = await extensionRequest({ type: 'PRODUCTSPY_BRIDGE_STATE' });
+      if (bridge.status === 'bridge-state') setPaired(bridge.paired);
     } catch (failure: unknown) {
       console.warn('[ProductSpy] Pending count unavailable', failure);
     }
@@ -112,6 +116,23 @@ export function App() {
     }
   }
 
+  async function pairWorkspace() {
+    setBusy(true);
+    setError('');
+    setNotice('');
+    try {
+      const result = await extensionRequest({ type: 'PRODUCTSPY_PAIR', code: pairCode });
+      if (result.status === 'paired') {
+        setPaired(true);
+        setPairCode('');
+      } else if (result.status === 'error') setError(result.error);
+    } catch (failure) {
+      setError(errorMessage(failure));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <div className="flex min-h-[480px] flex-col">
       <header className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-5">
@@ -126,6 +147,34 @@ export function App() {
         </span>
       </header>
       <main className="flex-1 p-6">
+        {paired ? (
+          <p className="mb-4 text-xs text-teal-700">工作台已连接</p>
+        ) : (
+          <div className="mb-4 rounded-lg border border-slate-200 bg-white p-3">
+            <p className="mb-2 text-xs leading-5 text-slate-500">
+              在工作台右上角扩展说明中生成配对码，连接后可保存商品。
+            </p>
+            <label htmlFor="workspace-pair-code" className="block text-xs font-medium">
+              工作台配对码
+            </label>
+            <input
+              id="workspace-pair-code"
+              value={pairCode}
+              onChange={(event) => setPairCode(event.target.value)}
+              autoComplete="off"
+              spellCheck={false}
+              maxLength={40}
+              className="my-2 w-full rounded border border-slate-200 p-2 font-mono text-xs"
+            />
+            <button
+              disabled={busy || !pairCode.trim()}
+              onClick={() => void pairWorkspace()}
+              className="w-full rounded bg-accent px-3 py-2 text-xs font-medium text-white disabled:opacity-50"
+            >
+              连接工作台
+            </button>
+          </div>
+        )}
         {state === 'loading' && (
           <div
             role="status"
@@ -261,6 +310,17 @@ export function App() {
         )}
       </main>
       <footer className="border-t border-slate-200 bg-white px-6 py-4">
+        <p className="mb-3 text-[11px] leading-5 text-slate-500">
+          点击扩展仅读取当前商品；保存至本机工作台。真实 AI 分析会将商品文字发送至你配置的服务。
+          <a
+            href="https://github.com/LogiX-D/ProductSpy/blob/main/PRIVACY.md"
+            target="_blank"
+            rel="noreferrer"
+            className="ml-1 text-accent underline"
+          >
+            隐私说明
+          </a>
+        </p>
         <a
           href={WORKSPACE_URL}
           target="_blank"

@@ -2,6 +2,7 @@ import { defineConfig } from '@playwright/test';
 import { resolve } from 'node:path';
 export default defineConfig({
   testDir: './e2e',
+  outputDir: 'test-results/e2e',
   timeout: 90000,
   expect: { timeout: 15000 },
   workers: 1,

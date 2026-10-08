@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Download, ExternalLink, Images, Loader2 } from 'lucide-react';
 import { errorMessage, type Product } from '@productspy/shared';
 import { Button, EmptyState, ErrorNotice, ProductImage } from './ui';
+import { webFetch } from '../lib/session';
 
 const MAX_ZIP_BYTES = 80 * 1024 * 1024;
 type DownloadJob = number | 'all';
@@ -16,7 +17,7 @@ const IMAGE_EXTENSIONS: Readonly<Record<string, string>> = {
 };
 
 async function fetchImage(url: string, signal: AbortSignal): Promise<Blob> {
-  const response = await fetch(`/api/media?url=${encodeURIComponent(url)}`, {
+  const response = await webFetch(`/api/media?url=${encodeURIComponent(url)}`, {
     signal,
     cache: 'no-store',
   });

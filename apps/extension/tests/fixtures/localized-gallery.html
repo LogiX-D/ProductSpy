@@ -1,0 +1,28 @@
+<!doctype html>
+<!-- Synthetic regression fixture reproducing structures observed in Phase 9 real pages.
+     Contains illustrative products and media URLs, not a saved Amazon page. -->
+<html><head>
+<meta name="title" content="Amazon.com: Current blue product : Home &amp; Kitchen">
+<meta name="description" content="Amazon.com: Current blue product : Home &amp; Kitchen">
+<meta property="og:image" content="https://m.media-amazon.com/images/I/stale-parent.jpg">
+<script>
+var currentGallery = {
+  'colorImages': { 'initial': A.$.parseJSON('[{"hiRes":"https://m.media-amazon.com/images/I/blue-hi._SL1500_.jpg","large":"https://m.media-amazon.com/images/I/blue-low.jpg","thumb":"https://m.media-amazon.com/images/I/blue-low._SS40_.jpg","main":{"https://m.media-amazon.com/images/I/blue-hi._SX500_.jpg":[500,500]}},{"hiRes":"https://m.media-amazon.com/images/I/detail-hi._SL1500_.jpg","large":"https://m.media-amazon.com/images/I/detail-low.jpg","thumb":"https://m.media-amazon.com/images/I/detail-low._SS40_.jpg"},{"hiRes":null,"large":"https://m.media-amazon.com/images/I/fallback._SX300_.jpg","main":{"https://m.media-amazon.com/images/I/fallback._SX300_.jpg":["300","300"],"https://m.media-amazon.com/images/I/fallback._SX1200_.jpg":["1200","1200"]}}]') }
+};
+var variationGallery = {
+  "asinVariationValues": {"B098765432":["Blue"]},
+  "colorImages": {
+    "Black":[{"hiRes":"https://m.media-amazon.com/images/I/wrong-black.jpg"}],
+    "Blue":[{"hiRes":"https://m.media-amazon.com/images/I/blue-hi._SL1500_.jpg","large":"https://m.media-amazon.com/images/I/blue-low.jpg"}]
+  }
+};
+</script>
+</head><body>
+<input id="ASIN" value="B098765432">
+<h1 id="productTitle">Current blue product</h1>
+<div id="corePrice_feature_div"><span class="a-price"><span class="a-offscreen">TWD2,142.52</span></span></div>
+<img id="landingImage" src="https://m.media-amazon.com/images/I/blue-low._SX300_.jpg" data-old-hires="https://m.media-amazon.com/images/I/blue-hi._SL1500_.jpg">
+<div id="altImages"><img src="https://m.media-amazon.com/images/I/blue-low._SS40_.jpg"><img src="https://m.media-amazon.com/images/I/detail-low._SS40_.jpg"></div>
+<a id="bylineInfo">访问 Sample 品牌旗舰店</a>
+<div id="productDescription"><p>Actual product description.</p></div>
+</body></html>

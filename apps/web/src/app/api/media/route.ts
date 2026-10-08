@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request): Promise<Response> {
   try {
-    assertLocalRequest(request);
+    await assertLocalRequest(request);
     const image = await fetchAmazonImage(new URL(request.url).searchParams.get('url'));
     const headers = corsHeaders(request);
     headers.set('Content-Type', image.contentType);

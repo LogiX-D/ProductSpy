@@ -30,6 +30,6 @@ export function POST(request: Request): Promise<Response> {
   );
 }
 
-export function OPTIONS(request: Request): Response {
+export function OPTIONS(request: Request): Promise<Response> {
   return preflight(request, ['POST']);
 }

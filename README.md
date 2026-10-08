@@ -2,11 +2,11 @@
 
 本地优先的 Amazon 竞品素材采集与 AI 分析 MVP。Chrome 扩展识别当前商品，保存到本机 Web 工作台；工作台提供商品库、图片 / 视频详情、营销分析、短视频脚本和生成 Prompt。
 
-仅支持 Amazon。此版本没有登录、支付、自动发布、价格监控、其他平台或多人协作。
+仅支持 Amazon。此版本没有用户账号、支付、自动发布、价格监控、其他平台或多人协作。
 
 ## 环境与安装
 
-需要 Node.js 22.12+（已在 Windows / Node.js 24 验证）、pnpm 10 和 Chrome。所有命令从 `ProductSpy` 目录运行。
+需要 Node.js 22.12+（已在 Windows / Node.js 24 验证）、pnpm 10 和 Chrome 120+。Manifest 明确限制最低安装版本；真实浏览器验收使用 Chrome for Testing 156，未逐一测试全部历史版本。所有命令从 `ProductSpy` 目录运行。
 
 ```powershell
 git clone https://github.com/LogiX-D/ProductSpy.git
@@ -27,8 +27,11 @@ pnpm build
 2. 开启 **Developer Mode / 开发者模式**。
 3. 点击 **Load unpacked / 加载已解压的扩展程序**。
 4. 选择 `ProductSpy/apps/extension/dist`（包含 `manifest.json` 的目录）。
-5. 将 ProductSpy 固定在工具栏，打开 Amazon 商品详情页，点击扩展。
-6. 点击「保存到素材库」，然后进入工作台 `/products`。
+5. 打开工作台 **http://127.0.0.1:3000**，点击右上角「查看扩展安装说明」（或左侧「安装 Chrome 扩展」），点击「生成配对码」。
+6. 复制配对码，打开 ProductSpy Popup，将其粘贴到「工作台配对码」，点击「连接工作台」，确认显示「工作台已连接」。
+7. 将 ProductSpy 固定在工具栏，打开 Amazon 商品详情页，等待加载后点击扩展，再点击「保存到素材库」。商品将出现在工作台 `/products`。
+
+配对码有效 2 分钟且只能使用一次；过期或已使用时重新生成。重新配对会替换旧连接，工作台「撤销扩展连接」可取消授权。重新加载扩展后若扩展 ID 改变、换了数据目录或连接已撤销，需要重新配对。未配对或工作台断开时，保存操作会暂存在插件中；配对并启动工作台后点击「重试同步」，无需重新采集已暂存的商品。
 
 扩展快捷键：`Alt+Shift+P`。若被系统或其他扩展占用，可在 `chrome://extensions/shortcuts` 修改。每次重新构建后，需要在扩展管理页点击「重新加载」。Popup 的「AI 分析」会先保存商品，再打开详情的 AI 标签；生成分析需在工作台点击「开始 AI 分析」。
 
@@ -70,7 +73,7 @@ AI_MODE=auto
 
 ## 使用流程
 
-1. 保持本地 Web 服务运行。工作台标签页可以关闭。
+1. 保持本地 Web 服务运行，并完成一次工作台与扩展配对。工作台标签页可以关闭。
 2. 打开 `amazon.com/dp/ASIN` 等支持的商品页，等待页面加载后点击扩展。
 3. 检查标题、价格、ASIN、图片 / 视频数量和评分，再保存。
 4. 商品库支持 Grid / List、标题 / 品牌 / ASIN 搜索、来源筛选、删除与打开详情；每 5 秒及恢复焦点时刷新。
@@ -99,7 +102,11 @@ Chrome 扩展与普通网页不能直接共享同一个 IndexedDB，因此采用
 
 共享抽象：`ProductRepository` / `ProductStorageAdapter`、`ProductSyncAdapter`、`AIProvider`。已实现 `ExtensionLocalStorageAdapter`、`WebLocalStorageAdapter`、`LocalhostProductSyncAdapter`、`ProductApiRepository` 和 `LocalJsonProductRepository`；后续可增加 Supabase / Postgres adapter。
 
-API 仅允许本机 Host 和本机 / Chrome 扩展 Origin。写操作要求 JSON 与 `X-ProductSpy-Client` 请求头。当前本地 MVP 接受任意有效 Chrome 扩展 Origin，没有用户登录或扩展配对认证；不适合直接部署成公共服务。
+API 只接受本机 3000 端口，商品读取、写入、分析和媒体下载均需要认证。工作台通过同源 bootstrap 获取 HttpOnly、SameSite=Strict Cookie，会话绑定当前本机 Host；要求浏览器同源 `Sec-Fetch-Site`，跨站请求不能创建会话。客户端只在业务操作尚未执行的 `401` 时续期并重试一次，其他失败不会自动重复写入或 AI 调用。
+
+扩展通过一次性配对码获得随机 Bearer token。服务端只存令牌的 SHA-256，并将其绑定配对时的实际 `chrome-extension://` Origin；任意其他扩展、未配对扩展或只有伪造请求头的请求不能读取或写入素材库。CORS 只向本机工作台与已配对扩展开放业务接口；配对入口允许合法扩展来源，但仍必须验证一次性码。写入另要求 JSON、有效 Origin 和与来源一致的 `X-ProductSpy-Client`。令牌与待同步商品只允许扩展可信上下文访问，内容脚本不能读取。
+
+这些措施保护浏览器来源边界；本机 HTTP 与文件不是 OS 用户隔离。已经能读取当前用户磁盘、控制浏览器或伪造完整本机 HTTP 请求的程序仍在信任边界内。Windows 文件权限继承所在目录的 ACL。不要将服务开放到公网或直接当成公共 API。数据目录中的 `.bridge-credentials.json`、商品文件、浏览器 profile 和 `.env.local` 均属于本机私有资料，不应提交到 Git。完整数据说明见 [PRIVACY.md](PRIVACY.md)。
 
 ## 目录
 
@@ -132,7 +139,10 @@ ProductSpy/
 │  ├─ product.ts         去重 / 合并 / 单调更新时间
 │  └─ http.ts            统一客户端请求与错误信息
 ├─ e2e/                  加载真实构建扩展的 Playwright 测试
-├─ scripts/amazon-smoke.mjs  真实 Amazon 页面只读检查
+├─ scripts/
+│  ├─ amazon-smoke.mjs       单页真实采集 / 可选隔离 Mock 完整链路
+│  └─ amazon-acceptance.mjs  多品类 / 国家站真实页面验收
+├─ docs/phase9-validation.md  Phase 9 当前验收结果
 └─ pnpm-workspace.yaml
 ```
 
@@ -141,9 +151,9 @@ ProductSpy/
 `AmazonProductExtractor` 的各字段方法可单独测试。优先 JSON-LD、metadata、已存在的页面数据对象，再使用多个 DOM fallback；不执行页面 script 文本或 `eval`。匹配当前 ASIN，排除可识别的推荐商品结构化数据。价格、评分、评论数量、品牌、描述和媒体均允许缺失。
 
 - 支持共享域名白名单中的 Amazon 国家站与 `/dp/`、`/gp/product/`、`/gp/aw/d/` URL；搜索、列表和验证页面不采集。
-- 价格与库存受地区、配送地址、登录、变体和页面加载状态影响；不存在可见价格时显示暂缺，不伪造价格。
+- 价格与库存受地区、配送地址、登录、变体和页面加载状态影响；不存在可见价格时显示暂缺。优先使用明确货币文本或结构化 currency 字段；只有裸 `$` 或裸数字而无可靠货币信息时不猜 USD。
 - 部分变体、动态 Gallery 和 Amazon 新页面结构仍可能需要增加 fallback；改变变体后建议等待页面稳定再重新采集。
-- 视频只提取页面已经公开暴露的 HTTP(S) `.mp4`、`.webm`、`.m3u8`，不保证所有商品视频可提取。HLS 可能无法在 Chrome 原生播放，提供原始链接。
+- 视频只提取页面已经公开暴露、能够可靠归属当前商品的 HTTP(S) `.mp4`、`.webm`、`.m3u8`。共享播放器对象和视频数组会包含其他商品、变体或推荐内容；明确 ASIN 不符或缺少足够身份关联时保守留空，不把页面上的所有视频都算作当前商品视频。HLS 可能无法在 Chrome 原生播放，提供原始链接。
 - 不绕过 DRM、登录、安全验证或站点保护。媒体 URL 可能过期或无法跨域播放。
 - 图片按 URL 保存，不预下载整库。下载 API 只访问 6 个明确 Amazon 图片 CDN 域名，禁止重定向，检查 MIME / 文件签名，单图 10 MiB，ZIP 合计 80 MiB。CDN 下载失败时可打开原图手动保存；ZIP 任意图片失败会明确报错，不生成缺图 ZIP。
 - Mock 是演示模板；真实模型输出也需人工核实商品事实和宣传表述。
@@ -168,7 +178,7 @@ pnpm build
 pnpm test:e2e
 ```
 
-E2E 自动启动生产服务，使用独立的 `ProductSpy/.test-data`，不使用默认素材库。加载原始构建 Extension，通过 Chrome 的扩展 action 调试接口授予真实 `activeTab`；不修改扩展权限。Amazon HTML 和下载图片使用确定性 fixtures，覆盖 Popup、采集保存、去重、商品库筛选 / 视图、详情、单图 / ZIP 下载、Mock 分析、复制、刷新保留、离线暂存重试、非商品页和删除。安全 API 边界另有浏览器请求验证。报告在 `playwright-report/`，截图和下载证据在 `test-results/`。
+E2E 自动启动生产服务，使用独立的 `ProductSpy/.test-data`，不使用默认素材库。加载原始构建 Extension，通过 Chrome 的扩展 action 调试接口授予真实 `activeTab`；不修改扩展权限。Amazon HTML 和下载图片使用确定性 fixtures，覆盖 Popup、一次性配对、采集保存、去重、商品库筛选 / 视图、详情、单图 / ZIP 下载、Mock 分析、复制、刷新保留、离线重复暂存与重试、部分同步失败恢复、旧分析保护、非商品页和删除；另验证匿名读取、伪造扩展凭据与跨站会话请求被拒绝。报告在 `playwright-report/`，E2E 截图和下载证据在 `test-results/`。
 
 真实页面检查（仅读取，不保存，不调用 AI）：
 
@@ -178,7 +188,17 @@ pnpm exec node scripts/amazon-smoke.mjs "https://www.amazon.com/dp/你的ASIN"
 
 使用 `--save` 可在当前运行的工作台保存该商品并验证 Mock 分析 / 刷新保留；此选项会实际写入当前素材库，只允许 Mock 模式。开发验收时应让服务使用 `PRODUCTSPY_DATA_DIR` 指向测试目录。该检查不绕过 Amazon 验证；站点不可达或返回验证页时会报告未验证。
 
-当前验收：类型检查、ESLint、Vitest、Extension 与 Web 生产构建均已实际执行。真实 OpenAI-compatible 请求通过本地 HTTP stub 验证；未使用真实 Key 调用收费模型。真实 Amazon Echo Dot 商品页也已完成采集、保存、详情、Mock 分析和刷新保留，返回 13 张图片、6 条卖点、4.7 分和 200,634 条评分 / 评论；主图地址返回 HTTP 200 / JPEG。该地区页面没有可用价格，未可靠提取视频。这是单页验证，不代表所有 Amazon 页面都已验证。测试商品已清理。完整验收记录见 [VALIDATION.md](VALIDATION.md)。
+多品类真实页面验收（仅读取与采集，不保存、不调用 AI）：
+
+```powershell
+pnpm exec node scripts/amazon-acceptance.mjs
+```
+
+真实页面证据保存在 **`.test-data/phase9-evidence/`**，避免被 Playwright 清理 `test-results/` 时移除；单页链路使用其 `live-workflow/` 子目录。页面 HTML、浏览器 profile、配对凭据及测试商品均仅保留在 Git 忽略的本机目录，提交的报告只包含必要的公开商品结果和限制说明。验证码、地区限制、不可达页面不绕过，也不以 fixture 或 Mock 结果替代真实成功率。
+
+当前验收见 [Phase 9 真实环境报告](docs/phase9-validation.md)，其中分别记录跨品类 / 国家站真实字段、正常颜色变体切换、自动化测试和安全检查。真实 OpenAI-compatible 合约使用本地 HTTP stub 验证；未使用真实 Key 调用收费模型。早期 MVP 验收保留在 [VALIDATION.md](VALIDATION.md)，其单页结果和测试数量是 Phase 8 历史，不代表当前全部覆盖。
+
+Chrome Web Store 提交条件和待办见 [商店准备说明](docs/chrome-web-store.md)。当前完成技术与资料准备，仍需 Chrome 稳定版人工验收、商店素材与开发者 Dashboard 配置，未提交审核，也不承诺已经达到直接上架标准。
 
 ## 下一阶段
 

@@ -6,7 +6,9 @@ export function formatDate(value: string): string {
 }
 export function formatPrice(product: Pick<Product, 'price' | 'currency'>): string {
   if (!product.price) return '价格暂缺';
-  return product.currency && !/[$€£¥₹￥]/.test(product.price)
+  return product.currency &&
+    !product.price.toUpperCase().includes(product.currency.toUpperCase()) &&
+    !/[$€£¥₹￥]/.test(product.price)
     ? `${product.currency} ${product.price}`
     : product.price;
 }

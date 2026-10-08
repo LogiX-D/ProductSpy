@@ -3,6 +3,7 @@ node_modules
 dist
 pnpm-lock.yaml
 .data
+.test-data
 test-results
 playwright-report
 next-env.d.ts

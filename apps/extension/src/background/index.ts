@@ -12,6 +12,11 @@ import type {
 const local = new ExtensionLocalStorageAdapter();
 const sync = new LocalhostProductSyncAdapter();
 
+// Credentials and queued products stay in extension-owned contexts, never content scripts.
+void chrome.storage.local.setAccessLevel({ accessLevel: 'TRUSTED_CONTEXTS' }).catch(() => {
+  console.warn('[ProductSpy] Unable to restrict local storage access; please update Chrome.');
+});
+
 async function capture(): Promise<CaptureResult> {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tab?.id || !tab.url || !isAmazonProductUrl(tab.url)) return { status: 'unsupported' };
@@ -64,6 +69,12 @@ export async function handleRequest(request: ExtensionRequest): Promise<Extensio
   switch (request.type) {
     case 'PRODUCTSPY_CAPTURE':
       return capture();
+    case 'PRODUCTSPY_BRIDGE_STATE':
+      return { status: 'bridge-state', paired: await sync.isPaired() };
+    case 'PRODUCTSPY_PAIR':
+      if (typeof request.code !== 'string') return { status: 'error', error: '请输入有效配对码。' };
+      await sync.pair(request.code);
+      return { status: 'paired' };
     case 'PRODUCTSPY_SAVE':
       return save(request);
     case 'PRODUCTSPY_PENDING_COUNT':
@@ -90,8 +101,12 @@ chrome.runtime.onMessage.addListener(
         'PRODUCTSPY_SAVE',
         'PRODUCTSPY_PENDING_COUNT',
         'PRODUCTSPY_SYNC_PENDING',
+        'PRODUCTSPY_BRIDGE_STATE',
+        'PRODUCTSPY_PAIR',
       ].includes(request.type)
     )
+      return;
+    if (request.type === 'PRODUCTSPY_PAIR' && sender.url !== chrome.runtime.getURL('popup.html'))
       return;
     void handleRequest(request)
       .then(respond)

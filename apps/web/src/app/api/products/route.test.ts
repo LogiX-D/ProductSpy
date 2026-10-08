@@ -5,6 +5,7 @@ import type { ApiResult, Product, ProductAnalysis, ProductDraft } from '@product
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { GET, POST } from './route';
 import { DELETE, GET as getProduct, PATCH } from './[id]/route';
+import { webHeaders } from '../../../lib/server/test-auth';
 
 const draft: ProductDraft = {
   source: 'amazon',
@@ -33,11 +34,7 @@ const analysis: ProductAnalysis = {
 function apiRequest(path: string, method = 'GET', body?: unknown): Request {
   return new Request(`http://localhost:3000/api/products${path}`, {
     method,
-    headers: {
-      origin: 'http://localhost:3000',
-      'content-type': 'application/json',
-      'x-productspy-client': 'web',
-    },
+    headers: webHeaders(),
     ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
   });
 }

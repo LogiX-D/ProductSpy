@@ -74,6 +74,21 @@ class LiteralParser {
     this.space();
     const character = this.source[this.position];
     if (character === '"' || character === "'") return this.string();
+    // Amazon serializes its initial gallery with this JSON decoder. Read its
+    // string argument as data; never invoke the page's function or accept code.
+    const jsonDecoder = this.source
+      .slice(this.position)
+      .match(/^(?:A\.\$\.parseJSON|JSON\.parse)\s*\(/)?.[0];
+    if (jsonDecoder) {
+      this.position += jsonDecoder.length;
+      this.space();
+      if (this.source[this.position] !== '"' && this.source[this.position] !== "'")
+        throw new Error('JSON decoder requires a string literal');
+      const json = this.string();
+      this.space();
+      if (this.source[this.position++] !== ')') throw new Error('Invalid JSON decoder argument');
+      return JSON.parse(json) as unknown;
+    }
     if (character === '{' || character === '[') {
       this.position += 1;
       const isArray = character === '[';

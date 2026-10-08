@@ -1,6 +1,10 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 import { GET } from '../../app/api/media/route';
 import { fetchAmazonImage, MAX_IMAGE_BYTES, validateImageUrl } from './media';
+import { webHeaders } from './test-auth';
 
 const imageUrl = 'https://m.media-amazon.com/images/I/product.jpg';
 const jpegBytes = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0, 0]);
@@ -9,7 +13,16 @@ function imageResponse(bytes = jpegBytes, headers: Record<string, string> = {}):
   return new Response(bytes, { headers: { 'Content-Type': 'image/jpeg', ...headers } });
 }
 
-afterEach(() => vi.unstubAllGlobals());
+let directory: string;
+beforeEach(async () => {
+  directory = await mkdtemp(join(tmpdir(), 'productspy-media-'));
+  vi.stubEnv('PRODUCTSPY_DATA_DIR', directory);
+});
+afterEach(async () => {
+  vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
+  await rm(directory, { recursive: true, force: true });
+});
 
 describe('Amazon media download URL boundary', () => {
   it.each([
@@ -149,7 +162,9 @@ describe('media API response', () => {
   it('returns an attachment with no-store and nosniff', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(imageResponse()));
     const response = await GET(
-      new Request(`http://localhost:3000/api/media?url=${encodeURIComponent(imageUrl)}`),
+      new Request(`http://localhost:3000/api/media?url=${encodeURIComponent(imageUrl)}`, {
+        headers: webHeaders(),
+      }),
     );
     expect(response.status).toBe(200);
     expect(response.headers.get('cache-control')).toBe('no-store');
@@ -171,7 +186,9 @@ describe('media API response', () => {
   });
 
   it('returns a JSON error when the image URL is missing', async () => {
-    const response = await GET(new Request('http://localhost:3000/api/media'));
+    const response = await GET(
+      new Request('http://localhost:3000/api/media', { headers: webHeaders() }),
+    );
     expect(response.status).toBe(400);
     expect(await response.json()).toMatchObject({ ok: false });
   });

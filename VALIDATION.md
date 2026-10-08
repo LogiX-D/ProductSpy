@@ -1,4 +1,6 @@
-# ProductSpy 验收记录
+当前验收请见 [Phase 9 真实环境报告](docs/phase9-validation.md)。以下保留 Phase 8 历史记录，测试数量、字段结果及证据路径均为当时状态。
+
+# ProductSpy Phase 8 验收记录
 
 日期：2026-10-08（Asia/Shanghai）。环境：Windows、Node.js 24.14.0、pnpm 10.32.1、TypeScript 5.9.3、Next.js 16.4.0、Vite 7.3.7、Chromium 156 / Playwright 1.64.0。
 
@@ -26,4 +28,4 @@
 - `test-results/live-amazon/report.json`：真实页面字段与主图 HTTP 验证。
 - `playwright-report/index.html`：浏览器测试报告。
 
-这些是当前机器的忽略文件，未提交到 Git。真实页面检查只代表该页面当时的状态，其他国家站、变体和动态媒体仍有覆盖限制。
+这些是当时本机的忽略文件，未提交到 Git；`test-results/` 会被后续 Playwright 运行清理，历史路径不保证继续存在。Phase 9 的真实证据改放在 `.test-data/phase9-evidence/`。真实页面检查只代表该页面当时的状态，其他国家站、变体和动态媒体的后续覆盖见 Phase 9 报告。

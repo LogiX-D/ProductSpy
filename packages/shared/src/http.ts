@@ -1,5 +1,15 @@
 import type { ApiResult } from './types';
 
+export class ApiRequestError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+  ) {
+    super(message);
+    this.name = 'ApiRequestError';
+  }
+}
+
 export async function apiRequest<T>(
   path: string,
   init: RequestInit = {},
@@ -20,8 +30,8 @@ export async function apiRequest<T>(
     if (!body || typeof body !== 'object' || !('ok' in body))
       throw new Error('工作台返回了无法识别的数据');
     const result = body as ApiResult<T>;
-    if (!result.ok) throw new Error(result.error);
-    if (!response.ok) throw new Error(`请求失败 (${response.status})`);
+    if (!result.ok) throw new ApiRequestError(result.error, response.status);
+    if (!response.ok) throw new ApiRequestError(`请求失败 (${response.status})`, response.status);
     return result.data;
   } catch (error) {
     if (

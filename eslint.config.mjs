@@ -9,6 +9,7 @@ export default tseslint.config(
     ignores: [
       '**/node_modules/**',
       '**/.next/**',
+      '**/.test-data/**',
       '**/dist/**',
       '**/next-env.d.ts',
       '**/test-results/**',

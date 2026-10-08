@@ -9,6 +9,7 @@ import {
   type ProductAnalysis,
 } from '@productspy/shared';
 import { productRepository } from '../lib/storage/product-api';
+import { webRequest } from '../lib/session';
 import { Badge, Button, CopyButton, EmptyState, ErrorNotice } from './ui';
 
 function Cards({ title, items }: { title: string; items: string[] }) {
@@ -91,7 +92,7 @@ export function AnalysisPanel({
     setBusy(true);
     setError('');
     try {
-      const data = await apiRequest<unknown>('/api/analyze-product', {
+      const data = await webRequest<unknown>('/api/analyze-product', {
         method: 'POST',
         body: JSON.stringify(product),
         signal: AbortSignal.timeout(90000),
@@ -126,6 +127,7 @@ export function AnalysisPanel({
             )}
           </div>
           <p>从商品资料到营销角度，把素材变成可执行的创作起点。</p>
+          {mode === 'real' && <p>开始分析后，商品文字资料将发送至你配置的 AI 服务。</p>}
         </div>
         <Button onClick={() => void analyze()} disabled={busy}>
           {busy ? <Loader2 size={15} className="spin" /> : <Sparkles size={15} />}

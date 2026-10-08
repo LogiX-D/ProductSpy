@@ -1,5 +1,4 @@
 import {
-  apiRequest,
   errorMessage,
   productSchema,
   type Product,
@@ -9,6 +8,7 @@ import {
   type ProductSyncAdapter,
 } from '@productspy/shared';
 import { webCache } from './web-storage';
+import { webRequest } from '../session';
 
 async function cacheSafely(operation: () => Promise<void>): Promise<void> {
   try {
@@ -20,19 +20,19 @@ async function cacheSafely(operation: () => Promise<void>): Promise<void> {
 
 export class ProductApiRepository implements ProductRepository, ProductSyncAdapter {
   async list(): Promise<Product[]> {
-    const data = await apiRequest<unknown>('/api/products');
+    const data = await webRequest<unknown>('/api/products');
     const products = productSchema.array().parse(data);
     await cacheSafely(() => webCache.replace(products));
     return products;
   }
   async get(id: string): Promise<Product | undefined> {
-    const data = await apiRequest<unknown>(`/api/products/${encodeURIComponent(id)}`);
+    const data = await webRequest<unknown>(`/api/products/${encodeURIComponent(id)}`);
     const product = productSchema.parse(data);
     await cacheSafely(() => webCache.put(product));
     return product;
   }
   async upsert(draft: ProductDraft): Promise<Product> {
-    const data = await apiRequest<unknown>('/api/products', {
+    const data = await webRequest<unknown>('/api/products', {
       method: 'POST',
       body: JSON.stringify(draft),
     });
@@ -44,7 +44,7 @@ export class ProductApiRepository implements ProductRepository, ProductSyncAdapt
     return this.upsert(draft);
   }
   async delete(id: string): Promise<void> {
-    await apiRequest<null>(`/api/products/${encodeURIComponent(id)}`, { method: 'DELETE' });
+    await webRequest<null>(`/api/products/${encodeURIComponent(id)}`, { method: 'DELETE' });
     await cacheSafely(() => webCache.delete(id));
   }
   async saveAnalysis(
@@ -52,7 +52,7 @@ export class ProductApiRepository implements ProductRepository, ProductSyncAdapt
     analysis: ProductAnalysis,
     expectedUpdatedAt?: string,
   ): Promise<Product> {
-    const data = await apiRequest<unknown>(`/api/products/${encodeURIComponent(id)}`, {
+    const data = await webRequest<unknown>(`/api/products/${encodeURIComponent(id)}`, {
       method: 'PATCH',
       body: JSON.stringify({ analysis, expectedUpdatedAt }),
     });

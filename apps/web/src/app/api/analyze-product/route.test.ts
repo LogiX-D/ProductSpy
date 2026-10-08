@@ -6,15 +6,12 @@ import { analysisSchema, type Product } from '@productspy/shared';
 import { getProductRepository } from '../../../lib/server/product-repository';
 import { MockAIProvider } from '../../../lib/ai/mock-provider';
 import { POST } from './route';
+import { webHeaders } from '../../../lib/server/test-auth';
 
 function request(product: unknown): Request {
   return new Request('http://127.0.0.1:3000/api/analyze-product', {
     method: 'POST',
-    headers: {
-      origin: 'http://127.0.0.1:3000',
-      'content-type': 'application/json',
-      'x-productspy-client': 'web',
-    },
+    headers: webHeaders('http://127.0.0.1:3000'),
     body: JSON.stringify(product),
   });
 }

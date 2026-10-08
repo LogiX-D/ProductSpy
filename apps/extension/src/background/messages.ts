@@ -6,7 +6,9 @@ export type ExtensionRequest =
   | { type: 'PRODUCTSPY_CAPTURE' }
   | { type: 'PRODUCTSPY_SAVE'; draft: ProductDraft }
   | { type: 'PRODUCTSPY_PENDING_COUNT' }
-  | { type: 'PRODUCTSPY_SYNC_PENDING' };
+  | { type: 'PRODUCTSPY_SYNC_PENDING' }
+  | { type: 'PRODUCTSPY_BRIDGE_STATE' }
+  | { type: 'PRODUCTSPY_PAIR'; code: string };
 
 export type CaptureResult =
   | { status: 'captured'; draft: ProductDraft }
@@ -22,7 +24,9 @@ export type ExtensionResponse =
   | CaptureResult
   | SaveResult
   | { status: 'pending-count'; count: number }
-  | { status: 'synced'; count: number };
+  | { status: 'synced'; count: number }
+  | { status: 'bridge-state'; paired: boolean }
+  | { status: 'paired' };
 
 export interface ContentRequest {
   type: 'PRODUCTSPY_EXTRACT';

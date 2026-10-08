@@ -48,6 +48,6 @@ export function PATCH(request: Request, context: Context): Promise<Response> {
   );
 }
 
-export function OPTIONS(request: Request): Response {
+export function OPTIONS(request: Request): Promise<Response> {
   return preflight(request, ['GET', 'DELETE', 'PATCH']);
 }

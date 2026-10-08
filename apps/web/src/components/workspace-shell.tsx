@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { BridgePairing } from './bridge-pairing';
 import {
   ArrowUpRight,
   ChevronRight,
@@ -155,11 +156,12 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
                 </code>
                 。
               </li>
-              <li>打开 Amazon 商品详情页，点击扩展，再点击「保存到素材库」。</li>
+              <li>先在下方生成配对码并连接插件，再打开 Amazon 商品页，点击「保存到素材库」。</li>
             </ol>
             <p className="rounded-lg bg-slate-50 p-3 text-xs leading-5 text-slate-500">
               保持本地工作台运行。扩展保存成功后，商品库会自动刷新。
             </p>
+            <BridgePairing />
             <button
               type="button"
               autoFocus

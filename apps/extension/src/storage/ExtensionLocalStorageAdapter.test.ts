@@ -167,4 +167,65 @@ describe('ExtensionLocalStorageAdapter', () => {
     expect(await repository.list()).toEqual([]);
     expect(await repository.pendingDrafts()).toEqual([]);
   });
+
+  it('retains pending updates after a failed synchronization cache write', async () => {
+    const repository = new ExtensionLocalStorageAdapter();
+    const saved = await repository.upsert(draft);
+    const pending = { ...draft, price: '$35' };
+    await repository.enqueue(pending);
+    const synchronized = mergeProduct(pending, saved);
+    set.mockRejectedValueOnce(new Error('Storage quota exceeded'));
+    await expect(repository.remember(synchronized)).rejects.toThrow('Storage quota exceeded');
+    const restarted = new ExtensionLocalStorageAdapter();
+    expect(await restarted.pendingDrafts()).toEqual([pending]);
+    expect((await restarted.list())[0]?.createdAt).toBe(saved.createdAt);
+    await restarted.remember(synchronized);
+    expect(await restarted.pendingDrafts()).toEqual([]);
+    expect(await restarted.get(saved.id)).toEqual(synchronized);
+  });
+
+  it('keeps other pending products after partially successful synchronization', async () => {
+    const repository = new ExtensionLocalStorageAdapter();
+    const second: ProductDraft = {
+      ...draft,
+      sourceId: 'B098765432',
+      url: 'https://www.amazon.com/dp/B098765432',
+      title: 'Kitchen bottle',
+    };
+    await repository.enqueue(draft);
+    await repository.enqueue(second);
+    await repository.remember(mergeProduct(draft));
+    expect(await repository.list()).toHaveLength(2);
+    expect(await repository.pendingDrafts()).toEqual([second]);
+    expect(await new ExtensionLocalStorageAdapter().pendingDrafts()).toEqual([second]);
+  });
+
+  it('does not discard saved analysis or queued captures when validation fails', async () => {
+    const repository = new ExtensionLocalStorageAdapter();
+    const saved = await repository.upsert(draft);
+    const analyzed = await repository.saveAnalysis(saved.id, analysis);
+    await repository.enqueue(draft);
+    await expect(repository.enqueue({ ...draft, sourceId: 'invalid' })).rejects.toThrow();
+    await expect(
+      repository.remember({ ...analyzed, images: ['javascript:alert(1)'] }),
+    ).rejects.toThrow();
+    const restarted = new ExtensionLocalStorageAdapter();
+    expect((await restarted.get(saved.id))?.aiAnalysis).toEqual(analysis);
+    expect(await restarted.pendingDrafts()).toEqual([draft]);
+    expect(await restarted.list()).toHaveLength(1);
+  });
+
+  it('allows recovery from a transient read failure without replacing saved state', async () => {
+    const repository = new ExtensionLocalStorageAdapter();
+    const saved = await repository.upsert(draft);
+    get.mockRejectedValueOnce(new Error('Storage temporarily unavailable'));
+    await expect(repository.enqueue({ ...draft, price: '$99' })).rejects.toThrow(
+      'Storage temporarily unavailable',
+    );
+    expect(await repository.get(saved.id)).toEqual(saved);
+    expect(await repository.pendingDrafts()).toEqual([]);
+    await repository.enqueue({ ...draft, price: '$36' });
+    expect((await repository.pendingDrafts())[0]?.price).toBe('$36');
+    expect((await repository.list())[0]?.createdAt).toBe(saved.createdAt);
+  });
 });

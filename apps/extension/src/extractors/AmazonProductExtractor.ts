@@ -52,9 +52,9 @@ export class AmazonProductExtractor {
 
   extractTitle(): string | undefined {
     return (
+      this.text('#productTitle', '#title_feature_div h1', 'h1.a-size-large') ??
       this.productText('name') ??
-      this.meta('og:title', 'twitter:title', 'title') ??
-      this.text('#productTitle', '#title_feature_div h1', 'h1.a-size-large')
+      this.meta('og:title', 'twitter:title', 'title')
     );
   }
 
@@ -69,7 +69,9 @@ export class AmazonProductExtractor {
         if (price)
           return {
             price,
-            currency: cleanText(record.priceCurrency ?? specification?.priceCurrency),
+            currency:
+              this.inferCurrency(price) ??
+              cleanText(record.priceCurrency ?? specification?.priceCurrency),
           };
       }
     }
@@ -79,7 +81,11 @@ export class AmazonProductExtractor {
       'og:price:currency',
       'priceCurrency',
     );
-    if (metadataPrice) return { price: metadataPrice, currency: metadataCurrency };
+    if (metadataPrice)
+      return {
+        price: metadataPrice,
+        currency: this.inferCurrency(metadataPrice) ?? metadataCurrency,
+      };
     for (const value of scriptValues(this.document, [
       'productData',
       'productDetail',
@@ -91,7 +97,10 @@ export class AmazonProductExtractor {
       if (price)
         return {
           price,
-          currency: cleanText(record.currency ?? record.priceCurrency) ?? metadataCurrency,
+          currency:
+            this.inferCurrency(price) ??
+            cleanText(record.currency ?? record.priceCurrency) ??
+            metadataCurrency,
         };
     }
     const price = this.text(
@@ -106,19 +115,12 @@ export class AmazonProductExtractor {
       '[itemprop="price"]',
     );
     if (!price) return {};
-    return { price, currency: metadataCurrency ?? this.inferCurrency(price) };
+    return { price, currency: this.inferCurrency(price) ?? metadataCurrency };
   }
 
   extractAsin(): string | undefined {
-    const urlAsin = new URL(this.url).pathname.match(
-      /\/(?:dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})(?:[/?]|$)/i,
-    )?.[1];
-    if (urlAsin) return urlAsin.toUpperCase();
-    for (const selector of ['input#ASIN', 'input[name="ASIN"]', '[data-asin]']) {
-      const element = this.document.querySelector(selector);
-      const value = element?.getAttribute('value') ?? element?.getAttribute('data-asin');
-      if (value && ASIN_PATTERN.test(value)) return value.toUpperCase();
-    }
+    const activeAsin = this.activePageAsin();
+    if (activeAsin) return activeAsin;
     for (const product of this.products) {
       for (const value of [product.sku, product.productID, product.asin]) {
         const asin = cleanText(value)?.replace(/^ASIN:\s*/i, '');
@@ -130,6 +132,20 @@ export class AmazonProductExtractor {
 
   extractImages(): string[] {
     const candidates: { url: string; score: number }[] = [];
+    const aliases = new Map<string, string>();
+    const identity = (value: string): string => {
+      const key = this.imageIdentity(value);
+      const parent = aliases.get(key);
+      return parent && parent !== key ? identity(parent) : key;
+    };
+    const associate = (values: unknown[]): void => {
+      const keys = values.flatMap((value) => {
+        const url = httpUrl(value, this.url);
+        return url ? [identity(url)] : [];
+      });
+      const first = keys[0];
+      if (first) keys.slice(1).forEach((key) => aliases.set(key, first));
+    };
     const add = (value: unknown, score = 100): void => {
       if (Array.isArray(value)) {
         value.forEach((item) => add(item, score));
@@ -141,28 +157,96 @@ export class AmazonProductExtractor {
         return;
       }
       const url = httpUrl(value, this.url);
-      if (!url || /(?:sprite|logo|play[-_]?icon|video[-_]?thumb|\.gif(?:\?|$))/i.test(url)) return;
+      if (
+        !url ||
+        /(?:sprite|logo|play[-_]?icon|360[-_]icon|video[-_]?thumb|\.gif(?:\?|$))/i.test(url)
+      )
+        return;
       candidates.push({ url, score });
     };
+    const addElement = (element: Element, isMain = false): void => {
+      if (element.closest('[data-video-url], .videoThumbnail, .video-thumb')) return;
+      const urls: { url: unknown; score: number }[] = [
+        { url: element.getAttribute('data-old-hires'), score: 300 },
+        { url: element.getAttribute('src'), score: 80 },
+      ];
+      const dynamic = element.getAttribute('data-a-dynamic-image');
+      if (dynamic) {
+        try {
+          const parsed = asRecord(JSON.parse(dynamic) as unknown);
+          if (parsed)
+            Object.entries(parsed)
+              .sort((a, b) => this.imageSize(b[1]) - this.imageSize(a[1]))
+              .forEach(([url], index) => urls.push({ url, score: 250 - index }));
+        } catch {
+          /* A corrupt image attribute does not discard other images. */
+        }
+      }
+      associate(urls.map((item) => item.url));
+      urls
+        .sort((a, b) => b.score - a.score)
+        .some((item) => {
+          if (!httpUrl(item.url, this.url)) return false;
+          add(item.url, item.score + (isMain ? 100 : 0));
+          return true;
+        });
+    };
+    const mainElement = this.document.querySelector(
+      '#landingImage, #imgBlkFront, #main-image, #ebooksImgBlkFront',
+    );
+    if (mainElement) addElement(mainElement, true);
+    const mainKeys = new Set(candidates.map((candidate) => this.imageIdentity(candidate.url)));
     this.products.forEach((product) => add(product.image, 150));
-    add(this.meta('og:image', 'twitter:image'), 140);
+    if (!mainKeys.size) add(this.meta('og:image', 'twitter:image'), 140);
+    const variationLabels = scriptValues(this.document, ['asinVariationValues']).flatMap(
+      (value) => {
+        const labels = asRecord(value)?.[this.extractAsin() ?? ''];
+        return Array.isArray(labels)
+          ? labels.filter((label): label is string => typeof label === 'string')
+          : [];
+      },
+    );
     for (const value of scriptValues(this.document, [
       'colorImages',
       'imageGalleryData',
       'imageData',
     ])) {
       const record = asRecord(value);
-      const current = record?.initial ?? value;
-      for (const image of flattenRecords(current)) {
-        add(image.hiRes, 300);
-        add(image.large, 200);
-        if (!image.hiRes && !image.large) {
-          const main = asRecord(image.main);
-          if (main)
-            Object.entries(main)
-              .sort((a, b) => this.imageSize(b[1]) - this.imageSize(a[1]))
-              .forEach(([url]) => add(url, 200));
+      const groups: unknown[] = [];
+      const hasCurrentMain = (group: unknown): boolean =>
+        flattenRecords(group).some((image) =>
+          [image.hiRes, image.large, image.thumb, ...Object.keys(asRecord(image.main) ?? {})].some(
+            (url) => typeof url === 'string' && mainKeys.has(identity(url)),
+          ),
+        );
+      if (Array.isArray(value)) groups.push(value);
+      else if (record) {
+        const initial = record.initial;
+        if (initial && (!mainKeys.size || hasCurrentMain(initial))) groups.push(initial);
+        const labeled = variationLabels.flatMap((label) =>
+          Array.isArray(record[label]) ? [record[label]] : [],
+        );
+        if (labeled.length) groups.push(...labeled);
+        else {
+          const matching = Object.values(record).filter(
+            (group) => Array.isArray(group) && hasCurrentMain(group),
+          );
+          if (matching.length) groups.push(...matching);
+          else if (!initial && Object.values(record).length === 1)
+            groups.push(...Object.values(record));
+          else if ('hiRes' in record || 'large' in record || 'main' in record) groups.push(record);
         }
+      }
+      for (const image of groups.flatMap((group) => flattenRecords(group))) {
+        const main = asRecord(image.main);
+        const dynamic = Object.entries(main ?? {}).sort(
+          (a, b) => this.imageSize(b[1]) - this.imageSize(a[1]),
+        );
+        associate([image.hiRes, image.large, image.thumb, ...dynamic.map(([url]) => url)]);
+        const best = [image.hiRes, dynamic[0]?.[0], image.large].find(
+          (url) => httpUrl(url, this.url) !== undefined,
+        );
+        if (best) add(best, image.hiRes === best ? 300 : 200);
       }
     }
     for (const selector of [
@@ -174,26 +258,12 @@ export class AmazonProductExtractor {
       '#imageBlock img.a-dynamic-image',
     ]) {
       for (const element of this.document.querySelectorAll(selector)) {
-        if (element.closest('[data-video-url], .videoThumbnail, .video-thumb')) continue;
-        add(element.getAttribute('data-old-hires'), 300);
-        const dynamic = element.getAttribute('data-a-dynamic-image');
-        if (dynamic) {
-          try {
-            const parsed = asRecord(JSON.parse(dynamic) as unknown);
-            if (parsed)
-              Object.entries(parsed)
-                .sort((a, b) => this.imageSize(b[1]) - this.imageSize(a[1]))
-                .forEach(([url]) => add(url, 250));
-          } catch {
-            /* A corrupt image attribute does not discard other images. */
-          }
-        }
-        add(element.getAttribute('src'), 80);
+        addElement(element, element === mainElement);
       }
     }
     const unique = new Map<string, { url: string; score: number }>();
     for (const candidate of candidates) {
-      const key = candidate.url.replace(/\._[^/]*_\.(?=[a-z]{3,4}(?:[?]|$))/i, '.').split('?')[0];
+      const key = identity(candidate.url);
       const existing = unique.get(key);
       if (!existing || candidate.score > existing.score) unique.set(key, candidate);
     }
@@ -202,6 +272,8 @@ export class AmazonProductExtractor {
 
   extractVideos(): ProductVideo[] {
     const videos = new Map<string, ProductVideo>();
+    const currentAsin = this.extractAsin();
+    const identities = new Map<string, boolean>();
     const add = (value: unknown, thumbnail?: unknown): void => {
       const url = httpUrl(value, this.url);
       // Only direct public media URLs already exposed by the current page are collected.
@@ -213,17 +285,48 @@ export class AmazonProductExtractor {
       for (const record of flattenRecords(product.video))
         add(record.contentUrl ?? record.url, record.thumbnailUrl);
     }
+    // Amazon's a-state JSON binds a rendered player's URL to productAsin/pageAsin.
+    // The general videos array can also contain videos for other products or variants.
+    for (const script of this.document.querySelectorAll('script[type="a-state"]')) {
+      try {
+        const text = script.textContent ?? '';
+        if (text.length > 2_000_000) continue;
+        const data = JSON.parse(text) as unknown;
+        for (const record of flattenRecords(data)) {
+          const url = httpUrl(record.videoUrl ?? record.url, this.url);
+          const asins = this.videoRecordAsins(record);
+          if (!url || !asins.length) continue;
+          const matching = !!currentAsin && asins.includes(currentAsin);
+          identities.set(url, matching || identities.get(url) === true);
+          if (matching) add(record.videoUrl ?? record.url, record.imageUrl ?? record.thumbnailUrl);
+        }
+      } catch {
+        /* A malformed player state cannot discard other verified media. */
+      }
+    }
     for (const value of scriptValues(this.document, ['videos', 'videoData', 'videoGalleryData'])) {
       for (const record of flattenRecords(value)) {
-        add(
-          record.url ?? record.videoUrl ?? record.contentUrl ?? record.mediaUrl,
-          record.thumbnail ?? record.thumbnailUrl ?? record.poster,
-        );
+        const value = record.url ?? record.videoUrl ?? record.contentUrl ?? record.mediaUrl;
+        const url = httpUrl(value, this.url);
+        const asins = this.videoRecordAsins(record);
+        if (
+          !url ||
+          (asins.length
+            ? !currentAsin || !asins.includes(currentAsin)
+            : identities.get(url) !== true)
+        )
+          continue;
+        add(value, record.thumbnail ?? record.thumbnailUrl ?? record.poster);
       }
     }
     for (const element of this.document.querySelectorAll(
-      '#imageBlock video, #imageBlock source, #video-player video, #video-player source, [data-video-url]',
+      '#imageBlock video, #imageBlock source, #video-player video, #video-player source, #imageBlock [data-video-url], #video-player [data-video-url]',
     )) {
+      const url = httpUrl(
+        element.getAttribute('src') ?? element.getAttribute('data-video-url'),
+        this.url,
+      );
+      if (url && identities.get(url) === false) continue;
       add(
         element.getAttribute('src') ?? element.getAttribute('data-video-url'),
         element.getAttribute('poster'),
@@ -235,18 +338,34 @@ export class AmazonProductExtractor {
   extractDescription(): string | undefined {
     const description =
       this.productText('description') ??
-      this.meta('description', 'og:description') ??
-      this.text(
-        '#productDescription',
-        '#bookDescription_feature_div',
-        '#aplus .aplus-v2',
-        '#aplus',
-      );
+      this.text('#productDescription', '#bookDescription_feature_div') ??
+      this.aplusDescription();
     if (!description) return undefined;
     const container = this.document.createElement('div');
     container.innerHTML = description;
     container.querySelectorAll('script,style').forEach((element) => element.remove());
     return cleanText(container.textContent)?.slice(0, 50_000);
+  }
+
+  private aplusDescription(): string | undefined {
+    const paragraphs: string[] = [];
+    // Real pages can contain more than one #aplus: brand navigation comes first.
+    for (const element of this.document.querySelectorAll('#aplus .aplus-v2')) {
+      if (element.querySelector('.apm-brand-story-carousel-container')) continue;
+      const copy = element.cloneNode(true) as Element;
+      copy
+        .querySelectorAll(
+          'script,style,noscript,video,source,button,.video-js,.vjs-control-bar,.vse-player-container,.a-carousel-goto-prevpage,.a-carousel-goto-nextpage,.aplus-carousel-nav,[class*="comparison-table"]',
+        )
+        .forEach((node) => node.remove());
+      const text = cleanText(copy.textContent);
+      if (
+        text &&
+        !/^(?:From the manufacturer|Product Description|来自制造商|商品描述|产品描述)$/i.test(text)
+      )
+        paragraphs.push(text);
+    }
+    return cleanText([...new Set(paragraphs)].join('\n'));
   }
 
   extractBulletPoints(): string[] {
@@ -287,11 +406,16 @@ export class AmazonProductExtractor {
     }
     const brand =
       this.meta('brand', 'product:brand') ??
-      this.text('#bylineInfo', '#brand', '[itemprop="brand"]');
+      this.text('.po-brand .po-break-word', '#bylineInfo', '#brand', '[itemprop="brand"]');
     return brand
       ?.replace(/^Visit the\s+/i, '')
       .replace(/\s+Store$/i, '')
+      .replace(/^Besuche den\s+/i, '')
+      .replace(/-Store$/i, '')
       .replace(/^Brand:\s*/i, '')
+      .replace(/^访问\s*/, '')
+      .replace(/\s*(?:品牌旗舰店|商店)$/, '')
+      .replace(/^品牌\s*[:：]\s*/, '')
       .trim();
   }
 
@@ -347,12 +471,26 @@ export class AmazonProductExtractor {
         /* Malformed JSON-LD falls back to metadata and DOM. */
       }
     }
-    const asin = this.url.match(/\/(?:dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})/i)?.[1];
+    const asin = this.activePageAsin();
     const matching = records.filter((record) => this.matchesAsin(record, asin));
     // Product recommendation JSON-LD must not contaminate the active product's media.
     return matching.length
       ? matching
       : records.filter((record) => this.recordAsins(record).length === 0);
+  }
+
+  private activePageAsin(): string | undefined {
+    // Amazon's purchase form follows the selected child variant, even while the URL
+    // still names its parent. A recommendation's arbitrary data-asin is not authoritative.
+    for (const element of this.document.querySelectorAll(
+      'input#ASIN, #buybox input[name="ASIN"], #desktop_buybox input[name="ASIN"]',
+    )) {
+      const value = element.getAttribute('value');
+      if (value && ASIN_PATTERN.test(value)) return value.toUpperCase();
+    }
+    return new URL(this.url).pathname
+      .match(/\/(?:dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})(?:[/?]|$)/i)?.[1]
+      ?.toUpperCase();
   }
 
   private matchesAsin(record: PageRecord, asin?: string): boolean {
@@ -371,6 +509,19 @@ export class AmazonProductExtractor {
       if (id) ids.push(id.toUpperCase());
     }
     return ids;
+  }
+
+  private videoRecordAsins(record: PageRecord): string[] {
+    const direct = [record.productAsin, record.asin, record.videoAsin].filter(
+      (value): value is string => typeof value === 'string' && ASIN_PATTERN.test(value),
+    );
+    const values = direct.length
+      ? direct
+      : flattenRecords(record).flatMap((child) => {
+          const asin = child.pageAsin;
+          return typeof asin === 'string' && ASIN_PATTERN.test(asin) ? [asin] : [];
+        });
+    return [...new Set(values.map((asin) => asin.toUpperCase()))];
   }
 
   private field<T>(name: string, extract: () => T): T | undefined {
@@ -428,23 +579,44 @@ export class AmazonProductExtractor {
   }
 
   private imageSize(value: unknown): number {
-    return Array.isArray(value) && typeof value[0] === 'number' && typeof value[1] === 'number'
-      ? value[0] * value[1]
+    if (!Array.isArray(value)) return 0;
+    const width = Number(value[0]);
+    const height = Number(value[1]);
+    return Number.isFinite(width) && Number.isFinite(height) && width > 0 && height > 0
+      ? width * height
       : 0;
   }
 
+  private imageIdentity(url: string): string {
+    return url.replace(/\._[^/]*_\.(?=[a-z]{3,4}(?:[?]|$))/i, '.').split('?')[0];
+  }
+
   private inferCurrency(price: string): string | undefined {
+    const explicit = price.match(
+      /\b(USD|CAD|AUD|SGD|MXN|BRL|TWD|HKD|NZD|EUR|GBP|INR|JPY|AED|SAR|SEK|PLN|TRY|EGP|ZAR|CNY|CHF)\s*(?=[\d$])/i,
+    )?.[1];
+    if (explicit) return explicit.toUpperCase();
+    if (/(?:NT|US|CA|AU|SG|HK|NZ)\s*\$/i.test(price)) {
+      const prefix = price.match(/(NT|US|CA|AU|SG|HK|NZ)\s*\$/i)?.[1]?.toUpperCase();
+      const currencies: Record<string, string> = {
+        NT: 'TWD',
+        US: 'USD',
+        CA: 'CAD',
+        AU: 'AUD',
+        SG: 'SGD',
+        HK: 'HKD',
+        NZ: 'NZD',
+      };
+      if (prefix) return currencies[prefix];
+    }
+    if (/R\s*\$/.test(price)) return 'BRL';
     if (/€/.test(price)) return 'EUR';
     if (/£/.test(price)) return 'GBP';
     if (/₹/.test(price)) return 'INR';
     if (/¥|￥/.test(price))
       return new URL(this.url).hostname.endsWith('amazon.co.jp') ? 'JPY' : undefined;
-    if (!/\$/.test(price)) return undefined;
-    const hostname = new URL(this.url).hostname;
-    if (hostname.endsWith('amazon.ca')) return 'CAD';
-    if (hostname.endsWith('amazon.com.au')) return 'AUD';
-    if (hostname.endsWith('amazon.sg')) return 'SGD';
-    if (hostname.endsWith('amazon.com.mx')) return 'MXN';
-    return hostname.endsWith('amazon.com') ? 'USD' : undefined;
+    // A bare dollar symbol is ambiguous: the same storefront can display several
+    // buyer-selected currencies. Leave it unknown unless page metadata identifies it.
+    return undefined;
   }
 }

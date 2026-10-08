@@ -1,5 +1,10 @@
-import { describe, expect, it, vi } from 'vitest';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppError } from './errors';
+import { generatePairCode, pairExtension } from './auth';
+import { webHeaders } from './test-auth';
 import {
   assertLocalRequest,
   isAllowedOrigin,
@@ -16,69 +21,92 @@ function request(
 ): Request {
   return new Request('http://localhost:3000/api/products', {
     method,
-    headers: {
-      origin: 'http://localhost:3000',
-      'content-type': 'application/json',
-      'x-productspy-client': 'web',
-      ...overrides,
-    },
+    headers: { ...webHeaders(), ...overrides },
     ...(method === 'GET' || method === 'OPTIONS' ? {} : { body }),
   });
 }
 
 describe('local API request protection', () => {
-  it('accepts only exact local origins or unpacked Chrome extension origins', () => {
+  let directory: string;
+  beforeEach(async () => {
+    directory = await mkdtemp(join(tmpdir(), 'productspy-http-'));
+    vi.stubEnv('PRODUCTSPY_DATA_DIR', directory);
+  });
+  afterEach(async () => {
+    vi.unstubAllEnvs();
+    await rm(directory, { recursive: true, force: true });
+  });
+
+  it('allows exact local origins and only the paired Chrome extension origin', async () => {
     expect(isAllowedOrigin('http://localhost:3000')).toBe(true);
     expect(isAllowedOrigin('http://127.0.0.1:3000')).toBe(true);
+    expect(isAllowedOrigin(extensionOrigin)).toBe(false);
+    await pairExtension(extensionOrigin, generatePairCode().code);
     expect(isAllowedOrigin(extensionOrigin)).toBe(true);
     for (const origin of [
       'https://evil.example',
       'http://localhost:3000.evil.example',
       'http://localhost:4000',
       'chrome-extension://bad',
+      `chrome-extension://${'b'.repeat(32)}`,
       'null',
-    ]) {
+    ])
       expect(isAllowedOrigin(origin)).toBe(false);
-    }
   });
 
-  it('permits local reads without Origin but denies external Host or Origin', () => {
-    expect(() =>
-      assertLocalRequest(new Request('http://127.0.0.1:3000/api/products')),
-    ).not.toThrow();
-    expect(() => assertLocalRequest(request('GET', { host: 'evil.example' }))).toThrow(AppError);
-    expect(() => assertLocalRequest(request('GET', { origin: 'https://evil.example' }))).toThrow(
-      AppError,
-    );
-  });
-
-  it('rejects writes without Origin, client header, or application/json', () => {
-    const noOrigin = new Request('http://localhost:3000/api/products', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-productspy-client': 'web' },
-      body: '{}',
+  it('requires an authenticated session for reads and denies external Host or Origin', async () => {
+    await expect(assertLocalRequest(request('GET'))).resolves.toBeUndefined();
+    await expect(assertLocalRequest(request('GET', { cookie: '' }))).rejects.toMatchObject({
+      status: 401,
     });
-    expect(() => assertLocalRequest(noOrigin, true)).toThrow('来源');
-    expect(() => assertLocalRequest(request('POST', { 'x-productspy-client': '' }), true)).toThrow(
-      'ProductSpy',
-    );
-    expect(() =>
+    await expect(
+      assertLocalRequest(request('GET', { host: 'evil.example' })),
+    ).rejects.toBeInstanceOf(AppError);
+    await expect(
+      assertLocalRequest(request('GET', { origin: 'https://evil.example' })),
+    ).rejects.toMatchObject({ status: 403 });
+    await expect(
+      assertLocalRequest(request('GET', { origin: 'http://127.0.0.1:3000' })),
+    ).rejects.toMatchObject({ status: 403 });
+    await expect(
+      assertLocalRequest(request('GET', { 'sec-fetch-site': 'cross-site' })),
+    ).rejects.toMatchObject({ status: 403 });
+  });
+
+  it('rejects writes without Origin, client header, or application/json', async () => {
+    await expect(assertLocalRequest(request('POST', { origin: '' }), true)).rejects.toThrow('来源');
+    await expect(
+      assertLocalRequest(request('POST', { 'x-productspy-client': '' }), true),
+    ).rejects.toThrow('ProductSpy');
+    await expect(
       assertLocalRequest(request('POST', { 'content-type': 'text/plain' }), true),
-    ).toThrow('JSON');
-    expect(() =>
+    ).rejects.toThrow('JSON');
+    const { token } = await pairExtension(extensionOrigin, generatePairCode().code);
+    await expect(
+      assertLocalRequest(
+        request('POST', {
+          origin: extensionOrigin,
+          'x-productspy-client': 'extension',
+          authorization: `Bearer ${token}`,
+        }),
+        true,
+      ),
+    ).resolves.toBeUndefined();
+    await expect(
       assertLocalRequest(
         request('POST', { origin: extensionOrigin, 'x-productspy-client': 'extension' }),
         true,
       ),
-    ).not.toThrow();
+    ).rejects.toMatchObject({ status: 401 });
   });
 
-  it('returns reflected CORS and supports private-network preflight', () => {
-    const response = preflight(
+  it('supports Authorization and private-network preflight only for paired extensions', async () => {
+    await pairExtension(extensionOrigin, generatePairCode().code);
+    const response = await preflight(
       request('OPTIONS', {
         origin: extensionOrigin,
         'access-control-request-method': 'POST',
-        'access-control-request-headers': 'Content-Type, X-ProductSpy-Client',
+        'access-control-request-headers': 'Content-Type, X-ProductSpy-Client, Authorization',
         'access-control-request-private-network': 'true',
       }),
       ['GET', 'POST'],
@@ -88,24 +116,39 @@ describe('local API request protection', () => {
     expect(response.headers.get('vary')).toBe('Origin');
     expect(response.headers.get('access-control-allow-private-network')).toBe('true');
     expect(response.headers.get('access-control-allow-credentials')).toBeNull();
-    expect(response.headers.get('access-control-allow-methods')).toContain('POST');
+    expect(response.headers.get('access-control-allow-headers')).toContain('Authorization');
+    const denied = await preflight(
+      request('OPTIONS', {
+        origin: `chrome-extension://${'b'.repeat(32)}`,
+        'access-control-request-method': 'POST',
+      }),
+      ['GET', 'POST'],
+    );
+    expect(denied.status).toBe(403);
+    expect(denied.headers.get('access-control-allow-origin')).toBeNull();
   });
 
-  it('rejects unsupported preflight methods and headers', () => {
+  it('rejects unsupported preflight methods and headers', async () => {
     expect(
-      preflight(request('OPTIONS', { 'access-control-request-method': 'PUT' }), ['GET', 'POST'])
-        .status,
+      (
+        await preflight(request('OPTIONS', { 'access-control-request-method': 'PUT' }), [
+          'GET',
+          'POST',
+        ])
+      ).status,
     ).toBe(405);
     expect(
-      preflight(
-        request('OPTIONS', {
-          'access-control-request-method': 'POST',
-          'access-control-request-headers': 'Authorization',
-        }),
-        ['GET', 'POST'],
+      (
+        await preflight(
+          request('OPTIONS', {
+            'access-control-request-method': 'POST',
+            'access-control-request-headers': 'X-Unknown',
+          }),
+          ['GET', 'POST'],
+        )
       ).status,
     ).toBe(403);
-    const denied = preflight(
+    const denied = await preflight(
       request('OPTIONS', {
         origin: 'https://evil.example',
         'access-control-request-method': 'POST',
@@ -129,9 +172,15 @@ describe('local API request protection', () => {
     ).rejects.toMatchObject({ status: 413 });
   });
 
-  it('returns consistent success/errors without revealing internal exceptions', async () => {
+  it('returns consistent success/errors without revealing internal exceptions or executing unauthorized operations', async () => {
     const success = await withApiRequest(request(), () => ({ id: 'product' }), { write: true });
     expect(await success.json()).toEqual({ ok: true, data: { id: 'product' } });
+    const operation = vi.fn();
+    const denied = await withApiRequest(request('POST', { cookie: '' }), operation, {
+      write: true,
+    });
+    expect(denied.status).toBe(401);
+    expect(operation).not.toHaveBeenCalled();
     const knownError = await withApiRequest(
       request(),
       () => {
