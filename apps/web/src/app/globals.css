@@ -4,10 +4,12 @@
 
 :root {
   --ink: #17252b;
-  --muted: #73818b;
+  --muted: #62727c;
   --accent: #157a72;
   --line: #e5e9ed;
   --canvas: #f6f8fa;
+  --surface: #ffffff;
+  --bg: var(--canvas);
   --nav: #152b32;
 }
 * {
@@ -33,20 +35,22 @@ a {
 }
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 button,
 a,
 input,
-select {
+select,
+textarea {
   -webkit-tap-highlight-color: transparent;
 }
 button {
   cursor: pointer;
 }
 button:disabled {
-  cursor: wait;
+  cursor: not-allowed;
   opacity: 0.55;
 }
 button:focus-visible,
@@ -80,12 +84,12 @@ h3 {
   color: var(--muted);
 }
 .small {
-  font-size: 12px;
+  font-size: 13px;
 }
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 1.4px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 650;
   color: var(--accent);
   margin-bottom: 9px;
@@ -127,13 +131,13 @@ h3 {
 }
 .sidebar-caption {
   margin: 9px 0 35px 45px;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 1.3px;
   color: #8fa9af;
   text-transform: uppercase;
 }
 .nav-label {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 1.8px;
   color: #7e999f;
   padding: 0 13px;
@@ -150,7 +154,7 @@ h3 {
   padding: 12px 14px;
   border-radius: 7px;
   color: #a6bec2;
-  font-size: 13px;
+  font-size: 14px;
 }
 .nav-link.active {
   background: #24434a;
@@ -163,7 +167,7 @@ h3 {
   margin-top: auto;
   padding: 18px 12px 0;
   border-top: 1px solid #30464c;
-  font-size: 12px;
+  font-size: 13px;
   color: #8ea9af;
 }
 .sidebar-footer p + p {
@@ -188,7 +192,7 @@ h3 {
   border-bottom: 1px solid var(--line);
   background: white;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
 }
 .topbar-title {
   color: #42535e;
@@ -218,7 +222,7 @@ h3 {
 }
 .page-heading .muted {
   margin-top: 8px;
-  font-size: 13px;
+  font-size: 14px;
 }
 .button {
   display: inline-flex;
@@ -228,7 +232,7 @@ h3 {
   border: 1px solid transparent;
   border-radius: 7px;
   padding: 9px 15px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 550;
   white-space: nowrap;
   transition: background 0.12s;
@@ -267,7 +271,7 @@ h3 {
   gap: 5px;
   padding: 3px 9px;
   border-radius: 5px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 550;
   background: #f0f3f5;
   color: #6a7d86;
@@ -304,7 +308,7 @@ h3 {
   position: relative;
 }
 .stat-label {
-  font-size: 12px;
+  font-size: 13px;
   color: #7d8b94;
 }
 .stat-value {
@@ -354,7 +358,7 @@ h3 {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 13px;
+  font-size: 14px;
   margin-bottom: 6px;
 }
 .capture-guide {
@@ -375,14 +379,14 @@ h3 {
   border-radius: 50%;
   background: #edf5f4;
   color: var(--accent);
-  font-size: 11px;
+  font-size: 12px;
 }
 .guide-step h3 {
-  font-size: 12px;
+  font-size: 13px;
   margin-bottom: 4px;
 }
 .guide-step p {
-  font-size: 11px;
+  font-size: 12px;
   color: #87959d;
 }
 .toolbar {
@@ -409,7 +413,7 @@ h3 {
   border: 1px solid #dfe6e9;
   border-radius: 7px;
   background: white;
-  font-size: 12px;
+  font-size: 13px;
 }
 .toolbar select {
   height: 40px;
@@ -418,7 +422,7 @@ h3 {
   padding: 0 12px;
   background: white;
   color: #5e707b;
-  font-size: 12px;
+  font-size: 13px;
 }
 .view-toggle {
   display: flex;
@@ -474,7 +478,7 @@ h3 {
   flex-direction: column;
   align-items: center;
   gap: 9px;
-  font-size: 11px;
+  font-size: 12px;
   color: #afbac0;
 }
 .card-content {
@@ -487,7 +491,7 @@ h3 {
   margin-bottom: 13px;
 }
 .card-title {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
   font-weight: 550;
   min-height: 42px;
@@ -502,7 +506,7 @@ h3 {
   font-weight: 600;
 }
 .card-asin {
-  font-size: 10px;
+  font-size: 12px;
   color: #93a0a7;
   margin-top: 4px;
   letter-spacing: 0.2px;
@@ -514,7 +518,7 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 10px;
+  font-size: 12px;
   color: #93a0a7;
 }
 .products-list {
@@ -568,7 +572,7 @@ h3 {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: 12px;
   color: #aa4a41;
 }
 .empty-state {
@@ -590,7 +594,7 @@ h3 {
 }
 .empty-state p {
   color: #8a979f;
-  font-size: 12px;
+  font-size: 13px;
   margin: 9px auto 20px;
   max-width: 470px;
 }
@@ -603,7 +607,7 @@ h3 {
   color: #ad6944;
   border: 1px solid #f2dfcf;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 13px;
   margin-bottom: 20px;
 }
 .error-notice span {
@@ -630,7 +634,7 @@ h3 {
   align-items: center;
   gap: 8px;
   color: #83949d;
-  font-size: 11px;
+  font-size: 12px;
   margin-bottom: 24px;
 }
 .breadcrumb a:hover {
@@ -695,13 +699,13 @@ h3 {
   border-top: 1px solid var(--line);
 }
 .detail-meta dt {
-  font-size: 10px;
+  font-size: 12px;
   color: #8a9ba3;
   margin-bottom: 4px;
 }
 .detail-meta dd {
   margin: 0;
-  font-size: 12px;
+  font-size: 13px;
   color: #526671;
 }
 .detail-actions {
@@ -721,7 +725,7 @@ h3 {
   border-bottom: 2px solid transparent;
   padding: 12px 3px;
   color: #8797a0;
-  font-size: 12px;
+  font-size: 13px;
 }
 .tab[aria-selected='true'] {
   border-bottom-color: var(--accent);
@@ -741,7 +745,7 @@ h3 {
 }
 .content-panel p,
 .content-panel li {
-  font-size: 13px;
+  font-size: 14px;
   color: #657985;
   line-height: 1.9;
 }
@@ -792,7 +796,7 @@ h3 {
   margin-bottom: 23px;
 }
 .analysis-top p {
-  font-size: 12px;
+  font-size: 13px;
   color: #85949d;
   margin-top: 6px;
 }
@@ -809,7 +813,7 @@ h3 {
 }
 .analysis-summary p {
   color: #53746b;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.9;
 }
 .analysis-section {
@@ -825,13 +829,13 @@ h3 {
 }
 .analysis-card {
   padding: 19px 21px;
-  font-size: 12px;
+  font-size: 13px;
   color: #607782;
   line-height: 1.9;
 }
 .analysis-card-number {
   color: #87b8ab;
-  font-size: 11px;
+  font-size: 12px;
   margin-bottom: 8px;
   display: block;
 }
@@ -846,7 +850,7 @@ h3 {
   gap: 9px;
 }
 .tags .badge {
-  font-size: 12px;
+  font-size: 13px;
   padding: 7px 12px;
   background: #edf3f3;
   color: #486d68;
@@ -860,7 +864,7 @@ h3 {
   position: relative;
   padding-left: 18px;
   color: #647b86;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.9;
 }
 .insight-list li::before {
@@ -889,11 +893,11 @@ h3 {
 .hook-row p {
   flex: 1;
   color: #4f6a76;
-  font-size: 13px;
+  font-size: 14px;
 }
 .hook-number {
   color: #9db2b6;
-  font-size: 11px;
+  font-size: 12px;
 }
 .copy-control {
   flex-shrink: 0;
@@ -909,12 +913,12 @@ h3 {
   border-bottom: 0;
 }
 .script-label {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--accent);
   font-weight: 600;
 }
 .script-step p {
-  font-size: 12px;
+  font-size: 13px;
   color: #5f7581;
   white-space: pre-wrap;
 }
@@ -924,7 +928,7 @@ h3 {
 .prompt-card p {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font-size: 12px;
+  font-size: 13px;
   color: #5f7682;
   margin-bottom: 12px;
   line-height: 1.9;
@@ -932,7 +936,7 @@ h3 {
 .notice {
   margin-top: 15px;
   color: #83969e;
-  font-size: 11px;
+  font-size: 12px;
 }
 @media (min-width: 1450px) {
   .products-grid {
@@ -1025,7 +1029,7 @@ h3 {
     font-size: 26px;
   }
   .stat-label {
-    font-size: 10px;
+    font-size: 12px;
   }
   .products-grid,
   .analysis-grid {
@@ -1067,5 +1071,91 @@ h3 {
   * {
     scroll-behavior: auto !important;
     transition: none !important;
+  }
+}
+
+/* Shared interaction and typography tokens; feature layouts live with components. */
+textarea {
+  font: inherit;
+  line-height: 1.65;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--surface);
+  color: var(--ink);
+  max-width: 100%;
+}
+textarea:focus-visible {
+  outline: 3px solid #67b9af;
+  outline-offset: 2px;
+}
+.button {
+  min-height: 36px;
+  border-radius: 8px;
+}
+.button svg {
+  flex-shrink: 0;
+}
+.copy-control {
+  min-width: 0;
+}
+.copy-fallback {
+  width: min(360px, 100%);
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.copy-fallback textarea {
+  width: 100%;
+  margin-top: 6px;
+}
+.error-notice {
+  flex-wrap: wrap;
+}
+.error-notice span {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.error-notice > svg {
+  flex-shrink: 0;
+}
+.loading-state {
+  padding: 48px 20px;
+}
+.gallery-main {
+  height: 300px;
+}
+.main-content {
+  padding-top: 28px;
+}
+.tabs {
+  overflow-x: auto;
+  gap: 24px;
+}
+.tab {
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-height: 44px;
+}
+@media (max-width: 620px) {
+  .topbar {
+    height: auto;
+    min-height: 48px;
+    gap: 12px;
+    padding: 10px 18px;
+    flex-wrap: wrap;
+  }
+  .page-heading {
+    flex-wrap: wrap;
+  }
+  .main-content {
+    padding-top: 20px;
+  }
+  .button {
+    min-height: 40px;
+  }
+  .gallery-main {
+    height: 260px;
   }
 }

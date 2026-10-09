@@ -73,7 +73,7 @@ try {
   await amazon.bringToFront();
   await popup.reload();
   await popup.getByRole('button', { name: '同意并开始采集', exact: true }).click();
-  await popup.getByText('Amazon Product Captured', { exact: true }).waitFor({ timeout: 20000 });
+  await popup.getByText('商品已采集', { exact: true }).waitFor({ timeout: 20000 });
   const captured = await popup.evaluate(() =>
     chrome.runtime.sendMessage({ type: 'PRODUCTSPY_CAPTURE' }),
   );
@@ -97,9 +97,11 @@ try {
   const status = await page.evaluate(async () => (await (await fetch('/api/status')).json()).data);
   if (status.mode !== 'mock' || status.version !== version)
     throw new Error('Screenshots require this portable version in Mock mode.');
-  await page.getByRole('button', { name: '查看扩展安装说明' }).click();
+  await page.getByRole('button', { name: '查看安装与配对说明' }).click();
   await page.getByRole('button', { name: '生成配对码', exact: true }).click();
   const code = await page.getByLabel('扩展配对码').inputValue();
+  if (!(await popup.getByLabel('工作台配对码').isVisible()))
+    await popup.locator('.connection-panel > summary').click();
   await popup.getByLabel('工作台配对码').fill(code);
   await popup.getByRole('button', { name: '连接工作台', exact: true }).click();
   await popup.getByText('工作台已连接', { exact: true }).waitFor();
@@ -116,7 +118,12 @@ try {
     `${base}/products/${encodeURIComponent(`amazon:${draft.sourceId}`)}?tab=analysis`,
   );
   await page.getByRole('heading', { name: draft.title, exact: true }).waitFor();
-  await page.getByRole('button', { name: /^(开始|重新) AI 分析$/ }).click();
+  const startAnalysis = page.getByRole('button', { name: '开始 AI 分析', exact: true });
+  if (await startAnalysis.isVisible()) await startAnalysis.click();
+  else {
+    await page.getByRole('button', { name: '重新生成分析', exact: true }).click();
+    await page.getByRole('button', { name: '确认重新生成', exact: true }).click();
+  }
   await page.getByRole('heading', { name: '商品总结', exact: true }).waitFor();
   await page.reload();
   await page.getByRole('heading', { name: '商品总结', exact: true }).waitFor();
@@ -145,7 +152,7 @@ try {
     });
     if (heading === '商品总结') {
       await page
-        .getByRole('heading', { name: 'AI Analysis', exact: true })
+        .getByRole('heading', { name: 'AI 分析', exact: true })
         .evaluate((element) => element.scrollIntoView({ block: 'start' }));
     }
     const path = resolve(output, 'screenshots', name);

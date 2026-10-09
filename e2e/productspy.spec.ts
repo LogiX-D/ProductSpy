@@ -60,7 +60,7 @@ async function openPopup(context: BrowserContext, worker: Worker, amazon: Page):
   await popup.reload();
   await popup.setViewportSize({ width: 400, height: 600 });
   await expect(popup.getByRole('button', { name: '同意并开始采集', exact: true })).toBeVisible();
-  await expect(popup.getByText('Amazon Product Captured')).toHaveCount(0);
+  await expect(popup.getByText('商品已采集')).toHaveCount(0);
   await popup.getByRole('button', { name: '同意并开始采集', exact: true }).click();
   return popup;
 }
@@ -100,7 +100,7 @@ test('production extension → capture → save → workspace → Mock AI → pe
     const amazon = context.pages()[0];
     await amazon.goto(`https://www.amazon.com/dp/${ASIN}`);
     const popup = await openPopup(context, worker, amazon);
-    await expect(popup.getByText('Amazon Product Captured')).toBeVisible();
+    await expect(popup.getByText('商品已采集')).toBeVisible();
     await expect(popup.getByRole('heading', { name: 'Portable Coffee Grinder' })).toBeVisible();
     await expect(popup.getByText(ASIN, { exact: true })).toBeVisible();
     const pairingResponse = await request.post(`${BASE}/api/bridge/code`, {
@@ -109,6 +109,8 @@ test('production extension → capture → save → workspace → Mock AI → pe
     });
     expect(pairingResponse.ok()).toBe(true);
     const pairingBody = (await pairingResponse.json()) as { data: { code: string } };
+    if (!(await popup.getByLabel('工作台配对码').isVisible()))
+      await popup.locator('.connection-panel > summary').click();
     await popup.getByLabel('工作台配对码').fill(pairingBody.data.code);
     await popup.getByRole('button', { name: '连接工作台', exact: true }).click();
     await expect(popup.getByText('工作台已连接', { exact: true })).toBeVisible();
@@ -146,7 +148,7 @@ test('production extension → capture → save → workspace → Mock AI → pe
     await expect(
       workspace.getByRole('link', { name: 'Portable Coffee Grinder', exact: true }),
     ).toBeVisible();
-    await workspace.getByRole('textbox', { name: '搜索商品' }).fill('no match in fixture');
+    await workspace.getByRole('searchbox', { name: '搜索商品' }).fill('no match in fixture');
     await expect(workspace.getByRole('heading', { name: '没有找到匹配商品' })).toBeVisible();
     await workspace.getByRole('button', { name: '清除筛选' }).click();
     await workspace.getByRole('button', { name: '列表视图' }).click();
@@ -162,29 +164,30 @@ test('production extension → capture → save → workspace → Mock AI → pe
     await expect(
       workspace.getByRole('heading', { name: 'Portable Coffee Grinder', exact: true }),
     ).toBeVisible();
-    await workspace.getByRole('tab', { name: /^Media/ }).click();
-    await expect(
-      workspace.getByRole('button', { name: 'Download Image', exact: true }),
-    ).toHaveCount(2);
+    await workspace.getByRole('tab', { name: /^素材/ }).click();
+    await expect(workspace.getByRole('button', { name: /^下载图片 \d+$/ })).toHaveCount(2);
     // Browser download handling is tested with deterministic image bytes; CDN policy is unit-tested separately.
     await context.route(`${BASE}/api/media?**`, (route) =>
       route.fulfill({ status: 200, contentType: 'image/png', body: PNG }),
     );
     const singleDownload = workspace.waitForEvent('download');
-    await workspace.getByRole('button', { name: 'Download Image', exact: true }).first().click();
+    await workspace
+      .getByRole('button', { name: /^下载图片 \d+$/ })
+      .first()
+      .click();
     const image = await singleDownload;
     expect(image.suggestedFilename()).toBe(`${ASIN}-01.png`);
     await image.saveAs(testInfo.outputPath(image.suggestedFilename()));
     const zipDownload = workspace.waitForEvent('download');
-    await workspace.getByRole('button', { name: 'Download All Images' }).click();
+    await workspace.getByRole('button', { name: '下载全部图片（ZIP）', exact: true }).click();
     const archive = await zipDownload;
     expect(archive.suggestedFilename()).toBe(`${ASIN}-images.zip`);
     const zipPath = testInfo.outputPath(archive.suggestedFilename());
     await archive.saveAs(zipPath);
     expect((await readFile(zipPath)).subarray(0, 2).toString()).toBe('PK');
 
-    await workspace.getByRole('tab', { name: 'AI Analysis', exact: true }).click();
-    await expect(workspace.getByText('Mock 演示模式', { exact: true })).toBeVisible();
+    await workspace.getByRole('tab', { name: 'AI 分析', exact: true }).click();
+    await expect(workspace.getByText('本机演示', { exact: true })).toBeVisible();
     await workspace.getByRole('button', { name: '开始 AI 分析', exact: true }).click();
     await expect(workspace.getByRole('heading', { name: '商品总结', exact: true })).toBeVisible();
     for (const heading of [
@@ -192,26 +195,27 @@ test('production extension → capture → save → workspace → Mock AI → pe
       '用户痛点',
       '目标用户',
       '商品优势',
-      '商品弱点 / 待验证',
-      'Marketing Angles',
-      'TikTok / Reels / Shorts Hooks',
-      'Short Video Script',
-      'AI Image Prompts',
-      'AI Video Prompts',
+      '不足与待验证',
+      '营销角度',
+      '开场文案',
+      '短视频脚本',
+      '图片提示词',
+      '视频提示词',
     ]) {
       await expect(workspace.getByRole('heading', { name: heading, exact: true })).toBeVisible();
     }
-    expect(await workspace.locator('.hook-row').count()).toBeGreaterThanOrEqual(5);
-    expect(await workspace.locator('.script-label').allTextContents()).toEqual([
-      'Hook',
-      'Problem',
-      'Solution',
-      'Demo',
-      'CTA',
+    const hookRows = workspace.locator('#analysis-hooks .analysis-insights li');
+    expect(await hookRows.count()).toBeGreaterThanOrEqual(5);
+    expect(await workspace.locator('.analysis-script-step h3').allTextContents()).toEqual([
+      '开场吸引',
+      '提出问题',
+      '提供方案',
+      '产品演示',
+      '行动引导',
     ]);
     await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: BASE });
-    await workspace.locator('.hook-row').first().getByRole('button').click();
-    await expect(workspace.locator('.hook-row').first().getByRole('button')).toHaveText('已复制');
+    await hookRows.first().getByRole('button').click();
+    await expect(hookRows.first().getByRole('button')).toHaveText('已复制');
     await workspace.reload();
     await expect(workspace.getByRole('heading', { name: '商品总结', exact: true })).toBeVisible();
     const analyzedBody = (await (
@@ -229,9 +233,10 @@ test('production extension → capture → save → workspace → Mock AI → pe
         body: JSON.stringify({ ok: false, error: failedAnalysisMessage }),
       }),
     );
-    await workspace.getByRole('button', { name: '重新 AI 分析', exact: true }).click();
+    await workspace.getByRole('button', { name: '重新生成分析', exact: true }).click();
+    await workspace.getByRole('button', { name: '确认重新生成', exact: true }).click();
     await expect(workspace.locator('.error-notice')).toContainText(failedAnalysisMessage);
-    await expect(workspace.locator('.analysis-summary')).toContainText(
+    await expect(workspace.locator('#analysis-summary')).toContainText(
       analyzedBody.data.aiAnalysis!.summary,
     );
     const afterFailedAnalysis = (await (
@@ -240,7 +245,7 @@ test('production extension → capture → save → workspace → Mock AI → pe
     expect(afterFailedAnalysis.data).toEqual(analyzedBody.data);
     await workspace.unroute(`${BASE}/api/analyze-product`);
     await workspace.reload();
-    await expect(workspace.locator('.analysis-summary')).toContainText(
+    await expect(workspace.locator('#analysis-summary')).toContainText(
       analyzedBody.data.aiAnalysis!.summary,
     );
 
@@ -265,7 +270,7 @@ test('production extension → capture → save → workspace → Mock AI → pe
 
     await amazon.bringToFront();
     await popup.reload();
-    await expect(popup.getByText('Amazon Product Captured')).toBeVisible();
+    await expect(popup.getByText('商品已采集')).toBeVisible();
     await worker.evaluate(() => {
       const scoped = globalThis as typeof globalThis & { __originalFetch?: typeof fetch };
       scoped.__originalFetch = scoped.fetch;
@@ -281,7 +286,7 @@ test('production extension → capture → save → workspace → Mock AI → pe
     await popup.reload();
     await expect(popup.getByText('19.99 USD', { exact: true })).toBeVisible();
     await popup.getByRole('button', { name: '保存到素材库', exact: true }).click();
-    await expect(popup.getByRole('status').filter({ hasText: '尚未同步到工作台' })).toBeVisible();
+    await expect(popup.getByRole('status').filter({ hasText: '已暂存在扩展中' })).toBeVisible();
     await amazon.evaluate(() => {
       const script = document.querySelector('script[type="application/ld+json"]');
       if (script?.textContent) script.textContent = script.textContent.replace('19.99', '18.99');
@@ -290,13 +295,13 @@ test('production extension → capture → save → workspace → Mock AI → pe
     await popup.reload();
     await expect(popup.getByText('18.99 USD', { exact: true })).toBeVisible();
     await popup.getByRole('button', { name: '保存到素材库', exact: true }).click();
-    await expect(popup.getByRole('status').filter({ hasText: '尚未同步到工作台' })).toBeVisible();
+    await expect(popup.getByRole('status').filter({ hasText: '已暂存在扩展中' })).toBeVisible();
     const pendingCount = await popup.evaluate<ExtensionResponse>(() =>
       chrome.runtime.sendMessage({ type: 'PRODUCTSPY_PENDING_COUNT' }),
     );
     expect(pendingCount).toEqual({ status: 'pending-count', count: 1 });
     await popup.getByRole('button', { name: '重试同步', exact: true }).click();
-    await expect(popup.getByText('1 件商品暂存在插件中，等待同步。')).toBeVisible();
+    await expect(popup.getByText('1 件商品待同步', { exact: true })).toBeVisible();
     const stillSaved = (await (
       await api.get(`${BASE}/api/products/${encodeURIComponent(ID)}`)
     ).json()) as { data: Product };
@@ -380,9 +385,7 @@ test('production extension → capture → save → workspace → Mock AI → pe
     await amazon.goto('https://www.amazon.com/s?k=coffee');
     await amazon.bringToFront();
     await popup.reload();
-    await expect(
-      popup.getByRole('heading', { name: '当前页面不是支持的 Amazon 商品页面' }),
-    ).toBeVisible();
+    await expect(popup.getByRole('heading', { name: '请打开 Amazon 商品详情页' })).toBeVisible();
     await workspace.goto(`${BASE}/products`);
     await workspace
       .getByRole('button', { name: '删除商品 Portable Coffee Grinder', exact: true })
@@ -535,8 +538,9 @@ test('empty workspace explains portable installation and expired pairing can rec
   const setup = page.getByRole('button', { name: '开始首次使用', exact: true });
   await setup.click();
   const dialog = page.getByRole('dialog');
-  await expect(dialog.locator('ol > li')).toHaveCount(6);
-  await expect(dialog.getByText('ProductSpy.cmd', { exact: true })).toBeVisible();
+  await expect(dialog.locator('ol > li')).toHaveCount(4);
+  await dialog.locator('.ws-guide-more > summary').click();
+  await expect(dialog.getByText(/ProductSpy.cmd/)).toBeVisible();
   await dialog.getByRole('button', { name: '开发者源码版', exact: true }).click();
   await expect(dialog.getByText('apps/extension/dist', { exact: true })).toBeVisible();
   await dialog.getByRole('button', { name: 'Windows 便携版', exact: true }).click();
@@ -549,4 +553,168 @@ test('empty workspace explains portable installation and expired pairing can rec
   await page.keyboard.press('Escape');
   await expect(dialog).toHaveCount(0);
   await expect(setup).toBeFocused();
+});
+
+test('analysis editing preserves drafts, validates hooks and rejects concurrent overwrites', async ({
+  page,
+  request,
+}) => {
+  const api = await authenticateWeb(request);
+  const draft: ProductDraft = {
+    source: 'amazon',
+    sourceId: 'B011EDIT01',
+    url: 'https://www.amazon.com/dp/B011EDIT01',
+    title: '分析编辑回归商品',
+    images: [],
+    videos: [],
+    bulletPoints: ['便携设计'],
+  };
+  const id = `amazon:${draft.sourceId}`;
+  const endpoint = `${BASE}/api/products/${encodeURIComponent(id)}`;
+  await api.delete(endpoint);
+  try {
+    const saved = await request.post(`${BASE}/api/products`, { headers: WEB_HEADERS, data: draft });
+    expect(saved.ok()).toBe(true);
+    const original = ((await saved.json()) as { data: Product }).data;
+    const analyzed = await request.post(`${BASE}/api/analyze-product`, {
+      headers: WEB_HEADERS,
+      data: original,
+    });
+    expect(analyzed.ok()).toBe(true);
+    await page.goto(`${BASE}/products/${encodeURIComponent(id)}?tab=analysis`);
+    await page.getByRole('button', { name: '编辑分析', exact: true }).click();
+    const summary = page.getByLabel('商品总结', { exact: true });
+    await summary.fill('修改后的总结\n第二行保留');
+    await page.getByRole('tab', { name: '概览', exact: true }).click();
+    await page.getByRole('tab', { name: 'AI 分析', exact: true }).click();
+    await page.getByRole('button', { name: '恢复草稿', exact: true }).click();
+    await expect(summary).toHaveValue('修改后的总结\n第二行保留');
+    page.on('dialog', (dialog) => void dialog.accept());
+    await page.reload();
+    await page.getByRole('button', { name: '恢复草稿', exact: true }).click();
+    await expect(summary).toHaveValue('修改后的总结\n第二行保留');
+    const hooks = page.locator('#analysis-hooks textarea');
+    while ((await hooks.count()) > 4)
+      await page
+        .locator('#analysis-hooks')
+        .getByRole('button', { name: /^移除条目/ })
+        .last()
+        .click();
+    await page.getByRole('button', { name: '保存分析', exact: true }).click();
+    await expect(
+      page.getByText('开场文案需填写 5 至 30 个非空条目，每项最多 12,000 字。', { exact: true }),
+    ).toBeVisible();
+    const unchanged = ((await (await api.get(endpoint)).json()) as { data: Product }).data;
+    expect(unchanged.aiAnalysis?.summary).not.toContain('修改后的总结');
+    await page
+      .locator('#analysis-hooks')
+      .getByRole('button', { name: '添加条目', exact: true })
+      .click();
+    await hooks.last().fill('第五条开场文案\n保留换行');
+    await page.getByLabel('开场吸引', { exact: true }).fill('新脚本开场\n第二行');
+    await page.getByRole('button', { name: '保存分析', exact: true }).click();
+    await expect(page.getByText('分析已保存。', { exact: true })).toBeVisible();
+    await page.reload();
+    await expect(page.locator('#analysis-summary')).toContainText('修改后的总结\n第二行保留');
+    await expect(page.getByText('本机演示', { exact: true })).toBeVisible();
+    const edited = ((await (await api.get(endpoint)).json()) as { data: Product }).data;
+    expect(edited.aiAnalysis?.hooks).toHaveLength(5);
+    expect(edited.aiAnalysis?.shortVideoScript).toContain('Hook: 新脚本开场\n第二行');
+    expect(edited.aiAnalysis?.summary).toMatch(/^Mock 演示分析/);
+    await page.getByRole('button', { name: '编辑分析', exact: true }).click();
+    await summary.fill('本页未保存的并发草稿');
+    const concurrent = { ...edited.aiAnalysis!, summary: 'Mock 演示分析：另一页面的新版本' };
+    const external = await request.patch(endpoint, {
+      headers: WEB_HEADERS,
+      data: { analysis: concurrent, expectedUpdatedAt: edited.updatedAt },
+    });
+    expect(external.ok()).toBe(true);
+    await page.getByRole('button', { name: '保存分析', exact: true }).click();
+    await expect(page.getByText(/保存冲突：商品或分析已在其他页面更新/)).toBeVisible();
+    await expect(summary).toHaveValue('本页未保存的并发草稿');
+    const afterConflict = ((await (await api.get(endpoint)).json()) as { data: Product }).data;
+    expect(afterConflict.aiAnalysis).toEqual(concurrent);
+    await page.getByRole('button', { name: '关闭编辑', exact: true }).click();
+    await page.getByRole('button', { name: '保留草稿并关闭', exact: true }).click();
+    await expect(page.getByRole('button', { name: '恢复草稿', exact: true })).toBeVisible();
+  } finally {
+    await api.delete(endpoint);
+  }
+});
+
+test('library preferences, keyboard tabs, mobile layouts and manual copy remain usable', async ({
+  page,
+  request,
+}) => {
+  const api = await authenticateWeb(request);
+  const draft: ProductDraft = {
+    source: 'amazon',
+    sourceId: 'B011UX0001',
+    url: 'https://www.amazon.com/dp/B011UX0001',
+    title: '移动界面回归商品',
+    brand: 'ProductSpy 回归品牌',
+    images: [],
+    videos: [],
+    bulletPoints: [],
+  };
+  const endpoint = `${BASE}/api/products/${encodeURIComponent(`amazon:${draft.sourceId}`)}`;
+  await api.delete(endpoint);
+  try {
+    expect(
+      (await request.post(`${BASE}/api/products`, { headers: WEB_HEADERS, data: draft })).ok(),
+    ).toBe(true);
+    await page.goto(`${BASE}/products`);
+    await page.getByRole('searchbox', { name: '搜索商品' }).fill('回归品牌');
+    await page.getByRole('button', { name: '列表视图', exact: true }).click();
+    await page.getByRole('combobox', { name: '筛选分析状态' }).selectOption('pending');
+    await page.getByRole('combobox', { name: '商品排序' }).selectOption('collected-asc');
+    await page.reload();
+    await expect(page.getByRole('searchbox', { name: '搜索商品' })).toHaveValue('回归品牌');
+    await expect(page.getByRole('button', { name: '列表视图' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await expect(page.getByRole('combobox', { name: '筛选分析状态' })).toHaveValue('pending');
+    await expect(page.getByRole('combobox', { name: '商品排序' })).toHaveValue('collected-asc');
+    for (const width of [375, 768, 1280]) {
+      await page.setViewportSize({ width, height: 812 });
+      await expect(page.getByRole('link', { name: draft.title, exact: true })).toBeVisible();
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+      ).toBe(true);
+    }
+    await page.getByRole('link', { name: `打开商品 ${draft.title}`, exact: true }).click();
+    await page.getByRole('tab', { name: '概览', exact: true }).focus();
+    await page.keyboard.press('ArrowRight');
+    await expect(page.getByRole('tab', { name: /^素材/ })).toHaveAttribute('aria-selected', 'true');
+    await page.keyboard.press('End');
+    await expect(page.getByRole('tab', { name: 'AI 分析', exact: true })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    await page.getByRole('button', { name: '开始 AI 分析', exact: true }).click();
+    await expect(page.getByRole('heading', { name: '商品总结', exact: true })).toBeVisible();
+    await page.setViewportSize({ width: 375, height: 812 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
+      true,
+    );
+    await page.evaluate(() =>
+      Object.defineProperty(navigator.clipboard, 'writeText', {
+        configurable: true,
+        value: () => Promise.reject(new Error('regression denied clipboard')),
+      }),
+    );
+    await page.getByRole('button', { name: /^复制全部文本/ }).click();
+    const manual = page.getByLabel('手动复制内容');
+    await expect(manual).toBeVisible();
+    expect(await manual.inputValue()).toContain('短视频脚本');
+    expect(await manual.inputValue()).toContain('商品总结');
+    await page.getByRole('button', { name: '编辑分析', exact: true }).click();
+    await expect(page.getByLabel('商品总结', { exact: true })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
+      true,
+    );
+  } finally {
+    await api.delete(endpoint);
+  }
 });

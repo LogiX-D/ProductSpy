@@ -1,10 +1,10 @@
 # Windows 普通用户首次使用指南
 
-适用于 ProductSpy 0.2.0 Windows x64 便携版。无需自行安装 Node.js、pnpm、数据库或 AI Key。需要 Windows 10 或更新版本的 x64 系统、系统 PowerShell 5.1，以及已安装的 Google Chrome；当前未发布 Chrome Web Store 版本，插件仍需按下面步骤手动加载。内置 Node.js 24.14.0 的 Windows 平台要求见 [官方平台表](https://github.com/nodejs/node/blob/v24.14.0/BUILDING.md#platform-list)，具体实际验收系统以本次报告为准。
+适用于 ProductSpy 0.3.0 Windows x64 便携版。无需自行安装 Node.js、pnpm、数据库或 AI Key。需要 Windows 10 或更新版本的 x64 系统、系统 PowerShell 5.1，以及已安装的 Google Chrome；当前未发布 Chrome Web Store 版本，插件仍需按下面步骤手动加载。内置 Node.js 24.14.0 的 Windows 平台要求见 [官方平台表](https://github.com/nodejs/node/blob/v24.14.0/BUILDING.md#platform-list)，具体实际验收系统以本次报告为准。
 
 ## 1. 解压并启动工作台
 
-1. 下载 `ProductSpy-0.2.0-windows-x64.zip`。本地构建产物位于项目的 `artifacts` 目录；公开下载以发布者实际上传的 GitHub Release 资产为准。
+1. 下载 `ProductSpy-0.3.0-windows-x64.zip`。本地构建产物位于项目的 `artifacts` 目录；公开下载以发布者实际上传的 GitHub Release 资产为准。
 2. 右键 ZIP，选择「全部解压缩」，放到你准备保留的目录。**先完整解压，再运行；不要在 ZIP 压缩窗口里双击。**
 3. 打开解压后的 ProductSpy 文件夹，双击 **ProductSpy.cmd**。
 4. 启动窗口出现后，会自动启动本机工作台并打开浏览器。如果默认浏览器不是 Chrome，在 Chrome 地址栏输入 **http://127.0.0.1:3000**。
@@ -24,16 +24,16 @@
 5. 选择便携包中的 **extension** 文件夹，而不是外层 ProductSpy 文件夹，也不是 ZIP 文件。
 6. 从 Chrome 工具栏的拼图按钮中找到 ProductSpy，将其固定到工具栏。
 
-如果只下载了 `ProductSpy-0.2.0-extension.zip`，先把它完整解压到长期保留的文件夹，再加载包含 `manifest.json` 的那个文件夹。不要在加载后删除或移动文件夹，否则 Chrome 将无法继续读取扩展。商店正式发布后可改用商店安装，但这个版本没有可用的正式商店安装链接。
+如果只下载了 `ProductSpy-0.3.0-extension.zip`，先把它完整解压到长期保留的文件夹，再加载包含 `manifest.json` 的那个文件夹。不要在加载后删除或移动文件夹，否则 Chrome 将无法继续读取扩展。商店正式发布后可改用商店安装，但这个版本没有可用的正式商店安装链接。
 
 源码开发者加载的是 `apps/extension/dist`，普通便携用户加载的是 **extension**。开发者命令见项目 README 的「源码开发」部分。
 
 ## 3. 安全配对
 
 1. 保持启动窗口运行，打开工作台。
-2. 点击左侧「安装 Chrome 扩展」，或右上角扩展说明按钮。
+2. 点击工作台「安装与配对」。
 3. 点击「生成配对码」，复制显示的码。
-4. 点击 Chrome 工具栏 ProductSpy 图标，将码粘贴到「工作台配对码」。
+4. 点击 Chrome 工具栏 ProductSpy 图标，展开「连接设置」，将码粘贴到「工作台配对码」。
 5. 点击「连接工作台」，看到「工作台已连接」即可。
 
 配对码有效 **2 分钟**，只能使用一次。过期时在工作台重新生成，不需要重装程序。配对码不是 Amazon 密码，也不是 AI Key。不要在公开截图或 Issue 中粘贴配对码、令牌、Cookie 或 Key。
@@ -53,7 +53,11 @@
 
 ## 5. 分析商品
 
-打开商品详情的 AI 分析标签，点击「开始 AI 分析」。没有配置 AI Key 时使用 **Mock 演示模式**：可以完整体验卖点、受众、营销角度、Hook、五段短视频脚本、图片和视频 Prompt，不会调用外部 AI 服务。
+打开商品详情的「AI 分析」标签，点击「开始 AI 分析」。没有配置 AI Key 时显示 **本机演示**：可以完整体验卖点、受众、营销角度、开场文案、五段短视频脚本、图片和视频提示词，不会调用外部 AI 服务。
+
+每个分区可复制，也可以「复制全部文本」。浏览器不允许自动复制时会显示手动复制框，选中内容后按 Ctrl+C。点击「编辑分析」修改文字，开场文案至少 5 条，五段脚本都需填写；「保存分析」后才会永久保存。
+
+未保存的编辑暂存在当前标签页，切换详情标签或刷新后可以「恢复草稿」。关闭标签页会失去这项临时恢复能力，请先保存或复制。关闭编辑时可保存、保留草稿或丢弃；重新生成需确认，失败保留原内容。遇到「保存冲突」请复制草稿、刷新商品后重新编辑，程序不会覆盖其他页面更新的资料。演示结果手工修改后仍标为演示素材。
 
 要使用自己的真实服务：
 
@@ -113,4 +117,4 @@
 | AI 未配置                    | 使用 Mock 即可完整演示；真实模式要配置自己的服务并重启工作台。                                                 |
 | 更新后商品不见               | 在「打开用户数据」检查 data 目录和备份，不要先删除目录；确认使用的是同一个 Windows 用户。                      |
 
-隐私详情见 [PRIVACY.md](../PRIVACY.md)。测试结果与 Chrome 稳定版待验收项见 [Phase 10 报告](phase10-validation.md)；不能把 Chrome for Testing 自动化结果当作正式 Chrome 人工验收。
+隐私详情见 [PRIVACY.md](../PRIVACY.md)。测试结果与 Chrome 稳定版待验收项见 [Phase 11 报告](phase11-validation.md)；不能把 Chrome for Testing 自动化结果当作正式 Chrome 人工验收。

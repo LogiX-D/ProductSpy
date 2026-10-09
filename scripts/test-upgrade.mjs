@@ -1,0 +1,582 @@
+import assert from 'node:assert/strict';
+import { spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { mkdir, mkdtemp, readFile, stat, writeFile } from 'node:fs/promises';
+import { createServer } from 'node:net';
+import { basename, join, relative, resolve } from 'node:path';
+import { parseArgs } from 'node:util';
+
+const { values } = parseArgs({
+  options: { from: { type: 'string' }, to: { type: 'string' }, help: { type: 'boolean' } },
+});
+const fixture = {
+  source: 'amazon',
+  sourceId: 'B0UPGRADE1',
+  url: 'https://www.amazon.com/dp/B0UPGRADE1',
+  title: 'Phase 10 → 11 upgrade fixture / 升级兼容回归，非真实 Amazon 商品',
+  price: '$19.95',
+  currency: 'USD',
+  brand: 'UpgradeFixture',
+  rating: 4.4,
+  reviewCount: 1234,
+  mainImage: 'https://example.com/upgrade/main.jpg',
+  images: ['https://example.com/upgrade/main.jpg', 'https://example.com/upgrade/detail.jpg'],
+  videos: [
+    {
+      url: 'https://example.com/upgrade/demo.mp4',
+      thumbnail: 'https://example.com/upgrade/video.jpg',
+    },
+  ],
+  bulletPoints: [
+    '完整商品字段兼容',
+    '本机演示分析持久化',
+    'No real credentials or remote media requests',
+  ],
+  description: 'Synthetic upgrade regression fixture.\n中文描述与换行必须保持。',
+};
+const draftFields = Object.keys(fixture);
+const baseUrl = 'http://127.0.0.1:3000';
+
+if (values.help) {
+  console.log(
+    'node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.2.0-windows-x64 --to artifacts/ProductSpy-0.3.0-windows-x64\n' +
+      'Requires Windows and a free port 3000. Uses only fresh .test-data/phase11-upgrade data. Existing services are never stopped.',
+  );
+} else {
+  await main();
+}
+
+async function main() {
+  assert.equal(process.platform, 'win32', 'Portable upgrade regression requires Windows.');
+  const { version } = JSON.parse(await readFile(resolve('package.json'), 'utf8'));
+  const oldPackage = resolve(values.from ?? 'artifacts/ProductSpy-0.2.0-windows-x64');
+  const newPackage = resolve(values.to ?? `artifacts/ProductSpy-${version}-windows-x64`);
+  assert.notEqual(
+    oldPackage.toLowerCase(),
+    newPackage.toLowerCase(),
+    'Upgrade requires two distinct package directories.',
+  );
+  const evidenceParent = resolve('.test-data/phase11-upgrade');
+  await mkdir(evidenceParent, { recursive: true });
+  const evidenceRoot = await mkdtemp(
+    join(evidenceParent, `${new Date().toISOString().replace(/[:.]/g, '-')}-`),
+  );
+  const dataRoot = join(evidenceRoot, 'isolated-user');
+  const runtimeRoot = join(evidenceRoot, 'control');
+  const databaseFile = join(dataRoot, 'data/products.json');
+  const stateFile = join(runtimeRoot, 'launcher-state.json');
+  const activeLaunchers = new Set();
+  const report = {
+    from: basename(oldPackage),
+    to: basename(newPackage),
+    baseUrl,
+    dataRoot,
+    runtimeRoot,
+    fixtureOnly: true,
+    startedAt: new Date().toISOString(),
+    checks: [],
+  };
+  let failure;
+
+  async function snapshot(name, product) {
+    await writeFile(join(evidenceRoot, `${name}.json`), JSON.stringify(product, null, 2));
+  }
+
+  function launcher(directory, action = 'Start') {
+    const child = spawn(
+      join(process.env.SystemRoot, 'System32/WindowsPowerShell/v1.0/powershell.exe'),
+      [
+        '-NoProfile',
+        '-ExecutionPolicy',
+        'Bypass',
+        '-File',
+        join(directory, 'launcher/ProductSpy.ps1'),
+        '-Headless',
+        '-NoBrowser',
+        '-Action',
+        action,
+        '-DataRoot',
+        dataRoot,
+        '-RuntimeRoot',
+        runtimeRoot,
+      ],
+      {
+        windowsHide: true,
+        stdio: ['ignore', 'pipe', 'pipe'],
+        env: { ...process.env, PATH: join(process.env.SystemRoot, 'System32') },
+      },
+    );
+    const record = {
+      child,
+      directory,
+      events: [],
+      output: '',
+      errorOutput: '',
+      done: false,
+      state: undefined,
+    };
+    let incomplete = '';
+    child.stdout.setEncoding('utf8').on('data', (chunk) => {
+      record.output += chunk;
+      incomplete += chunk;
+      const lines = incomplete.split(/\r?\n/);
+      incomplete = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('{')) continue;
+        try {
+          record.events.push(JSON.parse(line));
+        } catch {
+          /* Non-JSON diagnostics do not establish ownership. */
+        }
+      }
+    });
+    child.stderr.setEncoding('utf8').on('data', (chunk) => {
+      record.errorOutput += chunk;
+    });
+    record.completion = new Promise((complete) => {
+      child.once('error', (error) => {
+        record.done = true;
+        complete({ code: null, error: error.message });
+      });
+      child.once('exit', (code) => {
+        record.done = true;
+        complete({ code });
+      });
+    });
+    return record;
+  }
+
+  function isOwnState(record, state) {
+    return (
+      state &&
+      state.launcherPid === record.child.pid &&
+      resolve(state.dataRoot).toLowerCase() === dataRoot.toLowerCase() &&
+      resolve(state.packageRoot).toLowerCase() === record.directory.toLowerCase() &&
+      typeof state.launchId === 'string' &&
+      /^[a-f0-9]{32}$/i.test(state.launchId) &&
+      Number.isInteger(state.nodePid) &&
+      state.nodePid > 0
+    );
+  }
+
+  async function readOwnState(record) {
+    try {
+      const state = JSON.parse((await readFile(stateFile, 'utf8')).replace(/^\uFEFF/, ''));
+      if (isOwnState(record, state)) return state;
+    } catch (error) {
+      if (error.code !== 'ENOENT' && !(error instanceof SyntaxError)) throw error;
+    }
+    return undefined;
+  }
+
+  async function start(directory, expectedVersion) {
+    await assertPortFree();
+    const record = launcher(directory);
+    activeLaunchers.add(record);
+    await eventually(
+      () => {
+        const error = record.events.find((event) => event.event === 'error');
+        if (error) throw new Error(error.message);
+        assert(
+          !record.events.some((event) => event.event === 'already-running'),
+          'Refusing to reuse an existing service; no unknown service will be stopped.',
+        );
+        assert(
+          !record.done,
+          `Launcher exited before readiness: ${record.errorOutput || record.output}`,
+        );
+        const ready = record.events.find((event) => event.event === 'ready');
+        if (!ready) return false;
+        assert(
+          isOwnState(record, ready.state),
+          'Ready event must identify this test launcher, package and isolated data directory.',
+        );
+        record.state = ready.state;
+        return true;
+      },
+      'Portable package did not become ready',
+      60_000,
+      true,
+    );
+    const current = await readOwnState(record);
+    assert.equal(
+      current?.launchId,
+      record.state.launchId,
+      'Launcher ownership must be confirmed in the isolated runtime directory.',
+    );
+    const status = await request('/api/status');
+    assert.equal(status.mode, 'mock', 'Fresh test data must default to local Mock analysis.');
+    assert.equal(
+      status.version,
+      expectedVersion,
+      'The running service must match its packaged version.',
+    );
+    report.checks.push({
+      name: `owned launcher ${expectedVersion}: isolated user data, bundled runtime, Mock`,
+      passed: true,
+    });
+    return record;
+  }
+
+  async function stop(record) {
+    if (!record.done) {
+      const current = await readOwnState(record);
+      if (current) {
+        if (record.state)
+          assert.equal(
+            current.launchId,
+            record.state.launchId,
+            'Runtime ownership changed; refusing a stop request.',
+          );
+        const controller = launcher(record.directory, 'Stop');
+        let result;
+        try {
+          result = await bounded(controller.completion, 8000, 'Stop controller timed out');
+        } finally {
+          if (!controller.done) {
+            controller.child.kill();
+            await bounded(
+              controller.completion,
+              5000,
+              'Test stop controller cleanup timed out',
+            ).catch(() => undefined);
+          }
+        }
+        assert.equal(result.code, 0, controller.errorOutput || controller.output || result.error);
+        assert(
+          controller.events.some(
+            (event) => event.event === 'stop-requested' && event.requested === true,
+          ),
+          'Owned stop controller must acknowledge the request.',
+        );
+      } else {
+        // Only the child object spawned here is killed. Its supervisor notices
+        // the missing parent and cleans up its own server; no PID-wide kill.
+        record.child.kill();
+      }
+      const result = await bounded(record.completion, 20_000, 'Owned launcher did not exit');
+      if (current)
+        assert.equal(result.code, 0, record.errorOutput || record.output || result.error);
+    }
+    activeLaunchers.delete(record);
+    await eventually(async () => {
+      try {
+        await assertPortFree();
+        return true;
+      } catch {
+        return false;
+      }
+    }, 'Port 3000 did not become free after the owned service stopped');
+  }
+
+  try {
+    const oldInventory = await inspectPackage(oldPackage);
+    const newInventory = await inspectPackage(newPackage);
+    assert.equal(
+      oldInventory.version,
+      '0.2.0',
+      'Phase 10 fixture must run the actual 0.2.0 portable package.',
+    );
+    assert.equal(
+      newInventory.version,
+      version,
+      'Target package must match the current repository release.',
+    );
+    assert.notEqual(
+      newInventory.version,
+      oldInventory.version,
+      'A same-version moved package is not an upgrade regression.',
+    );
+    report.fromVersion = oldInventory.version;
+    report.toVersion = newInventory.version;
+    report.checks.push({
+      name: 'distinct Phase 10 and Phase 11 package versions and launcher/runtime hashes',
+      passed: true,
+    });
+
+    const oldLaunch = await start(oldPackage, oldInventory.version);
+    assert.deepEqual(
+      await products(),
+      [],
+      'The upgrade test must start with an empty, fresh repository.',
+    );
+    const saved = await request('/api/products', 'POST', fixture);
+    assert.deepEqual(asDraft(saved), fixture, 'Old package must save every fixture field.');
+    const oldAnalysis = await request('/api/analyze-product', 'POST', saved);
+    assertCompleteAnalysis(oldAnalysis);
+    const oldProduct = await onlyProduct(saved.id);
+    assert.equal(oldProduct.createdAt, saved.createdAt);
+    assert.deepEqual(oldProduct.aiAnalysis, oldAnalysis);
+    await snapshot('01-old-product', oldProduct);
+    const oldDatabase = await readFile(databaseFile, 'utf8');
+    await stop(oldLaunch);
+    assert.equal(
+      await readFile(databaseFile, 'utf8'),
+      oldDatabase,
+      'Stopping the old package must not alter the saved database.',
+    );
+    report.checks.push({
+      name: '0.2.0 saves complete Product and complete Mock analysis, then stops without changing data',
+      passed: true,
+    });
+
+    const newLaunch = await start(newPackage, newInventory.version);
+    const upgraded = await onlyProduct(saved.id);
+    assert.deepEqual(
+      upgraded,
+      oldProduct,
+      'Upgrade must preserve the entire Product, ID, timestamps, media and complete analysis.',
+    );
+    assert.equal(
+      await readFile(databaseFile, 'utf8'),
+      oldDatabase,
+      'Reading with the new package must not rewrite old data.',
+    );
+    await snapshot('02-after-upgrade', upgraded);
+    report.checks.push({
+      name: '0.2.0 → current package preserves entire Product, ID, createdAt, updatedAt and aiAnalysis',
+      passed: true,
+    });
+
+    const editedDraft = {
+      ...fixture,
+      title: `${fixture.title} · 新版本编辑`,
+      price: '$24.95',
+      bulletPoints: [...fixture.bulletPoints, 'Edit made through the new package API'],
+    };
+    const edited = await request('/api/products', 'POST', editedDraft);
+    assert.deepEqual(
+      asDraft(edited),
+      editedDraft,
+      'Edited product must retain all fields after saving.',
+    );
+    assert.equal(edited.id, oldProduct.id, 'Editing must update the existing product ID.');
+    assert.equal(
+      edited.createdAt,
+      oldProduct.createdAt,
+      'Editing must retain its original creation time.',
+    );
+    assert(
+      Date.parse(edited.updatedAt) > Date.parse(oldProduct.updatedAt),
+      'Editing must advance updatedAt.',
+    );
+    assert.equal(
+      edited.aiAnalysis,
+      undefined,
+      'Content changes intentionally invalidate the previous analysis.',
+    );
+    const editedAnalysis = await request('/api/analyze-product', 'POST', edited);
+    assertCompleteAnalysis(editedAnalysis);
+    const beforeRestart = await onlyProduct(saved.id);
+    assert.deepEqual(asDraft(beforeRestart), editedDraft);
+    assert.deepEqual(beforeRestart.aiAnalysis, editedAnalysis);
+    await snapshot('03-edited-before-restart', beforeRestart);
+    const editedDatabase = await readFile(databaseFile, 'utf8');
+    await stop(newLaunch);
+    assert.equal(await readFile(databaseFile, 'utf8'), editedDatabase);
+    report.checks.push({
+      name: 'new package edits existing ID, keeps createdAt, invalidates stale analysis and persists refreshed Mock analysis',
+      passed: true,
+    });
+
+    const restarted = await start(newPackage, newInventory.version);
+    const afterRestart = await onlyProduct(saved.id);
+    assert.deepEqual(
+      afterRestart,
+      beforeRestart,
+      'Restart must preserve every edited field and complete refreshed analysis.',
+    );
+    await snapshot('04-edited-after-restart', afterRestart);
+    await stop(restarted);
+    assert.equal(await readFile(databaseFile, 'utf8'), editedDatabase);
+    report.checks.push({
+      name: 'new package restart preserves complete edited Product and analysis, then releases owned processes',
+      passed: true,
+    });
+    report.passed = true;
+  } catch (error) {
+    failure = error;
+    report.passed = false;
+    report.error = error.message;
+  } finally {
+    for (const record of activeLaunchers) {
+      try {
+        await stop(record);
+      } catch (error) {
+        if (!record.done) {
+          record.child.kill();
+          await bounded(record.completion, 15_000, 'Test launcher cleanup timed out').catch(
+            () => undefined,
+          );
+        }
+        report.cleanupErrors ??= [];
+        report.cleanupErrors.push(error.message);
+        report.passed = false;
+        failure ??= error;
+      }
+    }
+    report.finishedAt = new Date().toISOString();
+    await writeFile(join(evidenceRoot, 'report.json'), JSON.stringify(report, null, 2));
+    console.log(JSON.stringify({ ...report, evidence: evidenceRoot }, null, 2));
+    if (failure) process.exitCode = 1;
+  }
+}
+
+function asDraft(product) {
+  return Object.fromEntries(draftFields.map((field) => [field, product[field]]));
+}
+
+async function request(path, method = 'GET', body) {
+  const headers = {
+    origin: baseUrl,
+    'content-type': 'application/json',
+    'x-productspy-client': 'web',
+    'sec-fetch-site': 'same-origin',
+  };
+  if (path !== '/api/status') {
+    const session = await fetch(`${baseUrl}/api/session`, {
+      method: 'POST',
+      headers,
+      body: '{}',
+      signal: AbortSignal.timeout(5000),
+    });
+    assert.equal(session.status, 200, 'Packaged web session authentication must succeed.');
+    const cookie = session.headers.get('set-cookie')?.split(';')[0];
+    assert(cookie, 'Session must issue an HttpOnly cookie.');
+    headers.cookie = cookie;
+  }
+  const response = await fetch(`${baseUrl}${path}`, {
+    method,
+    headers,
+    body: body === undefined ? undefined : JSON.stringify(body),
+    signal: AbortSignal.timeout(15_000),
+  });
+  const result = await response.json();
+  assert.equal(
+    response.status,
+    200,
+    `${method} ${path} failed: ${result.error ?? response.status}`,
+  );
+  assert.equal(result.ok, true, `${method} ${path} returned an API failure.`);
+  return result.data;
+}
+
+async function products() {
+  const all = await request('/api/products');
+  assert(Array.isArray(all), 'Product list must be an array.');
+  return all;
+}
+
+async function onlyProduct(id) {
+  const all = await products();
+  assert.equal(all.length, 1, 'Saving the same ASIN must keep exactly one product.');
+  assert.equal(all[0].id, id);
+  const detail = await request(`/api/products/${encodeURIComponent(id)}`);
+  assert.deepEqual(detail, all[0], 'List and detail API must expose the same complete product.');
+  return detail;
+}
+
+function assertCompleteAnalysis(analysis) {
+  assert.equal(typeof analysis.summary, 'string');
+  assert(analysis.summary.length > 0);
+  for (const field of [
+    'sellingPoints',
+    'targetAudience',
+    'purchaseMotivations',
+    'painPoints',
+    'strengths',
+    'weaknesses',
+    'marketingAngles',
+    'hooks',
+    'imagePrompts',
+    'videoPrompts',
+  ]) {
+    assert(
+      Array.isArray(analysis[field]) && analysis[field].length > 0,
+      `Missing analysis field ${field}`,
+    );
+    assert(analysis[field].every((item) => typeof item === 'string' && item.length > 0));
+  }
+  assert(analysis.hooks.length >= 5);
+  for (const label of ['Hook', 'Problem', 'Solution', 'Demo', 'CTA']) {
+    assert(
+      new RegExp(`(?:^|\\n)${label}\\s*[:：]`, 'i').test(analysis.shortVideoScript),
+      `Missing script section ${label}`,
+    );
+  }
+}
+
+async function inspectPackage(directory) {
+  const inventory = JSON.parse(await readFile(join(directory, 'bundle-manifest.json'), 'utf8'));
+  assert.equal(inventory.kind, 'ProductSpy-portable');
+  assert.equal(inventory.architecture, 'windows-x64');
+  for (const file of [
+    'launcher/ProductSpy.ps1',
+    'launcher/run-server.cjs',
+    'runtime/node.exe',
+    'app/apps/web/server.js',
+  ]) {
+    const path = resolve(directory, file);
+    const local = relative(directory, path);
+    assert(local && !local.startsWith('..'), 'Package file cannot escape its directory.');
+    assert((await stat(path)).isFile(), `Missing portable file ${file}`);
+    const listed = inventory.files.find((entry) => entry.path.replaceAll('\\', '/') === file);
+    assert(listed, `Bundle manifest is missing ${file}`);
+    const bytes = await readFile(path);
+    assert.equal(bytes.length, listed.bytes, `Bundle file size mismatch: ${file}`);
+    assert.equal(
+      createHash('sha256').update(bytes).digest('hex'),
+      listed.sha256,
+      `Bundle SHA-256 mismatch: ${file}`,
+    );
+  }
+  return inventory;
+}
+
+async function assertPortFree() {
+  const probe = createServer();
+  try {
+    await new Promise((complete, reject) => {
+      probe.once('error', reject);
+      probe.listen({ port: 3000, host: '::', ipv6Only: false }, complete);
+    });
+  } catch (error) {
+    throw new Error(
+      `Port 3000 is unavailable (${error.code}). Exit the existing service before upgrade tests; no unknown listener will be stopped.`,
+    );
+  } finally {
+    if (probe.listening)
+      await new Promise((complete, reject) =>
+        probe.close((error) => (error ? reject(error) : complete())),
+      );
+  }
+}
+
+async function eventually(check, message, timeout = 20_000, failFast = false) {
+  const deadline = Date.now() + timeout;
+  let lastError;
+  while (Date.now() < deadline) {
+    try {
+      if (await check()) return;
+    } catch (error) {
+      if (failFast) throw error;
+      lastError = error;
+    }
+    await new Promise((complete) => setTimeout(complete, 200));
+  }
+  throw new Error(`${message}${lastError ? `: ${lastError.message}` : ''}`);
+}
+
+async function bounded(promise, milliseconds, message) {
+  let timer;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error(message)), milliseconds);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}

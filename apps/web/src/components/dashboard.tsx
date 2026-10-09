@@ -1,84 +1,68 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, CalendarDays, Library, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useProducts } from '@/lib/use-products';
 import { EmptyState, ErrorNotice, LoadingState, PageHeading } from './ui';
 import { ProductCard } from './product-card';
 import { OpenSetupButton } from './first-use-guide';
+import { workspaceCopy as copy } from './workspace-copy';
+import { DEFAULT_LIBRARY_PREFERENCES, selectLibraryProducts } from './workspace-preferences';
 
 function startOfWeek(): number {
   const date = new Date();
-  const daysSinceMonday = (date.getDay() + 6) % 7;
-  date.setDate(date.getDate() - daysSinceMonday);
+  date.setDate(date.getDate() - ((date.getDay() + 6) % 7));
   date.setHours(0, 0, 0, 0);
   return date.getTime();
 }
 
 export function Dashboard() {
   const { products, loading, error, reload } = useProducts();
+  const recent = selectLibraryProducts(products, DEFAULT_LIBRARY_PREFERENCES).slice(0, 6);
   const weekStart = startOfWeek();
   const metrics = [
+    { label: copy.dashboard.total, value: products.length, href: '/products' },
     {
-      label: '已采集商品',
-      value: products.length,
-      note: '你的竞品素材库',
-      icon: Library,
-      color: 'bg-teal-50 text-teal-700',
+      label: copy.dashboard.thisWeek,
+      value: products.filter((product) => Date.parse(product.createdAt) >= weekStart).length,
     },
     {
-      label: '本周新增',
-      value: products.filter((product) => new Date(product.createdAt).getTime() >= weekStart)
-        .length,
-      note: '从本周一开始',
-      icon: CalendarDays,
-      color: 'bg-blue-50 text-blue-600',
-    },
-    {
-      label: '待分析商品',
+      label: copy.dashboard.pending,
       value: products.filter((product) => !product.aiAnalysis).length,
-      note: '等待发现内容角度',
-      icon: Sparkles,
-      color: 'bg-amber-50 text-amber-600',
+      href: '/products?analysis=pending',
     },
   ];
-  const recent = [...products]
-    .sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt))
-    .slice(0, 6);
-
   return (
-    <div className="space-y-8">
-      <PageHeading
-        eyebrow="AMAZON 商品素材工作台"
-        title="让每一份素材，都有新发现。"
-        description="从 Amazon 采集竞品，用 AI 把产品信息变成内容灵感。"
-      />
+    <div className="ws-page ws-dashboard">
+      <PageHeading title={copy.dashboard.title} description={copy.dashboard.description} />
       {error && <ErrorNotice message={error} onRetry={() => void reload()} />}
-      <section aria-label="素材库统计" className="grid gap-4 sm:grid-cols-3">
-        {metrics.map(({ label, value, note, icon: Icon, color }) => (
-          <article key={label} className="rounded-xl border border-slate-200 bg-white p-5">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-500">{label}</span>
-              <span className={`rounded-lg p-2 ${color}`}>
-                <Icon size={18} />
-              </span>
-            </div>
-            <p className="mt-3 text-3xl font-semibold tracking-tight">{loading ? '—' : value}</p>
-            <p className="mt-2 text-xs text-slate-400">{note}</p>
-          </article>
-        ))}
-      </section>
-      <section>
-        <div className="mb-5 flex items-center justify-between gap-3">
-          <div>
-            <h2 className="text-lg font-semibold text-slate-900">最近商品</h2>
-            <p className="mt-1 text-sm text-slate-500">最近采集或更新的竞品。</p>
+      <dl className="ws-dashboard-summary" aria-label={copy.dashboard.metrics}>
+        {metrics.map(({ label, value, href }) => (
+          <div key={label}>
+            <dt>{label}</dt>
+            <dd>
+              {href ? (
+                <Link href={href}>
+                  {loading ? '—' : value}
+                  <ArrowRight size={13} aria-hidden="true" />
+                </Link>
+              ) : loading ? (
+                '—'
+              ) : (
+                value
+              )}
+            </dd>
           </div>
-          <Link
-            href="/products"
-            className="flex shrink-0 items-center gap-1.5 text-sm font-medium text-teal-700 hover:text-teal-900"
-          >
-            查看全部
+        ))}
+      </dl>
+      <section>
+        <div className="section-header">
+          <div>
+            <h2>{copy.dashboard.recent}</h2>
+            <p className="small muted">{copy.dashboard.recentDescription}</p>
+          </div>
+          <Link href="/products" className="ws-text-link">
+            {copy.dashboard.viewAll}
             <ArrowRight size={15} />
           </Link>
         </div>
@@ -86,12 +70,14 @@ export function Dashboard() {
           <LoadingState />
         ) : recent.length === 0 ? (
           <EmptyState
-            title="还没有采集商品"
-            description="打开 Amazon 商品页面，通过 ProductSpy 插件保存第一个商品。"
-            action={<OpenSetupButton />}
+            title={error ? copy.library.unavailable : copy.library.emptyTitle}
+            description={
+              error ? copy.library.unavailableDescription : copy.library.emptyDescription
+            }
+            action={!error && <OpenSetupButton />}
           />
         ) : (
-          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="ws-products-grid ws-recent-grid">
             {recent.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

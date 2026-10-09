@@ -1,0 +1,282 @@
+{
+  "schemaVersion": 1,
+  "version": "0.3.0",
+  "validatedAt": "2026-10-09T04:37:21.253Z",
+  "baseCommit": "1d89e780178e278a88f1736fb2c3f6d589ad005f",
+  "environment": {
+    "os": "Windows 11 x64 10.0.26300",
+    "runtime": "bundled Node.js 24.14.0",
+    "browser": "Chrome for Testing, not installed Chrome stable",
+    "browserVersion": "156.0.8078.4",
+    "installedChromeStableTested": false,
+    "nativeWinFormsManuallyTested": false
+  },
+  "checks": {
+    "install": "passed",
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "build": "passed",
+    "vitest": {
+      "files": 25,
+      "passed": 232
+    },
+    "e2e": {
+      "passed": 7,
+      "amazonFixture": true
+    },
+    "portable": {
+      "passed": 9,
+      "checks": [
+        {
+          "name": "package inventory SHA-256, bundled runtime, MV3 permissions, no user data or env",
+          "passed": true
+        },
+        {
+          "name": "port conflict is explained, unknown listener preserved",
+          "passed": true
+        },
+        {
+          "name": "headless launcher with no installed Node.js/pnpm on PATH, localhost, Mock, authentication",
+          "passed": true
+        },
+        {
+          "name": "duplicate start creates no second service process",
+          "passed": true
+        },
+        {
+          "name": "complete Mock analysis persists; graceful stop releases port and retains user data",
+          "passed": true
+        },
+        {
+          "name": "AI settings use Windows DPAPI CurrentUser, no plaintext test key on disk",
+          "passed": true
+        },
+        {
+          "name": "restart retains complete ProductAnalysis, product ID, creation and update times",
+          "passed": true
+        },
+        {
+          "name": "same-schema reinstall/moved package retains complete analysis and single instance",
+          "passed": true
+        },
+        {
+          "name": "launcher crash cleanup and abandoned mutex recovery preserve data",
+          "passed": true
+        }
+      ]
+    },
+    "upgrade": {
+      "from": "0.2.0",
+      "to": "0.3.0",
+      "fixtureOnly": true,
+      "passed": 8,
+      "checks": [
+        {
+          "name": "distinct Phase 10 and Phase 11 package versions and launcher/runtime hashes",
+          "passed": true
+        },
+        {
+          "name": "owned launcher 0.2.0: isolated user data, bundled runtime, Mock",
+          "passed": true
+        },
+        {
+          "name": "0.2.0 saves complete Product and complete Mock analysis, then stops without changing data",
+          "passed": true
+        },
+        {
+          "name": "owned launcher 0.3.0: isolated user data, bundled runtime, Mock",
+          "passed": true
+        },
+        {
+          "name": "0.2.0 → current package preserves entire Product, ID, createdAt, updatedAt and aiAnalysis",
+          "passed": true
+        },
+        {
+          "name": "new package edits existing ID, keeps createdAt, invalidates stale analysis and persists refreshed Mock analysis",
+          "passed": true
+        },
+        {
+          "name": "owned launcher 0.3.0: isolated user data, bundled runtime, Mock",
+          "passed": true
+        },
+        {
+          "name": "new package restart preserves complete edited Product and analysis, then releases owned processes",
+          "passed": true
+        }
+      ]
+    },
+    "archive": {
+      "passed": 4,
+      "checks": [
+        {
+          "name": "portable: archive hash, bytes, count, CRC32, raw paths, private paths and credential scan",
+          "passed": true
+        },
+        {
+          "name": "portable: every bundle record matches actual ZIP bytes/SHA256; no missing or unlisted files",
+          "passed": true,
+          "records": 1863
+        },
+        {
+          "name": "extension: archive hash, bytes, count, CRC32, raw paths, private paths and credential scan",
+          "passed": true
+        },
+        {
+          "name": "extension: root MV3 0.3.0, original permission/host allowlist, CSP, no source maps; embedded extension matches ZIP",
+          "passed": true,
+          "embeddedFiles": 11
+        }
+      ]
+    }
+  },
+  "realAmazon": {
+    "uniqueProducts": 1,
+    "categories": ["beauty"],
+    "fixture": false,
+    "ai": "mock",
+    "pageUrl": "https://www.amazon.com/dp/B00TTD9BRC",
+    "capturedAt": "2026-10-09T04:33:15.502Z",
+    "capture": {
+      "asin": "B00TTD9BRC",
+      "title": "CeraVe 保湿霜 16 盎司（约 453.59 克）日常面部和身体保湿霜，适用于干性肌肤, 19 盎司",
+      "price": "TWD607.32",
+      "currency": "TWD",
+      "images": 12,
+      "videos": 2,
+      "bulletPoints": 5
+    },
+    "verified": true,
+    "checks": [
+      "portable startup",
+      "first consent",
+      "real Amazon capture",
+      "authenticated pairing",
+      "product save",
+      "Mock analysis",
+      "analysis after reload",
+      "real editing UI",
+      "short popup visible action",
+      "375px and 1280px layouts without horizontal overflow"
+    ]
+  },
+  "artifacts": {
+    "portable": {
+      "file": "ProductSpy-0.3.0-windows-x64.zip",
+      "bytes": 40367396,
+      "sha256": "c67112a546ded37e49a12ecfdd546cc80278f7bcf86c2cac54491539ec48faa5",
+      "entries": 1864,
+      "files": 1864,
+      "scannedTextFiles": 1834,
+      "crc32Verified": true,
+      "rawPathsVerified": true,
+      "privatePathsVerified": true,
+      "credentialPatternScanPassed": true,
+      "configuredApiKeysChecked": 0,
+      "bundleRecordsVerified": 1863,
+      "embeddedExtensionFilesVerified": 11
+    },
+    "extension": {
+      "file": "ProductSpy-0.3.0-extension.zip",
+      "bytes": 392371,
+      "sha256": "03f659fc83c297d1f6326f2884292367a06217eaebb50b802f1b663bde0fb3ca",
+      "entries": 226,
+      "files": 226,
+      "scannedTextFiles": 222,
+      "crc32Verified": true,
+      "rawPathsVerified": true,
+      "privatePathsVerified": true,
+      "credentialPatternScanPassed": true,
+      "configuredApiKeysChecked": 0,
+      "manifestVersion": 3,
+      "permissions": ["activeTab", "scripting", "storage"],
+      "hostPermissions": ["http://localhost/*", "http://127.0.0.1/*"],
+      "sourceMapsAbsent": true
+    },
+    "experience": {
+      "file": "ProductSpy-0.3.0-experience.zip",
+      "bytes": 998619,
+      "sha256": "e724cb39a6f69cd35e1d9ab3f356cdbd27488caa0c452d59ffe4e2f9cc4db7fe"
+    }
+  },
+  "screenshots": [
+    {
+      "file": "01-popup.png",
+      "width": 400,
+      "height": 600,
+      "sha256": "ec5adbbe4598e0dafe0c9d3a1b1971895b849b48a3445fb8d65f557f93db456a",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "02-popup-short.png",
+      "width": 400,
+      "height": 480,
+      "sha256": "9810d90e083e986be45cf703bfdb66bb0c0378934a5b9cc7e4382a299aa5a54f",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "03-dashboard.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "bd689e47c80a95d9a3c9de68bfcbe9071f2e1df4ea67bb113b9e51dcec522e26",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "04-library.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "45995e0f365a4101049efbabdb16890e7387ce8735ffa076cffc688307c19bc3",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "05-detail.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "58f9b1e22afc12131e174e45821d99c3efbdc23d3e37d22f922df5d7109a0970",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "06-media.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "f228af473bd401236a6c831cf8e52a702d51a999426a8d848eddbca0622916c4",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "07-analysis.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "0629a850842f3444746880eac523272517a73c1f4a16daae8e9407b17228ad96",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "08-editor.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "ff01d648bf6914073db9276e97276e53fb0454379e01a174975cb2c437647d46",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "09-library-mobile.png",
+      "width": 375,
+      "height": 812,
+      "sha256": "3fb907ee0327f02d2ef3b05522b655bbe23e5fb95993fc8d6410fef9ac3d49aa",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "10-analysis-mobile.png",
+      "width": 375,
+      "height": 812,
+      "sha256": "0d977bbfc5123d86d93e8434f9b1997470a82e8197cb3ac485106b97c6969786",
+      "horizontalOverflow": false
+    }
+  ],
+  "limitations": [
+    "Installed Chrome stable and native WinForms GUI require manual acceptance",
+    "Windows versions other than the tested Windows 11 x64 require acceptance",
+    "Drafts are temporary per browser tab, without undo history",
+    "Real external AI was not invoked with a paid API Key",
+    "Only one real Amazon product was retested in Phase 11",
+    "No Chrome Web Store submission"
+  ]
+}

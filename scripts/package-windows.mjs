@@ -108,8 +108,8 @@ await cp(resolve(workspace, 'PRIVACY.md'), resolve(directory, 'PRIVACY.md'));
 const firstRun = (await readFile(resolve(workspace, 'docs/windows-guide.md'), 'utf8'))
   .replace('(../PRIVACY.md)', '(PRIVACY.md)')
   .replace(
-    '(phase10-validation.md)',
-    '(https://github.com/LogiX-D/ProductSpy/blob/main/docs/phase10-validation.md)',
+    /\((phase\d+-validation\.md)\)/g,
+    '(https://github.com/LogiX-D/ProductSpy/blob/main/docs/$1)',
   );
 await writeFile(resolve(directory, 'FIRST-RUN.md'), firstRun);
 await writeThirdPartyNotices(directory);

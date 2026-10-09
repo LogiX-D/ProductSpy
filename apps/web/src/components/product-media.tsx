@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Download, ExternalLink, Images, Loader2 } from 'lucide-react';
 import { errorMessage, type Product } from '@productspy/shared';
-import { Button, EmptyState, ErrorNotice, ProductImage } from './ui';
+import { Button, CopyButton, EmptyState, ErrorNotice, ProductImage } from './ui';
 import { webFetch } from '../lib/session';
+import { workspaceCopy as copy } from './workspace-copy';
 
 const MAX_ZIP_BYTES = 80 * 1024 * 1024;
 type DownloadJob = number | 'all';
@@ -22,7 +23,7 @@ async function fetchImage(url: string, signal: AbortSignal): Promise<Blob> {
     cache: 'no-store',
   });
   if (!response.ok) {
-    let message = `图片下载失败 (${response.status})`;
+    let message = copy.media.requestFailed(response.status);
     try {
       const result: unknown = await response.json();
       if (
@@ -38,8 +39,7 @@ async function fetchImage(url: string, signal: AbortSignal): Promise<Blob> {
     throw new Error(message);
   }
   const blob = await response.blob();
-  if (!blob.size || !IMAGE_EXTENSIONS[blob.type])
-    throw new Error('工作台未返回有效图片，请打开原图后手动保存');
+  if (!blob.size || !IMAGE_EXTENSIONS[blob.type]) throw new Error(copy.media.invalidImage);
   return blob;
 }
 
@@ -62,6 +62,8 @@ export function ProductMedia({ product }: { product: Product }) {
   ];
   const [busy, setBusy] = useState<DownloadJob>();
   const [progress, setProgress] = useState('');
+  const [percentage, setPercentage] = useState<number>();
+  const [failedVideos, setFailedVideos] = useState<string[]>([]);
   const [failure, setFailure] = useState<{ message: string; job: DownloadJob }>();
   const controllerRef = useRef<AbortController | undefined>(undefined);
 
@@ -78,7 +80,8 @@ export function ProductMedia({ product }: { product: Product }) {
     controllerRef.current = controller;
     setBusy(job);
     setFailure(undefined);
-    setProgress('');
+    setProgress(copy.media.preparing);
+    setPercentage(job === 'all' ? 0 : undefined);
     return controller;
   }
 
@@ -96,11 +99,13 @@ export function ProductMedia({ product }: { product: Product }) {
   async function downloadImage(index: number): Promise<void> {
     const controller = beginDownload(index);
     if (!controller) return;
+    setProgress(copy.media.imageBusy(index + 1));
     try {
       const blob = await fetchImage(images[index], controller.signal);
       if (controller.signal.aborted) return;
       saveBlob(blob, imageFilename(blob, index));
-      setProgress(`图片 ${index + 1} 已下载`);
+      setProgress(copy.media.imageSaved(index + 1));
+      setPercentage(100);
     } catch (error) {
       if (!controller.signal.aborted) {
         console.error('[ProductSpy media] Single image download failed', error);
@@ -122,24 +127,33 @@ export function ProductMedia({ product }: { product: Product }) {
       let totalBytes = 0;
       for (let index = 0; index < images.length; index++) {
         currentImage = index + 1;
-        setProgress(`正在下载图片 ${currentImage} / ${images.length}`);
+        setProgress(copy.media.zipImageBusy(currentImage, images.length));
         const blob = await fetchImage(images[index], controller.signal);
         if (controller.signal.aborted) return;
         totalBytes += blob.size;
-        if (totalBytes > MAX_ZIP_BYTES) throw new Error('全部图片超过 80 MiB ZIP 限制，请逐张下载');
+        if (totalBytes > MAX_ZIP_BYTES) throw new Error(copy.media.zipTooLarge);
         zip.file(imageFilename(blob, index), await blob.arrayBuffer());
+        setPercentage(Math.round(((index + 1) / images.length) * 85));
       }
-      setProgress('正在生成 ZIP…');
-      const archive = await zip.generateAsync({ type: 'blob', compression: 'STORE' });
+      setProgress(copy.media.zipBusy);
+      const archive = await zip.generateAsync(
+        { type: 'blob', compression: 'STORE' },
+        (metadata) => {
+          if (controller.signal.aborted) return;
+          setProgress(copy.media.zipProgress(Math.round(metadata.percent)));
+          setPercentage(Math.round(85 + metadata.percent * 0.15));
+        },
+      );
       if (controller.signal.aborted) return;
-      if (archive.size > MAX_ZIP_BYTES) throw new Error('ZIP 文件超过 80 MiB 限制，请逐张下载');
+      if (archive.size > MAX_ZIP_BYTES) throw new Error(copy.media.archiveTooLarge);
       saveBlob(archive, `${product.sourceId}-images.zip`);
-      setProgress(`已下载 ${images.length} 张图片（ZIP）`);
+      setProgress(copy.media.zipSaved(images.length));
+      setPercentage(100);
     } catch (error) {
       if (!controller.signal.aborted) {
         console.error('[ProductSpy media] ZIP download failed', error);
         setFailure({
-          message: `图片 ${currentImage || 1} 处理失败：${errorMessage(error)}。尚未生成 ZIP，请重试或打开原图逐张保存。`,
+          message: copy.media.zipFailed(currentImage || 1, errorMessage(error)),
           job: 'all',
         });
       }
@@ -155,107 +169,132 @@ export function ProductMedia({ product }: { product: Product }) {
   };
 
   return (
-    <div>
+    <div className="ws-media">
       <div className="section-header">
         <div>
           <h2>
-            商品图片 <span className="small muted">· {images.length} 张</span>
+            {copy.media.images}{' '}
+            <span className="small muted">{copy.media.imageCount(images.length)}</span>
           </h2>
-          <p className="small muted mt-1">保存公开图片 URL，按需下载素材。</p>
+          <p className="small muted">{copy.media.imageDescription}</p>
         </div>
         <Button
-          aria-label="Download All Images"
+          aria-label={copy.media.downloadZip}
           variant="secondary"
           disabled={!images.length || busy !== undefined}
           onClick={() => void downloadAll()}
         >
           {busy === 'all' ? <Loader2 size={15} className="spin" /> : <Images size={15} />}
-          下载全部图片
+          {busy === 'all' ? copy.media.downloading : copy.media.downloadAll}
         </Button>
       </div>
       {failure && <ErrorNotice message={failure.message} onRetry={retryDownload} />}
       {progress && !failure && (
-        <p role="status" className="small muted mb-4">
-          {progress}
-        </p>
+        <div className="ws-download-progress">
+          <p role="status">{progress}</p>
+          {busy !== undefined && (
+            <>
+              <progress max={100} value={percentage} aria-label={copy.media.progress} />
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  controllerRef.current?.abort();
+                  setProgress(copy.media.downloadCancelled);
+                }}
+              >
+                {copy.media.cancelDownload}
+              </Button>
+            </>
+          )}
+        </div>
       )}
       {images.length ? (
-        <div className="media-grid">
+        <div className="ws-media-grid">
           {images.map((url, index) => (
-            <article className="panel media-card" key={url}>
-              <ProductImage src={url} alt={`${product.title} 图片 ${index + 1}`} />
-              <div className="media-card-footer">
+            <article className="panel ws-media-card" key={url}>
+              <ProductImage src={url} alt={copy.gallery.alt(product.title, index + 1)} />
+              <div className="ws-media-card-footer">
                 <Button
-                  aria-label="Download Image"
+                  aria-label={copy.media.downloadLabel(index + 1)}
                   variant="ghost"
                   disabled={busy !== undefined}
                   onClick={() => void downloadImage(index)}
                 >
                   {busy === index ? <Loader2 size={14} className="spin" /> : <Download size={14} />}
-                  下载图片
+                  {busy === index ? copy.media.downloading : copy.media.downloadImage}
                 </Button>
                 <a
                   href={url}
                   target="_blank"
                   rel="noreferrer"
-                  aria-label={`打开原图 ${index + 1}`}
-                  title="打开原图后手动保存"
-                  className="flex items-center gap-1 text-xs text-teal-700 hover:underline"
+                  aria-label={copy.media.originalLabel(index + 1)}
+                  title={copy.media.originalTitle}
+                  className="ws-text-link"
                 >
                   <ExternalLink size={13} />
-                  原图
+                  {copy.media.original}
                 </a>
+                <CopyButton value={url} label={copy.media.copyImage} />
               </div>
             </article>
           ))}
         </div>
       ) : (
         <EmptyState
-          title="此商品没有可用图片"
-          description="Amazon 页面可能尚未加载图片。请重新打开商品页面并再次采集。"
+          title={copy.media.emptyImages}
+          description={copy.media.emptyImagesDescription}
         />
       )}
-      <section className="mt-8">
+      <section className="ws-media-videos">
         <div className="section-header">
           <div>
             <h2>
-              商品视频 <span className="small muted">· {product.videos.length} 个</span>
+              {copy.media.videos}{' '}
+              <span className="small muted">{copy.media.videoCount(product.videos.length)}</span>
             </h2>
-            <p className="small muted mt-1">仅展示商品页面已公开提供的视频，不绕过访问限制。</p>
+            <p className="small muted">{copy.media.videoDescription}</p>
           </div>
         </div>
         {product.videos.length ? (
-          <div className="media-grid">
+          <div className="ws-media-grid">
             {product.videos.map((video) => (
-              <article key={video.url} className="panel video-card">
-                <video controls preload="none" poster={video.thumbnail} src={video.url} />
-                <a
-                  href={video.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs text-teal-700 hover:underline"
-                >
-                  <ExternalLink size={14} />
-                  打开视频原始链接
-                </a>
-                <p className="small muted mt-2">
+              <article key={video.url} className="panel ws-video-card">
+                <video
+                  controls
+                  preload="none"
+                  poster={video.thumbnail}
+                  src={video.url}
+                  onError={() =>
+                    setFailedVideos((values) =>
+                      values.includes(video.url) ? values : [...values, video.url],
+                    )
+                  }
+                />
+                {failedVideos.includes(video.url) && (
+                  <p role="status" className="ws-video-error">
+                    {copy.media.videoFailed}
+                  </p>
+                )}
+                <div className="ws-video-actions">
+                  <a href={video.url} target="_blank" rel="noreferrer" className="ws-text-link">
+                    <ExternalLink size={14} />
+                    {copy.media.openVideo}
+                  </a>
+                  <CopyButton value={video.url} label={copy.media.copyVideo} />
+                </div>
+                <p className="small muted">
                   {new URL(video.url).pathname.toLowerCase().endsWith('.m3u8')
-                    ? '这是 HLS 视频流，部分浏览器无法直接播放。请使用原始链接。'
-                    : '视频链接可能过期或受跨域限制。播放失败时可尝试原始链接。'}
+                    ? copy.media.hls
+                    : copy.media.videoNote}
                 </p>
               </article>
             ))}
           </div>
         ) : (
-          <p className="rounded-lg border border-dashed border-slate-200 bg-white p-6 text-sm text-slate-500">
-            此页面没有可可靠提取的公开视频。
-          </p>
+          <p className="ws-empty-videos">{copy.media.emptyVideos}</p>
         )}
       </section>
-      <p className="notice">
-        单张图片限制 10 MiB，ZIP 限制 80 MiB。部分素材可能受 Amazon CDN
-        访问限制；下载失败时可打开原图手动保存。
-      </p>
+      <p className="notice">{copy.media.limits}</p>
     </div>
   );
 }

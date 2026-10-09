@@ -5,7 +5,8 @@
 body {
   margin: 0;
   width: 400px;
-  height: 600px;
+  max-width: 100vw;
+  height: min(600px, 100dvh);
   overflow: hidden;
   background: #f7f9fa;
   color: #162c36;
@@ -16,20 +17,218 @@ body {
     'Segoe UI',
     'Microsoft YaHei',
     sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
 }
+
+#root,
+.popup-shell {
+  height: 100%;
+  min-height: 0;
+}
+
+.popup-shell {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.popup-header {
+  flex-shrink: 0;
+  padding: 12px 16px;
+  background: #162c36;
+  color: white;
+}
+
+.popup-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding: 16px;
+}
+
+.popup-footer {
+  flex-shrink: 0;
+  padding: 12px 16px;
+  border-top: 1px solid #e2e8f0;
+  background: white;
+}
+
+.primary-button,
+.secondary-button {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 9px 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.primary-button {
+  background: #0d766e;
+  color: white;
+}
+
+.primary-button:hover {
+  background: #115e59;
+}
+
+.secondary-button {
+  border: 1px solid #cbd5e1;
+  background: white;
+}
+
+.secondary-button:hover {
+  background: #f8fafc;
+}
+
+.text-button {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  gap: 5px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.text-button:hover {
+  color: #0d766e;
+  text-decoration: underline;
+}
+
+button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
 button,
-a {
+a,
+summary {
   -webkit-tap-highlight-color: transparent;
 }
 button:focus-visible,
-a:focus-visible {
+a:focus-visible,
+input:focus-visible,
+summary:focus-visible {
   outline: 2px solid #0d766e;
   outline-offset: 3px;
 }
 
-@media (max-height: 599px) {
-  body,
-  .popup-shell {
-    height: 100dvh;
+.capture-placeholder {
+  display: flex;
+  min-height: 230px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 0;
+}
+
+.product-image {
+  display: flex;
+  height: 100px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: white;
+  padding: 12px;
+}
+
+.connection-panel {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+}
+
+.connection-panel summary {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.connection-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+.connection-dot {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #94a3b8;
+}
+
+.connection-dot.connected {
+  background: #0d766e;
+}
+
+.connection-panel[open] .connection-chevron {
+  transform: rotate(180deg);
+}
+
+.connection-body {
+  border-top: 1px solid #e2e8f0;
+  padding: 12px;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.queue-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  background: #fffbeb;
+  padding: 6px 10px;
+  color: #78350f;
+}
+
+.action-feedback {
+  max-height: 84px;
+  overflow-y: auto;
+  margin-top: 8px;
+  border-radius: 6px;
+  background: #f8fafc;
+  padding: 8px 10px;
+  overflow-wrap: anywhere;
+}
+
+.action-feedback p + p {
+  margin-top: 4px;
+}
+
+.footer-links {
+  display: flex;
+  min-height: 28px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+@media (max-height: 480px) {
+  .popup-content {
+    padding-top: 12px;
+  }
+
+  .product-image {
+    height: 76px;
+  }
+
+  .action-feedback {
+    max-height: 60px;
   }
 }

@@ -69,7 +69,7 @@ try {
   await popup.goto(`chrome-extension://${id}/popup.html`);
   await amazon.bringToFront();
   await popup.reload();
-  await popup.getByText('Amazon Product Captured', { exact: true }).waitFor();
+  await popup.getByText('商品已采集', { exact: true }).waitFor();
   await popup.getByText('工作台已连接', { exact: true }).waitFor();
   await popup.getByRole('button', { name: '保存到素材库', exact: true }).click();
   await popup.getByRole('status').filter({ hasText: '已保存到素材库' }).waitFor();

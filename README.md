@@ -1,15 +1,15 @@
 # ProductSpy
 
-本地优先的 Amazon 竞品素材采集与 AI 分析工具。Chrome 扩展识别当前商品，保存到本机 Web 工作台；工作台提供商品库、图片 / 视频详情、营销分析、短视频脚本和生成 Prompt。0.2.0 增加 Windows x64 便携分发，保留原有 Next.js / Manifest V3 架构和安全配对。
+本地优先的 Amazon 竞品素材采集与 AI 分析工具。Chrome 扩展识别当前商品，保存到本机 Web 工作台；工作台提供商品库、图片 / 视频详情、营销分析、短视频脚本和生成 Prompt。0.3.0 打磨中文工作台、素材管理与可编辑分析；沿用 Windows x64 便携分发，保留原有 Next.js / Manifest V3 架构和安全配对。
 
 仅支持 Amazon。此版本没有用户账号、支付、自动发布、价格监控、其他平台或多人协作。
 
 ## Windows 普通用户：不用安装开发工具
 
-1. 获取 `ProductSpy-0.2.0-windows-x64.zip`，**全部解压**，双击 **ProductSpy.cmd**。
+1. 获取 `ProductSpy-0.3.0-windows-x64.zip`，**全部解压**，双击 **ProductSpy.cmd**。
 2. 启动器使用内置 Node.js，启动本机工作台并打开 **http://127.0.0.1:3000**；不用安装 Node.js、pnpm 或数据库。
 3. 在启动窗口点击「打开插件文件夹」，按 Chrome `chrome://extensions` →「开发者模式」→「加载已解压的扩展程序」加载便携包的 **extension** 目录。
-4. 在工作台扩展说明中生成一次性配对码，填入插件并「连接工作台」。身份校验保留，配对码 2 分钟有效。
+4. 在工作台「安装与配对」中生成一次性配对码，填入插件并「连接工作台」。身份校验保留，配对码 2 分钟有效。
 5. 打开 Amazon 商品页，点击插件；首次阅读说明后「同意并开始采集」，再保存并在工作台开始 AI 分析。没有 Key 时是完整 Mock 演示。
 
 启动窗口可打开工作台、插件与用户目录，配置 AI，或「停止并退出」。关闭窗口也会停止服务；重复双击不会新增服务。端口冲突会明确提示，不强制结束其他程序，也不改用插件无法连接的端口。
@@ -18,7 +18,7 @@
 
 完整安装、首次配对、AI 设置、异常恢复、备份与更新步骤见 [Windows 首次使用指南](docs/windows-guide.md)。当前没有已发布的 Chrome Web Store 安装入口；Extension ZIP 需要解压加载，不能双击安装，也不会自动修改 Chrome 安全设置。便携包以本地 `artifacts` 产物或发布者实际上传的 GitHub Release 资产为准；不把仓库源代码 ZIP 当成可运行安装包。
 
-本次实际产物、207 项单元测试、5 项 E2E、9 项便携包测试，以及正式 Chrome / GUI 人工验收边界见 [Phase 10 验收报告](docs/phase10-validation.md)。商店材料与截图来源见 [提交材料](docs/store/README.md)。
+Phase 11 的实际截图、完整测试与便携兼容验收见 [体验打磨报告](docs/phase11-validation.md)；[Phase 10 报告](docs/phase10-validation.md)保留原始分发验收记录。商店材料与截图来源见 [提交材料](docs/store/README.md)。
 
 ## 源码开发：环境与安装
 
@@ -43,13 +43,13 @@ pnpm build
 2. 开启 **Developer Mode / 开发者模式**。
 3. 点击 **Load unpacked / 加载已解压的扩展程序**。
 4. 选择 `ProductSpy/apps/extension/dist`（包含 `manifest.json` 的目录）。
-5. 打开工作台 **http://127.0.0.1:3000**，点击右上角「查看扩展安装说明」（或左侧「安装 Chrome 扩展」），点击「生成配对码」。
+5. 打开工作台 **http://127.0.0.1:3000**，点击「安装与配对」，点击「生成配对码」。
 6. 复制配对码，打开 ProductSpy Popup，将其粘贴到「工作台配对码」，点击「连接工作台」，确认显示「工作台已连接」。
 7. 将 ProductSpy 固定在工具栏，打开 Amazon 商品详情页，等待加载后点击扩展，再点击「保存到素材库」。商品将出现在工作台 `/products`。
 
 配对码有效 2 分钟且只能使用一次；过期或已使用时重新生成。重新配对会替换旧连接，工作台「撤销扩展连接」可取消授权。重新加载扩展后若扩展 ID 改变、换了数据目录或连接已撤销，需要重新配对。未配对或工作台断开时，保存操作会暂存在插件中；配对并启动工作台后点击「重试同步」，无需重新采集已暂存的商品。
 
-扩展快捷键：`Alt+Shift+P`。若被系统或其他扩展占用，可在 `chrome://extensions/shortcuts` 修改。每次重新构建后，需要在扩展管理页点击「重新加载」。Popup 的「AI 分析」会先保存商品，再打开详情的 AI 标签；生成分析需在工作台点击「开始 AI 分析」。
+扩展快捷键：`Alt+Shift+P`。若被系统或其他扩展占用，可在 `chrome://extensions/shortcuts` 修改。每次重新构建后，需要在扩展管理页点击「重新加载」。Popup 的「保存并分析」先保存再打开详情；已保存后显示「打开分析」，避免重复保存。生成分析需在工作台点击「开始 AI 分析」。
 
 `pnpm build` 同时构建 Extension 与 Next.js。生产启动：
 
@@ -92,11 +92,17 @@ AI_MODE=auto
 1. 保持本地 Web 服务运行，并完成一次工作台与扩展配对。工作台标签页可以关闭。
 2. 打开 `amazon.com/dp/ASIN` 等支持的商品页，等待页面加载后点击扩展。
 3. 检查标题、价格、ASIN、图片 / 视频数量和评分，再保存。
-4. 商品库支持 Grid / List、标题 / 品牌 / ASIN 搜索、来源筛选、删除与打开详情；每 5 秒及恢复焦点时刷新。
-5. 详情提供 Gallery、Overview、Media、AI Analysis。缺失字段显示明确提示。
-6. Media 可下载单图或全部图片 ZIP；视频仅使用页面公开提供的原始 URL。
-7. AI Analysis 展示总结、卖点、受众、购买动机、痛点、优势 / 弱点、Marketing Angles、至少 5 条 Hook、五段脚本、图片及视频 Prompt。Hook、脚本、Prompt 可复制。
+4. 商品库支持网格 / 列表、标题 / 品牌 / ASIN 搜索、分析状态及来源筛选、排序、删除与打开详情；浏览器记住视图与筛选，每 5 秒及恢复焦点时刷新。
+5. 详情提供图片预览、概览、素材和 AI 分析。缺失字段显示明确提示，键盘方向键可切换标签。
+6. 素材可下载单图或全部图片 ZIP，显示进度并可取消；图片与视频链接可复制，视频仅使用页面公开提供的原始 URL。
+7. AI 分析展示总结、卖点、用户画像、优劣势、营销角度、至少 5 条开场文案、五段脚本、图片和视频提示词。支持单项、整区、全部复制；复制权限被拒绝时显示手动复制框。
 8. 刷新页面或重启服务后，商品和分析仍保留。
+
+### 编辑分析与草稿
+
+点击「编辑分析」可修改全部分析字段、增删条目和编辑五段脚本；开场文案至少保留 5 条。点击「保存分析」才会写入素材库。未保存草稿仅暂存在当前浏览器标签页，切换标签或刷新后可「恢复草稿」；关闭标签页后不能依赖其恢复。关闭编辑可保存、保留或丢弃，重新生成需要确认且失败保留原内容。
+
+保存使用编辑开始时的商品版本。其他页面更新商品或分析后会提示冲突，保留当前草稿供复制，避免静默覆盖。手工编辑 Mock 结果会保留演示来源标识；演示内容仍需核对事实。界面文案按 Popup、工作台、分析和通用操作集中维护，为后续国际化保留入口，当前只提供中文。
 
 工作台未启动时，扩展将商品暂存在 `chrome.storage.local` 并标记「尚未同步」；启动工作台后点击「重试同步」。重复采集使用 `amazon + uppercase ASIN` 去重，保留 ID 和创建时间，更新资料与 `updatedAt`。价格、标题、品牌、描述或卖点变化时清除旧分析；其他信息变化不会生成重复商品。
 
@@ -217,7 +223,7 @@ pnpm exec node scripts/amazon-acceptance.mjs
 
 当前验收见 [Phase 9 真实环境报告](docs/phase9-validation.md)，其中分别记录跨品类 / 国家站真实字段、正常颜色变体切换、自动化测试和安全检查。真实 OpenAI-compatible 合约使用本地 HTTP stub 验证；未使用真实 Key 调用收费模型。早期 MVP 验收保留在 [VALIDATION.md](VALIDATION.md)，其单页结果和测试数量是 Phase 8 历史，不代表当前全部覆盖。
 
-Phase 10 分发与上架验收见 [本次报告](docs/phase10-validation.md)，不更改 Phase 9 的历史实页数量或成功率。Chrome Web Store 提交条件和待办见 [商店准备说明](docs/chrome-web-store.md)，可填写文案在 [docs/store](docs/store/README.md)。正式 Chrome 稳定版人工验收、公开下载地址与开发者 Dashboard 配置须如实记录，未提交审核，也不承诺已获商店批准。
+Phase 11 体验验收见 [当前报告](docs/phase11-validation.md)。[Phase 10 报告](docs/phase10-validation.md)和 Phase 9 的实页数量 / 成功率保留历史记录。Chrome Web Store 提交条件和待办见 [商店准备说明](docs/chrome-web-store.md)，可填写文案在 [docs/store](docs/store/README.md)。正式 Chrome 稳定版人工验收、公开下载地址与开发者 Dashboard 配置须如实记录，未提交审核，也不承诺已获商店批准。
 
 ## 构建 Windows 便携版与 Extension ZIP
 
@@ -233,8 +239,8 @@ pnpm test:portable
 
 输出在 **`artifacts/`**：
 
-- `ProductSpy-0.2.0-windows-x64.zip`：Windows x64 便携工作台、内置 Node.js、Next.js standalone、启动器和已构建扩展。
-- `ProductSpy-0.2.0-extension.zip`：可供 Chrome Web Store 上传的 MV3 扩展，根目录包含 `manifest.json`。
+- `ProductSpy-0.3.0-windows-x64.zip`：Windows x64 便携工作台、内置 Node.js、Next.js standalone、启动器和已构建扩展。
+- `ProductSpy-0.3.0-extension.zip`：可供 Chrome Web Store 上传的 MV3 扩展，根目录包含 `manifest.json`。
 - 构建校验文件及商店图片：名称与哈希以构建实际输出为准。
 
 已取得真实运行截图及 `artifacts/store/asset-provenance.json` 后，可运行 `pnpm package:store` 生成商店材料 ZIP；脚本校验来源、截图尺寸与哈希，不会用模拟页面补齐截图。真实采集工具是 `scripts/capture-store.mjs`，验收时应先启动使用独立测试数据目录的便携工作台并保持 Mock 模式，避免写入自己的素材库。
@@ -243,8 +249,18 @@ pnpm test:portable
 
 `test:portable` 使用独立测试目录检查启动、停止、重复启动、端口冲突、持久化、包内容与更新兼容，不向默认用户商品库写入测试数据。它与 Vitest、E2E 都需要实际运行；商店截图不是验收结果的替代品。
 
+Phase 11 新增分析编辑、草稿恢复、复制权限失败、版本冲突与 375 / 768 / 1280 宽度回归。E2E 每次使用独立 `.test-data/e2e/<时间>`，避免失败重跑被旧验收商品污染。跨版本升级、最终 ZIP 完整性与真实界面截图可单独复现（都先停止 3000 服务）：
+
+```powershell
+pnpm test:upgrade --from artifacts/ProductSpy-0.2.0-windows-x64 --to artifacts/ProductSpy-0.3.0-windows-x64
+node scripts/validate-release.mjs
+pnpm capture:experience
+```
+
+`capture:experience` 自动启动独立测试数据目录中的便携服务，通过真实 Amazon 页面、扩展 action、UI 配对与保存生成截图，结束后停止自己启动的服务。产物在 `artifacts/ProductSpy-0.3.0-experience/` 和同名 ZIP；来源、浏览器与尺寸记录在 `provenance.json`，若页面受限则报告失败，不用模拟页面代替。
+
 ## 下一阶段
 
 1. 建立更多国家站、变体和动态视频的实页回归样本，提高采集覆盖率。
 2. 增加商品分组、标签与资料导入 / 导出，方便管理更多素材。
-3. 增加可编辑分析、营销模板、目标市场语言和多版本脚本，提升创作输出质量。
+3. 在现有可编辑分析基础上增加目标市场语言、营销模板与多版本脚本。

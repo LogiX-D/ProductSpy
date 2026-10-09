@@ -1,0 +1,104 @@
+{
+  "version": "0.3.0",
+  "source": "portable production build",
+  "browser": "Chrome for Testing, not installed Chrome stable",
+  "fixture": false,
+  "ai": "mock",
+  "pageUrl": "https://www.amazon.com/dp/B00TTD9BRC",
+  "capturedAt": "2026-10-09T04:33:15.502Z",
+  "verified": true,
+  "checks": [
+    "portable startup",
+    "first consent",
+    "real Amazon capture",
+    "authenticated pairing",
+    "product save",
+    "Mock analysis",
+    "analysis after reload",
+    "real editing UI",
+    "short popup visible action",
+    "375px and 1280px layouts without horizontal overflow"
+  ],
+  "screenshots": [
+    {
+      "file": "01-popup.png",
+      "width": 400,
+      "height": 600,
+      "sha256": "ec5adbbe4598e0dafe0c9d3a1b1971895b849b48a3445fb8d65f557f93db456a",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "02-popup-short.png",
+      "width": 400,
+      "height": 480,
+      "sha256": "9810d90e083e986be45cf703bfdb66bb0c0378934a5b9cc7e4382a299aa5a54f",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "03-dashboard.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "bd689e47c80a95d9a3c9de68bfcbe9071f2e1df4ea67bb113b9e51dcec522e26",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "04-library.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "45995e0f365a4101049efbabdb16890e7387ce8735ffa076cffc688307c19bc3",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "05-detail.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "58f9b1e22afc12131e174e45821d99c3efbdc23d3e37d22f922df5d7109a0970",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "06-media.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "f228af473bd401236a6c831cf8e52a702d51a999426a8d848eddbca0622916c4",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "07-analysis.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "0629a850842f3444746880eac523272517a73c1f4a16daae8e9407b17228ad96",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "08-editor.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "ff01d648bf6914073db9276e97276e53fb0454379e01a174975cb2c437647d46",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "09-library-mobile.png",
+      "width": 375,
+      "height": 812,
+      "sha256": "3fb907ee0327f02d2ef3b05522b655bbe23e5fb95993fc8d6410fef9ac3d49aa",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "10-analysis-mobile.png",
+      "width": 375,
+      "height": 812,
+      "sha256": "0d977bbfc5123d86d93e8434f9b1997470a82e8197cb3ac485106b97c6969786",
+      "horizontalOverflow": false
+    }
+  ],
+  "browserVersion": "156.0.8078.4",
+  "capture": {
+    "asin": "B00TTD9BRC",
+    "title": "CeraVe 保湿霜 16 盎司（约 453.59 克）日常面部和身体保湿霜，适用于干性肌肤, 19 盎司",
+    "price": "TWD607.32",
+    "currency": "TWD",
+    "images": 12,
+    "videos": 2,
+    "bulletPoints": 5
+  }
+}

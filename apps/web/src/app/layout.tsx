@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { WorkspaceShell } from '../components/workspace-shell';
 import './globals.css';
+import '../components/workspace.css';
+import '../components/analysis.css';
 
 export const metadata: Metadata = {
   title: 'ProductSpy — 竞品素材工作台',
