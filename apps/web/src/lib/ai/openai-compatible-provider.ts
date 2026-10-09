@@ -52,12 +52,18 @@ function endpoint(baseUrl: string): string {
       url.hash
     )
       throw new Error('Invalid endpoint');
+    if (url.protocol === 'http:' && !['localhost', '127.0.0.1', '[::1]'].includes(url.hostname))
+      throw new AppError(
+        503,
+        'AI_BASE_URL：远程 AI 服务必须使用 HTTPS；HTTP 仅限 localhost、127.0.0.1 或 [::1] 本机服务',
+      );
     const basePath = url.pathname.replace(/\/+$/, '');
     url.pathname = basePath.endsWith('/chat/completions')
       ? basePath
       : `${basePath || '/v1'}/chat/completions`;
     return url.toString();
-  } catch {
+  } catch (error) {
+    if (error instanceof AppError) throw error;
     throw new AppError(503, 'AI_BASE_URL 配置无效，请设置 OpenAI-compatible API 地址并重启工作台');
   }
 }

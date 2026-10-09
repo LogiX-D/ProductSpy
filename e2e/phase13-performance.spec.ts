@@ -9,6 +9,7 @@ import type {
   LibraryImportResult,
 } from '../packages/shared/src/library-transfer';
 import { libraryFixtures } from './library-fixtures';
+import { PRODUCTSPY_VERSION } from '../packages/shared/src/version';
 
 const BASE = 'http://127.0.0.1:3000';
 const headers = {
@@ -37,6 +38,11 @@ test('synthetic library benchmark: 100 and 500 products, bounded DOM, filters, b
   request,
 }) => {
   test.setTimeout(180000);
+  const status = await request.get(`${BASE}/api/status`);
+  expect(status.ok()).toBe(true);
+  expect(((await status.json()) as { data: { version: string } }).data.version).toBe(
+    PRODUCTSPY_VERSION,
+  );
   await post(request, '/api/session', {});
   const fixtures = libraryFixtures(500);
   const ids = fixtures.map((product) => product.id);
@@ -45,7 +51,7 @@ test('synthetic library benchmark: 100 and 500 products, bounded DOM, filters, b
     '.test-data/phase13-performance',
     new Date().toISOString().replace(/[:.]/g, '-'),
   );
-  const shots = resolve('artifacts/ProductSpy-0.5.0-library-experience');
+  const shots = resolve(`artifacts/ProductSpy-${PRODUCTSPY_VERSION}-library-experience`);
   await mkdir(output, { recursive: true });
   await mkdir(shots, { recursive: true });
   const metrics: {
@@ -271,7 +277,7 @@ test('synthetic library benchmark: 100 and 500 products, bounded DOM, filters, b
       }).catch(() => undefined);
     const report = {
       schemaVersion: 1,
-      version: '0.5.0',
+      version: PRODUCTSPY_VERSION,
       capturedAt: new Date().toISOString(),
       passed,
       synthetic: true,

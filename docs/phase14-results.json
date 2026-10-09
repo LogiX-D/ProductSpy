@@ -1,0 +1,476 @@
+{
+  "schemaVersion": 1,
+  "phase": 14,
+  "version": "0.5.1",
+  "baseVersion": "0.5.0",
+  "baseCommit": "80644311d216cfdffe3751777038dde36d9ee0e5",
+  "validatedAt": "2026-10-09T08:25:21.757Z",
+  "platform": {
+    "os": "Microsoft Windows 11 Pro for Workstations",
+    "build": "10.0.26300",
+    "architecture": "x64",
+    "developerMachineOnly": true
+  },
+  "automaticEngineeringChecksPassed": true,
+  "publicTestReady": false,
+  "readyForSmallClosedTest": true,
+  "originalRelease": {
+    "checkedAt": "2026-10-09T08:17:01.499Z",
+    "passed": true,
+    "version": "0.5.0",
+    "draft": true,
+    "sourceCommit": "80644311d216cfdffe3751777038dde36d9ee0e5",
+    "originalAssets": 7,
+    "originalAssetBytesUnchanged": true,
+    "url": "https://github.com/LogiX-D/ProductSpy/releases/tag/untagged-b70281b31c2e3ec9d73e"
+  },
+  "tests": {
+    "install": {
+      "command": "pnpm install --frozen-lockfile",
+      "passed": true
+    },
+    "typecheck": {
+      "command": "pnpm typecheck",
+      "passed": true
+    },
+    "lint": {
+      "command": "pnpm lint",
+      "passed": true,
+      "warnings": 0
+    },
+    "format": {
+      "command": "pnpm format:check",
+      "passed": true
+    },
+    "unit": {
+      "command": "pnpm test",
+      "passed": true,
+      "files": 40,
+      "tests": 468,
+      "originalTestsRetained": 455,
+      "newSecurityTests": 13
+    },
+    "production": {
+      "command": "pnpm build",
+      "passed": true,
+      "web": "Next.js 16.4.0",
+      "extension": "MV3 / Vite"
+    },
+    "e2e": {
+      "command": "pnpm test:e2e",
+      "passed": true,
+      "tests": 17,
+      "reportedDuration": "1.5m",
+      "fixturesNotRealAmazon": true,
+      "externalAiRequests": 0
+    },
+    "correctedPerformanceRegression": {
+      "command": "pnpm test:library-performance",
+      "passed": true,
+      "tests": 1,
+      "versionCheckedAgainstProductionApi": true
+    },
+    "portable": {
+      "command": "pnpm test:portable",
+      "passed": true,
+      "count": 10,
+      "checks": [
+        {
+          "name": "package inventory SHA-256, bundled runtime, MV3 permissions, no user data or env",
+          "passed": true
+        },
+        {
+          "name": "port conflict is explained, unknown listener preserved",
+          "passed": true
+        },
+        {
+          "name": "headless launcher with no installed Node.js/pnpm on PATH, localhost, Mock, authentication",
+          "passed": true
+        },
+        {
+          "name": "duplicate start creates no second service process",
+          "passed": true
+        },
+        {
+          "name": "complete Mock analysis persists; graceful stop releases port and retains user data",
+          "passed": true
+        },
+        {
+          "name": "packaged HTTPS guard rejects unapproved HTTP before any local-trap request and preserves complete analysis",
+          "passed": true
+        },
+        {
+          "name": "AI settings use Windows DPAPI CurrentUser, no plaintext test key on disk",
+          "passed": true
+        },
+        {
+          "name": "restart retains complete ProductAnalysis, product ID, creation and update times",
+          "passed": true
+        },
+        {
+          "name": "same-schema reinstall/moved package retains complete analysis and single instance",
+          "passed": true
+        },
+        {
+          "name": "launcher crash cleanup and abandoned mutex recovery preserve data",
+          "passed": true
+        }
+      ],
+      "startedAt": "2026-10-09T08:17:13.402Z",
+      "finishedAt": "2026-10-09T08:17:49.136Z",
+      "ownedLocalTrapRequests": 0,
+      "realKeysUsed": 0
+    },
+    "upgrades": [
+      {
+        "fromVersion": "0.5.0",
+        "toVersion": "0.5.1",
+        "fixtureOnly": true,
+        "passed": true,
+        "count": 10,
+        "checks": [
+          {
+            "name": "distinct frozen source and closed-test target package versions and launcher/runtime hashes",
+            "passed": true
+          },
+          {
+            "name": "owned launcher 0.5.0: isolated user data, bundled runtime, Mock",
+            "passed": true
+          },
+          {
+            "name": "0.5.0 saves complete Product, edited analysis/history and supported group/tag metadata; stop leaves bytes unchanged",
+            "passed": true
+          },
+          {
+            "name": "owned launcher 0.5.1: isolated user data, bundled runtime, Mock",
+            "passed": true
+          },
+          {
+            "name": "0.5.0 → current package preserves entire Product, ID, timestamps, group/tag definitions, analysis metadata and history",
+            "passed": true
+          },
+          {
+            "name": "legacy archive, manual version, Japanese partial generation, request replay and local usage ledger",
+            "passed": true
+          },
+          {
+            "name": "new groups/tags and partial batch failure preserve all upgraded AI versions and metadata",
+            "passed": true
+          },
+          {
+            "name": "new package updates existing ID, keeps createdAt, archives stale analysis and restores version without losing newer history",
+            "passed": true
+          },
+          {
+            "name": "owned launcher 0.5.1: isolated user data, bundled runtime, Mock",
+            "passed": true
+          },
+          {
+            "name": "new package restart preserves complete edited Product and analysis, then releases owned processes",
+            "passed": true
+          }
+        ],
+        "startedAt": "2026-10-09T08:18:34.808Z",
+        "finishedAt": "2026-10-09T08:18:46.773Z"
+      },
+      {
+        "fromVersion": "0.4.0",
+        "toVersion": "0.5.1",
+        "fixtureOnly": true,
+        "passed": true,
+        "count": 10,
+        "checks": [
+          {
+            "name": "distinct frozen source and closed-test target package versions and launcher/runtime hashes",
+            "passed": true
+          },
+          {
+            "name": "owned launcher 0.4.0: isolated user data, bundled runtime, Mock",
+            "passed": true
+          },
+          {
+            "name": "0.4.0 saves complete Product, edited analysis/history and supported group/tag metadata; stop leaves bytes unchanged",
+            "passed": true
+          },
+          {
+            "name": "owned launcher 0.5.1: isolated user data, bundled runtime, Mock",
+            "passed": true
+          },
+          {
+            "name": "0.4.0 → current package preserves entire Product, ID, timestamps, group/tag definitions, analysis metadata and history",
+            "passed": true
+          },
+          {
+            "name": "legacy archive, manual version, Japanese partial generation, request replay and local usage ledger",
+            "passed": true
+          },
+          {
+            "name": "new groups/tags and partial batch failure preserve all upgraded AI versions and metadata",
+            "passed": true
+          },
+          {
+            "name": "new package updates existing ID, keeps createdAt, archives stale analysis and restores version without losing newer history",
+            "passed": true
+          },
+          {
+            "name": "owned launcher 0.5.1: isolated user data, bundled runtime, Mock",
+            "passed": true
+          },
+          {
+            "name": "new package restart preserves complete edited Product and analysis, then releases owned processes",
+            "passed": true
+          }
+        ],
+        "startedAt": "2026-10-09T08:18:47.107Z",
+        "finishedAt": "2026-10-09T08:18:58.823Z"
+      }
+    ],
+    "zip": {
+      "command": "node scripts/validate-release.mjs",
+      "passed": true,
+      "checks": [
+        {
+          "name": "portable: archive hash, bytes, count, CRC32, raw paths, private paths and credential scan",
+          "passed": true
+        },
+        {
+          "name": "portable: every bundle record matches actual ZIP bytes/SHA256; no missing or unlisted files",
+          "passed": true,
+          "records": 1927
+        },
+        {
+          "name": "extension: archive hash, bytes, count, CRC32, raw paths, private paths and credential scan",
+          "passed": true
+        },
+        {
+          "name": "extension: root MV3 0.5.1, original permission/host allowlist, CSP, no source maps; embedded extension matches ZIP",
+          "passed": true,
+          "embeddedFiles": 11
+        }
+      ],
+      "failures": [],
+      "portable": {
+        "file": "ProductSpy-0.5.1-windows-x64.zip",
+        "bytes": 40683947,
+        "sha256": "241cb6e43bca958927a0804a8c77b0b0ca3a02e620b5c1d5db6d4357a4d7373e",
+        "entries": 1928,
+        "files": 1928,
+        "scannedTextFiles": 1898,
+        "crc32Verified": true,
+        "rawPathsVerified": true,
+        "privatePathsVerified": true,
+        "credentialPatternScanPassed": true,
+        "configuredApiKeysChecked": 0,
+        "bundleRecordsVerified": 1927,
+        "embeddedExtensionFilesVerified": 11
+      },
+      "extension": {
+        "file": "ProductSpy-0.5.1-extension.zip",
+        "bytes": 395519,
+        "sha256": "5404465164ce8f4349999bf9d00c432840e0a66f0890a2a308033146eeb3d1c2",
+        "entries": 226,
+        "files": 226,
+        "scannedTextFiles": 222,
+        "crc32Verified": true,
+        "rawPathsVerified": true,
+        "privatePathsVerified": true,
+        "credentialPatternScanPassed": true,
+        "configuredApiKeysChecked": 0,
+        "manifestVersion": 3,
+        "permissions": ["activeTab", "scripting", "storage"],
+        "hostPermissions": ["http://localhost/*", "http://127.0.0.1/*"],
+        "sourceMapsAbsent": true
+      }
+    }
+  },
+  "bugs": [
+    {
+      "id": "PS14-001",
+      "priority": "P1",
+      "category": "AI Key transport",
+      "reproduced": true,
+      "originalFailingTests": 8,
+      "reproductionSentKeys": false,
+      "fixed": true,
+      "remediation": "Require remote HTTPS in provider and Windows save guard; permit explicit localhost/127.0.0.1/::1 HTTP only.",
+      "packagedGuardPassed": true,
+      "productFileByteEqualAfterRejectedRequest": true,
+      "manualSettingsSavePending": true
+    },
+    {
+      "id": "PS14-002",
+      "priority": "P2",
+      "category": "Acceptance evidence version and directory",
+      "reproduced": true,
+      "fixed": true,
+      "remediation": "Use shared version and verify production API version before performance capture; restore old directory from frozen original ZIP.",
+      "originalReleasedZipsUnchanged": true
+    }
+  ],
+  "realAmazon": {
+    "report": "closed-test/amazon-live-results.json",
+    "attemptedDistinctAsins": 6,
+    "capturedDistinctAsins": 5,
+    "auditedDistinctAsins": 5,
+    "navigationTimeouts": 1,
+    "browser": {
+      "distribution": "Chrome for Testing (Playwright chromium channel)",
+      "version": "156.0.8078.4",
+      "headless": true,
+      "stableChromeManualAcceptance": false
+    },
+    "rawHtmlProfilesAndDraftsExcludedFromGit": true,
+    "descriptionContentReviewPerformed": false,
+    "dynamicVariantInteractionPerformed": false
+  },
+  "realWorkflow": {
+    "verified": true,
+    "asin": "B006JH8T3S",
+    "repeatedExistingSampleNotAdditionalDistinctAsin": true,
+    "source": "portable production build",
+    "pageUrl": "https://www.amazon.com/dp/B006JH8T3S",
+    "capturedAt": "2026-10-09T08:19:31.708Z",
+    "browser": "Chrome for Testing, not installed Chrome stable",
+    "browserVersion": "156.0.8078.4",
+    "fixture": false,
+    "ai": "mock",
+    "humanMouseAcceptance": false,
+    "checks": [
+      "portable startup",
+      "first consent",
+      "real Amazon capture",
+      "authenticated pairing",
+      "product save",
+      "Mock analysis",
+      "analysis after reload",
+      "real editing UI",
+      "short popup visible action",
+      "375px and 1280px layouts without horizontal overflow",
+      "saved AI preferences",
+      "Japanese partial hooks generation preserves manual summary",
+      "saved analysis history and comparison",
+      "facts vs inferences and no review-text analysis",
+      "local usage ledger: zero real requests"
+    ],
+    "screenshotCount": 16,
+    "screenshotProvenance": "screenshots/phase14/provenance.json"
+  },
+  "performance": {
+    "passed": true,
+    "version": "0.5.1",
+    "synthetic": true,
+    "sampleScope": "500 basic products, 50 complete synthetic analyses/history; not maximum-size histories",
+    "metrics": [
+      {
+        "count": 100,
+        "importMs": 33.35489999999993,
+        "apiMedianMs": 6.143399999999929,
+        "apiMaxMs": 6.910400000000095,
+        "renderMs": 193.60080000000005,
+        "filterMs": 45.29049999999995,
+        "pageChangeMs": 64.01160000000004,
+        "renderedCards": 36
+      },
+      {
+        "count": 500,
+        "importMs": 64.27470000000017,
+        "apiMedianMs": 14.042400000000043,
+        "apiMaxMs": 18.470199999999977,
+        "renderMs": 135.98260000000005,
+        "filterMs": 39.396999999999935,
+        "pageChangeMs": 76.05549999999994,
+        "renderedCards": 36,
+        "batchMs": 110.81669999999986,
+        "backupMs": 55.738900000000285,
+        "backupBytes": 579586,
+        "restoreMs": 151.53809999999976
+      }
+    ],
+    "apiReadsPerScale": 5,
+    "caveat": "Single local machine; first navigation and later cache states differ. Not 500 real Amazon products or maximum history/media size."
+  },
+  "ai": {
+    "paidAuthorizationProvided": false,
+    "authorizedModel": null,
+    "authorizedRequestLimit": null,
+    "authorizedBudget": null,
+    "externalRequests": 0,
+    "realModelQualityVerified": false,
+    "measuredActualFees": null,
+    "preparedRealHistoricalCategories": 6,
+    "qualityScoresEntered": 0,
+    "localConfiguration": {
+      "checkedAt": "2026-10-09T08:09:22.090Z",
+      "paidModelAuthorizationProvided": false,
+      "apiKeyInProcess": false,
+      "localEnvFiles": [],
+      "windowsEncryptedAiSettingsExists": false,
+      "inspectedKeyContents": false,
+      "externalAiCalls": 0
+    },
+    "sampleCatalog": "closed-test/ai-samples.json",
+    "scorecard": "closed-test/ai-scorecard.csv"
+  },
+  "feedback": {
+    "invited": 0,
+    "participated": 0,
+    "attemptedInstallationPeople": 0,
+    "feedbackReceived": 0,
+    "candidateSlotsAreNotPeople": true,
+    "plannedPeople": [5, 10],
+    "installationSuccessRate": null,
+    "firstSuccessfulCaptureSeconds": null,
+    "recurringUseOrWillingnessToPay": null,
+    "summary": "closed-test/feedback-summary.md"
+  },
+  "manualAcceptance": {
+    "stableChromeFoundAtStandardPathsOrAppPaths": false,
+    "windows10Device": "not tested",
+    "nonDeveloperWindows11Device": "not tested",
+    "mouseInstallAndExit": "not tested",
+    "highDpi": "not tested",
+    "securityWarnings": "not tested",
+    "report": "closed-test/manual-evidence.md"
+  },
+  "compatibility": {
+    "schemaChangedFrom050": false,
+    "localSchema": 2,
+    "exchangeSchema": 1,
+    "preservesGroupTagDefinitionsAndMemberships": true,
+    "preservesOriginalProductAndCompleteHistory": true,
+    "exactRollbackRequiresStoppedFullDirectoryBackup": true,
+    "restoreIsNonDestructiveMerge": true,
+    "phase040RollbackRequiresPreClassificationBackup": true,
+    "dpapiBoundToOriginalWindowsUser": true,
+    "extensionUnsyncedDataMustBeSavedBeforeReinstall": true
+  },
+  "artifacts": {
+    "portable": {
+      "file": "ProductSpy-0.5.1-windows-x64.zip",
+      "sha256": "241cb6e43bca958927a0804a8c77b0b0ca3a02e620b5c1d5db6d4357a4d7373e",
+      "bytes": 40683947,
+      "files": 1928
+    },
+    "extension": {
+      "file": "ProductSpy-0.5.1-extension.zip",
+      "version": "0.5.1",
+      "sha256": "5404465164ce8f4349999bf9d00c432840e0a66f0890a2a308033146eeb3d1c2",
+      "files": 226,
+      "bytes": 395519
+    },
+    "fullRealUiScreenshots": {
+      "file": "ProductSpy-0.5.1-experience.zip",
+      "sha256": "5523c86d891ae8821a03c4a52df003fd76dc544cc4fade622fb21aae0e8e795e",
+      "screenshots": 16
+    }
+  },
+  "remainingGates": [
+    "Official stable Chrome manual installation/pairing",
+    "Ordinary Windows 10/11 x64 device workflows and recovery",
+    "Mouse/WinForms/high-DPI/security warning evidence",
+    "Real closed-test feedback",
+    "Beauty page timeout revisit without bypass",
+    "Dynamic variants and video playback/content review",
+    "Real AI quality and fees only after complete authorization"
+  ]
+}

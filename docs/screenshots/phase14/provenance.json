@@ -1,0 +1,49 @@
+{
+  "version": "0.5.1",
+  "capturedAt": "2026-10-09T08:19:31.708Z",
+  "source": "portable production build",
+  "browser": "Chrome for Testing, not installed Chrome stable",
+  "browserVersion": "156.0.8078.4",
+  "realAmazonPage": true,
+  "ai": "mock",
+  "pageUrl": "https://www.amazon.com/dp/B006JH8T3S",
+  "verified": true,
+  "privateTestDataExcluded": true,
+  "screenshots": [
+    {
+      "file": "01-popup.png",
+      "width": 400,
+      "height": 600,
+      "sha256": "320126368f0db28493819ad3e05d795e924a1a55479cfefe83a66b2291ed95d6",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "04-library.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "595730366ab51621e6d1361089e5e650d596e1e64158690fc2ca8faf96c897a4",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "07-analysis.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "0ca87128aeb540abbc3a965b6dfc4e674743de149297083c8af59cbc5dc3687d",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "15-version-comparison.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "4cb3eb8dc34dc71a1f5e4f834ea60ce64a38d03fba48f919eb0a05a0fb403025",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "16-local-usage.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "edffae021e35d57f3873da7d79a5b9f6bdb38e7cc3646c0e5524878cd4a4d805",
+      "horizontalOverflow": false
+    }
+  ]
+}

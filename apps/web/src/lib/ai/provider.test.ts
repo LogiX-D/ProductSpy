@@ -103,6 +103,36 @@ describe('Mock and AI provider configuration', () => {
 });
 
 describe('OpenAI-compatible HTTP provider', () => {
+  it.each([
+    'http://api.example.com/v1',
+    'http://192.168.1.10:8080/v1',
+    'http://localhost.example.com/v1',
+    'http://127.0.0.1.example.com/v1',
+    'http://127.0.0.2/v1',
+    'http://0.0.0.0/v1',
+    'http://[::ffff:127.0.0.1]/v1',
+    'http://localhost./v1',
+  ])('rejects unencrypted non-local API %s before any request', (baseUrl) => {
+    const fetch = vi.fn();
+    vi.stubGlobal('fetch', fetch);
+    expect(() => new OpenAICompatibleProvider({ apiKey: 'test-placeholder', baseUrl })).toThrow(
+      'HTTPS',
+    );
+    expect(fetch).not.toHaveBeenCalled();
+  });
+  it.each([
+    'http://localhost:11434/v1',
+    'http://127.0.0.1:11434/v1',
+    'http://[::1]:11434/v1',
+    'https://api.example.com/v1',
+  ])('accepts secure remote or explicit local API %s without a request', (baseUrl) => {
+    const fetch = vi.fn();
+    vi.stubGlobal('fetch', fetch);
+    expect(
+      () => new OpenAICompatibleProvider({ apiKey: 'test-placeholder', baseUrl }),
+    ).not.toThrow();
+    expect(fetch).not.toHaveBeenCalled();
+  });
   it('calls a real local HTTP endpoint and validates the response contract', async () => {
     const analysis = await new MockAIProvider().analyze(product);
     let captured: { url?: string; authorization?: string; body: string } | undefined;

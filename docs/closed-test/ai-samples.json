@@ -1,0 +1,223 @@
+{
+  "format": "productspy-closed-test-ai-sample-catalog",
+  "schemaVersion": 1,
+  "preparedForVersion": "0.5.1",
+  "preparedAtLocalDate": "2026-10-09",
+  "timezone": "Asia/Shanghai",
+  "historicalEvidenceVersion": "Phase 9",
+  "historicalEvidence": "docs/phase9-results.json",
+  "historicalEvidenceSha256": "d982653da887b832eddee8731fcacf6ee62e798f247a7d6e4eafc54c25e1c495",
+  "authorization": {
+    "apiKeyAuthorized": false,
+    "model": null,
+    "maxRequests": null,
+    "budget": null,
+    "currency": null,
+    "deadline": null
+  },
+  "execution": {
+    "externalAiRequests": 0,
+    "realModelQualityVerified": false,
+    "scores": null,
+    "currentPageRefreshRequired": true,
+    "reviewTextCollected": false,
+    "mediaUploaded": false
+  },
+  "notes": [
+    "This is a public reference catalog, not a Product import file or a private library backup.",
+    "Real Amazon product references were captured in Phase 9 on 2026-10-08; no current AI evaluation has been performed.",
+    "Historical prices were shown in TWD under anonymous delivery context; do not infer USD from an Amazon.com URL.",
+    "Page claims are not independently verified product performance, and counts are not review body text.",
+    "Refresh and freeze the current selected variant before any explicitly authorized AI request."
+  ],
+  "samples": [
+    {
+      "id": "AI-01",
+      "category": "electronics",
+      "categoryLabel": "电子产品",
+      "label": "Logitech C920",
+      "asin": "B006JH8T3S",
+      "url": "https://www.amazon.com/dp/B006JH8T3S",
+      "historicalCapturedAt": "2026-10-08T13:56:32.127Z",
+      "evidencePointer": "rows[1]",
+      "historicalPage": {
+        "httpStatus": 200,
+        "titleChecked": true,
+        "brand": "Logitech",
+        "price": "TWD2,150.72",
+        "currency": "TWD",
+        "images": 10,
+        "videoUrls": 2,
+        "bulletPoints": 1,
+        "rating": 4.6,
+        "reviewCount": 32792
+      },
+      "factReviewFocus": [
+        "页面宣称 1080p，不代表实测所有模式、帧率和画质。",
+        "未给出的自动追踪、降噪、帧率及认证不得写成已有功能。",
+        "视频链接数量不能理解为已观看或验证视频内容。"
+      ],
+      "status": "historically-captured-current-input-pending",
+      "aiEvaluation": null
+    },
+    {
+      "id": "AI-02",
+      "category": "home",
+      "categoryLabel": "家居用品",
+      "label": "upsimples 相框",
+      "asin": "B0BQR2BQYZ",
+      "url": "https://www.amazon.com/dp/B0BQR2BQYZ",
+      "historicalCapturedAt": "2026-10-08T13:57:23.890Z",
+      "evidencePointer": "rows[6]",
+      "historicalPage": {
+        "httpStatus": 200,
+        "titleChecked": true,
+        "brand": "upsimples",
+        "price": "TWD223.55",
+        "currency": "TWD",
+        "images": 8,
+        "videoUrls": 2,
+        "bulletPoints": 5,
+        "rating": 4.4,
+        "reviewCount": 44119
+      },
+      "factReviewFocus": [
+        "历史标题的 27.94×35.56 厘米与卖点中数项尺寸表达不同，应指出资料矛盾并复核。",
+        "包装、耐用和照片固定属于页面宣称，不能承诺运输零破损。",
+        "场景可以建议横竖悬挂，但不能生造墙面适配、材质或配件。"
+      ],
+      "status": "historically-captured-current-input-pending",
+      "aiEvaluation": null
+    },
+    {
+      "id": "AI-03",
+      "category": "beauty",
+      "categoryLabel": "美妆产品",
+      "label": "CeraVe 保湿霜",
+      "asin": "B00TTD9BRC",
+      "url": "https://www.amazon.com/dp/B00TTD9BRC",
+      "historicalCapturedAt": "2026-10-08T13:56:43.400Z",
+      "evidencePointer": "rows[2]",
+      "historicalPage": {
+        "httpStatus": 200,
+        "titleChecked": true,
+        "brand": "CeraVe",
+        "price": "TWD606.36",
+        "currency": "TWD",
+        "images": 12,
+        "videoUrls": 2,
+        "bulletPoints": 5,
+        "rating": 4.7,
+        "reviewCount": 148820
+      },
+      "factReviewFocus": [
+        "历史标题同时含 16 和 19 盎司，不得擅自选择容量；先核对当前规格。",
+        "保湿、成分和相关认可属于页面宣称，不是实际功效或认证复核结果。",
+        "不写治疗、保证改善、适用于所有肤质或伪造用户使用反馈。"
+      ],
+      "status": "historically-captured-current-input-pending",
+      "aiEvaluation": null
+    },
+    {
+      "id": "AI-04",
+      "category": "clothing",
+      "categoryLabel": "服装鞋帽",
+      "label": "Hanes EcoSmart 连帽衫",
+      "asin": "B00JUM2V4W",
+      "url": "https://www.amazon.com/dp/B00JUM2V4W",
+      "historicalCapturedAt": "2026-10-08T13:58:24.895Z",
+      "evidencePointer": "rows[9]",
+      "historicalPage": {
+        "httpStatus": 200,
+        "titleChecked": true,
+        "brand": "Hanes",
+        "price": "TWD550.39",
+        "currency": "TWD",
+        "images": 8,
+        "videoUrls": 0,
+        "bulletPoints": 5,
+        "rating": 4.5,
+        "reviewCount": 172099
+      },
+      "factReviewFocus": [
+        "棉质绒混纺是页面文案，不提供比例时不能声称纯棉或给出具体含量。",
+        "舒适、保暖和耐磨宣称不是实测结论；不保证尺码、耐洗或不缩水。",
+        "视频空值表示没有可靠可提取链接，不证明商品没有任何视频。"
+      ],
+      "status": "historically-captured-current-input-pending",
+      "aiEvaluation": null
+    },
+    {
+      "id": "AI-05",
+      "category": "kitchen",
+      "categoryLabel": "厨房用品",
+      "label": "OXO 小号饼干勺",
+      "asin": "B0000CCY1E",
+      "url": "https://www.amazon.com/dp/B0000CCY1E",
+      "historicalCapturedAt": "2026-10-08T13:58:47.121Z",
+      "evidencePointer": "rows[11]",
+      "historicalPage": {
+        "httpStatus": 200,
+        "titleChecked": true,
+        "brand": "OXO",
+        "price": "TWD574.06",
+        "currency": "TWD",
+        "images": 9,
+        "videoUrls": 1,
+        "bulletPoints": 5,
+        "rating": 4.4,
+        "reviewCount": 3518
+      },
+      "factReviewFocus": [
+        "标题中的一汤匙容量及卖点的饼干尺寸属于页面宣称，烘焙结果需实际复核。",
+        "不生造可放洗碗机、耐烤箱、食品认证或适用于任意硬度面团。",
+        "脚本应能拍摄取料和脱模，不保证每次成品尺寸或数量。"
+      ],
+      "status": "historically-captured-current-input-pending",
+      "aiEvaluation": null
+    },
+    {
+      "id": "AI-06",
+      "category": "multi-variant",
+      "categoryLabel": "多规格、多变体",
+      "label": "Crocs Classic 颜色变体",
+      "asin": "B0014C5S7S",
+      "url": "https://www.amazon.com/dp/B0014C5S7S",
+      "historicalCapturedAt": "2026-10-08T13:57:10.582Z",
+      "evidencePointer": "rows[5] and variants[0]",
+      "historicalPage": {
+        "httpStatus": 200,
+        "titleChecked": true,
+        "brand": "Crocs",
+        "price": "TWD1,119.02",
+        "currency": "TWD",
+        "images": 13,
+        "videoUrls": 0,
+        "bulletPoints": 5,
+        "rating": 4.8,
+        "reviewCount": 488910
+      },
+      "historicalVariantEvidence": {
+        "capturedAt": "2026-10-08T13:41:14.127Z",
+        "normalVisibleColorClick": true,
+        "fromAsin": "B0014C5S7S",
+        "toAsin": "B0FPSBG9CY",
+        "toUrl": "https://www.amazon.com/dp/B0FPSBG9CY",
+        "priceBefore": "TWD1,119.02",
+        "priceAfter": "TWD1,598.73",
+        "currency": "TWD",
+        "asinMatchesPurchaseBox": true,
+        "mainImageChangedAndMatchesCurrentPage": true,
+        "priceMatchesCurrentPage": true,
+        "scope": "ASIN, price and main image only; other child-variant fields not fully re-audited"
+      },
+      "factReviewFocus": [
+        "切换规格后冻结当前 ASIN、价格和主图，不能混用父商品或另一个颜色资料。",
+        "页面材料、认证和质保条款需在当前市场和规格重新核对，不能擅自推广。",
+        "舒适度和尺码建议属于页面宣称或待验证假设，不冒充用户评论结论。"
+      ],
+      "status": "historically-captured-current-input-pending",
+      "aiEvaluation": null
+    }
+  ]
+}

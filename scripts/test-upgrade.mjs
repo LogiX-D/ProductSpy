@@ -39,8 +39,8 @@ const baseUrl = 'http://127.0.0.1:3000';
 
 if (values.help) {
   console.log(
-    'node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.4.0-windows-x64 --to artifacts/ProductSpy-0.5.0-windows-x64\n' +
-      'Requires Windows and a free port 3000. Uses only fresh .test-data/phase13-upgrade data. Existing services are never stopped.',
+    'node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.5.0-windows-x64 --to artifacts/ProductSpy-0.5.1-windows-x64\n' +
+      'Requires Windows and a free port 3000. Accepts frozen 0.4.0 or 0.5.0 source packages. Uses only fresh .test-data/phase14-upgrade data. Existing services are never stopped.',
   );
 } else {
   await main();
@@ -56,7 +56,7 @@ async function main() {
     newPackage.toLowerCase(),
     'Upgrade requires two distinct package directories.',
   );
-  const evidenceParent = resolve('.test-data/phase13-upgrade');
+  const evidenceParent = resolve('.test-data/phase14-upgrade');
   await mkdir(evidenceParent, { recursive: true });
   const evidenceRoot = await mkdtemp(
     join(evidenceParent, `${new Date().toISOString().replace(/[:.]/g, '-')}-`),
@@ -272,10 +272,9 @@ async function main() {
   try {
     const oldInventory = await inspectPackage(oldPackage);
     const newInventory = await inspectPackage(newPackage);
-    assert.equal(
-      oldInventory.version,
-      '0.4.0',
-      'Phase 12 fixture must run the actual 0.4.0 portable package.',
+    assert(
+      ['0.4.0', '0.5.0'].includes(oldInventory.version),
+      'Upgrade fixture must run the actual frozen 0.4.0 or 0.5.0 portable package.',
     );
     assert.equal(
       newInventory.version,
@@ -290,7 +289,7 @@ async function main() {
     report.fromVersion = oldInventory.version;
     report.toVersion = newInventory.version;
     report.checks.push({
-      name: 'distinct Phase 12 and Phase 13 package versions and launcher/runtime hashes',
+      name: 'distinct frozen source and closed-test target package versions and launcher/runtime hashes',
       passed: true,
     });
 
@@ -304,12 +303,44 @@ async function main() {
     assert.deepEqual(asDraft(saved), fixture, 'Old package must save every fixture field.');
     const oldGenerated = await request('/api/analyze-product', 'POST', saved);
     const oldGeneratedProduct = await onlyProduct(saved.id);
-    const oldAnalysis = { ...oldGenerated, summary: 'v0.4.0 原有人工摘要：升级不得覆盖。' };
+    const oldAnalysis = {
+      ...oldGenerated,
+      summary: `v${oldInventory.version} 原有人工摘要：升级不得覆盖。`,
+    };
     await request(`/api/products/${encodeURIComponent(saved.id)}`, 'PATCH', {
       analysis: oldAnalysis,
       expectedUpdatedAt: oldGeneratedProduct.updatedAt,
     });
     assertCompleteAnalysis(oldAnalysis);
+    const baselineLibrary = { groups: [], tags: [] };
+    if (oldInventory.version === '0.5.0') {
+      const grouped = await request('/api/library', 'POST', {
+        kind: 'group',
+        action: 'create',
+        name: '升级前分组',
+        color: '#334155',
+      });
+      const tagged = await request('/api/library', 'POST', {
+        kind: 'tag',
+        action: 'create',
+        name: '升级前标签',
+        color: '#7c3aed',
+      });
+      baselineLibrary.groups = grouped.groups;
+      baselineLibrary.tags = tagged.tags;
+      const baselineGroupBatch = await request('/api/library/batch', 'POST', {
+        ids: [saved.id],
+        operation: 'add-groups',
+        groupIds: baselineLibrary.groups.map((item) => item.id),
+      });
+      const baselineTagBatch = await request('/api/library/batch', 'POST', {
+        ids: [saved.id],
+        operation: 'add-tags',
+        tagIds: baselineLibrary.tags.map((item) => item.id),
+      });
+      assert.deepEqual(baselineGroupBatch.succeededIds, [saved.id]);
+      assert.deepEqual(baselineTagBatch.succeededIds, [saved.id]);
+    }
     const oldProduct = await onlyProduct(saved.id);
     assert.equal(oldProduct.createdAt, saved.createdAt);
     assert.deepEqual(oldProduct.aiAnalysis, oldAnalysis);
@@ -323,7 +354,7 @@ async function main() {
       'Stopping the old package must not alter the saved database.',
     );
     report.checks.push({
-      name: '0.4.0 saves complete Product, edited analysis and history; stop leaves bytes unchanged',
+      name: `${oldInventory.version} saves complete Product, edited analysis/history and supported group/tag metadata; stop leaves bytes unchanged`,
       passed: true,
     });
 
@@ -340,8 +371,8 @@ async function main() {
       'Reading with the new package must not rewrite old data.',
     );
     const oldLibrary = await request('/api/library');
-    assert.deepEqual(oldLibrary.groups, []);
-    assert.deepEqual(oldLibrary.tags, []);
+    assert.deepEqual(oldLibrary.groups, baselineLibrary.groups);
+    assert.deepEqual(oldLibrary.tags, baselineLibrary.tags);
     assert.equal(
       await readFile(databaseFile, 'utf8'),
       oldDatabase,
@@ -349,7 +380,7 @@ async function main() {
     );
     await snapshot('02-after-upgrade', upgraded);
     report.checks.push({
-      name: '0.4.0 → current package preserves entire Product, ID, timestamps, analysis metadata and history',
+      name: `${oldInventory.version} → current package preserves entire Product, ID, timestamps, group/tag definitions, analysis metadata and history`,
       passed: true,
     });
 
@@ -492,8 +523,11 @@ async function main() {
     assert.deepEqual(organized.aiAnalysis, restored.aiAnalysis);
     assert.deepEqual(organized.analysisHistory, restored.analysisHistory);
     assert.deepEqual(organized.analysisMetadata, restored.analysisMetadata);
-    assert.deepEqual(organized.groupIds, [group.id]);
-    assert.deepEqual(organized.tagIds, [tag.id]);
+    assert.deepEqual(organized.groupIds, [
+      ...baselineLibrary.groups.map((item) => item.id),
+      group.id,
+    ]);
+    assert.deepEqual(organized.tagIds, [...baselineLibrary.tags.map((item) => item.id), tag.id]);
     report.checks.push({
       name: 'new groups/tags and partial batch failure preserve all upgraded AI versions and metadata',
       passed: true,
@@ -520,6 +554,10 @@ async function main() {
     const restartedLibrary = await request('/api/library');
     assert(restartedLibrary.groups.some((entry) => entry.id === group.id));
     assert(restartedLibrary.tags.some((entry) => entry.id === tag.id));
+    for (const definition of baselineLibrary.groups)
+      assert(restartedLibrary.groups.some((entry) => entry.id === definition.id));
+    for (const definition of baselineLibrary.tags)
+      assert(restartedLibrary.tags.some((entry) => entry.id === definition.id));
     await snapshot('04-edited-after-restart', afterRestart);
     await stop(restarted);
     assert.equal(await readFile(databaseFile, 'utf8'), editedDatabase);

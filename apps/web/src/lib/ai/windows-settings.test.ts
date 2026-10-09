@@ -53,6 +53,47 @@ function readSettings(scenario: string): Record<string, string> {
   }
 }
 describe('Windows launcher AI settings remain encrypted and backward compatible', () => {
+  it.runIf(windows)(
+    'rejects remote HTTP in the actual launcher save guard without writing settings',
+    () => {
+      const guardSource = `
+$ErrorActionPreference = 'Stop'
+$tokens = $null
+$errors = $null
+$ast = [Management.Automation.Language.Parser]::ParseFile($env:PRODUCTSPY_TEST_SOURCE, [ref]$tokens, [ref]$errors)
+if ($errors.Count -gt 0) { throw 'Launcher parse failed' }
+$guard = $ast.Find({param($node) $node -is [Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -eq 'Assert-AiBaseUrl'}, $true)
+if (-not $guard) { throw 'Missing API address guard' }
+Invoke-Expression $guard.Extent.Text
+$accepted = @('https://api.example.com/v1', 'http://localhost:11434/v1', 'http://127.0.0.1:11434/v1', 'http://[::1]:11434/v1')
+foreach ($url in $accepted) { Assert-AiBaseUrl $url | Out-Null }
+$rejected = @('http://api.example.com/v1', 'http://192.168.1.10:8080/v1', 'http://localhost.example.com/v1', 'http://127.0.0.1.example.com/v1', 'http://127.0.0.2/v1', 'http://0.0.0.0/v1', 'http://[::ffff:127.0.0.1]/v1', 'http://localhost./v1')
+foreach ($url in $rejected) {
+  $blocked = $false
+  try { Assert-AiBaseUrl $url | Out-Null } catch { $blocked = $_.Exception.Message.Contains('HTTPS') }
+  if (-not $blocked) { throw 'Unsafe endpoint accepted or missing clear HTTPS error' }
+}
+$invalid = @('javascript:alert(1)', 'https://user:password@api.example.com/v1', 'https://api.example.com/v1?key=value', 'https://api.example.com/v1#fragment')
+foreach ($url in $invalid) {
+  $blocked = $false
+  try { Assert-AiBaseUrl $url | Out-Null } catch { $blocked = $true }
+  if (-not $blocked) { throw 'Malformed endpoint accepted' }
+}
+'guard-passed'
+`;
+      const result = execFileSync(
+        'powershell.exe',
+        ['-NoProfile', '-NonInteractive', '-Command', guardSource],
+        {
+          encoding: 'utf8',
+          timeout: 15000,
+          windowsHide: true,
+          env: { ...process.env, PRODUCTSPY_TEST_SOURCE: launcher },
+        },
+      );
+      expect(result.trim()).toBe('guard-passed');
+    },
+  );
   it.runIf(windows)('loads defaults without a Key or any external call', () => {
     const settings = readSettings('empty');
     expect(settings.AI_MODE).toBe('auto');

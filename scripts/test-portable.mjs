@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { createServer } from 'node:net';
+import { createServer as createHttpServer } from 'node:http';
 import { createHash } from 'node:crypto';
 import { cp, mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
@@ -204,11 +205,15 @@ async function inspectPackage() {
   });
 }
 
-async function createEncryptedSettings() {
+async function createEncryptedSettings({
+  mode = 'mock',
+  baseUrl = 'https://api.openai.com/v1',
+  record = true,
+} = {}) {
   const settingsFile = join(dataRoot, 'settings/ai-settings.protected.json');
   const command = [
     'Add-Type -AssemblyName System.Security;',
-    "$settings = @{AI_MODE='mock';AI_BASE_URL='https://api.openai.com/v1';AI_MODEL='gpt-4o-mini';AI_API_KEY='portable-test-placeholder-no-real-key'};",
+    "$settings = @{AI_MODE=$env:PRODUCTSPY_TEST_MODE;AI_BASE_URL=$env:PRODUCTSPY_TEST_BASE_URL;AI_MODEL='gpt-4o-mini';AI_API_KEY='portable-test-placeholder-no-real-key'};",
     '$plain = [Text.Encoding]::UTF8.GetBytes(($settings | ConvertTo-Json -Compress));',
     '$encrypted = [Security.Cryptography.ProtectedData]::Protect($plain, $null, [Security.Cryptography.DataProtectionScope]::CurrentUser);',
     '$stored = @{version=1;protected=[Convert]::ToBase64String($encrypted)} | ConvertTo-Json;',
@@ -218,19 +223,26 @@ async function createEncryptedSettings() {
   ].join(' ');
   const child = spawn('powershell.exe', ['-NoProfile', '-Command', command], {
     windowsHide: true,
-    env: { ...process.env, PRODUCTSPY_TEST_SETTINGS: settingsFile },
+    env: {
+      ...process.env,
+      PRODUCTSPY_TEST_SETTINGS: settingsFile,
+      PRODUCTSPY_TEST_MODE: mode,
+      PRODUCTSPY_TEST_BASE_URL: baseUrl,
+    },
     stdio: 'ignore',
   });
   const [code] = await once(child, 'exit');
   assert.equal(code, 0, 'Windows DPAPI CurrentUser roundtrip must pass.');
   assert(!(await readFile(settingsFile, 'utf8')).includes('portable-test-placeholder'));
-  report.checks.push({
-    name: 'AI settings use Windows DPAPI CurrentUser, no plaintext test key on disk',
-    passed: true,
-  });
+  if (record)
+    report.checks.push({
+      name: 'AI settings use Windows DPAPI CurrentUser, no plaintext test key on disk',
+      passed: true,
+    });
 }
 
 let conflictServer;
+let aiTrapServer;
 try {
   await inspectPackage();
   assert.equal(
@@ -351,6 +363,50 @@ try {
     passed: true,
   });
 
+  let trapRequests = 0;
+  aiTrapServer = createHttpServer((_request, response) => {
+    trapRequests++;
+    response.writeHead(418);
+    response.end('Local trap: test regression must not send a request here.');
+  });
+  await new Promise((complete, reject) => {
+    aiTrapServer.once('error', reject);
+    aiTrapServer.listen(0, '127.0.0.2', complete);
+  });
+  const trapAddress = aiTrapServer.address();
+  assert(trapAddress && typeof trapAddress !== 'string');
+  // This is an owned local trap with a fake key: even a guard regression cannot call a paid API.
+  await createEncryptedSettings({
+    mode: 'real',
+    baseUrl: `http://127.0.0.2:${trapAddress.port}/v1`,
+    record: false,
+  });
+  const guarded = await start();
+  const blockedResponse = await fetch(`${baseUrl}/api/analyze-product`, {
+    method: 'POST',
+    headers: await apiSession(),
+    body: JSON.stringify({ product: analyzed, authorizeReal: true }),
+  });
+  const blocked = await blockedResponse.json();
+  assert.equal(blockedResponse.status, 503);
+  assert.equal(blocked.ok, false);
+  assert.match(blocked.error, /HTTPS/);
+  assert(!JSON.stringify(blocked).includes('portable-test-placeholder'));
+  assert.equal(trapRequests, 0, 'Blocked HTTP must never receive Key or product data.');
+  assert.deepEqual(
+    (await readProducts())[0],
+    analyzed,
+    'Invalid AI configuration must preserve every saved field.',
+  );
+  assert.equal(await readFile(databaseFile, 'utf8'), databaseBeforeStop);
+  await stop();
+  await guarded.process.completion;
+  await new Promise((complete) => aiTrapServer.close(complete));
+  report.checks.push({
+    name: 'packaged HTTPS guard rejects unapproved HTTP before any local-trap request and preserves complete analysis',
+    passed: true,
+  });
+
   await createEncryptedSettings();
 
   const restarted = await start();
@@ -414,6 +470,10 @@ try {
   throw error;
 } finally {
   if (conflictServer?.listening) await new Promise((complete) => conflictServer.close(complete));
+  if (aiTrapServer?.listening) {
+    aiTrapServer.closeAllConnections();
+    await new Promise((complete) => aiTrapServer.close(complete));
+  }
   if (activeLaunchers.size) {
     try {
       await stop();

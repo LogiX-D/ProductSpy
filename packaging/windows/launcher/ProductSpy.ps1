@@ -89,6 +89,17 @@ function Read-AiSettings {
     return $settings
 }
 
+function Assert-AiBaseUrl([string]$value) {
+    $baseUri = $null
+    if (-not [Uri]::TryCreate($value, [UriKind]::Absolute, [ref]$baseUri) -or $baseUri.Scheme -notin @('http', 'https') -or $baseUri.UserInfo) { throw 'API Base URL 需要有效的 HTTP / HTTPS 地址，且不能包含密码。' }
+    if ($baseUri.Query -or $baseUri.Fragment) { throw 'API Base URL 不能包含查询参数（?）或片段（#）。请填写 API 根地址，例如 https://api.openai.com/v1。' }
+    $hostName = $baseUri.DnsSafeHost.ToLowerInvariant()
+    $parsedAddress = $null
+    $ipv6Loopback = [Net.IPAddress]::TryParse($hostName, [ref]$parsedAddress) -and $parsedAddress.Equals([Net.IPAddress]::IPv6Loopback)
+    if ($baseUri.Scheme -eq 'http' -and $hostName -notin @('localhost', '127.0.0.1') -and -not $ipv6Loopback) { throw '远程 AI 服务必须使用 HTTPS；HTTP 仅限 localhost、127.0.0.1 或 [::1] 本机服务。' }
+    return $baseUri
+}
+
 function Show-AiSettings {
     $current = Read-AiSettings
     $dialog = New-Object Windows.Forms.Form
@@ -152,9 +163,7 @@ function Show-AiSettings {
             $value = @{}
             foreach ($name in $names) { $value[$name] = $fields[$name].Text.Trim() }
             if ($value.AI_MODE -notin @('auto', 'mock', 'real')) { throw '模式请输入 auto、mock 或 real。' }
-            $baseUri = $null
-            if (-not [Uri]::TryCreate($value.AI_BASE_URL, [UriKind]::Absolute, [ref]$baseUri) -or $baseUri.Scheme -notin @('http', 'https') -or $baseUri.UserInfo) { throw 'API Base URL 需要有效的 HTTP / HTTPS 地址，且不能包含密码。' }
-            if ($baseUri.Query -or $baseUri.Fragment) { throw 'API Base URL 不能包含查询参数（?）或片段（#）。请填写 API 根地址，例如 https://api.openai.com/v1。' }
+            Assert-AiBaseUrl $value.AI_BASE_URL | Out-Null
             if ($value.AI_MODE -eq 'real' -and -not $value.AI_API_KEY) { throw 'real 模式需要填写 API Key。未配置 Key 时，请选择 auto 或 mock 模式。' }
             if (-not $value.AI_MODEL) { throw '请填写模型名称。' }
             if ($value.AI_MODEL.Length -gt 200) { throw '模型名称不能超过 200 字。' }

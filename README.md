@@ -1,12 +1,12 @@
 # ProductSpy
 
-本地优先的 Amazon 竞品素材采集与 AI 分析工具。0.5.0 增加多分组、彩色标签、组合筛选、分页多选、批量操作、CSV / JSON / Markdown 导出和安全 JSON 备份恢复；沿用 Windows x64 便携分发、Next.js / Manifest V3、安全配对及 Phase 12 分析能力。兼容 v0.4.0 商品与完整历史。当前验收见 [Phase 13 报告](docs/phase13-validation.md)，操作见 [商品库指南](docs/library-guide.md)；[Phase 12 报告](docs/phase12-validation.md)与 [AI 质量报告](docs/phase12-ai-quality.md)保留原始结果。
+本地优先的 Amazon 竞品素材采集与 AI 分析工具。当前闭测修订版为 0.5.1，修复远程 HTTP AI 地址可能明文发送 Key 的问题；原 0.5.0 草稿和安装包保留且不公开。闭测资料见 [安装与测试指南](docs/closed-test/install-guide.md)和 [Phase 14 报告](docs/phase14-validation.md)。0.5.0 增加多分组、彩色标签、组合筛选、分页多选、批量操作、CSV / JSON / Markdown 导出和安全 JSON 备份恢复；沿用 Windows x64 便携分发、Next.js / Manifest V3、安全配对及 Phase 12 分析能力。兼容 v0.4.0 商品与完整历史。历史验收见 [Phase 13 报告](docs/phase13-validation.md)，操作见 [商品库指南](docs/library-guide.md)；[Phase 12 报告](docs/phase12-validation.md)与 [AI 质量报告](docs/phase12-ai-quality.md)保留原始结果。
 
 仅支持 Amazon。此版本没有用户账号、支付、自动发布、价格监控、其他平台或多人协作。
 
 ## Windows 普通用户：不用安装开发工具
 
-1. 获取 `ProductSpy-0.5.0-windows-x64.zip`，**全部解压**，双击 **ProductSpy.cmd**。
+1. 获取 `ProductSpy-0.5.1-windows-x64.zip`，**全部解压**，双击 **ProductSpy.cmd**。
 2. 启动器使用内置 Node.js，启动本机工作台并打开 **http://127.0.0.1:3000**；不用安装 Node.js、pnpm 或数据库。
 3. 在启动窗口点击「打开插件文件夹」，按 Chrome `chrome://extensions` →「开发者模式」→「加载已解压的扩展程序」加载便携包的 **extension** 目录。
 4. 在工作台「安装与配对」中生成一次性配对码，填入插件并「连接工作台」。身份校验保留，配对码 2 分钟有效。
@@ -232,7 +232,7 @@ pnpm exec node scripts/amazon-acceptance.mjs
 
 当前验收见 [Phase 9 真实环境报告](docs/phase9-validation.md)，其中分别记录跨品类 / 国家站真实字段、正常颜色变体切换、自动化测试和安全检查。真实 OpenAI-compatible 合约使用本地 HTTP stub 验证；未使用真实 Key 调用收费模型。早期 MVP 验收保留在 [VALIDATION.md](VALIDATION.md)，其单页结果和测试数量是 Phase 8 历史，不代表当前全部覆盖。
 
-Phase 13 商品库验收见 [当前报告](docs/phase13-validation.md)。Phase 11 体验记录见 [历史报告](docs/phase11-validation.md)。[Phase 10 报告](docs/phase10-validation.md)和 Phase 9 的实页数量 / 成功率保留历史记录。Chrome Web Store 提交条件和待办见 [商店准备说明](docs/chrome-web-store.md)，可填写文案在 [docs/store](docs/store/README.md)。正式 Chrome 稳定版人工验收、公开下载地址与开发者 Dashboard 配置须如实记录，未提交审核，也不承诺已获商店批准。
+Phase 13 商品库验收见 [历史报告](docs/phase13-validation.md)。Phase 11 体验记录见 [历史报告](docs/phase11-validation.md)。[Phase 10 报告](docs/phase10-validation.md)和 Phase 9 的实页数量 / 成功率保留历史记录。Chrome Web Store 提交条件和待办见 [商店准备说明](docs/chrome-web-store.md)，可填写文案在 [docs/store](docs/store/README.md)。正式 Chrome 稳定版人工验收、公开下载地址与开发者 Dashboard 配置须如实记录，未提交审核，也不承诺已获商店批准。
 
 ## 构建 Windows 便携版与 Extension ZIP
 
@@ -248,8 +248,8 @@ pnpm test:portable
 
 输出在 **`artifacts/`**：
 
-- `ProductSpy-0.5.0-windows-x64.zip`：Windows x64 便携工作台、内置 Node.js、Next.js standalone、启动器和已构建扩展。
-- `ProductSpy-0.5.0-extension.zip`：可供 Chrome Web Store 上传的 MV3 扩展，根目录包含 `manifest.json`。
+- `ProductSpy-0.5.1-windows-x64.zip`：Windows x64 便携工作台、内置 Node.js、Next.js standalone、启动器和已构建扩展。
+- `ProductSpy-0.5.1-extension.zip`：可供 Chrome Web Store 上传的 MV3 扩展，根目录包含 `manifest.json`。
 - 构建校验文件及商店图片：名称与哈希以构建实际输出为准。
 
 已取得真实运行截图及 `artifacts/store/asset-provenance.json` 后，可运行 `pnpm package:store` 生成商店材料 ZIP；脚本校验来源、截图尺寸与哈希，不会用模拟页面补齐截图。真实采集工具是 `scripts/capture-store.mjs`，验收时应先启动使用独立测试数据目录的便携工作台并保持 Mock 模式，避免写入自己的素材库。
@@ -261,13 +261,13 @@ pnpm test:portable
 Phase 11 新增分析编辑、草稿恢复、复制权限失败、版本冲突与 375 / 768 / 1280 宽度回归。E2E 每次使用独立 `.test-data/e2e/<时间>`，避免失败重跑被旧验收商品污染。跨版本升级、最终 ZIP 完整性与真实界面截图可单独复现（都先停止 3000 服务）：
 
 ```powershell
-pnpm test:upgrade --from artifacts/ProductSpy-0.4.0-windows-x64 --to artifacts/ProductSpy-0.5.0-windows-x64
+pnpm test:upgrade --from artifacts/ProductSpy-0.4.0-windows-x64 --to artifacts/ProductSpy-0.5.1-windows-x64
 node scripts/validate-release.mjs
 pnpm test:library-performance
 pnpm capture:experience
 ```
 
-`capture:experience` 自动启动独立测试数据目录中的便携服务，通过真实 Amazon 页面、扩展 action、UI 配对与保存生成截图，结束后停止自己启动的服务。产物在 `artifacts/ProductSpy-0.5.0-experience/` 和同名 ZIP；来源、浏览器与尺寸记录在 `provenance.json`，若页面受限则报告失败，不用模拟页面代替。
+`capture:experience` 自动启动独立测试数据目录中的便携服务，通过真实 Amazon 页面、扩展 action、UI 配对与保存生成截图，结束后停止自己启动的服务。产物在 `artifacts/ProductSpy-0.5.1-experience/` 和同名 ZIP；来源、浏览器与尺寸记录在 `provenance.json`，若页面受限则报告失败，不用模拟页面代替。
 
 `test:library-performance` 使用生产工作台及独立测试目录中的 100 / 500 个合成商品，验证分页、组合筛选、500 项批量标签和完整备份恢复，并捕获九张实际界面截图。性能报告在 `.test-data/phase13-performance/`，截图在 `artifacts/ProductSpy-0.5.0-library-experience/`；这些样本不代表真实 Amazon 采集验收。
 

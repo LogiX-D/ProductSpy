@@ -1,5 +1,7 @@
 # ProductSpy AI 服务配置与分析使用指南
 
+v0.5.1 起，远程 API 地址必须使用 HTTPS。HTTP 只接受 `localhost`、`127.0.0.1` 或 `[::1]` 本机服务；局域网 IP 也需要 HTTPS。服务端和 Windows 设置保存处均在发送请求前检查。旧版已保存的远程 HTTP 设置需要改为服务商的 HTTPS 地址；修正配置不会删除商品、分析或历史。
+
 适用版本：v0.4.0 / Phase 12。ProductSpy 继续通过本机 Next.js 服务访问 OpenAI-compatible Chat Completions 接口。Chrome 扩展负责采集和保存，不持有 AI Key，也不能通过扩展令牌直接授权真实 AI 调用。
 
 ## 先使用本机演示
