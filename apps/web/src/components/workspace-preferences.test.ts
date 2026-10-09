@@ -6,6 +6,7 @@ import {
   hasLibraryFilters,
   restoreLibraryPreferences,
   selectLibraryProducts,
+  paginateLibraryProducts,
 } from './workspace-preferences';
 
 const analysis: ProductAnalysis = {
@@ -137,6 +138,43 @@ describe('workspace library selection', () => {
       }),
     ).toEqual([]);
   });
+  it('combines group, tag and analysis filters without altering old products', () => {
+    const group = '00000000-0000-4000-8000-000000000001';
+    const tag = '00000000-0000-4000-8000-000000000002';
+    const samples = [
+      product('old'),
+      product('matched', { groupIds: [group], tagIds: [tag], aiAnalysis: analysis }),
+      product('only-group', { groupIds: [group] }),
+    ];
+    expect(
+      selectLibraryProducts(samples, {
+        ...DEFAULT_LIBRARY_PREFERENCES,
+        group,
+        tag,
+        analysis: 'analyzed',
+      }).map((item) => item.id),
+    ).toEqual(['matched']);
+    expect(
+      selectLibraryProducts(samples, {
+        ...DEFAULT_LIBRARY_PREFERENCES,
+        group: 'none',
+        tag: 'none',
+      }).map((item) => item.id),
+    ).toEqual(['old']);
+    expect(samples[0]).not.toHaveProperty('groupIds');
+  });
+  it('bounds rendering for 100 and 500 products and recovers out-of-range pages', () => {
+    for (const count of [100, 500]) {
+      const samples = Array.from({ length: count }, (_, index) => product(`item-${index}`));
+      expect(paginateLibraryProducts(samples, 1).products).toHaveLength(36);
+      const last = paginateLibraryProducts(samples, 999);
+      expect(last.currentPage).toBe(Math.ceil(count / 36));
+      expect(last.products.length).toBeLessThanOrEqual(36);
+      expect(paginateLibraryProducts(samples, -20).currentPage).toBe(1);
+      expect(samples).toHaveLength(count);
+    }
+    expect(paginateLibraryProducts([], 5)).toEqual({ products: [], currentPage: 1, totalPages: 1 });
+  });
 });
 
 describe('workspace preference restoration', () => {
@@ -189,5 +227,20 @@ describe('workspace preference restoration', () => {
     expect(cleared).toEqual({ ...DEFAULT_LIBRARY_PREFERENCES, sort: 'title-asc', layout: 'list' });
     expect(hasLibraryFilters(cleared)).toBe(false);
     expect(selected.query).toBe('bottle');
+  });
+  it('retains safe definition filters and defaults missing or hostile values', () => {
+    const group = '00000000-0000-4000-8000-000000000001';
+    expect(restoreLibraryPreferences(JSON.stringify({ group, tag: 'none' }))).toEqual({
+      ...DEFAULT_LIBRARY_PREFERENCES,
+      group,
+      tag: 'none',
+    });
+    expect(
+      restoreLibraryPreferences(JSON.stringify({ group: 'javascript:alert(1)', tag: 8 })),
+    ).toEqual(DEFAULT_LIBRARY_PREFERENCES);
+    expect(hasLibraryFilters({ ...DEFAULT_LIBRARY_PREFERENCES, group })).toBe(true);
+    expect(clearLibraryFilters({ ...DEFAULT_LIBRARY_PREFERENCES, group, tag: 'none' })).toEqual(
+      DEFAULT_LIBRARY_PREFERENCES,
+    );
   });
 });

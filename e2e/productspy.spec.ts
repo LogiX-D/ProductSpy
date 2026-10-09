@@ -255,6 +255,7 @@ test('production extension → capture → save → workspace → Mock AI → pe
       workspace.getByRole('link', { name: 'Portable Coffee Grinder', exact: true }),
     ).toBeVisible();
     await workspace.route(`${BASE}/api/products`, (route) => route.abort('connectionrefused'));
+    await workspace.route(`${BASE}/api/library`, (route) => route.abort('connectionrefused'));
     await workspace.reload();
     await expect(workspace.locator('.error-notice')).toContainText('当前显示本机缓存');
     await expect(
@@ -265,6 +266,7 @@ test('production extension → capture → save → workspace → Mock AI → pe
     ).json()) as { data: Product };
     expect(duringWorkspaceOffline.data).toEqual(analyzedBody.data);
     await workspace.unroute(`${BASE}/api/products`);
+    await workspace.unroute(`${BASE}/api/library`);
     await workspace.getByRole('button', { name: '重试', exact: true }).click();
     await expect(workspace.locator('.error-notice')).toHaveCount(0);
 

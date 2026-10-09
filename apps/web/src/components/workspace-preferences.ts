@@ -7,6 +7,8 @@ export interface LibraryPreferences {
   analysis: 'all' | 'pending' | 'analyzed';
   sort: 'updated-desc' | 'collected-desc' | 'collected-asc' | 'title-asc';
   layout: 'grid' | 'list';
+  group: string;
+  tag: string;
 }
 export const DEFAULT_LIBRARY_PREFERENCES: LibraryPreferences = {
   query: '',
@@ -14,6 +16,8 @@ export const DEFAULT_LIBRARY_PREFERENCES: LibraryPreferences = {
   analysis: 'all',
   sort: 'updated-desc',
   layout: 'grid',
+  group: 'all',
+  tag: 'all',
 };
 
 /** Local preferences are untrusted and may come from an older app version. */
@@ -35,10 +39,19 @@ export function restoreLibraryPreferences(raw: string | null): LibraryPreference
           ? stored.sort
           : 'updated-desc',
       layout: stored.layout === 'list' ? 'list' : 'grid',
+      group: restoreDefinitionFilter(stored.group),
+      tag: restoreDefinitionFilter(stored.tag),
     };
   } catch {
     return { ...DEFAULT_LIBRARY_PREFERENCES };
   }
+}
+
+function restoreDefinitionFilter(value: unknown): string {
+  return typeof value === 'string' &&
+    (value === 'none' || /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/i.test(value))
+    ? value
+    : 'all';
 }
 
 function timestamp(value: string): number {
@@ -59,6 +72,14 @@ export function selectLibraryProducts(
           (preferences.analysis === 'analyzed'
             ? Boolean(product.aiAnalysis)
             : !product.aiAnalysis)) &&
+        (preferences.group === 'all' ||
+          (preferences.group === 'none'
+            ? !product.groupIds?.length
+            : product.groupIds?.includes(preferences.group))) &&
+        (preferences.tag === 'all' ||
+          (preferences.tag === 'none'
+            ? !product.tagIds?.length
+            : product.tagIds?.includes(preferences.tag))) &&
         (!term ||
           [product.title, product.brand, product.sourceId].some((value) =>
             value?.toLocaleLowerCase().includes(term),
@@ -78,11 +99,23 @@ export function selectLibraryProducts(
 }
 
 export function clearLibraryFilters(preferences: LibraryPreferences): LibraryPreferences {
-  return { ...preferences, query: '', source: 'all', analysis: 'all' };
+  return { ...preferences, query: '', source: 'all', analysis: 'all', group: 'all', tag: 'all' };
 }
 
 export function hasLibraryFilters(preferences: LibraryPreferences): boolean {
   return Boolean(
-    preferences.query || preferences.source !== 'all' || preferences.analysis !== 'all',
+    preferences.query ||
+    preferences.source !== 'all' ||
+    preferences.analysis !== 'all' ||
+    preferences.group !== 'all' ||
+    preferences.tag !== 'all',
   );
+}
+
+export const LIBRARY_PAGE_SIZE = 36;
+export function paginateLibraryProducts(products: readonly Product[], page: number) {
+  const totalPages = Math.max(1, Math.ceil(products.length / LIBRARY_PAGE_SIZE));
+  const currentPage = Math.min(totalPages, Math.max(1, Math.trunc(page) || 1));
+  const offset = (currentPage - 1) * LIBRARY_PAGE_SIZE;
+  return { products: products.slice(offset, offset + LIBRARY_PAGE_SIZE), currentPage, totalPages };
 }

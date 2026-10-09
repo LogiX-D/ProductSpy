@@ -139,11 +139,55 @@ export interface Product {
   aiAnalysis?: ProductAnalysis;
   analysisMetadata?: AnalysisMetadata;
   analysisHistory?: AnalysisVersion[];
+  groupIds?: string[];
+  tagIds?: string[];
+}
+
+export interface LibraryDefinition {
+  id: string;
+  name: string;
+  color: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface LibrarySnapshot {
+  products: Product[];
+  groups: LibraryDefinition[];
+  tags: LibraryDefinition[];
+  revision?: string;
+}
+export interface LibraryDefinitionRequest {
+  kind: 'group' | 'tag';
+  action: 'create' | 'rename' | 'delete';
+  id?: string;
+  name?: string;
+  color?: string;
+  confirmed?: boolean;
+}
+export interface LibraryBatchRequest {
+  ids: string[];
+  operation: 'add-tags' | 'remove-tags' | 'add-groups' | 'remove-groups' | 'move-group' | 'delete';
+  tagIds?: string[];
+  groupIds?: string[];
+  expectedUpdatedAt?: Record<string, string>;
+  confirmed?: boolean;
+}
+export interface LibraryBatchResult {
+  succeededIds: string[];
+  failures: { id: string; error: string }[];
+  products?: Product[];
 }
 
 export type ProductDraft = Omit<
   Product,
-  'id' | 'createdAt' | 'updatedAt' | 'aiAnalysis' | 'analysisMetadata' | 'analysisHistory'
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'aiAnalysis'
+  | 'analysisMetadata'
+  | 'analysisHistory'
+  | 'groupIds'
+  | 'tagIds'
 >;
 
 export interface ProductRepository {

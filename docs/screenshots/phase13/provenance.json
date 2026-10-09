@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "version": "0.5.0",
+  "capturedAt": "2026-10-09T07:32:48.364Z",
+  "passed": true,
+  "synthetic": true,
+  "realAmazonProductsTested": 0,
+  "externalAiRequests": 0,
+  "browser": "Playwright Chromium / Chrome for Testing; not installed Chrome stable",
+  "browserVersion": "156.0.8078.4",
+  "sampleScope": "500 basic products, 50 complete synthetic analyses/history; not maximum-size histories",
+  "metrics": [
+    {
+      "count": 100,
+      "importMs": 25.133200000000215,
+      "apiMedianMs": 6.233599999999569,
+      "apiMaxMs": 6.61869999999908,
+      "renderMs": 168.7950000000019,
+      "filterMs": 33.28559999999925,
+      "pageChangeMs": 63.35280000000057,
+      "renderedCards": 36
+    },
+    {
+      "count": 500,
+      "importMs": 65.32310000000143,
+      "apiMedianMs": 16.23370000000068,
+      "apiMaxMs": 17.964499999998225,
+      "renderMs": 141.2472999999991,
+      "filterMs": 40.81970000000001,
+      "pageChangeMs": 74.60570000000007,
+      "renderedCards": 36,
+      "batchMs": 188.55609999999797,
+      "backupMs": 24.479199999997945,
+      "backupBytes": 579586,
+      "restoreMs": 86.51150000000052
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "01-100-products-filtered.png",
+      "width": 1440,
+      "height": 960,
+      "sha256": "3965b5e2281e7012596c94328fb0414530cd230a33415524be5f910e0bea370a",
+      "synthetic": true
+    },
+    {
+      "file": "03-100-products-grid.png",
+      "width": 1440,
+      "height": 960,
+      "sha256": "7507c7c4fb561b6d92e19d03f5f2a27039b6b4d0bf5b19499eed3490175c514c",
+      "synthetic": true
+    },
+    {
+      "file": "02-500-products-filtered.png",
+      "width": 1440,
+      "height": 960,
+      "sha256": "7f7ce00380bb6a746a3c06273f20b881624661e2d8b0644612fafe0805a7d65e",
+      "synthetic": true
+    },
+    {
+      "file": "04-500-products-grid.png",
+      "width": 1440,
+      "height": 960,
+      "sha256": "9ec25dc18fdec2c466283b89ab2d14c4558094c6f4e5ac40a175195ce8d5f6c3",
+      "synthetic": true
+    },
+    {
+      "file": "05-500-bulk-selection.png",
+      "width": 1440,
+      "height": 960,
+      "sha256": "40c43bd0a353cb2b131d5631894f3259d7e18aa9f0299bea30d9a043101f8b25",
+      "synthetic": true
+    },
+    {
+      "file": "06-group-tag-management.png",
+      "width": 1440,
+      "height": 960,
+      "sha256": "58fb61dd95a0a773f25d2d9bf94aedc3b96c30667396f994ff7cb5c8f8b03224",
+      "synthetic": true
+    },
+    {
+      "file": "07-backup-conflict-preview.png",
+      "width": 1440,
+      "height": 960,
+      "sha256": "ca11a9cb1620f1ffb90fa526453b69cfc4f8a1ff20ff76aa121203fd3395aa59",
+      "synthetic": true
+    },
+    {
+      "file": "08-library-mobile.png",
+      "width": 375,
+      "height": 812,
+      "sha256": "6fc4b05769c7ab559c62efd31117490cec3493bff57e86a62854049b5cd266c0",
+      "synthetic": true
+    },
+    {
+      "file": "09-library-mobile-selection.png",
+      "width": 375,
+      "height": 812,
+      "sha256": "dde8cd73dfd781bcb3a9ce01b85e75025abe96024fc7248f7bbc2ce48a23b0b5",
+      "synthetic": true
+    }
+  ]
+}

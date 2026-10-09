@@ -3,10 +3,11 @@
 import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowUpRight, ImageIcon, Trash2 } from 'lucide-react';
-import type { Product } from '@productspy/shared';
+import type { LibraryDefinition, Product } from '@productspy/shared';
 import { Badge, Button, ProductImage } from './ui';
 import { formatDate, formatPrice } from '@/lib/format';
 import { workspaceCopy as copy } from './workspace-copy';
+import { libraryCopy } from './library-copy';
 
 interface ProductCardProps {
   product: Product;
@@ -14,6 +15,12 @@ interface ProductCardProps {
   onDelete?: (id: string) => Promise<boolean>;
   deleting?: boolean;
   deleteDisabled?: boolean;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelect?: (id: string, selected: boolean) => void;
+  selectionDisabled?: boolean;
+  groups?: LibraryDefinition[];
+  tags?: LibraryDefinition[];
 }
 
 export function ProductCard({
@@ -22,6 +29,12 @@ export function ProductCard({
   onDelete,
   deleting,
   deleteDisabled,
+  selectable,
+  selected,
+  onSelect,
+  selectionDisabled,
+  groups,
+  tags,
 }: ProductCardProps) {
   const [confirming, setConfirming] = useState(false);
   const [deleteFailed, setDeleteFailed] = useState(false);
@@ -29,6 +42,8 @@ export function ProductCard({
   const href = `/products/${encodeURIComponent(product.id)}`;
   const list = layout === 'list';
   const imageCount = new Set([product.mainImage, ...product.images].filter(Boolean)).size;
+  const productGroups = groups?.filter((group) => product.groupIds?.includes(group.id)) ?? [];
+  const productTags = tags?.filter((tag) => product.tagIds?.includes(tag.id)) ?? [];
   async function deleteProduct() {
     if (!onDelete) return;
     try {
@@ -44,7 +59,20 @@ export function ProductCard({
     deleteTrigger.current?.focus();
   }
   return (
-    <article className={`ws-product-card${list ? ' ws-product-card-list' : ''}`}>
+    <article
+      className={`ws-product-card${list ? ' ws-product-card-list' : ''}${selected ? ' library-card-selected' : ''}`}
+    >
+      {selectable && (
+        <label className="library-card-select">
+          <input
+            type="checkbox"
+            aria-label={libraryCopy.selectProduct(product.title)}
+            checked={Boolean(selected)}
+            disabled={selectionDisabled}
+            onChange={(event) => onSelect?.(product.id, event.currentTarget.checked)}
+          />
+        </label>
+      )}
       <Link href={href} tabIndex={-1} aria-hidden="true" className="ws-card-image">
         <ProductImage src={product.mainImage ?? product.images[0]} alt={product.title} />
         {!list && (
@@ -73,6 +101,42 @@ export function ProductCard({
           )}
         </div>
         <p className="ws-card-asin">ASIN · {product.sourceId}</p>
+        {(productGroups.length > 0 || productTags.length > 0) && (
+          <div className="library-card-labels">
+            {productGroups.slice(0, 1).map((group) => (
+              <span
+                className="library-card-group"
+                key={group.id}
+                title={`分组：${productGroups.map((item) => item.name).join('、')}`}
+              >
+                <i style={{ backgroundColor: group.color }} aria-hidden="true" />
+                {group.name}
+              </span>
+            ))}
+            {productGroups.length > 1 && (
+              <span
+                className="library-card-more"
+                title={productGroups.map((item) => item.name).join('、')}
+              >
+                +{productGroups.length - 1} 分组
+              </span>
+            )}
+            {productTags.slice(0, 2).map((tag) => (
+              <span className="library-card-tag" key={tag.id} title={`标签：${tag.name}`}>
+                <i style={{ backgroundColor: tag.color }} aria-hidden="true" />
+                {tag.name}
+              </span>
+            ))}
+            {productTags.length > 2 && (
+              <span
+                className="library-card-more"
+                title={productTags.map((item) => item.name).join('、')}
+              >
+                +{productTags.length - 2} 标签
+              </span>
+            )}
+          </div>
+        )}
         <div className="ws-card-footer">
           <span>{copy.card.collected(formatDate(product.createdAt))}</span>
           <div className="ws-card-actions">

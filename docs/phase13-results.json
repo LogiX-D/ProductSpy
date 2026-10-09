@@ -1,0 +1,298 @@
+{
+  "schemaVersion": 1,
+  "phase": 13,
+  "version": "0.5.0",
+  "baseCommit": "7a3c9192578465862cd585b28967d5c5748d6687",
+  "validatedAt": "2026-10-09T07:43:43.498Z",
+  "platform": "Windows x64",
+  "passed": true,
+  "checks": {
+    "install": {
+      "command": "pnpm install --frozen-lockfile",
+      "passed": true
+    },
+    "typecheck": {
+      "command": "pnpm typecheck",
+      "passed": true
+    },
+    "lint": {
+      "command": "pnpm lint",
+      "passed": true,
+      "warnings": 0
+    },
+    "formatting": {
+      "command": "pnpm format:check",
+      "passed": true
+    },
+    "unit": {
+      "command": "pnpm test",
+      "passed": true,
+      "files": 40,
+      "tests": 455
+    },
+    "production": {
+      "command": "pnpm build",
+      "passed": true,
+      "web": "Next.js",
+      "extension": "Vite / MV3"
+    },
+    "e2e": {
+      "command": "pnpm test:e2e",
+      "passed": true,
+      "tests": 17,
+      "browser": "156.0.8078.4",
+      "reportedDuration": "1.3m"
+    },
+    "portable": {
+      "command": "pnpm test:portable",
+      "passed": true,
+      "count": 9,
+      "checks": [
+        {
+          "name": "package inventory SHA-256, bundled runtime, MV3 permissions, no user data or env",
+          "passed": true
+        },
+        {
+          "name": "port conflict is explained, unknown listener preserved",
+          "passed": true
+        },
+        {
+          "name": "headless launcher with no installed Node.js/pnpm on PATH, localhost, Mock, authentication",
+          "passed": true
+        },
+        {
+          "name": "duplicate start creates no second service process",
+          "passed": true
+        },
+        {
+          "name": "complete Mock analysis persists; graceful stop releases port and retains user data",
+          "passed": true
+        },
+        {
+          "name": "AI settings use Windows DPAPI CurrentUser, no plaintext test key on disk",
+          "passed": true
+        },
+        {
+          "name": "restart retains complete ProductAnalysis, product ID, creation and update times",
+          "passed": true
+        },
+        {
+          "name": "same-schema reinstall/moved package retains complete analysis and single instance",
+          "passed": true
+        },
+        {
+          "name": "launcher crash cleanup and abandoned mutex recovery preserve data",
+          "passed": true
+        }
+      ],
+      "startedAt": "2026-10-09T07:35:37.092Z",
+      "finishedAt": "2026-10-09T07:36:18.141Z"
+    },
+    "upgrade": {
+      "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.4.0-windows-x64 --to artifacts/ProductSpy-0.5.0-windows-x64",
+      "fromVersion": "0.4.0",
+      "toVersion": "0.5.0",
+      "passed": true,
+      "count": 10,
+      "checks": [
+        {
+          "name": "distinct Phase 12 and Phase 13 package versions and launcher/runtime hashes",
+          "passed": true
+        },
+        {
+          "name": "owned launcher 0.4.0: isolated user data, bundled runtime, Mock",
+          "passed": true
+        },
+        {
+          "name": "0.4.0 saves complete Product, edited analysis and history; stop leaves bytes unchanged",
+          "passed": true
+        },
+        {
+          "name": "owned launcher 0.5.0: isolated user data, bundled runtime, Mock",
+          "passed": true
+        },
+        {
+          "name": "0.4.0 → current package preserves entire Product, ID, timestamps, analysis metadata and history",
+          "passed": true
+        },
+        {
+          "name": "legacy archive, manual version, Japanese partial generation, request replay and local usage ledger",
+          "passed": true
+        },
+        {
+          "name": "new groups/tags and partial batch failure preserve all upgraded AI versions and metadata",
+          "passed": true
+        },
+        {
+          "name": "new package updates existing ID, keeps createdAt, archives stale analysis and restores version without losing newer history",
+          "passed": true
+        },
+        {
+          "name": "owned launcher 0.5.0: isolated user data, bundled runtime, Mock",
+          "passed": true
+        },
+        {
+          "name": "new package restart preserves complete edited Product and analysis, then releases owned processes",
+          "passed": true
+        }
+      ],
+      "startedAt": "2026-10-09T07:41:27.105Z",
+      "finishedAt": "2026-10-09T07:41:38.917Z"
+    },
+    "zip": {
+      "command": "node scripts/validate-release.mjs",
+      "passed": true,
+      "checkedAt": "2026-10-09T07:35:47.029Z",
+      "checks": [
+        {
+          "name": "portable: archive hash, bytes, count, CRC32, raw paths, private paths and credential scan",
+          "passed": true
+        },
+        {
+          "name": "portable: every bundle record matches actual ZIP bytes/SHA256; no missing or unlisted files",
+          "passed": true,
+          "records": 1927
+        },
+        {
+          "name": "extension: archive hash, bytes, count, CRC32, raw paths, private paths and credential scan",
+          "passed": true
+        },
+        {
+          "name": "extension: root MV3 0.5.0, original permission/host allowlist, CSP, no source maps; embedded extension matches ZIP",
+          "passed": true,
+          "embeddedFiles": 11
+        }
+      ],
+      "failures": [],
+      "portable": {
+        "file": "ProductSpy-0.5.0-windows-x64.zip",
+        "bytes": 40683526,
+        "sha256": "e0d36ffb201f2b0ac2452d4e8bceffce5b8c71dd83ed4fcc001a2e31544a3c35",
+        "entries": 1928,
+        "files": 1928,
+        "scannedTextFiles": 1898,
+        "crc32Verified": true,
+        "rawPathsVerified": true,
+        "privatePathsVerified": true,
+        "credentialPatternScanPassed": true,
+        "configuredApiKeysChecked": 0,
+        "bundleRecordsVerified": 1927,
+        "embeddedExtensionFilesVerified": 11
+      },
+      "extension": {
+        "file": "ProductSpy-0.5.0-extension.zip",
+        "bytes": 395516,
+        "sha256": "1b352d96f5008778753d6ebd237e707f94e31f58103cfbaf66d92e789b4caf1c",
+        "entries": 226,
+        "files": 226,
+        "scannedTextFiles": 222,
+        "crc32Verified": true,
+        "rawPathsVerified": true,
+        "privatePathsVerified": true,
+        "credentialPatternScanPassed": true,
+        "configuredApiKeysChecked": 0,
+        "manifestVersion": 3,
+        "permissions": ["activeTab", "scripting", "storage"],
+        "hostPermissions": ["http://localhost/*", "http://127.0.0.1/*"],
+        "sourceMapsAbsent": true
+      }
+    }
+  },
+  "dataCompatibility": {
+    "localStorageSchema": 2,
+    "exchangeSchema": 1,
+    "optionalProductFields": ["groupIds", "tagIds"],
+    "legacyReadsDoNotRewrite": true,
+    "firstSuccessfulWriteIsAtomicEnvelope": true,
+    "preserves": [
+      "id",
+      "sourceId",
+      "createdAt",
+      "aiAnalysis",
+      "analysisMetadata",
+      "analysisHistory",
+      "manual edits"
+    ],
+    "duplicatePolicies": ["skip", "preserve"],
+    "duplicatePoliciesNeverOverwriteLocalAnalysis": true,
+    "rollbackRequiresPreUpgradeBackup": true
+  },
+  "performance": {
+    "passed": true,
+    "capturedAt": "2026-10-09T07:32:48.364Z",
+    "synthetic": true,
+    "sampleScope": "500 basic products, 50 complete synthetic analyses/history; not maximum-size histories",
+    "productionServer": true,
+    "apiReadsPerScale": 5,
+    "metrics": [
+      {
+        "count": 100,
+        "importMs": 25.133200000000215,
+        "apiMedianMs": 6.233599999999569,
+        "apiMaxMs": 6.61869999999908,
+        "renderMs": 168.7950000000019,
+        "filterMs": 33.28559999999925,
+        "pageChangeMs": 63.35280000000057,
+        "renderedCards": 36
+      },
+      {
+        "count": 500,
+        "importMs": 65.32310000000143,
+        "apiMedianMs": 16.23370000000068,
+        "apiMaxMs": 17.964499999998225,
+        "renderMs": 141.2472999999991,
+        "filterMs": 40.81970000000001,
+        "pageChangeMs": 74.60570000000007,
+        "renderedCards": 36,
+        "batchMs": 188.55609999999797,
+        "backupMs": 24.479199999997945,
+        "backupBytes": 579586,
+        "restoreMs": 86.51150000000052
+      }
+    ],
+    "caveat": "100-product first navigation and 500-product cached browser navigation differ; measurements are local samples, not performance guarantees."
+  },
+  "artifacts": {
+    "portable": {
+      "file": "ProductSpy-0.5.0-windows-x64.zip",
+      "sha256": "e0d36ffb201f2b0ac2452d4e8bceffce5b8c71dd83ed4fcc001a2e31544a3c35",
+      "bytes": 40683526,
+      "files": 1928
+    },
+    "extension": {
+      "file": "ProductSpy-0.5.0-extension.zip",
+      "version": "0.5.0",
+      "sha256": "1b352d96f5008778753d6ebd237e707f94e31f58103cfbaf66d92e789b4caf1c",
+      "files": 226,
+      "bytes": 395516
+    },
+    "screenshots": {
+      "file": "ProductSpy-0.5.0-library-experience.zip",
+      "bytes": 623089,
+      "sha256": "36cfa48ef09564283a79b681774fdc98273a4d7b6f6be5d9b4f74252df86e4e9",
+      "screenshots": 9,
+      "files": 10
+    }
+  },
+  "screenshots": {
+    "provenance": "screenshots/phase13/provenance.json",
+    "count": 9,
+    "rawRunningUi": true,
+    "syntheticProducts": true
+  },
+  "limits": {
+    "batchProducts": 500,
+    "importProducts": 2000,
+    "importBytes": 26214400,
+    "libraryProducts": 10000,
+    "largeBackup": "Rejects exports that cannot be safely reimported; export selected batches.",
+    "restore": "Non-destructive merge; duplicate ASIN keeps the full local record."
+  },
+  "notVerified": {
+    "realAmazonProductsThisPhase": 0,
+    "externalAiRequestsThisPhase": 0,
+    "installedChromeStable": "Not found at common Windows installation paths; Chrome for Testing used.",
+    "manualWindowsGui": "WinForms mouse operation, high DPI, unsigned warnings and a fresh non-developer PC remain pending.",
+    "maximumHistoriesAnd10000Products": "Not benchmarked."
+  }
+}

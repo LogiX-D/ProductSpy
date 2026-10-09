@@ -186,4 +186,6 @@ export const productSchema = draftSchema.extend({
   aiAnalysis: analysisSchema.optional(),
   analysisMetadata: analysisMetadataSchema.optional(),
   analysisHistory: z.array(analysisVersionSchema).max(MAX_ANALYSIS_VERSIONS).optional(),
+  groupIds: z.array(z.string().uuid()).max(50).optional(),
+  tagIds: z.array(z.string().uuid()).max(50).optional(),
 });

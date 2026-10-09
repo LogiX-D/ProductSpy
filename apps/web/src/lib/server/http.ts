@@ -162,12 +162,11 @@ export async function preflight(
   }
 }
 
-export async function readJsonBody(request: Request): Promise<unknown> {
+export async function readJsonBody(request: Request, maxBytes = MAX_BODY_BYTES): Promise<unknown> {
+  if (!Number.isSafeInteger(maxBytes) || maxBytes < 1 || maxBytes > 26 * 1024 * 1024)
+    throw new Error('Invalid JSON body limit');
   const declaredLength = request.headers.get('content-length');
-  if (
-    declaredLength &&
-    (!/^\d+$/.test(declaredLength) || Number(declaredLength) > MAX_BODY_BYTES)
-  ) {
+  if (declaredLength && (!/^\d+$/.test(declaredLength) || Number(declaredLength) > maxBytes)) {
     throw new AppError(413, '商品数据过大，请减少素材数量后重试');
   }
   if (!request.body) throw new AppError(400, '请求缺少商品数据');
@@ -179,7 +178,7 @@ export async function readJsonBody(request: Request): Promise<unknown> {
       const chunk = await reader.read();
       if (chunk.done) break;
       length += chunk.value.byteLength;
-      if (length > MAX_BODY_BYTES) {
+      if (length > maxBytes) {
         await reader.cancel();
         throw new AppError(413, '商品数据过大，请减少素材数量后重试');
       }

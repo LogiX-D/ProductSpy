@@ -338,7 +338,11 @@ try {
   assert.deepEqual(analyzed.aiAnalysis, analysis, 'Complete Mock analysis must be persisted.');
   const databaseFile = join(dataRoot, 'data/products.json');
   const databaseBeforeStop = await readFile(databaseFile, 'utf8');
-  assert.equal(JSON.parse(databaseBeforeStop)[0].id, saved.id);
+  const storedDatabase = JSON.parse(databaseBeforeStop);
+  assert.equal(
+    (Array.isArray(storedDatabase) ? storedDatabase : storedDatabase.products)[0].id,
+    saved.id,
+  );
   await stop();
   await first.process.completion;
   assert.equal(await readFile(databaseFile, 'utf8'), databaseBeforeStop);

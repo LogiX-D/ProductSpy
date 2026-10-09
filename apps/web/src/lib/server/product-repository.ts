@@ -1,20 +1,34 @@
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, readFile, rename, unlink, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import {
   MAX_ANALYSIS_VERSIONS,
+  MAX_LIBRARY_GROUPS,
+  MAX_LIBRARY_TAGS,
+  MAX_MEMBERSHIPS,
   analysisMetadataSchema,
   analysisSchema,
   draftSchema,
   mergeProduct,
   productKey,
   productSchema,
+  libraryFileSchema,
+  libraryDefinitionRequestSchema,
+  libraryBatchRequestSchema,
+  validateLibraryRelations,
+  mergeLibraryImport,
+  parseLibraryImport,
   type AnalysisSaveContext,
   type AnalysisVersion,
   type Product,
   type ProductAnalysis,
   type ProductDraft,
   type ProductRepository,
+  type LibrarySnapshot,
+  type LibraryDefinitionRequest,
+  type LibraryBatchRequest,
+  type LibraryBatchResult,
+  type LibraryImportResult,
 } from '@productspy/shared';
 import { AppError } from './errors';
 
@@ -127,13 +141,18 @@ export class LocalJsonProductRepository implements ProductRepository {
     return result;
   }
 
-  private async readProducts(): Promise<Product[]> {
+  private async readLibrary(): Promise<LibrarySnapshot> {
     let source: string;
     try {
       source = await readFile(this.filePath, 'utf8');
     } catch (error) {
       if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT')
-        return [];
+        return {
+          products: [],
+          groups: [],
+          tags: [],
+          revision: createHash('sha256').update('empty-library').digest('hex'),
+        };
       throw error;
     }
     let raw: unknown;
@@ -142,24 +161,40 @@ export class LocalJsonProductRepository implements ProductRepository {
     } catch {
       throw new AppError(500, '本地素材库文件损坏，请保留 products.json 并检查服务日志');
     }
-    const parsed = productSchema.array().safeParse(raw);
+    const parsed = Array.isArray(raw)
+      ? productSchema.array().safeParse(raw)
+      : libraryFileSchema.safeParse(raw);
     if (!parsed.success) {
       console.error('[ProductSpy storage] Invalid database schema', parsed.error.issues);
       throw new AppError(500, '本地素材库格式异常，请保留 products.json 并检查服务日志');
     }
-    const keys = parsed.data.map(productKey);
-    const ids = parsed.data.map((product) => product.id);
-    if (new Set(keys).size !== keys.length || new Set(ids).size !== ids.length) {
-      throw new AppError(500, '本地素材库存在重复记录，请保留 products.json 并检查服务日志');
+    const library: LibrarySnapshot = Array.isArray(parsed.data)
+      ? { products: parsed.data, groups: [], tags: [] }
+      : { products: parsed.data.products, groups: parsed.data.groups, tags: parsed.data.tags };
+    try {
+      validateLibraryRelations(library);
+    } catch (error) {
+      console.error('[ProductSpy storage] Invalid library relations', error);
+      throw new AppError(
+        500,
+        '本地素材库存在重复记录或无效分组，请保留 products.json 并检查服务日志',
+      );
     }
-    return parsed.data;
+    return { ...library, revision: createHash('sha256').update(source).digest('hex') };
   }
 
-  private async writeProducts(products: Product[]): Promise<void> {
+  private async writeLibrary(library: LibrarySnapshot): Promise<void> {
+    const stored = libraryFileSchema.parse({
+      schemaVersion: 2,
+      products: library.products,
+      groups: library.groups,
+      tags: library.tags,
+    });
+    validateLibraryRelations(stored);
     await mkdir(this.directory, { recursive: true, mode: 0o700 });
     const temporaryFile = join(this.directory, `.products-${randomUUID()}.tmp`);
     try {
-      await writeFile(temporaryFile, JSON.stringify(products, null, 2), {
+      await writeFile(temporaryFile, JSON.stringify(stored, null, 2), {
         encoding: 'utf8',
         flag: 'wx',
         mode: 0o600,
@@ -176,14 +211,185 @@ export class LocalJsonProductRepository implements ProductRepository {
 
   list(): Promise<Product[]> {
     return this.transaction(async () =>
-      (await this.readProducts()).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)),
+      (await this.readLibrary()).products.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)),
     );
   }
 
   get(id: string): Promise<Product | undefined> {
     return this.transaction(async () =>
-      (await this.readProducts()).find((product) => product.id === id),
+      (await this.readLibrary()).products.find((product) => product.id === id),
     );
+  }
+
+  librarySnapshot(): Promise<LibrarySnapshot> {
+    return this.transaction(() => this.readLibrary());
+  }
+
+  importLibrary(
+    snapshot: LibrarySnapshot,
+    policy: 'skip' | 'preserve',
+    expectedRevision?: string,
+  ): Promise<LibraryImportResult> {
+    return this.transaction(async () => {
+      if (policy !== 'skip' && policy !== 'preserve')
+        throw new AppError(400, '请选择跳过重复商品或保留原有资料');
+      let incoming: LibrarySnapshot;
+      try {
+        incoming = parseLibraryImport({
+          format: 'productspy-library',
+          schemaVersion: 1,
+          exportedAt: new Date().toISOString(),
+          products: snapshot.products,
+          groups: snapshot.groups,
+          tags: snapshot.tags,
+        });
+      } catch (error) {
+        throw new AppError(400, error instanceof Error ? error.message : '导入数据格式无效');
+      }
+      const existing = await this.readLibrary();
+      if (expectedRevision && expectedRevision !== existing.revision)
+        throw new AppError(409, '预览后商品库已发生变化，请重新预览再导入；已有资料没有被覆盖');
+      let merged: ReturnType<typeof mergeLibraryImport>;
+      try {
+        merged = mergeLibraryImport(incoming, existing, policy, randomUUID);
+      } catch (error) {
+        throw new AppError(400, error instanceof Error ? error.message : '导入资料无法安全合并');
+      }
+      if (
+        merged.result.imported > 0 ||
+        merged.result.groupsAdded > 0 ||
+        merged.result.tagsAdded > 0
+      )
+        await this.writeLibrary(merged.snapshot);
+      return merged.result;
+    });
+  }
+
+  manageDefinition(request: LibraryDefinitionRequest): Promise<LibrarySnapshot> {
+    return this.transaction(async () => {
+      const parsed = libraryDefinitionRequestSchema.safeParse(request);
+      if (!parsed.success)
+        throw new AppError(400, parsed.error.issues[0]?.message ?? '分组或标签操作格式无效');
+      const command = parsed.data;
+      const library = await this.readLibrary();
+      const definitions = command.kind === 'group' ? library.groups : library.tags;
+      const property = command.kind === 'group' ? 'groupIds' : 'tagIds';
+      const label = command.kind === 'group' ? '分组' : '标签';
+      const index = definitions.findIndex((item) => item.id === command.id);
+      const existing = definitions[index];
+      if (command.action !== 'create' && !existing)
+        throw new AppError(404, `${label}已删除或不存在，请刷新商品库`);
+      if (
+        command.name &&
+        definitions.some(
+          (item) =>
+            item.id !== command.id &&
+            item.name.toLocaleLowerCase() === command.name?.toLocaleLowerCase(),
+        )
+      )
+        throw new AppError(409, `${label}名称已存在，请使用其他名称`);
+      if (command.action === 'create') {
+        const maximum = command.kind === 'group' ? MAX_LIBRARY_GROUPS : MAX_LIBRARY_TAGS;
+        if (definitions.length >= maximum)
+          throw new AppError(409, `${label}数量已达到 ${maximum} 个上限`);
+        const now = nextUpdatedAt();
+        definitions.push({
+          id: randomUUID(),
+          name: command.name!,
+          color: command.color ?? '#64748B',
+          createdAt: now,
+          updatedAt: now,
+        });
+      } else if (command.action === 'rename' && existing) {
+        definitions[index] = {
+          ...existing,
+          ...(command.name ? { name: command.name } : {}),
+          ...(command.color ? { color: command.color } : {}),
+          updatedAt: nextUpdatedAt(existing.updatedAt),
+        };
+      } else if (command.action === 'delete' && existing) {
+        definitions.splice(index, 1);
+        library.products = library.products.map((product) =>
+          product[property]?.includes(existing.id)
+            ? {
+                ...product,
+                [property]: product[property]?.filter((id) => id !== existing.id),
+                updatedAt: nextUpdatedAt(product.updatedAt),
+              }
+            : product,
+        );
+      }
+      await this.writeLibrary(library);
+      return this.readLibrary();
+    });
+  }
+
+  batch(request: LibraryBatchRequest): Promise<LibraryBatchResult> {
+    return this.transaction(async () => {
+      const parsed = libraryBatchRequestSchema.safeParse(request);
+      if (!parsed.success)
+        throw new AppError(400, parsed.error.issues[0]?.message ?? '批量操作格式无效');
+      const command = parsed.data;
+      const library = await this.readLibrary();
+      const lookup = new Map(library.products.map((product, index) => [product.id, index]));
+      const result: LibraryBatchResult = { succeededIds: [], failures: [], products: [] };
+      const deleted = new Set<string>();
+      const property = command.operation.includes('tags') ? 'tagIds' : 'groupIds';
+      const selections = property === 'tagIds' ? (command.tagIds ?? []) : (command.groupIds ?? []);
+      const definitions = property === 'tagIds' ? library.tags : library.groups;
+      const unknownDefinition = selections.some(
+        (id) => !definitions.some((item) => item.id === id),
+      );
+      for (const id of command.ids) {
+        const index = lookup.get(id);
+        const product = index === undefined ? undefined : library.products[index];
+        if (!product) {
+          result.failures.push({ id, error: '商品已删除或不存在' });
+          continue;
+        }
+        if (
+          command.expectedUpdatedAt &&
+          (!Object.hasOwn(command.expectedUpdatedAt, id) ||
+            command.expectedUpdatedAt[id] !== product.updatedAt)
+        ) {
+          result.failures.push({ id, error: '商品已在其他页面更新，请刷新后再操作' });
+          continue;
+        }
+        if (unknownDefinition && command.operation !== 'delete') {
+          result.failures.push({ id, error: '所选分组或标签已删除，请刷新后重新选择' });
+          continue;
+        }
+        if (command.operation === 'delete') {
+          deleted.add(id);
+        } else {
+          const current = product[property] ?? [];
+          const memberships =
+            command.operation === 'move-group'
+              ? [...new Set(selections)]
+              : command.operation.startsWith('remove-')
+                ? current.filter((value) => !selections.includes(value))
+                : [...new Set([...current, ...selections])];
+          if (memberships.length > MAX_MEMBERSHIPS) {
+            result.failures.push({ id, error: `每个商品最多加入 ${MAX_MEMBERSHIPS} 个分组或标签` });
+            continue;
+          }
+          const updated: Product = {
+            ...product,
+            [property]: memberships,
+            updatedAt: nextUpdatedAt(product.updatedAt),
+          };
+          library.products[index!] = updated;
+          result.products?.push(updated);
+        }
+        result.succeededIds.push(id);
+      }
+      if (result.succeededIds.length) {
+        library.products = library.products.filter((product) => !deleted.has(product.id));
+        // A rejected atomic write rejects the entire request; no uncommitted success is reported.
+        await this.writeLibrary(library);
+      }
+      return result;
+    });
   }
 
   upsert(draft: ProductDraft): Promise<Product> {
@@ -194,7 +400,8 @@ export class LocalJsonProductRepository implements ProductRepository {
       });
       if (!parsed.success)
         throw new AppError(400, '商品信息不完整或格式无效，请重新采集 Amazon 商品页面');
-      const products = await this.readProducts();
+      const library = await this.readLibrary();
+      const products = library.products;
       const existingIndex = products.findIndex(
         (product) => productKey(product) === productKey(parsed.data),
       );
@@ -206,17 +413,18 @@ export class LocalJsonProductRepository implements ProductRepository {
       }
       if (existingIndex === -1) products.push(product);
       else products[existingIndex] = product;
-      await this.writeProducts(products);
+      await this.writeLibrary(library);
       return product;
     });
   }
 
   delete(id: string): Promise<void> {
     return this.transaction(async () => {
-      const products = await this.readProducts();
+      const library = await this.readLibrary();
+      const products = library.products;
       const remaining = products.filter((product) => product.id !== id);
       if (remaining.length === products.length) throw new AppError(404, '商品已删除或不存在');
-      await this.writeProducts(remaining);
+      await this.writeLibrary({ ...library, products: remaining });
     });
   }
 
@@ -231,7 +439,8 @@ export class LocalJsonProductRepository implements ProductRepository {
       if (!parsed.success) throw new AppError(502, 'AI 返回内容不完整，请重新分析');
       if (context?.metadata && !analysisMetadataSchema.safeParse(context.metadata).success)
         throw new AppError(502, '分析来源或用量信息格式无效，请检查 AI 配置；已有结果没有被覆盖');
-      const products = await this.readProducts();
+      const library = await this.readLibrary();
+      const products = library.products;
       const index = products.findIndex((product) => product.id === id);
       const existing = products[index];
       if (!existing) throw new AppError(404, '商品已删除或不存在');
@@ -240,14 +449,14 @@ export class LocalJsonProductRepository implements ProductRepository {
       }
       const product = withSavedAnalysis(existing, parsed.data, context);
       products[index] = product;
-      await this.writeProducts(products);
+      await this.writeLibrary(library);
       return product;
     });
   }
 
   assertAnalysisCapacity(id: string, expectedUpdatedAt: string): Promise<void> {
     return this.transaction(async () => {
-      const existing = (await this.readProducts()).find((product) => product.id === id);
+      const existing = (await this.readLibrary()).products.find((product) => product.id === id);
       if (!existing) throw new AppError(404, '商品已删除或不存在');
       if (existing.updatedAt !== expectedUpdatedAt)
         throw new AppError(409, '商品资料已更新，请刷新商品后重新分析');
@@ -257,7 +466,7 @@ export class LocalJsonProductRepository implements ProductRepository {
 
   analysisHistory(id: string): Promise<AnalysisVersion[]> {
     return this.transaction(async () => {
-      const existing = (await this.readProducts()).find((product) => product.id === id);
+      const existing = (await this.readLibrary()).products.find((product) => product.id === id);
       if (!existing) throw new AppError(404, '商品已删除或不存在');
       return existing.analysisHistory ?? [];
     });
@@ -265,7 +474,8 @@ export class LocalJsonProductRepository implements ProductRepository {
 
   restoreAnalysis(id: string, versionId: string, expectedUpdatedAt: string): Promise<Product> {
     return this.transaction(async () => {
-      const products = await this.readProducts();
+      const library = await this.readLibrary();
+      const products = library.products;
       const index = products.findIndex((product) => product.id === id);
       const existing = products[index];
       if (!existing) throw new AppError(404, '商品已删除或不存在');
@@ -285,7 +495,7 @@ export class LocalJsonProductRepository implements ProductRepository {
         if (restored) delete restored.metadata;
       }
       products[index] = product;
-      await this.writeProducts(products);
+      await this.writeLibrary(library);
       return product;
     });
   }

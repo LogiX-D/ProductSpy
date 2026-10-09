@@ -1,0 +1,430 @@
+/* Library management shares workspace tokens; cards remain bounded by pagination. */
+.library-heading-actions {
+  justify-content: flex-end;
+}
+.library-toolbar {
+  display: grid;
+  grid-template-columns: minmax(180px, 2fr) repeat(3, minmax(110px, 1fr));
+  gap: 12px;
+}
+.library-toolbar .ws-search {
+  grid-column: span 2;
+}
+.library-toolbar .ws-filter select {
+  width: 100%;
+  max-width: 100%;
+}
+.library-selection-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: -14px;
+}
+.library-selection-row p {
+  color: var(--muted);
+  font-size: 12px;
+}
+.library-batch {
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--line));
+  border-radius: 10px;
+  padding: 16px;
+  background: color-mix(in srgb, var(--accent) 3%, var(--surface));
+  display: grid;
+  gap: 12px;
+}
+.library-batch-heading,
+.library-batch-heading > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.library-batch-heading {
+  justify-content: space-between;
+}
+.library-batch-heading strong {
+  font-size: 14px;
+}
+.library-batch-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+.library-batch-actions label,
+.library-definition-form label,
+.library-import-preview > label,
+.library-file-field {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.library-batch-actions select {
+  min-width: 135px;
+  max-width: 100%;
+}
+.library-batch-target {
+  flex: 1;
+  min-width: 150px;
+}
+.library-batch-target small {
+  max-width: 230px;
+}
+.library-batch-export {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-end;
+  margin-left: auto;
+}
+.library-batch-result {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  color: var(--ink);
+  font-size: 13px;
+}
+.library-batch-result details {
+  margin-top: 8px;
+}
+.library-batch-result ul,
+.library-import-preview ul {
+  padding-left: 20px;
+  max-height: 160px;
+  overflow: auto;
+}
+.library-batch-result li,
+.library-import-preview li {
+  overflow-wrap: anywhere;
+  margin: 6px 0;
+}
+.library-card-select {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding: 5px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.library-card-select input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.ws-library .ws-product-card {
+  position: relative;
+}
+.ws-library .ws-card-image {
+  height: 170px;
+}
+.ws-library .ws-product-card-list .ws-card-image {
+  height: 82px;
+  width: 82px;
+}
+.library-card-selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.library-card-labels {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-top: 9px;
+}
+.library-card-tag,
+.library-card-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  max-width: 120px;
+  padding: 3px 6px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--accent) 3%, var(--surface));
+  border-radius: 5px;
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.library-card-group {
+  border-style: dashed;
+}
+.library-card-labels i,
+.library-definition-dot {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.library-card-more {
+  color: var(--muted);
+  font-size: 11px;
+}
+.library-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  font-size: 13px;
+}
+.library-pagination > p {
+  color: var(--muted);
+  max-width: 320px;
+  font-size: 12px;
+}
+.library-offline-note {
+  margin-top: -16px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.library-dialog {
+  width: min(660px, calc(100vw - 28px));
+  max-height: calc(100dvh - 48px);
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  overflow: auto;
+  box-shadow: 0 20px 60px #0002;
+}
+.library-dialog::backdrop {
+  background: #142d3d70;
+}
+.library-dialog h2 {
+  font-size: 19px;
+  margin: 0;
+}
+.library-dialog h3 {
+  font-size: 15px;
+  margin: 0 0 8px;
+}
+.library-dialog p {
+  line-height: 1.7;
+  font-size: 13px;
+  margin: 10px 0;
+  overflow-wrap: anywhere;
+}
+.library-dialog-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.library-dialog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+.library-manager-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.library-definition-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+}
+.library-definition-form > label:first-child {
+  flex: 1;
+  min-width: 140px;
+}
+.library-color-field {
+  width: 64px;
+}
+.library-color-field input {
+  padding: 4px;
+  width: 100%;
+  height: 37px;
+}
+.library-definition-list {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  max-height: 340px;
+  overflow: auto;
+}
+.library-definition-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+.library-definition-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.library-definition-row > small {
+  white-space: nowrap;
+  color: var(--muted);
+  font-size: 11px;
+}
+.library-definition-row > .button {
+  padding: 7px;
+  min-width: 32px;
+}
+.library-confirmation {
+  margin-top: 12px;
+  padding: 14px;
+  background: #fff5f3;
+  border: 1px solid #efd3cf;
+  border-radius: 8px;
+  color: #8b3932;
+  font-size: 13px;
+}
+.library-confirm-products {
+  padding-left: 20px;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.library-operation-status {
+  color: var(--accent);
+  font-size: 13px;
+}
+.library-operation-status:empty {
+  display: none;
+}
+.library-transfer-backup {
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.library-transfer-import {
+  padding-top: 20px;
+  display: grid;
+  gap: 12px;
+}
+.library-file-field input {
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+  padding: 8px;
+  font-size: 12px;
+}
+.library-file-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.library-file-picker span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.library-transfer-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.library-progress-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+.library-import-preview {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  background: color-mix(in srgb, var(--accent) 3%, var(--surface));
+}
+.library-import-preview details {
+  font-size: 12px;
+  margin: 14px 0;
+}
+.library-import-preview summary {
+  cursor: pointer;
+}
+.library-import-preview > label {
+  margin-top: 14px;
+}
+.library-transfer-privacy {
+  margin-top: 18px !important;
+  font-size: 12px !important;
+}
+@media (max-width: 900px) {
+  .library-toolbar {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .library-toolbar .ws-search {
+    grid-column: 1 / -1;
+  }
+  .library-heading-actions {
+    justify-content: flex-start;
+  }
+}
+@media (max-width: 620px) {
+  .library-toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .library-toolbar .ws-filter {
+    min-width: 0;
+  }
+  .library-toolbar .ws-filter span {
+    font-size: 11px;
+  }
+  .library-batch-actions > label,
+  .library-batch-target {
+    width: 100%;
+    min-width: 0;
+  }
+  .library-batch-actions select {
+    min-width: 0;
+    width: 100%;
+  }
+  .library-batch-export {
+    margin-left: 0;
+    width: 100%;
+  }
+  .library-batch-export > label {
+    flex: 1;
+    min-width: 0;
+  }
+  .library-dialog {
+    padding: 18px;
+  }
+  .library-definition-form > label:first-child {
+    min-width: 0;
+  }
+  .library-definition-form > .button {
+    flex: 1;
+  }
+  .library-pagination {
+    justify-content: center;
+  }
+  .library-pagination > p {
+    text-align: center;
+  }
+  .ws-library .ws-product-card-list .library-card-select {
+    top: 12px;
+    left: 12px;
+  }
+  .library-dialog-footer {
+    justify-content: flex-start;
+  }
+}

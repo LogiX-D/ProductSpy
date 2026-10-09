@@ -27,6 +27,15 @@ function request(
 }
 
 describe('local API request protection', () => {
+  it('keeps the normal body limit while allowing an explicit bounded import limit', async () => {
+    const body = JSON.stringify({ text: 'x'.repeat(1024 * 1024) });
+    await expect(readJsonBody(request('POST', {}, body))).rejects.toMatchObject({ status: 413 });
+    await expect(readJsonBody(request('POST', {}, body), 2 * 1024 * 1024)).resolves.toEqual({
+      text: 'x'.repeat(1024 * 1024),
+    });
+    await expect(readJsonBody(request(), 27 * 1024 * 1024)).rejects.toThrow('Invalid');
+  });
+
   let directory: string;
   beforeEach(async () => {
     directory = await mkdtemp(join(tmpdir(), 'productspy-http-'));
