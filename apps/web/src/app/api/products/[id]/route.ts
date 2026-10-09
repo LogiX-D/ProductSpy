@@ -42,7 +42,9 @@ export function PATCH(request: Request, context: Context): Promise<Response> {
       const version = 'expectedUpdatedAt' in body ? body.expectedUpdatedAt : undefined;
       const expectedUpdatedAt = productSchema.shape.updatedAt.optional().safeParse(version);
       if (!expectedUpdatedAt.success) throw new AppError(400, '商品版本格式无效，请刷新后重试');
-      return getProductRepository().saveAnalysis(id, analysis.data, expectedUpdatedAt.data);
+      return getProductRepository().saveAnalysis(id, analysis.data, expectedUpdatedAt.data, {
+        kind: 'edited',
+      });
     },
     { write: true },
   );

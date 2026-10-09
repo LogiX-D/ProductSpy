@@ -30,6 +30,8 @@ export function mergeProduct(
     createdAt: existing?.createdAt ?? now,
     updatedAt,
     aiAnalysis: changed ? undefined : existing?.aiAnalysis,
+    analysisMetadata: changed ? undefined : existing?.analysisMetadata,
+    analysisHistory: existing?.analysisHistory,
   };
 }
 export function errorMessage(error: unknown, fallback = '操作失败，请重试'): string {

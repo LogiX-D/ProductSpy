@@ -1,11 +1,13 @@
 import {
   errorMessage,
+  analysisVersionSchema,
   productSchema,
   type Product,
   type ProductAnalysis,
   type ProductDraft,
   type ProductRepository,
   type ProductSyncAdapter,
+  type AnalysisVersion,
 } from '@productspy/shared';
 import { webCache } from './web-storage';
 import { webRequest } from '../session';
@@ -56,6 +58,28 @@ export class ProductApiRepository implements ProductRepository, ProductSyncAdapt
       method: 'PATCH',
       body: JSON.stringify({ analysis, expectedUpdatedAt }),
     });
+    const product = productSchema.parse(data);
+    await cacheSafely(() => webCache.put(product));
+    return product;
+  }
+  async analysisHistory(id: string): Promise<AnalysisVersion[]> {
+    const data = await webRequest<unknown>(
+      `/api/products/${encodeURIComponent(id)}/analysis-history`,
+    );
+    return analysisVersionSchema.array().parse(data);
+  }
+  async restoreAnalysis(
+    id: string,
+    versionId: string,
+    expectedUpdatedAt: string,
+  ): Promise<Product> {
+    const data = await webRequest<unknown>(
+      `/api/products/${encodeURIComponent(id)}/analysis-history`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ versionId, expectedUpdatedAt }),
+      },
+    );
     const product = productSchema.parse(data);
     await cacheSafely(() => webCache.put(product));
     return product;

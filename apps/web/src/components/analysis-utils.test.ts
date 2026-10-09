@@ -8,6 +8,7 @@ import {
   analysisSections,
   createAnalysisDraft,
   draftToAnalysis,
+  isMockAnalysis,
   parseScript,
   restoreSessionDraft,
   validateAnalysisDraft,
@@ -89,6 +90,25 @@ describe('analysis text and editor helpers', () => {
     expect(draftToAnalysis(createAnalysisDraft(result), true).summary).toBe(result.summary);
     draft.summary = '';
     expect(validateAnalysisDraft(draft, true)).toContain(analysisCopy.validationSummary);
+  });
+
+  it('recognizes localized Mock results and preserves the requested disclosure language after editing', () => {
+    for (const summary of [
+      'Mock demo analysis: Travel Bottle',
+      'Mock デモ分析：水筒',
+      'Mock 演示分析：水杯',
+    ]) {
+      expect(isMockAnalysis(summary)).toBe(true);
+      expect(draftToAnalysis(createAnalysisDraft({ ...analysis, summary }), true).summary).toBe(
+        summary,
+      );
+    }
+    expect(isMockAnalysis('The product supports a Mock interface')).toBe(false);
+    const draft = createAnalysisDraft(analysis);
+    draft.summary = 'Edited summary';
+    expect(draftToAnalysis(draft, true, 'Mock demo analysis (manually edited): ').summary).toBe(
+      'Mock demo analysis (manually edited): Edited summary',
+    );
   });
 
   it('rejects invalid hooks, missing script segments, and oversized scripts before saving', () => {

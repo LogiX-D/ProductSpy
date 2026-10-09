@@ -4,11 +4,11 @@ export const analysisCopy = {
   mockBadge: '本机演示',
   mockModeBadge: '演示生成模式',
   mockSummaryPrefix: 'Mock 演示分析（手工编辑）：',
-  realBadge: 'AI 服务已配置',
+  realBadge: '真实 AI 服务已配置',
   mockNotice: '本机演示：结果来自本地模板，未调用外部 AI。手工编辑后仍是演示素材。',
   mockEditNotice: '保存时会保留总结中的演示标识，便于以后辨认内容来源。',
   mockGenerationNotice: '下一次生成将使用本机演示模板，不会调用外部 AI。',
-  realNotice: '生成时，商品文字资料将发送至你配置的 AI 服务。',
+  realNotice: '已配置真实 AI。每次生成前需授权；只发送商品文字与分析要求，不上传图片或视频。',
   start: '开始 AI 分析',
   regenerate: '重新生成分析',
   generating: '正在生成…',
@@ -72,7 +72,7 @@ export const analysisCopy = {
   continueEdit: '继续编辑',
   regenerateTitle: '重新生成会覆盖现有分析',
   regenerateDescription:
-    '新结果生成成功后会替换已保存分析，并清除此商品的未保存草稿。生成失败时保留原分析和草稿。',
+    '新结果生成成功后会合并你选定的内容。原已保存分析会保留为历史版本，本标签页未保存草稿仍保留。生成失败时不会修改原结果。',
   confirmRegenerate: '确认重新生成',
   cancel: '取消',
   validationTitle: '请先检查以下内容：',
@@ -86,5 +86,6 @@ export const analysisCopy = {
   analyzeConflict: '生成冲突：商品已更新。原分析和草稿已保留，请刷新商品后再生成。',
   analyzeFailed: '生成失败，原分析和未保存草稿已保留。',
   refreshFailed: '分析已生成并保存，但页面刷新失败。请使用商品页的刷新按钮重新读取。',
-  factNotice: '受众和营销方向可能包含推测。发布前请核对商品事实、价格和效果表述。',
+  factNotice:
+    '事实依据与 AI 推断单独列出。未采集或分析真实评论正文；发布前请核对商品事实、价格和效果表述。',
 } as const;

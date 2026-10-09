@@ -1,7 +1,7 @@
 {
   "name": "@productspy/web",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "scripts": {
     "dev": "next dev --hostname 127.0.0.1 --port 3000",
     "build": "next build",
@@ -15,7 +15,8 @@
     "react-dom": "^19.2.0",
     "dexie": "^4.2.0",
     "lucide-react": "^0.468.0",
-    "jszip": "^3.10.1"
+    "jszip": "^3.10.1",
+    "zod": "^3.25.0"
   },
   "devDependencies": {
     "@types/react": "^19.2.0",

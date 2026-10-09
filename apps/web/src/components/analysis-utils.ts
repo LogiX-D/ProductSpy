@@ -75,11 +75,13 @@ export function createAnalysisDraft(analysis: ProductAnalysis): AnalysisDraft {
   };
 }
 
-export function draftToAnalysis(draft: AnalysisDraft, isMock = false): ProductAnalysis {
+export function draftToAnalysis(
+  draft: AnalysisDraft,
+  isMock = false,
+  mockPrefix: string = analysisCopy.mockSummaryPrefix,
+): ProductAnalysis {
   const summary =
-    isMock && !isMockAnalysis(draft.summary)
-      ? `${analysisCopy.mockSummaryPrefix}${draft.summary}`
-      : draft.summary;
+    isMock && !isMockAnalysis(draft.summary) ? `${mockPrefix}${draft.summary}` : draft.summary;
   return {
     ...draft,
     summary,
@@ -90,7 +92,7 @@ export function draftToAnalysis(draft: AnalysisDraft, isMock = false): ProductAn
 }
 
 export function isMockAnalysis(summary: string): boolean {
-  return /Mock\s*演示分析/i.test(summary);
+  return /^Mock(?:\s|[：:])/i.test(summary.trim());
 }
 
 export function validateAnalysisDraft(draft: AnalysisDraft, isMock = false): string[] {

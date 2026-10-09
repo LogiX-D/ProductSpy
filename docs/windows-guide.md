@@ -1,10 +1,10 @@
 # Windows 普通用户首次使用指南
 
-适用于 ProductSpy 0.3.0 Windows x64 便携版。无需自行安装 Node.js、pnpm、数据库或 AI Key。需要 Windows 10 或更新版本的 x64 系统、系统 PowerShell 5.1，以及已安装的 Google Chrome；当前未发布 Chrome Web Store 版本，插件仍需按下面步骤手动加载。内置 Node.js 24.14.0 的 Windows 平台要求见 [官方平台表](https://github.com/nodejs/node/blob/v24.14.0/BUILDING.md#platform-list)，具体实际验收系统以本次报告为准。
+适用于 ProductSpy 0.4.0 Windows x64 便携版。无需自行安装 Node.js、pnpm、数据库或 AI Key。需要 Windows 10 或更新版本的 x64 系统、系统 PowerShell 5.1，以及已安装的 Google Chrome；当前未发布 Chrome Web Store 版本，插件仍需按下面步骤手动加载。内置 Node.js 24.14.0 的 Windows 平台要求见 [官方平台表](https://github.com/nodejs/node/blob/v24.14.0/BUILDING.md#platform-list)，具体实际验收系统以本次报告为准。
 
 ## 1. 解压并启动工作台
 
-1. 下载 `ProductSpy-0.3.0-windows-x64.zip`。本地构建产物位于项目的 `artifacts` 目录；公开下载以发布者实际上传的 GitHub Release 资产为准。
+1. 下载 `ProductSpy-0.4.0-windows-x64.zip`。本地构建产物位于项目的 `artifacts` 目录；公开下载以发布者实际上传的 GitHub Release 资产为准。
 2. 右键 ZIP，选择「全部解压缩」，放到你准备保留的目录。**先完整解压，再运行；不要在 ZIP 压缩窗口里双击。**
 3. 打开解压后的 ProductSpy 文件夹，双击 **ProductSpy.cmd**。
 4. 启动窗口出现后，会自动启动本机工作台并打开浏览器。如果默认浏览器不是 Chrome，在 Chrome 地址栏输入 **http://127.0.0.1:3000**。
@@ -64,7 +64,11 @@
 1. 在 ProductSpy 启动窗口点击「AI 设置」。
 2. 选择模式，填写自己的 API 地址、模型名称和 Key。
 3. 保存后，先「停止并退出」，再双击 ProductSpy.cmd 重新启动，使设置生效。
-4. 回到商品详情发起分析；真实服务可能按其规则计费，文字资料会发送给你配置的服务商。
+4. 回到商品详情设置市场、输出语言、平台、风格、营销目标、视频时长和自定义要求；可「保存分析偏好」。真实生成需每次单独「授权本次调用」，可能计费，只发送文字与参数，不上传媒体。
+
+0.4.0 的「AI 设置」增加输出模式、Token 参数、输出上限、超时和可选温度。默认 json_object / max_tokens / 8192 Token / 60000ms / omit；超时最多 120 秒。部分模型需 max_completion_tokens 或 json_schema，请按服务商支持选定，程序不自动切换重发。详见 [AI 配置指南](ai-provider-guide.md)。Key 仍只由本机服务端管理，不传插件。
+
+分析页支持「本次重新生成」选择指定内容，其他人工修改保留；当前实现仍请求完整模型输出，局部生成不保证节省费用。已保存结果可比较、恢复历史或导出 Markdown / TXT；每商品最多 50 个版本，满后拒绝新增并提示导出，不自动删除。未保存草稿保留，但不能直接覆盖新结果。用量缺失显示未知，自填完整输入 / 输出单价才估算；服务商账单才是实际费用。
 
 `auto` 表示有 Key 时使用真实服务，否则 Mock；`mock` 始终演示；`real` 强制使用真实服务，缺少 Key 时会给出配置错误。服务需兼容 `/chat/completions` 和 JSON response 格式，远程地址应使用 HTTPS。ProductSpy 不提供 Key，不把 Key 放入便携包或扩展。启动器用 Windows DPAPI 按当前用户保护 AI 设置；这不是商品文件的加密。
 
@@ -80,7 +84,7 @@
 
 ```text
 %LOCALAPPDATA%\ProductSpy\
-├─ data\       商品库与工作台配对配置
+├─ data\       商品库、分析历史、AI 用量与工作台配对配置
 ├─ settings\   当前 Windows 用户保护的 AI 设置
 ├─ logs\       本机启动与服务日志
 └─ runtime\    本机运行状态

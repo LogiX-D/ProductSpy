@@ -616,7 +616,9 @@ test('analysis editing preserves drafts, validates hooks and rejects concurrent 
     await expect(page.getByText('分析已保存。', { exact: true })).toBeVisible();
     await page.reload();
     await expect(page.locator('#analysis-summary')).toContainText('修改后的总结\n第二行保留');
-    await expect(page.getByText('本机演示', { exact: true })).toBeVisible();
+    await expect(
+      page.locator('.analysis-title-line').getByText('本机演示', { exact: true }),
+    ).toBeVisible();
     const edited = ((await (await api.get(endpoint)).json()) as { data: Product }).data;
     expect(edited.aiAnalysis?.hooks).toHaveLength(5);
     expect(edited.aiAnalysis?.shortVideoScript).toContain('Hook: 新脚本开场\n第二行');

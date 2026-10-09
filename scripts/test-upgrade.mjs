@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, mkdtemp, readFile, stat, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import { basename, join, relative, resolve } from 'node:path';
@@ -13,7 +13,7 @@ const fixture = {
   source: 'amazon',
   sourceId: 'B0UPGRADE1',
   url: 'https://www.amazon.com/dp/B0UPGRADE1',
-  title: 'Phase 10 → 11 upgrade fixture / 升级兼容回归，非真实 Amazon 商品',
+  title: 'Phase 11 → 12 upgrade fixture / 升级兼容回归，非真实 Amazon 商品',
   price: '$19.95',
   currency: 'USD',
   brand: 'UpgradeFixture',
@@ -39,8 +39,8 @@ const baseUrl = 'http://127.0.0.1:3000';
 
 if (values.help) {
   console.log(
-    'node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.2.0-windows-x64 --to artifacts/ProductSpy-0.3.0-windows-x64\n' +
-      'Requires Windows and a free port 3000. Uses only fresh .test-data/phase11-upgrade data. Existing services are never stopped.',
+    'node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.3.0-windows-x64 --to artifacts/ProductSpy-0.4.0-windows-x64\n' +
+      'Requires Windows and a free port 3000. Uses only fresh .test-data/phase12-upgrade data. Existing services are never stopped.',
   );
 } else {
   await main();
@@ -49,14 +49,14 @@ if (values.help) {
 async function main() {
   assert.equal(process.platform, 'win32', 'Portable upgrade regression requires Windows.');
   const { version } = JSON.parse(await readFile(resolve('package.json'), 'utf8'));
-  const oldPackage = resolve(values.from ?? 'artifacts/ProductSpy-0.2.0-windows-x64');
+  const oldPackage = resolve(values.from ?? 'artifacts/ProductSpy-0.3.0-windows-x64');
   const newPackage = resolve(values.to ?? `artifacts/ProductSpy-${version}-windows-x64`);
   assert.notEqual(
     oldPackage.toLowerCase(),
     newPackage.toLowerCase(),
     'Upgrade requires two distinct package directories.',
   );
-  const evidenceParent = resolve('.test-data/phase11-upgrade');
+  const evidenceParent = resolve('.test-data/phase12-upgrade');
   await mkdir(evidenceParent, { recursive: true });
   const evidenceRoot = await mkdtemp(
     join(evidenceParent, `${new Date().toISOString().replace(/[:.]/g, '-')}-`),
@@ -274,8 +274,8 @@ async function main() {
     const newInventory = await inspectPackage(newPackage);
     assert.equal(
       oldInventory.version,
-      '0.2.0',
-      'Phase 10 fixture must run the actual 0.2.0 portable package.',
+      '0.3.0',
+      'Phase 11 fixture must run the actual 0.3.0 portable package.',
     );
     assert.equal(
       newInventory.version,
@@ -290,7 +290,7 @@ async function main() {
     report.fromVersion = oldInventory.version;
     report.toVersion = newInventory.version;
     report.checks.push({
-      name: 'distinct Phase 10 and Phase 11 package versions and launcher/runtime hashes',
+      name: 'distinct Phase 11 and Phase 12 package versions and launcher/runtime hashes',
       passed: true,
     });
 
@@ -316,7 +316,7 @@ async function main() {
       'Stopping the old package must not alter the saved database.',
     );
     report.checks.push({
-      name: '0.2.0 saves complete Product and complete Mock analysis, then stops without changing data',
+      name: '0.3.0 saves complete Product and complete Mock analysis, then stops without changing data',
       passed: true,
     });
 
@@ -334,7 +334,7 @@ async function main() {
     );
     await snapshot('02-after-upgrade', upgraded);
     report.checks.push({
-      name: '0.2.0 → current package preserves entire Product, ID, createdAt, updatedAt and aiAnalysis',
+      name: '0.3.0 → current package preserves entire Product, ID, createdAt, updatedAt and aiAnalysis',
       passed: true,
     });
 
@@ -367,15 +367,94 @@ async function main() {
     );
     const editedAnalysis = await request('/api/analyze-product', 'POST', edited);
     assertCompleteAnalysis(editedAnalysis);
+    const generated = await onlyProduct(saved.id);
+    assert(
+      generated.analysisHistory?.some(
+        (entry) => JSON.stringify(entry.analysis) === JSON.stringify(oldAnalysis),
+      ),
+      'Recapture must archive the v0.3.0 analysis before invalidating it.',
+    );
+    const manualAnalysis = {
+      ...generated.aiAnalysis,
+      summary: '人工修改：升级后必须保留这个摘要。',
+    };
+    const manual = await request(`/api/products/${encodeURIComponent(saved.id)}`, 'PATCH', {
+      analysis: manualAnalysis,
+      expectedUpdatedAt: generated.updatedAt,
+    });
+    const manualVersion = manual.analysisHistory.find(
+      (entry) => entry.kind === 'edited' && entry.analysis.summary === manualAnalysis.summary,
+    );
+    assert(manualVersion, 'Manual edits must be versioned.');
+    const options = {
+      market: 'JP',
+      language: 'ja',
+      platform: 'Shorts',
+      style: 'professional',
+      duration: 15,
+      goal: 'consideration',
+      customInstructions: 'Show a tabletop demonstration.',
+    };
+    const partialRequest = {
+      product: {
+        ...asDraft(manual),
+        id: manual.id,
+        createdAt: manual.createdAt,
+        updatedAt: manual.updatedAt,
+      },
+      options,
+      fields: ['hooks'],
+      requestId: randomUUID(),
+    };
+    const partial = await request('/api/analyze-product', 'POST', partialRequest);
+    assert.equal(
+      partial.product.aiAnalysis.summary,
+      manualAnalysis.summary,
+      'Regenerating hooks must not overwrite a manual summary.',
+    );
+    assert.equal(partial.metadata.options.language, 'ja');
+    assert(
+      partial.product.aiAnalysis.hooks.some((hook) => /[\u3040-\u30ff]/.test(hook)),
+      'The regenerated hooks must use selected Japanese.',
+    );
+    const replay = await request('/api/analyze-product', 'POST', partialRequest);
+    assert.equal(
+      replay.replayed,
+      true,
+      'Repeating a completed request ID must replay without another generation.',
+    );
+    assert.deepEqual(replay.product, partial.product);
+    const usage = await request('/api/analysis-usage');
+    assert(
+      usage.records.some(
+        (entry) => entry.requestId === partialRequest.requestId && entry.status === 'succeeded',
+      ),
+    );
+    assert.equal(usage.totals.realRequests, 0, 'Upgrade tests must never call real AI.');
+    report.checks.push({
+      name: 'legacy archive, manual version, Japanese partial generation, request replay and local usage ledger',
+      passed: true,
+    });
+    const restored = await request(
+      `/api/products/${encodeURIComponent(saved.id)}/analysis-history`,
+      'POST',
+      { versionId: manualVersion.id, expectedUpdatedAt: partial.product.updatedAt },
+    );
+    assert.deepEqual(
+      restored.aiAnalysis,
+      manualAnalysis,
+      'Restoring a version must preserve the complete manual analysis.',
+    );
+    assert.equal(restored.analysisHistory.at(-1).kind, 'restored');
     const beforeRestart = await onlyProduct(saved.id);
     assert.deepEqual(asDraft(beforeRestart), editedDraft);
-    assert.deepEqual(beforeRestart.aiAnalysis, editedAnalysis);
+    assert.deepEqual(beforeRestart.aiAnalysis, manualAnalysis);
     await snapshot('03-edited-before-restart', beforeRestart);
     const editedDatabase = await readFile(databaseFile, 'utf8');
     await stop(newLaunch);
     assert.equal(await readFile(databaseFile, 'utf8'), editedDatabase);
     report.checks.push({
-      name: 'new package edits existing ID, keeps createdAt, invalidates stale analysis and persists refreshed Mock analysis',
+      name: 'new package updates existing ID, keeps createdAt, archives stale analysis and restores version without losing newer history',
       passed: true,
     });
 

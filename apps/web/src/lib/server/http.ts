@@ -94,9 +94,19 @@ export function jsonFailure(
     ok: false,
     error: known ? error.message : '工作台暂时无法完成操作，请重试并检查服务日志',
   };
+  const headers = corsHeaders(request, allowUnpairedExtension);
+  if (
+    known &&
+    error.status === 429 &&
+    'retryAfterSeconds' in error &&
+    typeof error.retryAfterSeconds === 'number' &&
+    Number.isFinite(error.retryAfterSeconds) &&
+    error.retryAfterSeconds > 0
+  )
+    headers.set('Retry-After', String(Math.min(86400, Math.ceil(error.retryAfterSeconds))));
   return Response.json(body, {
     status: known ? error.status : 500,
-    headers: corsHeaders(request, allowUnpairedExtension),
+    headers,
   });
 }
 

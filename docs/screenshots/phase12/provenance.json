@@ -1,0 +1,151 @@
+{
+  "version": "0.4.0",
+  "source": "portable production build",
+  "browser": "Chrome for Testing, not installed Chrome stable",
+  "fixture": false,
+  "ai": "mock",
+  "pageUrl": "https://www.amazon.com/dp/B00TTD9BRC",
+  "capturedAt": "2026-10-09T06:45:58.628Z",
+  "verified": true,
+  "checks": [
+    "portable startup",
+    "first consent",
+    "real Amazon capture",
+    "authenticated pairing",
+    "product save",
+    "Mock analysis",
+    "analysis after reload",
+    "real editing UI",
+    "short popup visible action",
+    "375px and 1280px layouts without horizontal overflow",
+    "saved AI preferences",
+    "Japanese partial hooks generation preserves manual summary",
+    "saved analysis history and comparison",
+    "facts vs inferences and no review-text analysis",
+    "local usage ledger: zero real requests"
+  ],
+  "screenshots": [
+    {
+      "file": "01-popup.png",
+      "width": 400,
+      "height": 600,
+      "sha256": "ed9fc9ef8babbc9249c53324fedae01e215b0ffdd4df245fcb8d906796ad600c",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "02-popup-short.png",
+      "width": 400,
+      "height": 480,
+      "sha256": "5cdcc3eaedaefcde43a18b0ca158d973212e72db2c47d7a49b87566f7117f4f5",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "03-dashboard.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "48660089edc63622d4c325b0d1f34b968c874b12d6149aa5a1acce30fc0971f2",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "04-library.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "d1c2e737b6643090832a545a0c6fc76bf32dde67dd9b6a164d21b108e06a6fb2",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "05-detail.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "e74d2dd3184678af945530741e1976638a707ecac2a0b36b924e5f80745dfca7",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "06-media.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "d15ed0351a8f29de594989d34f2d95be01d61dbf9c474407a2840dba2678e002",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "07-analysis.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "71ac610dce2333adf3e42f819a5c73154de17e5929df3e1e0444fa243b8e6074",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "08-editor.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "3d73c0a252371619fca740c520c572f2fb4bc88e835cbd169f5f363d6c9e591e",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "09-library-mobile.png",
+      "width": 375,
+      "height": 812,
+      "sha256": "22363a5b09f1d11eb64d491bd04cb00398240711578c1b84f35bd683848a8ec6",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "10-analysis-mobile.png",
+      "width": 375,
+      "height": 812,
+      "sha256": "efb63db0584145a11aa97dbaec45c8c1a552fac1f43d8db82ef9fbc1cf852025",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "11-analysis-options.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "540823e1cffe97d818e3e45df058678e715cbff23c4acaae64cec9ea17fcbcd4",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "12-options-mobile.png",
+      "width": 375,
+      "height": 812,
+      "sha256": "25dddb7795402059ffd7fe1292132acf06fc452b1b38bb75661618f87ba862ef",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "13-partial-hooks.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "ee104885e3e473cd201407a585939f2dae8f10be99eaeb0b780cd25b6f1b3a31",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "14-facts-and-inferences.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "f2517e2b4278c31177d9ffecef9513546d07558286463935ef8f130f8a88e4e4",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "15-version-comparison.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "9cbb75224229d38466c0111f482894ed278262b70e471ff306cf93ebbff06c08",
+      "horizontalOverflow": false
+    },
+    {
+      "file": "16-local-usage.png",
+      "width": 1280,
+      "height": 800,
+      "sha256": "7b31ef811c147f2a9fed481c6d35c0ddeb6365fc62426c20d35b6faf7aebd78f",
+      "horizontalOverflow": false
+    }
+  ],
+  "browserVersion": "156.0.8078.4",
+  "capture": {
+    "asin": "B00TTD9BRC",
+    "title": "CeraVe 保湿霜 16 盎司（约 453.59 克）日常面部和身体保湿霜，适用于干性肌肤, 19 盎司",
+    "price": "TWD606.36",
+    "currency": "TWD",
+    "images": 12,
+    "videos": 0,
+    "bulletPoints": 5
+  }
+}

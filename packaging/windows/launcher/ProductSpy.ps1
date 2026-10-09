@@ -75,13 +75,13 @@ function Stop-OwnedService {
 
 function Read-AiSettings {
     Add-Type -AssemblyName System.Security
-    $settings = @{ AI_MODE = 'auto'; AI_BASE_URL = 'https://api.openai.com/v1'; AI_MODEL = 'gpt-4o-mini'; AI_API_KEY = '' }
+    $settings = @{ AI_MODE = 'auto'; AI_BASE_URL = 'https://api.openai.com/v1'; AI_MODEL = 'gpt-4o-mini'; AI_API_KEY = ''; AI_RESPONSE_FORMAT = 'json_object'; AI_TOKEN_PARAMETER = 'max_tokens'; AI_TIMEOUT_MS = '60000'; AI_MAX_OUTPUT_TOKENS = '8192'; AI_TEMPERATURE = 'omit' }
     if (Test-Path -LiteralPath $settingsFile) {
         try {
             $stored = Get-Content -LiteralPath $settingsFile -Raw | ConvertFrom-Json
             $plain = [Security.Cryptography.ProtectedData]::Unprotect([Convert]::FromBase64String($stored.protected), $null, [Security.Cryptography.DataProtectionScope]::CurrentUser)
             $decoded = [Text.Encoding]::UTF8.GetString($plain) | ConvertFrom-Json
-            foreach ($name in @('AI_MODE', 'AI_BASE_URL', 'AI_MODEL', 'AI_API_KEY')) {
+            foreach ($name in @('AI_MODE', 'AI_BASE_URL', 'AI_MODEL', 'AI_API_KEY', 'AI_RESPONSE_FORMAT', 'AI_TOKEN_PARAMETER', 'AI_TIMEOUT_MS', 'AI_MAX_OUTPUT_TOKENS', 'AI_TEMPERATURE')) {
                 if ($null -ne $decoded.$name) { $settings[$name] = [string]$decoded.$name }
             }
         } catch { throw '无法解密本机 AI 设置。请保留用户数据，在原 Windows 用户账户下重试，或移走 settings\ai-settings.protected.json 后重新配置。' }
@@ -93,30 +93,59 @@ function Show-AiSettings {
     $current = Read-AiSettings
     $dialog = New-Object Windows.Forms.Form
     $dialog.Text = 'ProductSpy · AI 设置'
-    $dialog.Size = New-Object Drawing.Size(470, 390)
+    $dialog.Size = New-Object Drawing.Size(490, 560)
     $dialog.StartPosition = 'CenterParent'
     $dialog.FormBorderStyle = 'FixedDialog'
     $dialog.MaximizeBox = $false
     $dialog.MinimizeBox = $false
     $fields = @{}
-    $labels = @('模式（auto / mock / real）', 'API Base URL', '模型', 'API Key（仅保存在本机，使用 Windows 加密）')
-    $names = @('AI_MODE', 'AI_BASE_URL', 'AI_MODEL', 'AI_API_KEY')
+    $tabs = New-Object Windows.Forms.TabControl
+    $tabs.Location = New-Object Drawing.Point(12, 12)
+    $tabs.Size = New-Object Drawing.Size(450, 424)
+    $connection = New-Object Windows.Forms.TabPage
+    $connection.Text = '连接设置'
+    $advanced = New-Object Windows.Forms.TabPage
+    $advanced.Text = '模型兼容性'
+    $tabs.TabPages.AddRange(@($connection, $advanced))
+    $dialog.Controls.Add($tabs)
+    $labels = @('模式（auto 自动 / mock 演示 / real 真实）', 'API 地址（根地址或 chat/completions 地址）', '模型名称（按服务商提供的名称填写）', 'API Key（仅本机保存，Windows 用户加密）', '输出模式（不支持 JSON 时手动选择 text）', '输出上限参数（思考模型可选 max_completion_tokens）', '请求超时（毫秒：1000 - 120000，即最多 120 秒）', '单次输出 Token 上限（256 - 32768）', '温度（omit 不发送，或 0 - 2；按模型支持填写）')
+    $names = @('AI_MODE', 'AI_BASE_URL', 'AI_MODEL', 'AI_API_KEY', 'AI_RESPONSE_FORMAT', 'AI_TOKEN_PARAMETER', 'AI_TIMEOUT_MS', 'AI_MAX_OUTPUT_TOKENS', 'AI_TEMPERATURE')
     for ($i = 0; $i -lt $names.Count; $i++) {
+        $tab = $connection
+        $row = $i
+        if ($i -ge 4) { $tab = $advanced; $row = $i - 4 }
         $label = New-Object Windows.Forms.Label
         $label.Text = $labels[$i]
-        $label.Location = New-Object Drawing.Point(18, (16 + $i * 62))
+        $label.Location = New-Object Drawing.Point(10, (14 + $row * 62))
         $label.Size = New-Object Drawing.Size(420, 22)
-        $input = New-Object Windows.Forms.TextBox
-        $input.Location = New-Object Drawing.Point(18, (40 + $i * 62))
+        if ($names[$i] -in @('AI_MODE', 'AI_RESPONSE_FORMAT', 'AI_TOKEN_PARAMETER')) {
+            $input = New-Object Windows.Forms.ComboBox
+            $input.DropDownStyle = 'DropDownList'
+            $choices = @('auto', 'mock', 'real')
+            if ($names[$i] -eq 'AI_RESPONSE_FORMAT') { $choices = @('json_object', 'json_schema', 'text') }
+            if ($names[$i] -eq 'AI_TOKEN_PARAMETER') { $choices = @('max_tokens', 'max_completion_tokens') }
+            $input.Items.AddRange($choices)
+        } else { $input = New-Object Windows.Forms.TextBox }
+        $input.Location = New-Object Drawing.Point(10, (38 + $row * 62))
         $input.Size = New-Object Drawing.Size(420, 25)
         $input.Text = $current[$names[$i]]
         if ($names[$i] -eq 'AI_API_KEY') { $input.UseSystemPasswordChar = $true }
         $fields[$names[$i]] = $input
-        $dialog.Controls.AddRange(@($label, $input))
+        $tab.Controls.AddRange(@($label, $input))
     }
+    $notice = New-Object Windows.Forms.Label
+    $notice.Text = "设置 Key 不会调用模型。每次真实分析都需在工作台确认，可能产生费用。`r`n默认不上传商品图片或视频，不自动重试或切换输出模式。"
+    $notice.Location = New-Object Drawing.Point(10, 276)
+    $notice.Size = New-Object Drawing.Size(420, 72)
+    $connection.Controls.Add($notice)
+    $compatibilityNotice = New-Object Windows.Forms.Label
+    $compatibilityNotice.Text = '按服务商文档选择兼容参数。参数不支持时明确报错，避免再次自动调用收费 API。Token 上限也可能包含思考 Token，真实计费以服务商为准。'
+    $compatibilityNotice.Location = New-Object Drawing.Point(10, 326)
+    $compatibilityNotice.Size = New-Object Drawing.Size(420, 62)
+    $advanced.Controls.Add($compatibilityNotice)
     $save = New-Object Windows.Forms.Button
     $save.Text = '保存，下次启动生效'
-    $save.Location = New-Object Drawing.Point(240, 298)
+    $save.Location = New-Object Drawing.Point(252, 456)
     $save.Size = New-Object Drawing.Size(198, 34)
     $save.Add_Click({
         try {
@@ -128,9 +157,20 @@ function Show-AiSettings {
             if ($baseUri.Query -or $baseUri.Fragment) { throw 'API Base URL 不能包含查询参数（?）或片段（#）。请填写 API 根地址，例如 https://api.openai.com/v1。' }
             if ($value.AI_MODE -eq 'real' -and -not $value.AI_API_KEY) { throw 'real 模式需要填写 API Key。未配置 Key 时，请选择 auto 或 mock 模式。' }
             if (-not $value.AI_MODEL) { throw '请填写模型名称。' }
+            if ($value.AI_MODEL.Length -gt 200) { throw '模型名称不能超过 200 字。' }
+            if ($value.AI_RESPONSE_FORMAT -notin @('json_object', 'json_schema', 'text')) { throw '请选择有效的输出模式。' }
+            if ($value.AI_TOKEN_PARAMETER -notin @('max_tokens', 'max_completion_tokens')) { throw '请选择有效的 Token 参数。' }
+            [int]$timeoutValue = 0
+            if (-not [int]::TryParse($value.AI_TIMEOUT_MS, [ref]$timeoutValue) -or $timeoutValue -lt 1000 -or $timeoutValue -gt 120000) { throw '超时需要 1000 至 120000 毫秒的整数（最多 120 秒）。' }
+            [int]$tokenValue = 0
+            if (-not [int]::TryParse($value.AI_MAX_OUTPUT_TOKENS, [ref]$tokenValue) -or $tokenValue -lt 256 -or $tokenValue -gt 32768) { throw '输出上限需要 256 至 32768 的整数。' }
+            if ($value.AI_TEMPERATURE -ne 'omit') {
+                [double]$temperatureValue = 0
+                if (-not [double]::TryParse($value.AI_TEMPERATURE, [Globalization.NumberStyles]::Float, [Globalization.CultureInfo]::InvariantCulture, [ref]$temperatureValue) -or [double]::IsNaN($temperatureValue) -or [double]::IsInfinity($temperatureValue) -or $temperatureValue -lt 0 -or $temperatureValue -gt 2) { throw '温度请输入 omit 或 0 至 2 的数值。' }
+            }
             $plain = [Text.Encoding]::UTF8.GetBytes(($value | ConvertTo-Json -Compress))
             $encrypted = [Security.Cryptography.ProtectedData]::Protect($plain, $null, [Security.Cryptography.DataProtectionScope]::CurrentUser)
-            Write-JsonFile $settingsFile @{ version = 1; protected = [Convert]::ToBase64String($encrypted) }
+            Write-JsonFile $settingsFile @{ version = 2; protected = [Convert]::ToBase64String($encrypted) }
             [Windows.Forms.MessageBox]::Show('设置已使用当前 Windows 用户的 DPAPI 加密保存。退出 ProductSpy 后重新启动即可生效。', 'ProductSpy') | Out-Null
             $dialog.Close()
         } catch { [Windows.Forms.MessageBox]::Show($_.Exception.Message, '设置未保存') | Out-Null }

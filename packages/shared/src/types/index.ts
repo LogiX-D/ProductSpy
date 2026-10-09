@@ -18,6 +18,106 @@ export interface ProductAnalysis {
   videoPrompts: string[];
 }
 
+export type AnalysisField = keyof ProductAnalysis;
+export interface AnalysisOptions {
+  market: 'US' | 'UK' | 'EU' | 'JP';
+  language: 'zh-CN' | 'en' | 'ja';
+  platform: 'TikTok' | 'Reels' | 'Shorts';
+  style: 'professional' | 'casual' | 'humorous' | 'recommendation';
+  duration: 15 | 30 | 60;
+  goal: 'awareness' | 'consideration' | 'conversion';
+  customInstructions: string;
+}
+export interface AnalysisPricing {
+  inputUsdPerMillion: number;
+  outputUsdPerMillion: number;
+}
+export interface AnalysisEvidence {
+  facts: string[];
+  inferences: string[];
+  unknowns: string[];
+  reviewTextAnalyzed: false;
+}
+export interface GenerationTokenUsage {
+  inputTokens?: number;
+  outputTokens?: number;
+}
+export interface AIGenerationResult {
+  analysis: ProductAnalysis;
+  evidence: AnalysisEvidence;
+  usage?: GenerationTokenUsage;
+}
+export interface AnalysisUsage extends GenerationTokenUsage {
+  costUsd?: number;
+  costEstimated: boolean;
+  pricing?: AnalysisPricing;
+}
+export interface AnalysisMetadata {
+  mode: 'mock' | 'real' | 'legacy';
+  model?: string;
+  options: AnalysisOptions;
+  generatedAt: string;
+  sourceUpdatedAt: string;
+  evidence: AnalysisEvidence;
+  usage?: AnalysisUsage;
+  requestId?: string;
+  selectedFields?: AnalysisField[];
+}
+export interface AnalysisVersion {
+  id: string;
+  createdAt: string;
+  kind: 'legacy' | 'generated' | 'edited' | 'restored';
+  analysis: ProductAnalysis;
+  metadata?: AnalysisMetadata;
+  parentVersionId?: string;
+  restoredFrom?: string;
+}
+export interface AnalysisSaveContext {
+  kind?: AnalysisVersion['kind'];
+  metadata?: AnalysisMetadata;
+  restoredFrom?: string;
+  selectedFields?: AnalysisField[];
+}
+export interface AnalysisUsageRecord {
+  id: string;
+  requestId: string;
+  productId: string;
+  createdAt: string;
+  completedAt?: string;
+  mode: 'mock' | 'real';
+  model?: string;
+  status: 'started' | 'succeeded' | 'failed' | 'conflict';
+  options: AnalysisOptions;
+  fields?: AnalysisField[];
+  usage?: AnalysisUsage;
+  error?: string;
+}
+export interface AnalysisUsageReport {
+  records: AnalysisUsageRecord[];
+  totals: {
+    requests: number;
+    realRequests: number;
+    inputTokens: number;
+    outputTokens: number;
+    costUsd: number;
+    unknownTokenRequests: number;
+    unknownCostRequests: number;
+  };
+  limits: {
+    dailyLimit: number;
+    dailyRealRequests: number;
+    maxConcurrent: number;
+    cooldownUntil?: string;
+  };
+}
+export interface AnalysisGenerationResponse {
+  product: Product;
+  analysis: ProductAnalysis;
+  metadata: AnalysisMetadata;
+  requestId: string;
+  replayed: boolean;
+}
+
 export interface Product {
   id: string;
   source: 'amazon';
@@ -37,16 +137,26 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
   aiAnalysis?: ProductAnalysis;
+  analysisMetadata?: AnalysisMetadata;
+  analysisHistory?: AnalysisVersion[];
 }
 
-export type ProductDraft = Omit<Product, 'id' | 'createdAt' | 'updatedAt' | 'aiAnalysis'>;
+export type ProductDraft = Omit<
+  Product,
+  'id' | 'createdAt' | 'updatedAt' | 'aiAnalysis' | 'analysisMetadata' | 'analysisHistory'
+>;
 
 export interface ProductRepository {
   list(): Promise<Product[]>;
   get(id: string): Promise<Product | undefined>;
   upsert(draft: ProductDraft): Promise<Product>;
   delete(id: string): Promise<void>;
-  saveAnalysis(id: string, analysis: ProductAnalysis, expectedUpdatedAt?: string): Promise<Product>;
+  saveAnalysis(
+    id: string,
+    analysis: ProductAnalysis,
+    expectedUpdatedAt?: string,
+    context?: AnalysisSaveContext,
+  ): Promise<Product>;
 }
 
 export type ProductStorageAdapter = ProductRepository;
@@ -55,7 +165,8 @@ export interface ProductSyncAdapter {
 }
 
 export interface AIProvider {
-  analyze(product: Product): Promise<ProductAnalysis>;
+  analyze(product: Product, options?: AnalysisOptions): Promise<ProductAnalysis>;
+  generate?(product: Product, options?: AnalysisOptions): Promise<AIGenerationResult>;
 }
 
 export type ApiResult<T> = { ok: true; data: T } | { ok: false; error: string };

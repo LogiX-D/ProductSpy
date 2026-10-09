@@ -8,7 +8,7 @@ const fromWeb = createRequire(resolve(workspace, 'apps/web/package.json'));
 const JSZip = fromWeb('jszip');
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const stamp = new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-');
-const output = resolve(workspace, '.test-data/phase11-release', stamp, 'zip-validation.json');
+const output = resolve(workspace, '.test-data/phase12-release', stamp, 'zip-validation.json');
 const report = {
   schemaVersion: 1,
   checkedAt: new Date().toISOString(),
@@ -118,7 +118,7 @@ function centralDirectory(bytes) {
 }
 
 const privateSegment =
-  /^(?:\.env(?:\..*)?|\.data|\.test-data|\.git|\.pack-cache|\.bridge-.*|products\.json|settings\.json|ai-settings\.protected\.json|launcher-state\.json|stop-request\.json|pairing(?:-settings)?\.json|logs|profile)$/i;
+  /^(?:\.env(?:\..*)?|\.data|\.test-data|\.git|\.pack-cache|\.bridge-.*|products\.json|analysis-usage\.json|settings\.json|ai-settings\.protected\.json|launcher-state\.json|stop-request\.json|pairing(?:-settings)?\.json|logs|profile)$/i;
 const textFile =
   /(?:\.(?:js|cjs|mjs|json|map|html|css|svg|xml|ya?ml|md|txt|ps1|cmd|ini|conf|config)$|(?:^|\/)(?:LICENSE|NOTICE)(?:\.[^/]*)?$)/i;
 const tokenPatterns = [
@@ -256,7 +256,7 @@ function validateExtensionManifest(manifest, version, label) {
 
 try {
   const project = JSON.parse(await readFile(resolve(workspace, 'package.json'), 'utf8'));
-  check(project.version === '0.3.0', 'This validation run expects the existing 0.3.0 release');
+  check(project.version === '0.4.0', 'This validation run expects the Phase 12 release');
   const releaseBytes = await readFile(resolve(workspace, 'artifacts/release-manifest.json'));
   const release = JSON.parse(releaseBytes.toString('utf8'));
   check(release.version === project.version, 'Release manifest version does not match the project');
@@ -359,7 +359,7 @@ try {
   extension.result.sourceMapsAbsent = true;
   portable.result.embeddedExtensionFilesVerified = portableExtension.length;
   report.checks.push({
-    name: 'extension: root MV3 0.3.0, original permission/host allowlist, CSP, no source maps; embedded extension matches ZIP',
+    name: 'extension: root MV3 0.4.0, original permission/host allowlist, CSP, no source maps; embedded extension matches ZIP',
     passed: true,
     embeddedFiles: portableExtension.length,
   });

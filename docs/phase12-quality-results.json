@@ -1,0 +1,3613 @@
+{
+  "schemaVersion": 1,
+  "evaluatedAt": "2026-10-09T06:42:49.799Z",
+  "provider": "local Mock",
+  "syntheticSamples": 6,
+  "cases": 72,
+  "checks": 504,
+  "passed": true,
+  "externalRequests": 0,
+  "realModelQualityVerified": false,
+  "rows": [
+    {
+      "category": "电子产品",
+      "title": "Compact USB desk lamp",
+      "options": {
+        "market": "US",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "professional",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "电子产品",
+      "title": "Compact USB desk lamp",
+      "options": {
+        "market": "US",
+        "language": "en",
+        "platform": "Reels",
+        "style": "professional",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "电子产品",
+      "title": "Compact USB desk lamp",
+      "options": {
+        "market": "US",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "professional",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "电子产品",
+      "title": "Compact USB desk lamp",
+      "options": {
+        "market": "UK",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "casual",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "电子产品",
+      "title": "Compact USB desk lamp",
+      "options": {
+        "market": "UK",
+        "language": "en",
+        "platform": "Reels",
+        "style": "casual",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "电子产品",
+      "title": "Compact USB desk lamp",
+      "options": {
+        "market": "UK",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "casual",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "电子产品",
+      "title": "Compact USB desk lamp",
+      "options": {
+        "market": "EU",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "humorous",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "电子产品",
+      "title": "Compact USB desk lamp",
+      "options": {
+        "market": "EU",
+        "language": "en",
+        "platform": "Reels",
+        "style": "humorous",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "电子产品",
+      "title": "Compact USB desk lamp",
+      "options": {
+        "market": "EU",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "humorous",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "电子产品",
+      "title": "Compact USB desk lamp",
+      "options": {
+        "market": "JP",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "recommendation",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "电子产品",
+      "title": "Compact USB desk lamp",
+      "options": {
+        "market": "JP",
+        "language": "en",
+        "platform": "Reels",
+        "style": "recommendation",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "电子产品",
+      "title": "Compact USB desk lamp",
+      "options": {
+        "market": "JP",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "recommendation",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "家居用品",
+      "title": "Cotton storage basket",
+      "options": {
+        "market": "US",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "professional",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "家居用品",
+      "title": "Cotton storage basket",
+      "options": {
+        "market": "US",
+        "language": "en",
+        "platform": "Reels",
+        "style": "professional",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "家居用品",
+      "title": "Cotton storage basket",
+      "options": {
+        "market": "US",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "professional",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "家居用品",
+      "title": "Cotton storage basket",
+      "options": {
+        "market": "UK",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "casual",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "家居用品",
+      "title": "Cotton storage basket",
+      "options": {
+        "market": "UK",
+        "language": "en",
+        "platform": "Reels",
+        "style": "casual",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "家居用品",
+      "title": "Cotton storage basket",
+      "options": {
+        "market": "UK",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "casual",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "家居用品",
+      "title": "Cotton storage basket",
+      "options": {
+        "market": "EU",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "humorous",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "家居用品",
+      "title": "Cotton storage basket",
+      "options": {
+        "market": "EU",
+        "language": "en",
+        "platform": "Reels",
+        "style": "humorous",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "家居用品",
+      "title": "Cotton storage basket",
+      "options": {
+        "market": "EU",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "humorous",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "家居用品",
+      "title": "Cotton storage basket",
+      "options": {
+        "market": "JP",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "recommendation",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "家居用品",
+      "title": "Cotton storage basket",
+      "options": {
+        "market": "JP",
+        "language": "en",
+        "platform": "Reels",
+        "style": "recommendation",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "家居用品",
+      "title": "Cotton storage basket",
+      "options": {
+        "market": "JP",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "recommendation",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "美妆产品",
+      "title": "Unscented facial moisturizer",
+      "options": {
+        "market": "US",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "professional",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "美妆产品",
+      "title": "Unscented facial moisturizer",
+      "options": {
+        "market": "US",
+        "language": "en",
+        "platform": "Reels",
+        "style": "professional",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "美妆产品",
+      "title": "Unscented facial moisturizer",
+      "options": {
+        "market": "US",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "professional",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "美妆产品",
+      "title": "Unscented facial moisturizer",
+      "options": {
+        "market": "UK",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "casual",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "美妆产品",
+      "title": "Unscented facial moisturizer",
+      "options": {
+        "market": "UK",
+        "language": "en",
+        "platform": "Reels",
+        "style": "casual",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "美妆产品",
+      "title": "Unscented facial moisturizer",
+      "options": {
+        "market": "UK",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "casual",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "美妆产品",
+      "title": "Unscented facial moisturizer",
+      "options": {
+        "market": "EU",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "humorous",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "美妆产品",
+      "title": "Unscented facial moisturizer",
+      "options": {
+        "market": "EU",
+        "language": "en",
+        "platform": "Reels",
+        "style": "humorous",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "美妆产品",
+      "title": "Unscented facial moisturizer",
+      "options": {
+        "market": "EU",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "humorous",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "美妆产品",
+      "title": "Unscented facial moisturizer",
+      "options": {
+        "market": "JP",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "recommendation",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "美妆产品",
+      "title": "Unscented facial moisturizer",
+      "options": {
+        "market": "JP",
+        "language": "en",
+        "platform": "Reels",
+        "style": "recommendation",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "美妆产品",
+      "title": "Unscented facial moisturizer",
+      "options": {
+        "market": "JP",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "recommendation",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "服装鞋帽",
+      "title": "Canvas walking shoes",
+      "options": {
+        "market": "US",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "professional",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "服装鞋帽",
+      "title": "Canvas walking shoes",
+      "options": {
+        "market": "US",
+        "language": "en",
+        "platform": "Reels",
+        "style": "professional",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "服装鞋帽",
+      "title": "Canvas walking shoes",
+      "options": {
+        "market": "US",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "professional",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "服装鞋帽",
+      "title": "Canvas walking shoes",
+      "options": {
+        "market": "UK",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "casual",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "服装鞋帽",
+      "title": "Canvas walking shoes",
+      "options": {
+        "market": "UK",
+        "language": "en",
+        "platform": "Reels",
+        "style": "casual",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "服装鞋帽",
+      "title": "Canvas walking shoes",
+      "options": {
+        "market": "UK",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "casual",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "服装鞋帽",
+      "title": "Canvas walking shoes",
+      "options": {
+        "market": "EU",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "humorous",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "服装鞋帽",
+      "title": "Canvas walking shoes",
+      "options": {
+        "market": "EU",
+        "language": "en",
+        "platform": "Reels",
+        "style": "humorous",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "服装鞋帽",
+      "title": "Canvas walking shoes",
+      "options": {
+        "market": "EU",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "humorous",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "服装鞋帽",
+      "title": "Canvas walking shoes",
+      "options": {
+        "market": "JP",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "recommendation",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "服装鞋帽",
+      "title": "Canvas walking shoes",
+      "options": {
+        "market": "JP",
+        "language": "en",
+        "platform": "Reels",
+        "style": "recommendation",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "服装鞋帽",
+      "title": "Canvas walking shoes",
+      "options": {
+        "market": "JP",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "recommendation",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "厨房用品",
+      "title": "Manual coffee grinder",
+      "options": {
+        "market": "US",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "professional",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "厨房用品",
+      "title": "Manual coffee grinder",
+      "options": {
+        "market": "US",
+        "language": "en",
+        "platform": "Reels",
+        "style": "professional",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "厨房用品",
+      "title": "Manual coffee grinder",
+      "options": {
+        "market": "US",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "professional",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "厨房用品",
+      "title": "Manual coffee grinder",
+      "options": {
+        "market": "UK",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "casual",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "厨房用品",
+      "title": "Manual coffee grinder",
+      "options": {
+        "market": "UK",
+        "language": "en",
+        "platform": "Reels",
+        "style": "casual",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "厨房用品",
+      "title": "Manual coffee grinder",
+      "options": {
+        "market": "UK",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "casual",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "厨房用品",
+      "title": "Manual coffee grinder",
+      "options": {
+        "market": "EU",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "humorous",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "厨房用品",
+      "title": "Manual coffee grinder",
+      "options": {
+        "market": "EU",
+        "language": "en",
+        "platform": "Reels",
+        "style": "humorous",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "厨房用品",
+      "title": "Manual coffee grinder",
+      "options": {
+        "market": "EU",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "humorous",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "厨房用品",
+      "title": "Manual coffee grinder",
+      "options": {
+        "market": "JP",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "recommendation",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "厨房用品",
+      "title": "Manual coffee grinder",
+      "options": {
+        "market": "JP",
+        "language": "en",
+        "platform": "Reels",
+        "style": "recommendation",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "厨房用品",
+      "title": "Manual coffee grinder",
+      "options": {
+        "market": "JP",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "recommendation",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "多规格商品",
+      "title": "Storage bottle, selected blue variant",
+      "options": {
+        "market": "US",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "professional",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "多规格商品",
+      "title": "Storage bottle, selected blue variant",
+      "options": {
+        "market": "US",
+        "language": "en",
+        "platform": "Reels",
+        "style": "professional",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "多规格商品",
+      "title": "Storage bottle, selected blue variant",
+      "options": {
+        "market": "US",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "professional",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "多规格商品",
+      "title": "Storage bottle, selected blue variant",
+      "options": {
+        "market": "UK",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "casual",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "多规格商品",
+      "title": "Storage bottle, selected blue variant",
+      "options": {
+        "market": "UK",
+        "language": "en",
+        "platform": "Reels",
+        "style": "casual",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "多规格商品",
+      "title": "Storage bottle, selected blue variant",
+      "options": {
+        "market": "UK",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "casual",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "多规格商品",
+      "title": "Storage bottle, selected blue variant",
+      "options": {
+        "market": "EU",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "humorous",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "多规格商品",
+      "title": "Storage bottle, selected blue variant",
+      "options": {
+        "market": "EU",
+        "language": "en",
+        "platform": "Reels",
+        "style": "humorous",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "多规格商品",
+      "title": "Storage bottle, selected blue variant",
+      "options": {
+        "market": "EU",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "humorous",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "多规格商品",
+      "title": "Storage bottle, selected blue variant",
+      "options": {
+        "market": "JP",
+        "language": "zh-CN",
+        "platform": "TikTok",
+        "style": "recommendation",
+        "duration": 15,
+        "goal": "awareness",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "多规格商品",
+      "title": "Storage bottle, selected blue variant",
+      "options": {
+        "market": "JP",
+        "language": "en",
+        "platform": "Reels",
+        "style": "recommendation",
+        "duration": 30,
+        "goal": "consideration",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    },
+    {
+      "category": "多规格商品",
+      "title": "Storage bottle, selected blue variant",
+      "options": {
+        "market": "JP",
+        "language": "ja",
+        "platform": "Shorts",
+        "style": "recommendation",
+        "duration": 60,
+        "goal": "conversion",
+        "customInstructions": "QA_REQUIREMENT: use a tabletop demonstration; do not invent specifications."
+      },
+      "checks": [
+        {
+          "name": "完整结构及五段脚本",
+          "passed": true,
+          "detail": "12 个分析字段、至少 5 个开场、证据分类均经过共享 schema。"
+        },
+        {
+          "name": "页面卖点可追溯",
+          "passed": true,
+          "detail": "合成样本每条卖点仍能在页面事实区找到原文，不代表商家宣称已实测。"
+        },
+        {
+          "name": "不冒充评论分析",
+          "passed": true,
+          "detail": "评论数量不等于评论正文；扫描仅覆盖已定义的危险表达。"
+        },
+        {
+          "name": "未虚构测试哨兵参数",
+          "passed": true,
+          "detail": "仅检查每个样本事先定义的三个缺失参数；无法证明无其他幻觉。"
+        },
+        {
+          "name": "选定语言的正文",
+          "passed": true,
+          "detail": "基础字符/词汇检查；产品原文和脚本五段标签允许保留英文。"
+        },
+        {
+          "name": "脚本时长连续可执行",
+          "passed": true,
+          "detail": "五段时间区间连续且覆盖所选秒数；真实朗读节奏需人工验收。"
+        },
+        {
+          "name": "保留自定义要求",
+          "passed": true,
+          "detail": "Mock 保留要求供核对；不宣称演示模板具有真实模型指令理解能力。"
+        }
+      ]
+    }
+  ]
+}

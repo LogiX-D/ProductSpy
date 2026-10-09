@@ -1,12 +1,12 @@
 # ProductSpy
 
-本地优先的 Amazon 竞品素材采集与 AI 分析工具。Chrome 扩展识别当前商品，保存到本机 Web 工作台；工作台提供商品库、图片 / 视频详情、营销分析、短视频脚本和生成 Prompt。0.3.0 打磨中文工作台、素材管理与可编辑分析；沿用 Windows x64 便携分发，保留原有 Next.js / Manifest V3 架构和安全配对。
+本地优先的 Amazon 竞品素材采集与 AI 分析工具。0.4.0 增加分析参数、事实与推断分类、局部重生成、版本比较恢复、文本导出和用量估算；沿用 Windows x64 便携分发、Next.js / Manifest V3 和安全配对，兼容 v0.3.0 商品数据。当前验收见 [Phase 12 报告](docs/phase12-validation.md)和 [AI 质量报告](docs/phase12-ai-quality.md)。
 
 仅支持 Amazon。此版本没有用户账号、支付、自动发布、价格监控、其他平台或多人协作。
 
 ## Windows 普通用户：不用安装开发工具
 
-1. 获取 `ProductSpy-0.3.0-windows-x64.zip`，**全部解压**，双击 **ProductSpy.cmd**。
+1. 获取 `ProductSpy-0.4.0-windows-x64.zip`，**全部解压**，双击 **ProductSpy.cmd**。
 2. 启动器使用内置 Node.js，启动本机工作台并打开 **http://127.0.0.1:3000**；不用安装 Node.js、pnpm 或数据库。
 3. 在启动窗口点击「打开插件文件夹」，按 Chrome `chrome://extensions` →「开发者模式」→「加载已解压的扩展程序」加载便携包的 **extension** 目录。
 4. 在工作台「安装与配对」中生成一次性配对码，填入插件并「连接工作台」。身份校验保留，配对码 2 分钟有效。
@@ -81,11 +81,19 @@ AI_MODE=auto
 - `AI_MODE=auto`：有 Key 使用真实服务，否则 Mock。
 - `AI_MODE=mock`：无论是否有 Key，都使用演示分析。
 - `AI_MODE=real`：强制真实服务，缺少 Key 时返回明确错误。
-- `AI_BASE_URL` 可换成 OpenAI-compatible 服务的 API 基础地址，例如 `https://provider.example/v1`。实现调用 `/chat/completions`，使用 `response_format: { type: "json_object" }`；模型需支持此格式。
+- `AI_BASE_URL` 可换成 OpenAI-compatible 服务的 API 基础地址，例如 `https://provider.example/v1`。实现调用 `/chat/completions`，默认使用 `response_format: { type: "json_object" }`；可在启动器显式切换 json_schema / text 及 Token 参数，不自动回退重发。
 - Key 只由 Next.js 服务端读取，未使用 `NEXT_PUBLIC_`，不进入扩展或浏览器 bundle。`.env.local` 已被 Git 忽略，示例文件不包含真实 Key。
 - 真实服务会收到已采集的商品文字资料。当前分析基于标题、卖点、描述、价格和评分；没有图像 / 视频内容识别。
 
-接口：`POST /api/analyze-product`，body 为完整 `Product`。响应使用统一信封：`{ ok: true, data: ProductAnalysis }` 或 `{ ok: false, error: string }`。服务端验证响应 schema 后保存；失败保留原商品和旧分析。生成过程中商品被重新采集时返回 `409`，避免陈旧分析覆盖新内容。
+现代接口 `POST /api/analyze-product` 的 body 为 `{ product, options, fields?, pricing?, requestId?, authorizeReal? }`，`product` 仅含基本商品资料、ID 和时间。响应 `{ ok: true, data: { product, analysis, metadata, requestId, replayed } }`；失败 `{ ok: false, error }`。旧裸 Product Mock 请求保持 `ProductAnalysis` 返回格式。真实模式缺少显式授权返回 428；插件不能发起收费分析，商品基线变动返回 409，原结果保留。
+
+分析设置支持美国 / 英国 / 欧洲 / 日本，中文 / 英文 / 日文，TikTok / Reels / Shorts，四种风格，15 / 30 / 60 秒、营销目标及自定义要求，可在本浏览器保存偏好。默认美国、中文、TikTok、生活化、30 秒、考虑购买。Mock 自定义要求仅保留为人工核查备注，不保证语义执行。
+
+事实清单从采集文字构建，商家卖点标为页面宣称；受众、痛点和角度为推断，没有真实评论正文，不声称分析了消费者评论。模型不接收图片、视频或媒体 URL。发送文字上限为标题 600、描述 6000、最多 12 条 × 1000 字卖点；超长裁剪有说明，完整本地商品不变。
+
+生成、人工编辑和历史恢复保留完整版本，局部重生成仅合并选中字段。支持版本比较、恢复、单项 / 整篇复制和 Markdown / TXT 导出；局部更新的参数只适用该次字段，其余沿用原版。每商品最多 50 版本，达到上限明确拒绝新增，不自动删除；未保存标签页草稿仍保留，冲突需手工合并。
+
+用量在本机 `analysis-usage.json`，版本在 `products.json`，偏好在 localStorage。真实 Token 缺失显示未知；同时填写输入和输出单价才按实际 Token 估算 USD，以服务商账单为准。请求前写盘失败会阻止调用，失败/中断费用不猜为 0。`GET/POST /api/products/[id]/analysis-history` 和 `GET /api/analysis-usage` 均需工作台认证。真实请求并发最多 2，每日 UTC 默认上限 50（`AI_DAILY_REQUEST_LIMIT`），失败也计入；429 冷却，无自动重试。详见 [AI 配置与接口指南](docs/ai-provider-guide.md)。
 
 ## 使用流程
 
@@ -104,7 +112,7 @@ AI_MODE=auto
 
 保存使用编辑开始时的商品版本。其他页面更新商品或分析后会提示冲突，保留当前草稿供复制，避免静默覆盖。手工编辑 Mock 结果会保留演示来源标识；演示内容仍需核对事实。界面文案按 Popup、工作台、分析和通用操作集中维护，为后续国际化保留入口，当前只提供中文。
 
-工作台未启动时，扩展将商品暂存在 `chrome.storage.local` 并标记「尚未同步」；启动工作台后点击「重试同步」。重复采集使用 `amazon + uppercase ASIN` 去重，保留 ID 和创建时间，更新资料与 `updatedAt`。价格、标题、品牌、描述或卖点变化时清除旧分析；其他信息变化不会生成重复商品。
+工作台未启动时，扩展将商品暂存在 `chrome.storage.local` 并标记「尚未同步」；启动工作台后点击「重试同步」。重复采集使用 `amazon + uppercase ASIN` 去重，保留 ID 和创建时间，更新资料与 `updatedAt`。价格、标题、品牌、描述或卖点变化时将旧分析存入历史并清除当前分析；其他信息变化不会生成重复商品。
 
 ## 架构与数据
 
@@ -239,8 +247,8 @@ pnpm test:portable
 
 输出在 **`artifacts/`**：
 
-- `ProductSpy-0.3.0-windows-x64.zip`：Windows x64 便携工作台、内置 Node.js、Next.js standalone、启动器和已构建扩展。
-- `ProductSpy-0.3.0-extension.zip`：可供 Chrome Web Store 上传的 MV3 扩展，根目录包含 `manifest.json`。
+- `ProductSpy-0.4.0-windows-x64.zip`：Windows x64 便携工作台、内置 Node.js、Next.js standalone、启动器和已构建扩展。
+- `ProductSpy-0.4.0-extension.zip`：可供 Chrome Web Store 上传的 MV3 扩展，根目录包含 `manifest.json`。
 - 构建校验文件及商店图片：名称与哈希以构建实际输出为准。
 
 已取得真实运行截图及 `artifacts/store/asset-provenance.json` 后，可运行 `pnpm package:store` 生成商店材料 ZIP；脚本校验来源、截图尺寸与哈希，不会用模拟页面补齐截图。真实采集工具是 `scripts/capture-store.mjs`，验收时应先启动使用独立测试数据目录的便携工作台并保持 Mock 模式，避免写入自己的素材库。
@@ -252,15 +260,15 @@ pnpm test:portable
 Phase 11 新增分析编辑、草稿恢复、复制权限失败、版本冲突与 375 / 768 / 1280 宽度回归。E2E 每次使用独立 `.test-data/e2e/<时间>`，避免失败重跑被旧验收商品污染。跨版本升级、最终 ZIP 完整性与真实界面截图可单独复现（都先停止 3000 服务）：
 
 ```powershell
-pnpm test:upgrade --from artifacts/ProductSpy-0.2.0-windows-x64 --to artifacts/ProductSpy-0.3.0-windows-x64
+pnpm test:upgrade --from artifacts/ProductSpy-0.3.0-windows-x64 --to artifacts/ProductSpy-0.4.0-windows-x64
 node scripts/validate-release.mjs
 pnpm capture:experience
 ```
 
-`capture:experience` 自动启动独立测试数据目录中的便携服务，通过真实 Amazon 页面、扩展 action、UI 配对与保存生成截图，结束后停止自己启动的服务。产物在 `artifacts/ProductSpy-0.3.0-experience/` 和同名 ZIP；来源、浏览器与尺寸记录在 `provenance.json`，若页面受限则报告失败，不用模拟页面代替。
+`capture:experience` 自动启动独立测试数据目录中的便携服务，通过真实 Amazon 页面、扩展 action、UI 配对与保存生成截图，结束后停止自己启动的服务。产物在 `artifacts/ProductSpy-0.4.0-experience/` 和同名 ZIP；来源、浏览器与尺寸记录在 `provenance.json`，若页面受限则报告失败，不用模拟页面代替。
 
 ## 下一阶段
 
 1. 建立更多国家站、变体和动态视频的实页回归样本，提高采集覆盖率。
 2. 增加商品分组、标签与资料导入 / 导出，方便管理更多素材。
-3. 在现有可编辑分析基础上增加目标市场语言、营销模板与多版本脚本。
+3. 使用授权测试 Key 和明确预算开展真实模型质量评估。

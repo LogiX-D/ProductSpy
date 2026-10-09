@@ -203,4 +203,34 @@ describe('local API request protection', () => {
     expect(errorLog).toHaveBeenCalled();
     errorLog.mockRestore();
   });
+
+  it('only emits bounded numeric Retry-After values from rate-limit errors', async () => {
+    for (const [value, expected] of [
+      [1.2, '2'],
+      [9999999, '86400'],
+      [NaN, null],
+      [Infinity, null],
+      [-5, null],
+      ['10\r\nInjected: header', null],
+    ] as const) {
+      const error = Object.assign(new AppError(429, '请求限流'), { retryAfterSeconds: value });
+      const response = await withApiRequest(
+        request(),
+        () => {
+          throw error;
+        },
+        { write: true },
+      );
+      expect(response.status).toBe(429);
+      expect(response.headers.get('retry-after')).toBe(expected);
+    }
+    const response = await withApiRequest(
+      request(),
+      () => {
+        throw Object.assign(new AppError(502, '服务异常'), { retryAfterSeconds: 10 });
+      },
+      { write: true },
+    );
+    expect(response.headers.get('retry-after')).toBeNull();
+  });
 });

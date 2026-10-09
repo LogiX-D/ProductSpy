@@ -62,6 +62,7 @@ describe('distributable package boundaries', () => {
       for (const file of [
         '.env.local',
         'products.json',
+        'analysis-usage.json',
         '.bridge-credentials.json',
         'settings.json',
       ])

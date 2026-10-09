@@ -9,7 +9,7 @@ import { artifactPath, digest, inventory, zipDirectory, workspace } from './pack
 
 const { version } = JSON.parse(await readFile(resolve(workspace, 'package.json'), 'utf8'));
 const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-const evidence = resolve(workspace, '.test-data/phase11-ui', stamp);
+const evidence = resolve(workspace, '.test-data/phase12-ui', stamp);
 const output = artifactPath(`ProductSpy-${version}-experience`);
 const bundle = artifactPath(`ProductSpy-${version}-windows-x64`);
 const dataRoot = resolve(evidence, 'user');
@@ -73,18 +73,21 @@ async function ready() {
   }
   throw new Error('Portable workspace did not start in Mock mode.');
 }
-async function screenshot(page, file, width, height, heading) {
+async function screenshot(page, file, width, height, heading, anchor) {
   await page.setViewportSize({ width, height });
   if (heading)
     await page
       .getByRole('heading', { name: heading, exact: true })
       .evaluate((element) => element.scrollIntoView({ block: 'start' }));
   await page.evaluate((hasHeading) => {
-    if (hasHeading) window.scrollBy(0, -20);
+    if (hasHeading) window.scrollBy(0, -100);
     else window.scrollTo(0, 0);
     const popupContent = document.querySelector('.popup-content');
     if (popupContent) popupContent.scrollTop = 0;
   }, Boolean(heading));
+  if (anchor)
+    await page.locator(anchor).evaluate((element) => element.scrollIntoView({ block: 'start' }));
+  if (anchor) await page.evaluate(() => window.scrollBy(0, -100));
   await page.evaluate(async () => {
     await document.fonts.ready;
     await Promise.all(
@@ -215,6 +218,53 @@ try {
   await page.goto(`${base}${productRoute}?tab=analysis`);
   await page.getByRole('heading', { name: '商品总结', exact: true }).waitFor();
   await screenshot(page, '10-analysis-mobile.png', 375, 812, 'AI 分析');
+  await page.setViewportSize({ width: 1280, height: 800 });
+  const restoreDraft = page.getByRole('button', { name: '恢复草稿', exact: true });
+  if (await restoreDraft.count()) await restoreDraft.click();
+  else await page.getByRole('button', { name: '编辑分析', exact: true }).click();
+  await page
+    .getByLabel('商品总结', { exact: true })
+    .fill('验收人工修改：发布前核实商品页面事实，不将演示模板当作实际功效或评论分析。');
+  await page.getByRole('button', { name: '保存分析', exact: true }).click();
+  await page.getByText('分析已保存。', { exact: true }).waitFor();
+  await page.locator('.analysis-options > summary').click();
+  await page.getByLabel('目标市场', { exact: true }).selectOption('JP');
+  await page.getByLabel('输出语言', { exact: true }).selectOption('ja');
+  await page.getByLabel('内容平台', { exact: true }).selectOption('Shorts');
+  await page.getByLabel('视频时长', { exact: true }).selectOption('15');
+  await page
+    .getByLabel('自定义分析要求', { exact: true })
+    .fill('使用台面场景，不声称已经分析消费者评论。');
+  await page.getByRole('button', { name: '保存分析偏好', exact: true }).click();
+  await page.getByRole('button', { name: '清除选择', exact: true }).click();
+  await page.getByLabel('重新生成开场文案', { exact: true }).check();
+  await screenshot(page, '11-analysis-options.png', 1280, 800, 'AI 分析');
+  await screenshot(page, '12-options-mobile.png', 375, 812, 'AI 分析');
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.getByRole('button', { name: '重新生成分析', exact: true }).click();
+  await page.getByRole('button', { name: '确认重新生成', exact: true }).click();
+  await page.getByText(/当前结果包含局部更新/).waitFor();
+  if (!(await page.locator('#analysis-summary').innerText()).includes('验收人工修改'))
+    throw new Error('Partial generation overwrote the manual summary');
+  if (!/[\u3040-\u30ff]/.test(await page.locator('#analysis-hooks').innerText()))
+    throw new Error('Selected Japanese hooks were not rendered');
+  await page.locator('.analysis-options > summary').click();
+  await screenshot(page, '13-partial-hooks.png', 1280, 800, '开场文案');
+  await page.locator('.analysis-evidence > summary').click();
+  await screenshot(page, '14-facts-and-inferences.png', 1280, 800, '商品页面事实');
+  await page.locator('.analysis-evidence > summary').click();
+  await page.locator('.analysis-history > summary').click();
+  await page
+    .locator('.analysis-history-row')
+    .filter({ hasText: '人工编辑' })
+    .getByRole('button', { name: '与当前比较', exact: true })
+    .click();
+  await screenshot(page, '15-version-comparison.png', 1280, 800, undefined, '.analysis-comparison');
+  await page.locator('.analysis-history > summary').click();
+  await page.locator('.analysis-usage > summary').click();
+  await page.getByRole('button', { name: '刷新用量', exact: true }).click();
+  await page.getByText('0 次真实 AI 请求', { exact: true }).waitFor();
+  await screenshot(page, '16-local-usage.png', 1280, 800, undefined, '.analysis-usage');
   report.checks = [
     'portable startup',
     'first consent',
@@ -226,6 +276,11 @@ try {
     'real editing UI',
     'short popup visible action',
     '375px and 1280px layouts without horizontal overflow',
+    'saved AI preferences',
+    'Japanese partial hooks generation preserves manual summary',
+    'saved analysis history and comparison',
+    'facts vs inferences and no review-text analysis',
+    'local usage ledger: zero real requests',
   ];
   report.verified = true;
 } catch (error) {

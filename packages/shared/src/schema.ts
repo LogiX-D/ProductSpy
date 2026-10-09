@@ -28,6 +28,99 @@ export const analysisSchema = z.object({
   videoPrompts: items,
 });
 
+export const ANALYSIS_FIELDS = [
+  'summary',
+  'sellingPoints',
+  'targetAudience',
+  'purchaseMotivations',
+  'painPoints',
+  'strengths',
+  'weaknesses',
+  'marketingAngles',
+  'hooks',
+  'shortVideoScript',
+  'imagePrompts',
+  'videoPrompts',
+] as const;
+export const analysisFieldSchema = z.enum(ANALYSIS_FIELDS);
+export const DEFAULT_ANALYSIS_OPTIONS = {
+  market: 'US',
+  language: 'zh-CN',
+  platform: 'TikTok',
+  style: 'casual',
+  duration: 30,
+  goal: 'consideration',
+  customInstructions: '',
+} as const;
+export const analysisOptionsSchema = z.object({
+  market: z.enum(['US', 'UK', 'EU', 'JP']).default('US'),
+  language: z.enum(['zh-CN', 'en', 'ja']).default('zh-CN'),
+  platform: z.enum(['TikTok', 'Reels', 'Shorts']).default('TikTok'),
+  style: z.enum(['professional', 'casual', 'humorous', 'recommendation']).default('casual'),
+  duration: z.union([z.literal(15), z.literal(30), z.literal(60)]).default(30),
+  goal: z.enum(['awareness', 'consideration', 'conversion']).default('consideration'),
+  customInstructions: z.string().trim().max(4000).default(''),
+});
+export const analysisPricingSchema = z.object({
+  inputUsdPerMillion: z.number().finite().min(0).max(10000),
+  outputUsdPerMillion: z.number().finite().min(0).max(10000),
+});
+export const analysisEvidenceSchema = z.object({
+  facts: z.array(text).max(30),
+  inferences: z.array(text).max(30),
+  unknowns: z.array(text).max(30),
+  reviewTextAnalyzed: z.literal(false),
+});
+export const generationTokenUsageSchema = z.object({
+  inputTokens: z.number().int().min(0).max(1000000000).optional(),
+  outputTokens: z.number().int().min(0).max(1000000000).optional(),
+});
+export const generationResultSchema = z.object({
+  analysis: analysisSchema,
+  evidence: analysisEvidenceSchema,
+  usage: generationTokenUsageSchema.optional(),
+});
+export const analysisUsageSchema = generationTokenUsageSchema.extend({
+  costUsd: z.number().finite().min(0).optional(),
+  costEstimated: z.boolean(),
+  pricing: analysisPricingSchema.optional(),
+});
+export const analysisMetadataSchema = z.object({
+  mode: z.enum(['mock', 'real', 'legacy']),
+  model: z.string().max(200).optional(),
+  options: analysisOptionsSchema,
+  generatedAt: z.string().datetime(),
+  sourceUpdatedAt: z.string().datetime(),
+  evidence: analysisEvidenceSchema,
+  usage: analysisUsageSchema.optional(),
+  requestId: z.string().uuid().optional(),
+  selectedFields: z.array(analysisFieldSchema).min(1).max(12).optional(),
+});
+export const MAX_ANALYSIS_VERSIONS = 50;
+export const analysisVersionSchema = z.object({
+  id: z.string().uuid(),
+  createdAt: z.string().datetime(),
+  kind: z.enum(['legacy', 'generated', 'edited', 'restored']),
+  analysis: analysisSchema,
+  metadata: analysisMetadataSchema.optional(),
+  parentVersionId: z.string().uuid().optional(),
+  restoredFrom: z.string().uuid().optional(),
+});
+export const analysisUsageRecordSchema = z.object({
+  id: z.string().uuid(),
+  requestId: z.string().uuid(),
+  productId: z.string().min(1).max(100),
+  createdAt: z.string().datetime(),
+  completedAt: z.string().datetime().optional(),
+  mode: z.enum(['mock', 'real']),
+  model: z.string().max(200).optional(),
+  status: z.enum(['started', 'succeeded', 'failed', 'conflict']),
+  options: analysisOptionsSchema,
+  fields: z.array(analysisFieldSchema).min(1).max(12).optional(),
+  usage: analysisUsageSchema.optional(),
+  error: z.string().max(1000).optional(),
+});
+
 export const AMAZON_DOMAINS = [
   'amazon.com',
   'amazon.ca',
@@ -91,4 +184,6 @@ export const productSchema = draftSchema.extend({
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
   aiAnalysis: analysisSchema.optional(),
+  analysisMetadata: analysisMetadataSchema.optional(),
+  analysisHistory: z.array(analysisVersionSchema).max(MAX_ANALYSIS_VERSIONS).optional(),
 });

@@ -1,12 +1,19 @@
 'use client';
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Loader2, Pencil, Save, Sparkles, X } from 'lucide-react';
+import { Download, Loader2, Pencil, Save, Sparkles, X } from 'lucide-react';
 import {
   ApiRequestError,
   analysisSchema,
+  analysisMetadataSchema,
   apiRequest,
   errorMessage,
+  productSchema,
+  type AnalysisField,
+  type AnalysisGenerationResponse,
+  type AnalysisOptions,
+  type AnalysisUsageReport,
+  type AnalysisPricing,
   type Product,
   type ProductAnalysis,
 } from '@productspy/shared';
@@ -14,6 +21,18 @@ import { productRepository } from '../lib/storage/product-api';
 import { webRequest } from '../lib/session';
 import { analysisCopy } from './analysis-copy';
 import { AnalysisEditor } from './analysis-editor';
+import { AnalysisOptionsPanel } from './analysis-options';
+import { AnalysisHistory, analysisProvenance } from './analysis-history';
+import { AnalysisEvidence } from './analysis-evidence';
+import { AnalysisUsagePanel } from './analysis-usage';
+import { analysisFieldLabels, downloadAnalysis } from './analysis-export';
+import {
+  ANALYSIS_PREFERENCES_KEY,
+  DEFAULT_ANALYSIS_OPTIONS,
+  analysisOptionsSummary,
+  restoreAnalysisPreferences,
+  type AnalysisPricingPreference,
+} from './analysis-preferences';
 import {
   analysisAllText,
   analysisSectionText,
@@ -131,7 +150,17 @@ type EditorState = {
   initialDraft: AnalysisDraft;
   baselineUpdatedAt: string;
   isMock: boolean;
+  mockPrefix: string;
 };
+type GenerationPlan = {
+  requestId: string;
+  product: Product;
+  options: AnalysisOptions;
+  fields?: AnalysisField[];
+  pricing?: AnalysisPricing;
+};
+type UnconfirmedRequest = { requestId: string; mode: 'mock' | 'real'; createdAt: string };
+const requestRecoveryKey = (productId: string) => `productspy:analysis-request:v1:${productId}`;
 
 function AnalysisContent({
   product,
@@ -141,6 +170,19 @@ function AnalysisContent({
   onUpdate: (product: Product) => void;
 }) {
   const [mode, setMode] = useState<'mock' | 'real'>();
+  const [modeFailed, setModeFailed] = useState(false);
+  const [options, setOptions] = useState<AnalysisOptions>({ ...DEFAULT_ANALYSIS_OPTIONS });
+  const [pricing, setPricing] = useState<AnalysisPricingPreference>({});
+  const [fields, setFields] = useState<AnalysisField[]>(
+    Object.keys(analysisFieldLabels) as AnalysisField[],
+  );
+  const [preferenceMessage, setPreferenceMessage] = useState('');
+  const [pendingGeneration, setPendingGeneration] = useState<GenerationPlan>();
+  const [usageReport, setUsageReport] = useState<AnalysisUsageReport>();
+  const [usageError, setUsageError] = useState('');
+  const [usageLoading, setUsageLoading] = useState(false);
+  const [unconfirmedRequest, setUnconfirmedRequest] = useState<UnconfirmedRequest>();
+  const [checkingResult, setCheckingResult] = useState(false);
   const [busy, setBusy] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -153,20 +195,103 @@ function AnalysisContent({
   const [editor, setEditor] = useState<EditorState>();
   const [retained, setRetained] = useState<AnalysisSessionDraft>();
   const [storageFailed, setStorageFailed] = useState(false);
-  const [dialog, setDialog] = useState<'close' | 'regenerate' | 'discard'>();
+  const [dialog, setDialog] = useState<'close' | 'regenerate' | 'discard' | 'authorize'>();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const errorRef = useRef<HTMLDivElement>(null);
   const validationRef = useRef<HTMLDivElement>(null);
   const mounted = useRef(true);
+  const generationInFlight = useRef(false);
   const analysis =
     generated?.baselineUpdatedAt === product.updatedAt ? generated.analysis : product.aiAnalysis;
-  const isMock = editor?.isMock ?? (analysis ? isMockAnalysis(analysis.summary) : mode === 'mock');
+  const isMock =
+    editor?.isMock ??
+    (product.analysisMetadata
+      ? product.analysisMetadata.mode === 'mock'
+      : analysis
+        ? isMockAnalysis(analysis.summary)
+        : mode === 'mock');
+  const mixedGeneration = Boolean(
+    product.analysisMetadata?.selectedFields &&
+    product.analysisMetadata.selectedFields.length < Object.keys(analysisFieldLabels).length,
+  );
   const dirty = Boolean(
     editor &&
     (editor.baselineUpdatedAt !== product.updatedAt ||
       JSON.stringify(editor.draft) !== JSON.stringify(editor.initialDraft)),
   );
-  const controlsDisabled = busy || saving;
+  const controlsDisabled = busy || saving || checkingResult;
+
+  async function checkMode() {
+    setModeFailed(false);
+    try {
+      const status = await apiRequest<{ mode: 'mock' | 'real' }>('/api/status');
+      if (mounted.current) setMode(status.mode);
+    } catch {
+      if (mounted.current) setModeFailed(true);
+    }
+  }
+
+  async function loadUsage() {
+    setUsageLoading(true);
+    try {
+      const report = await webRequest<AnalysisUsageReport>('/api/analysis-usage');
+      if (mounted.current) {
+        setUsageReport(report);
+        setUsageError('');
+      }
+    } catch (reason: unknown) {
+      if (mounted.current) setUsageError(`用量读取失败：${errorMessage(reason)}`);
+    } finally {
+      if (mounted.current) setUsageLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    try {
+      const restored = restoreAnalysisPreferences(localStorage.getItem(ANALYSIS_PREFERENCES_KEY));
+      setOptions(restored.options);
+      setPricing(restored.pricing);
+    } catch {
+      setPreferenceMessage('浏览器偏好存储不可用。本次设置仍可使用。');
+    }
+    try {
+      const raw = sessionStorage.getItem(requestRecoveryKey(product.id));
+      if (raw && raw.length < 1000) {
+        const value: unknown = JSON.parse(raw);
+        if (
+          value &&
+          typeof value === 'object' &&
+          'requestId' in value &&
+          typeof value.requestId === 'string' &&
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value.requestId) &&
+          'mode' in value &&
+          (value.mode === 'mock' || value.mode === 'real') &&
+          'createdAt' in value &&
+          typeof value.createdAt === 'string' &&
+          Number.isFinite(Date.parse(value.createdAt))
+        ) {
+          setUnconfirmedRequest({
+            requestId: value.requestId,
+            mode: value.mode,
+            createdAt: value.createdAt,
+          });
+        }
+      }
+    } catch {
+      /* Recovery still works in memory if browser storage is unavailable. */
+    }
+    void loadUsage();
+  }, [product.id]);
+
+  function savePreferences() {
+    try {
+      const safe = restoreAnalysisPreferences(JSON.stringify({ version: 1, options, pricing }));
+      localStorage.setItem(ANALYSIS_PREFERENCES_KEY, JSON.stringify(safe));
+      setPreferenceMessage('已保存到本浏览器。');
+    } catch {
+      setPreferenceMessage('保存偏好失败。本次设置仍可使用，请检查浏览器存储权限。');
+    }
+  }
 
   useEffect(() => {
     if (!error) return;
@@ -188,7 +313,7 @@ function AnalysisContent({
         if (active) setMode(status.mode);
       })
       .catch(() => {
-        /* Saved analyses remain usable if status is unavailable. */
+        if (active) setModeFailed(true);
       });
     const volatile = volatileDrafts.get(product.id);
     if (volatile) {
@@ -300,6 +425,14 @@ function AnalysisContent({
       initialDraft,
       baselineUpdatedAt: session?.baselineUpdatedAt ?? product.updatedAt,
       isMock: session?.isMock ?? isMock,
+      mockPrefix:
+        product.analysisMetadata?.options.language === 'en' ||
+        /^Mock demo/i.test(analysis?.summary ?? session?.draft.summary ?? '')
+          ? 'Mock demo analysis (manually edited): '
+          : product.analysisMetadata?.options.language === 'ja' ||
+              /^Mock デモ/i.test(analysis?.summary ?? session?.draft.summary ?? '')
+            ? 'Mock デモ分析（手動編集）：'
+            : analysisCopy.mockSummaryPrefix,
     });
     setError('');
     setValidation([]);
@@ -320,7 +453,7 @@ function AnalysisContent({
     try {
       const updated = await productRepository.saveAnalysis(
         product.id,
-        analysisSchema.parse(draftToAnalysis(editor.draft, editor.isMock)),
+        analysisSchema.parse(draftToAnalysis(editor.draft, editor.isMock, editor.mockPrefix)),
         editor.baselineUpdatedAt,
       );
       clearDraft(draftAtStart);
@@ -348,41 +481,223 @@ function AnalysisContent({
     }
   }
 
-  async function analyze() {
-    if (controlsDisabled) return;
+  function prepareGeneration() {
+    if (controlsDisabled || !mode) return;
+    if (analysis && fields.length === 0) {
+      setError('请在分析设置中选择至少一项重新生成的内容。');
+      return;
+    }
+    const plan: GenerationPlan = {
+      requestId: crypto.randomUUID(),
+      product,
+      options: { ...options },
+      fields: analysis ? [...fields] : undefined,
+      pricing:
+        pricing.inputUsdPerMillion !== undefined && pricing.outputUsdPerMillion !== undefined
+          ? {
+              inputUsdPerMillion: pricing.inputUsdPerMillion,
+              outputUsdPerMillion: pricing.outputUsdPerMillion,
+            }
+          : undefined,
+    };
+    setPendingGeneration(plan);
+    if (analysis || retained || editor || unconfirmedRequest) setDialog('regenerate');
+    else if (mode === 'real') setDialog('authorize');
+    else void analyze(plan);
+  }
+
+  function confirmGeneration() {
+    if (!pendingGeneration || controlsDisabled) return;
+    if (editor && dirty) persistDraft(editor);
+    if (mode === 'real') setDialog('authorize');
+    else void analyze(pendingGeneration);
+  }
+
+  async function analyze(plan: GenerationPlan, authorizeReal = false) {
+    if (controlsDisabled || generationInFlight.current) return;
+    if (mode === 'real' && !authorizeReal) return;
+    generationInFlight.current = true;
     hideDialog();
     setBusy(true);
     setError('');
     setMessage('');
-    const draftAtStart = retained ? JSON.stringify(retained) : null;
+    const attemptedRequest: UnconfirmedRequest = {
+      requestId: plan.requestId,
+      mode: mode ?? 'mock',
+      createdAt: new Date().toISOString(),
+    };
     try {
+      sessionStorage.setItem(requestRecoveryKey(product.id), JSON.stringify(attemptedRequest));
+    } catch {
+      /* Never retry an AI call because local bookkeeping failed. */
+    }
+    try {
+      // Existing analyses and history never enter the prompt or the request body.
+      const {
+        aiAnalysis: _analysis,
+        analysisMetadata: _metadata,
+        analysisHistory: _history,
+        ...sourceProduct
+      } = plan.product;
+      void _analysis;
+      void _metadata;
+      void _history;
       const data = await webRequest<unknown>('/api/analyze-product', {
         method: 'POST',
-        body: JSON.stringify(product),
-        signal: AbortSignal.timeout(90000),
+        body: JSON.stringify({
+          product: sourceProduct,
+          options: plan.options,
+          fields: plan.fields,
+          pricing: plan.pricing,
+          requestId: plan.requestId,
+          authorizeReal,
+        }),
+        signal: AbortSignal.timeout(130000),
       });
-      const result = analysisSchema.parse(data);
-      clearDraft(draftAtStart);
+      if (
+        !data ||
+        typeof data !== 'object' ||
+        !('product' in data) ||
+        !('analysis' in data) ||
+        !('metadata' in data)
+      )
+        throw new Error('AI 服务返回的响应结构不完整。');
+      const response = data as AnalysisGenerationResponse;
+      const result = analysisSchema.parse(response.analysis);
+      const updated = productSchema.parse(response.product);
+      analysisMetadataSchema.parse(response.metadata);
+      try {
+        sessionStorage.removeItem(requestRecoveryKey(product.id));
+      } catch {
+        /* In-memory confirmation remains available. */
+      }
       if (mounted.current) {
-        setGenerated({ analysis: result, baselineUpdatedAt: product.updatedAt });
+        setUnconfirmedRequest(undefined);
+        setGenerated({ analysis: result, baselineUpdatedAt: updated.updatedAt });
         setEditor(undefined);
         setValidation([]);
+        setMessage(
+          retained || (editor && dirty)
+            ? '新结果已保存，原已保存版本可在历史中恢复。未保存草稿仍保留，可导出或手工合并。'
+            : '分析已保存。原已保存结果可在版本记录中比较与恢复。',
+        );
       }
-      try {
-        const updated = await productRepository.get(product.id);
-        if (updated) onUpdate(updated);
-      } catch {
-        if (mounted.current) setError(analysisCopy.refreshFailed);
-      }
+      onUpdate(updated);
     } catch (reason: unknown) {
-      if (mounted.current)
+      if (mounted.current) {
+        setUnconfirmedRequest(attemptedRequest);
         setError(
           reason instanceof ApiRequestError && reason.status === 409
             ? analysisCopy.analyzeConflict
             : `${analysisCopy.analyzeFailed} ${errorMessage(reason)}`,
         );
+      }
     } finally {
+      generationInFlight.current = false;
       if (mounted.current) setBusy(false);
+      void loadUsage();
+    }
+  }
+
+  async function checkPreviousResult() {
+    if (!unconfirmedRequest || controlsDisabled) return;
+    setCheckingResult(true);
+    setError('');
+    try {
+      const [saved, usage] = await Promise.allSettled([
+        productRepository.get(product.id),
+        webRequest<AnalysisUsageReport>('/api/analysis-usage'),
+      ]);
+      if (!mounted.current) return;
+      if (usage.status === 'fulfilled') {
+        setUsageReport(usage.value);
+        setUsageError('');
+      }
+      if (saved.status === 'rejected') throw saved.reason;
+      if (!saved.value) throw new Error('未能读取商品当前结果。');
+      const updated = saved.value;
+      const recorded =
+        updated.analysisMetadata?.requestId === unconfirmedRequest.requestId ||
+        updated.analysisHistory?.some(
+          (version) => version.metadata?.requestId === unconfirmedRequest.requestId,
+        );
+      if (recorded) {
+        if (editor && dirty) persistDraft(editor);
+        // A later manual edit may already exist. Always display the current saved product.
+        setGenerated(undefined);
+        setEditor(undefined);
+        onUpdate(updated);
+        setUnconfirmedRequest(undefined);
+        try {
+          sessionStorage.removeItem(requestRecoveryKey(product.id));
+        } catch {
+          /* No request is issued during recovery. */
+        }
+        setMessage(
+          '已找到上次请求的保存记录。现在显示商品当前分析，后续编辑与版本均保留；此次检查没有调用 AI。',
+        );
+      } else {
+        const entry =
+          usage.status === 'fulfilled'
+            ? usage.value.records.find(
+                (record) => record.requestId === unconfirmedRequest.requestId,
+              )
+            : undefined;
+        setMessage(
+          entry
+            ? `上次请求状态：${({ started: '结果尚未确认', succeeded: '已完成，但商品中未找到对应保存版本', failed: '失败', conflict: '保存时发生版本冲突' } as const)[entry.status]}。未发起新的 AI 请求。${unconfirmedRequest.mode === 'real' ? '费用可能已产生；请核对本机用量与服务商账单，勿把结果未知视为免费。' : ''}`
+            : `尚未找到上次请求的保存记录。未发起新的 AI 请求。${unconfirmedRequest.mode === 'real' ? '网络中断或超时不能证明服务商没有计费，请先核对账单，再决定是否重新生成。' : ''}`,
+        );
+      }
+    } catch (reason: unknown) {
+      if (mounted.current)
+        setError(`检查上次结果失败：${errorMessage(reason)}。没有发起 AI 请求。`);
+    } finally {
+      if (mounted.current) setCheckingResult(false);
+    }
+  }
+
+  async function restoreVersion(versionId: string) {
+    if (controlsDisabled) return;
+    if (editor && dirty) persistDraft(editor);
+    setSaving(true);
+    setError('');
+    try {
+      const updated = await productRepository.restoreAnalysis(
+        product.id,
+        versionId,
+        product.updatedAt,
+      );
+      onUpdate(updated);
+      setGenerated(undefined);
+      setEditor(undefined);
+      setMessage('历史分析已恢复为新版本。原版本与本标签页未保存草稿仍保留。');
+    } catch (reason: unknown) {
+      setError(
+        reason instanceof ApiRequestError && reason.status === 409
+          ? '恢复冲突：商品已在其他页面更新。没有覆盖新内容，请刷新商品后重试。'
+          : `恢复失败：${errorMessage(reason)}`,
+      );
+    } finally {
+      if (mounted.current) setSaving(false);
+    }
+  }
+
+  function exportResult(format: 'md' | 'txt') {
+    const value = editor
+      ? draftToAnalysis(editor.draft, editor.isMock, editor.mockPrefix)
+      : analysis;
+    if (!value) return;
+    try {
+      downloadAnalysis(
+        product,
+        value,
+        format,
+        `${editor ? '未保存的人工编辑草稿。\n' : ''}${analysisProvenance(product.analysisMetadata)}`,
+      );
+      setMessage(`${format === 'md' ? 'Markdown' : 'TXT'} 文件已在本机生成，未发送给第三方。`);
+    } catch (reason: unknown) {
+      setError(`导出失败：${errorMessage(reason)}`);
     }
   }
 
@@ -415,6 +730,11 @@ function AnalysisContent({
           </div>
           <p>{analysisCopy.intro}</p>
           {isMock && <p className="analysis-mode-note">{analysisCopy.mockNotice}</p>}
+          {mixedGeneration && (
+            <p className="analysis-mode-note">
+              当前结果包含局部更新：本次参数和来源仅应用所选内容，其余内容保留原版本。具体范围见事实依据与版本记录。
+            </p>
+          )}
           {mode === 'real' && <p className="analysis-mode-note">{analysisCopy.realNotice}</p>}
           {mode === 'mock' && !isMock && (
             <p className="analysis-mode-note">{analysisCopy.mockGenerationNotice}</p>
@@ -431,12 +751,7 @@ function AnalysisContent({
               {analysisCopy.edit}
             </Button>
           )}
-          <Button
-            onClick={() =>
-              analysis || retained || editor ? setDialog('regenerate') : void analyze()
-            }
-            disabled={controlsDisabled}
-          >
+          <Button onClick={prepareGeneration} disabled={controlsDisabled || !mode}>
             {busy ? <Loader2 size={15} className="spin" /> : <Sparkles size={15} />}
             {busy
               ? analysisCopy.generating
@@ -446,9 +761,46 @@ function AnalysisContent({
           </Button>
         </div>
       </div>
+      {modeFailed && (
+        <ErrorNotice
+          message="无法确认工作台的 AI 模式，暂未发起生成。已保存的内容仍可编辑与导出。"
+          onRetry={() => void checkMode()}
+        />
+      )}
+      <AnalysisOptionsPanel
+        options={options}
+        pricing={pricing}
+        fields={fields}
+        hasAnalysis={Boolean(analysis)}
+        disabled={controlsDisabled}
+        message={preferenceMessage}
+        onOptions={setOptions}
+        onPricing={setPricing}
+        onFields={setFields}
+        onSave={savePreferences}
+      />
       {error && (
         <div className="analysis-error-summary" ref={errorRef} tabIndex={-1}>
           <ErrorNotice message={error} />
+        </div>
+      )}
+      {unconfirmedRequest && (
+        <div className="analysis-draft-notice" role="status">
+          <div>
+            <strong>上次请求结果尚未确认</strong>
+            <p>
+              {unconfirmedRequest.mode === 'real'
+                ? '网络中断或超时后，服务商仍可能已生成并计费。先检查已保存结果和用量；不会自动重新发送。'
+                : '请先检查上次请求是否已保存，不会自动重新生成。'}
+            </p>
+          </div>
+          <Button
+            variant="secondary"
+            disabled={controlsDisabled}
+            onClick={() => void checkPreviousResult()}
+          >
+            {checkingResult ? '正在检查…' : '检查上次请求结果'}
+          </Button>
         </div>
       )}
       {message && (
@@ -497,7 +849,7 @@ function AnalysisContent({
                 <div className="analysis-inline-actions">
                   <CopyButton
                     value={analysisAllText(
-                      draftToAnalysis(editor.draft, editor.isMock),
+                      draftToAnalysis(editor.draft, editor.isMock, editor.mockPrefix),
                       editor.isMock,
                     )}
                     label={analysisCopy.copyDraft}
@@ -517,13 +869,33 @@ function AnalysisContent({
                 <p>
                   {analysisSections.length} {analysisCopy.sectionCountHint}
                 </p>
-                <CopyButton
-                  value={analysisAllText(analysis!, isMock)}
-                  label={analysisCopy.copyAll}
-                />
+                <div className="analysis-inline-actions">
+                  <CopyButton
+                    value={analysisAllText(analysis!, isMock)}
+                    label={analysisCopy.copyAll}
+                  />
+                </div>
               </>
             )}
+            <div className="analysis-inline-actions analysis-export-actions">
+              <Button
+                variant="ghost"
+                onClick={() => exportResult('md')}
+                disabled={controlsDisabled}
+              >
+                <Download size={14} />
+                导出 Markdown
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => exportResult('txt')}
+                disabled={controlsDisabled}
+              >
+                导出 TXT
+              </Button>
+            </div>
           </div>
+          {!editor && <AnalysisEvidence metadata={product.analysisMetadata} />}
           {editor && (
             <p
               className={`analysis-editor-status ${storageFailed ? 'analysis-storage-warning' : ''}`}
@@ -574,6 +946,18 @@ function AnalysisContent({
           <p className="analysis-fact-note">{analysisCopy.factNotice}</p>
         </>
       )}
+      <AnalysisHistory
+        product={product}
+        disabled={controlsDisabled}
+        hasDraft={Boolean(retained || dirty)}
+        onRestore={restoreVersion}
+      />
+      <AnalysisUsagePanel
+        report={usageReport}
+        loading={usageLoading}
+        error={usageError}
+        onRefresh={() => void loadUsage()}
+      />
       {dialog && (
         <dialog
           ref={dialogRef}
@@ -585,19 +969,51 @@ function AnalysisContent({
           }}
         >
           <h2 id="analysis-dialog-title">
-            {dialog === 'regenerate'
-              ? analysisCopy.regenerateTitle
-              : dialog === 'close'
-                ? analysisCopy.closeTitle
-                : analysisCopy.discard}
+            {dialog === 'authorize'
+              ? '确认调用真实 AI 服务？'
+              : dialog === 'regenerate'
+                ? analysisCopy.regenerateTitle
+                : dialog === 'close'
+                  ? analysisCopy.closeTitle
+                  : analysisCopy.discard}
           </h2>
           <p>
-            {dialog === 'regenerate'
-              ? analysisCopy.regenerateDescription
-              : dialog === 'close'
-                ? analysisCopy.closeDescription
-                : analysisCopy.discardConfirm}
+            {dialog === 'authorize'
+              ? '本次操作将把商品文字资料和自定义要求发送至你在 Windows 启动器配置的服务商，可能消耗 API 额度。商品图片和视频不会上传，不会自动重试。'
+              : dialog === 'regenerate'
+                ? analysisCopy.regenerateDescription
+                : dialog === 'close'
+                  ? analysisCopy.closeDescription
+                  : analysisCopy.discardConfirm}
           </p>
+          {(dialog === 'regenerate' || dialog === 'authorize') && pendingGeneration && (
+            <div className="analysis-generation-confirmation">
+              <p>{analysisOptionsSummary(pendingGeneration.options)}</p>
+              <p>
+                本次生成：
+                {pendingGeneration.fields?.map((field) => analysisFieldLabels[field]).join('、') ??
+                  '全部内容'}
+              </p>
+              {unconfirmedRequest && (
+                <p>
+                  上次请求结果仍未确认。继续将创建一个新请求，真实 AI
+                  可能再次计费。建议取消，先“检查上次请求结果”并核对账单。
+                </p>
+              )}
+              {dialog === 'authorize' && (
+                <p>
+                  {pendingGeneration.pricing
+                    ? `你填写的单价：输入 $${pendingGeneration.pricing.inputUsdPerMillion} / 输出 $${pendingGeneration.pricing.outputUsdPerMillion}（每百万 Token）。实际 Token 数尚未知，最终费用以服务商账单为准。`
+                    : '未配置完整模型单价，费用未知。继续并不代表免费。'}
+                </p>
+              )}
+              {(retained || dirty) && (
+                <p>
+                  未保存草稿会保留，新结果生成后请手工合并需要的编辑。也可取消并先导出或保存草稿。
+                </p>
+              )}
+            </div>
+          )}
           {storageFailed && dialog === 'close' && (
             <ErrorNotice message={analysisCopy.sessionFailed} />
           )}
@@ -644,7 +1060,9 @@ function AnalysisContent({
                 <Button
                   variant={dialog === 'discard' ? 'danger' : 'primary'}
                   onClick={() => {
-                    if (dialog === 'regenerate') void analyze();
+                    if (dialog === 'regenerate') confirmGeneration();
+                    else if (dialog === 'authorize' && pendingGeneration)
+                      void analyze(pendingGeneration, true);
                     else {
                       clearDraft();
                       hideDialog();
@@ -652,7 +1070,11 @@ function AnalysisContent({
                   }}
                   disabled={controlsDisabled}
                 >
-                  {dialog === 'regenerate' ? analysisCopy.confirmRegenerate : analysisCopy.discard}
+                  {dialog === 'authorize'
+                    ? '授权本次调用'
+                    : dialog === 'regenerate'
+                      ? analysisCopy.confirmRegenerate
+                      : analysisCopy.discard}
                 </Button>
               </>
             )}
