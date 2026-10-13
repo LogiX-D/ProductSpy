@@ -1,0 +1,56 @@
+{
+  "phase": 16,
+  "version": "0.5.2",
+  "browser": "Chrome for Testing / Playwright Chromium 156.0.8078.4",
+  "stableChromeManualAcceptance": false,
+  "screenshots": [
+    {
+      "file": "01-amazon-book.png",
+      "kind": "real-public-amazon",
+      "width": 1365,
+      "height": 900,
+      "sha256": "6425c99197ce98aa37fe0ca19f24e134b0ff8c6db47f92e399c4568ae5b774c8",
+      "capturedAt": "2026-10-13T06:45:02.464Z",
+      "captureTimeSource": "Amazon capture report timestamp",
+      "version": "0.5.2",
+      "pairingCodeGenerated": false,
+      "imageEdited": false
+    },
+    {
+      "file": "02-pairing-desktop.png",
+      "kind": "synthetic-isolated-workspace-e2e",
+      "width": 1280,
+      "height": 720,
+      "sha256": "e788b91a451a0b908c20598ba4cbe1bc97cf0517c5abf750c1c970aee8e92d75",
+      "capturedAt": "2026-10-13T06:46:01.520Z",
+      "captureTimeSource": "original screenshot file mtime",
+      "version": "0.5.2",
+      "pairingCodeGenerated": false,
+      "imageEdited": false
+    },
+    {
+      "file": "03-pairing-mobile.png",
+      "kind": "synthetic-isolated-workspace-e2e",
+      "width": 375,
+      "height": 812,
+      "sha256": "a14746b7098d40e23884a04fc7c5333bc334a5f7245f43907a1adceb03a232a5",
+      "capturedAt": "2026-10-13T06:46:02.243Z",
+      "captureTimeSource": "original screenshot file mtime",
+      "version": "0.5.2",
+      "pairingCodeGenerated": false,
+      "imageEdited": false
+    },
+    {
+      "file": "04-pairing-narrow.png",
+      "kind": "synthetic-isolated-workspace-e2e",
+      "width": 320,
+      "height": 568,
+      "sha256": "d20924a8fd387a5a2c9221fccf401e86c671ee9379d0b3131abdc5219279a843",
+      "capturedAt": "2026-10-13T06:46:02.826Z",
+      "captureTimeSource": "original screenshot file mtime",
+      "version": "0.5.2",
+      "pairingCodeGenerated": false,
+      "imageEdited": false
+    }
+  ]
+}

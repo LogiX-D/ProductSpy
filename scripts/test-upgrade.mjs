@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
+import { execFile, spawn } from 'node:child_process';
 import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, mkdtemp, readFile, stat, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import { basename, join, relative, resolve } from 'node:path';
-import { parseArgs } from 'node:util';
+import { parseArgs, promisify } from 'node:util';
+import { openUpgradePreferenceProbe } from './phase16-browser-preferences.mjs';
 
 const { values } = parseArgs({
   options: { from: { type: 'string' }, to: { type: 'string' }, help: { type: 'boolean' } },
@@ -36,11 +37,23 @@ const fixture = {
 };
 const draftFields = Object.keys(fixture);
 const baseUrl = 'http://127.0.0.1:3000';
+const run = promisify(execFile);
+const settingsFixture = {
+  AI_MODE: 'mock',
+  AI_BASE_URL: 'https://example.invalid/v1',
+  AI_MODEL: 'phase16-upgrade-fixture',
+  AI_RESPONSE_FORMAT: 'text',
+  AI_TOKEN_PARAMETER: 'max_completion_tokens',
+  AI_TIMEOUT_MS: '45000',
+  AI_MAX_OUTPUT_TOKENS: '3072',
+  AI_TEMPERATURE: '0.3',
+};
+const placeholderKey = 'phase16-upgrade-placeholder-no-real-key';
 
 if (values.help) {
   console.log(
-    'node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.5.0-windows-x64 --to artifacts/ProductSpy-0.5.1-windows-x64\n' +
-      'Requires Windows and a free port 3000. Accepts frozen 0.4.0 or 0.5.0 source packages. Uses only fresh .test-data/phase14-upgrade data. Existing services are never stopped.',
+    'node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.5.1-windows-x64 --to artifacts/ProductSpy-0.5.2-windows-x64\n' +
+      'Requires Windows and a free port 3000. Accepts frozen 0.4.0, 0.5.0 or 0.5.1 source packages. Uses only fresh .test-data/phase16-upgrade data and isolated browser preferences. Existing services are never stopped.',
   );
 } else {
   await main();
@@ -56,7 +69,7 @@ async function main() {
     newPackage.toLowerCase(),
     'Upgrade requires two distinct package directories.',
   );
-  const evidenceParent = resolve('.test-data/phase14-upgrade');
+  const evidenceParent = resolve('.test-data/phase16-upgrade');
   await mkdir(evidenceParent, { recursive: true });
   const evidenceRoot = await mkdtemp(
     join(evidenceParent, `${new Date().toISOString().replace(/[:.]/g, '-')}-`),
@@ -64,6 +77,9 @@ async function main() {
   const dataRoot = join(evidenceRoot, 'isolated-user');
   const runtimeRoot = join(evidenceRoot, 'control');
   const databaseFile = join(dataRoot, 'data/products.json');
+  const settingsFile = join(dataRoot, 'settings/ai-settings.protected.json');
+  const credentialFile = join(dataRoot, 'data/.bridge-credentials.json');
+  const usageFile = join(dataRoot, 'data/analysis-usage.json');
   const stateFile = join(runtimeRoot, 'launcher-state.json');
   const activeLaunchers = new Set();
   const report = {
@@ -77,6 +93,81 @@ async function main() {
     checks: [],
   };
   let failure;
+  let preferenceProbe;
+
+  async function readFixtureSettings(directory) {
+    const command = `
+$ErrorActionPreference = 'Stop'
+$tokens = $null
+$errors = $null
+$ast = [Management.Automation.Language.Parser]::ParseFile($env:PRODUCTSPY_TEST_LAUNCHER, [ref]$tokens, [ref]$errors)
+if ($errors.Count -gt 0) { throw 'Test launcher parse failed' }
+$reader = $ast.Find({param($node) $node -is [Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -eq 'Read-AiSettings'}, $true)
+if (-not $reader) { throw 'Test launcher settings reader missing' }
+Invoke-Expression $reader.Extent.Text
+$settingsFile = $env:PRODUCTSPY_TEST_SETTINGS
+$settings = Read-AiSettings
+$matches = $settings.AI_API_KEY -eq $env:PRODUCTSPY_TEST_PLACEHOLDER
+$settings.Remove('AI_API_KEY')
+@{settings=$settings; placeholderMatches=$matches} | ConvertTo-Json -Depth 4 -Compress
+`;
+    const { stdout } = await run(
+      'powershell.exe',
+      ['-NoProfile', '-NonInteractive', '-Command', command],
+      {
+        windowsHide: true,
+        timeout: 15000,
+        env: {
+          ...process.env,
+          PRODUCTSPY_TEST_LAUNCHER: join(directory, 'launcher/ProductSpy.ps1'),
+          PRODUCTSPY_TEST_SETTINGS: settingsFile,
+          PRODUCTSPY_TEST_PLACEHOLDER: placeholderKey,
+        },
+      },
+    );
+    const decoded = JSON.parse(stdout);
+    assert.equal(
+      decoded.placeholderMatches,
+      true,
+      'Synthetic placeholder Key must decrypt without logging its contents.',
+    );
+    assert.deepEqual(
+      decoded.settings,
+      settingsFixture,
+      'Every explicit AI preference must survive.',
+    );
+    return decoded.settings;
+  }
+
+  async function createFixtureSettings() {
+    await mkdir(join(dataRoot, 'settings'), { recursive: true });
+    const command = `
+$ErrorActionPreference = 'Stop'
+Add-Type -AssemblyName System.Security
+$settings = $env:PRODUCTSPY_TEST_FIELDS | ConvertFrom-Json
+$settings | Add-Member -NotePropertyName AI_API_KEY -NotePropertyValue $env:PRODUCTSPY_TEST_PLACEHOLDER
+$plain = [Text.Encoding]::UTF8.GetBytes(($settings | ConvertTo-Json -Compress))
+$protected = [Security.Cryptography.ProtectedData]::Protect($plain, $null, [Security.Cryptography.DataProtectionScope]::CurrentUser)
+$stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | ConvertTo-Json -Compress
+[IO.File]::WriteAllText($env:PRODUCTSPY_TEST_SETTINGS, $stored, (New-Object Text.UTF8Encoding($false)))
+`;
+    await run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', command], {
+      windowsHide: true,
+      timeout: 15000,
+      env: {
+        ...process.env,
+        PRODUCTSPY_TEST_FIELDS: JSON.stringify(settingsFixture),
+        PRODUCTSPY_TEST_SETTINGS: settingsFile,
+        PRODUCTSPY_TEST_PLACEHOLDER: placeholderKey,
+      },
+    });
+    const bytes = await readFile(settingsFile);
+    assert(
+      !bytes.includes(Buffer.from(placeholderKey)),
+      'Settings file must not contain plaintext Key.',
+    );
+    return bytes;
+  }
 
   async function snapshot(name, product) {
     await writeFile(join(evidenceRoot, `${name}.json`), JSON.stringify(product, null, 2));
@@ -273,8 +364,8 @@ async function main() {
     const oldInventory = await inspectPackage(oldPackage);
     const newInventory = await inspectPackage(newPackage);
     assert(
-      ['0.4.0', '0.5.0'].includes(oldInventory.version),
-      'Upgrade fixture must run the actual frozen 0.4.0 or 0.5.0 portable package.',
+      ['0.4.0', '0.5.0', '0.5.1'].includes(oldInventory.version),
+      'Upgrade fixture must run the actual frozen 0.4.0, 0.5.0 or 0.5.1 portable package.',
     );
     assert.equal(
       newInventory.version,
@@ -293,6 +384,12 @@ async function main() {
       passed: true,
     });
 
+    const originalSettings = await createFixtureSettings();
+    await readFixtureSettings(oldPackage);
+    report.checks.push({
+      name: 'old frozen package decrypts all explicit DPAPI fixture preferences; no real Key or model request',
+      passed: true,
+    });
     const oldLaunch = await start(oldPackage, oldInventory.version);
     assert.deepEqual(
       await products(),
@@ -313,7 +410,7 @@ async function main() {
     });
     assertCompleteAnalysis(oldAnalysis);
     const baselineLibrary = { groups: [], tags: [] };
-    if (oldInventory.version === '0.5.0') {
+    if (['0.5.0', '0.5.1'].includes(oldInventory.version)) {
       const grouped = await request('/api/library', 'POST', {
         kind: 'group',
         action: 'create',
@@ -346,6 +443,49 @@ async function main() {
     assert.deepEqual(oldProduct.aiAnalysis, oldAnalysis);
     assert(oldProduct.analysisHistory.length >= 2, 'Baseline must contain old analysis history.');
     await snapshot('01-old-product', oldProduct);
+    preferenceProbe = await openUpgradePreferenceProbe(baseUrl, saved.id, evidenceRoot);
+    report.checks.push({
+      name: 'old frozen package saves nondefault browser analysis preferences through actual UI',
+      passed: true,
+    });
+    const extensionOrigin = `chrome-extension://${'p'.repeat(32)}`;
+    const pairCode = await request('/api/bridge/code', 'POST', {});
+    const pairedResponse = await fetch(`${baseUrl}/api/bridge/pair`, {
+      method: 'POST',
+      headers: {
+        origin: extensionOrigin,
+        'content-type': 'application/json',
+        'x-productspy-client': 'extension',
+      },
+      body: JSON.stringify({ code: pairCode.code }),
+      signal: AbortSignal.timeout(5000),
+    });
+    assert.equal(
+      pairedResponse.status,
+      200,
+      'Owned synthetic extension must pair through authenticated code flow.',
+    );
+    const paired = await pairedResponse.json();
+    const extensionToken = paired.data.token;
+    assert.equal(typeof extensionToken, 'string');
+    const originalCredentials = await readFile(credentialFile);
+    const originalUsage = await readFile(usageFile);
+    async function verifyPairedRead() {
+      const response = await fetch(`${baseUrl}/api/products`, {
+        headers: {
+          origin: extensionOrigin,
+          'x-productspy-client': 'extension',
+          authorization: `Bearer ${extensionToken}`,
+        },
+        signal: AbortSignal.timeout(5000),
+      });
+      assert.equal(
+        response.status,
+        200,
+        'Original paired token must still authenticate after upgrade/restart.',
+      );
+      assert.equal((await response.json()).data[0].id, saved.id);
+    }
     const oldDatabase = await readFile(databaseFile, 'utf8');
     await stop(oldLaunch);
     assert.equal(
@@ -359,6 +499,32 @@ async function main() {
     });
 
     const newLaunch = await start(newPackage, newInventory.version);
+    assert.deepEqual(
+      await readFile(settingsFile),
+      originalSettings,
+      'Upgrade must leave protected settings byte-identical.',
+    );
+    await readFixtureSettings(newPackage);
+    assert.deepEqual(
+      await readFile(credentialFile),
+      originalCredentials,
+      'Upgrade must preserve paired credential bytes.',
+    );
+    assert.deepEqual(
+      await readFile(usageFile),
+      originalUsage,
+      'Upgrade must preserve old usage ledger bytes.',
+    );
+    await verifyPairedRead();
+    report.checks.push({
+      name: 'upgrade preserves protected settings, paired token and old usage ledger byte-for-byte; original token remains usable',
+      passed: true,
+    });
+    await preferenceProbe.verifyAfterRestart('after-upgrade');
+    report.checks.push({
+      name: 'same isolated browser retains saved analysis preferences across actual old-to-new package upgrade',
+      passed: true,
+    });
     const upgraded = await onlyProduct(saved.id);
     assert.deepEqual(
       upgraded,
@@ -545,6 +711,15 @@ async function main() {
     });
 
     const restarted = await start(newPackage, newInventory.version);
+    assert.deepEqual(await readFile(settingsFile), originalSettings);
+    await readFixtureSettings(newPackage);
+    assert.deepEqual(await readFile(credentialFile), originalCredentials);
+    await verifyPairedRead();
+    await preferenceProbe.verifyAfterRestart('after-restart');
+    report.checks.push({
+      name: 'new package restart retains DPAPI settings, original pairing and same-browser saved preferences',
+      passed: true,
+    });
     const afterRestart = await onlyProduct(saved.id);
     assert.deepEqual(
       afterRestart,
@@ -571,6 +746,16 @@ async function main() {
     report.passed = false;
     report.error = error.message;
   } finally {
+    if (preferenceProbe) {
+      try {
+        await preferenceProbe.close();
+      } catch (error) {
+        report.cleanupErrors ??= [];
+        report.cleanupErrors.push(error.message);
+        report.passed = false;
+        failure ??= error;
+      }
+    }
     for (const record of activeLaunchers) {
       try {
         await stop(record);

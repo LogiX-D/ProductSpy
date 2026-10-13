@@ -112,6 +112,30 @@ describe('AmazonProductExtractor structured sources', () => {
 });
 
 describe('AmazonProductExtractor DOM fallbacks', () => {
+  it('does not mistake the observed book author byline for a brand', () => {
+    expect(fixture('book-description-boundaries').extractBrand()).toBeUndefined();
+  });
+
+  it('keeps an explicit product brand when the book page also has an author byline', () => {
+    const html =
+      '<meta property="product:brand" content="Publisher imprint"><div id="bylineInfo"><span class="author">Named author</span></div>';
+    expect(extractor(html).extractBrand()).toBe('Publisher imprint');
+  });
+
+  it('preserves observed book description line, paragraph and list boundaries', () => {
+    const product = fixture(
+      'book-description-boundaries',
+      'https://www.amazon.com/dp/0735211299',
+    ).extract();
+    expect(product?.description).toBe(
+      'The #1 New York Times bestseller. Over 25 million copies sold! Tiny Changes, Remarkable Results No matter your goals, Atomic Habits offers a framework. Learn how to: make time for new habits; design your environment; ...and much more.',
+    );
+    expect(product?.description).not.toContain('阅读更多');
+    expect(product?.description).not.toContain('descriptionScriptMustNotRun');
+    expect(product?.title).toBe('Atomic Habits');
+    expect(product?.sourceId).toBe('0735211299');
+  });
+
   it('excludes the observed 360 degree gallery control icon', () => {
     const product = extractor(
       '<h1 id="productTitle">Current</h1><img id="landingImage" src="https://m.media-amazon.com/images/I/product.jpg"><div id="altImages"><img src="https://m.media-amazon.com/images/G/01/HomeCustomProduct/360_icon_73x73v2.png"></div>',

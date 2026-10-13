@@ -1,0 +1,864 @@
+{
+  "schemaVersion": 1,
+  "phase": 16,
+  "date": "2026-10-13",
+  "version": "0.5.2",
+  "baseVersion": "0.5.1",
+  "baseCommit": "d13d7ee77e37a911988f6610b9a529f2d241bfbd",
+  "validatedAt": "2026-10-13T07:17:31.752Z",
+  "architectureChanged": false,
+  "newBusinessModules": 0,
+  "publicTestReady": false,
+  "smallClosedTestReady": true,
+  "releasePublished": false,
+  "chromeWebStoreSubmitted": false,
+  "sourceReview": {
+    "reportsRead": [9, 10, 11, 12, 13, 14],
+    "remoteSourceWasSameAsBase": true,
+    "newGithubIssuesFound": 0,
+    "maintainerLocalTestClaim": "reported by user; no per-step evidence supplied",
+    "actualExternalParticipants": 0,
+    "feedbackReceived": 0
+  },
+  "environment": {
+    "os": "Microsoft Windows 11 Pro for Workstations",
+    "version": "10.0.26300",
+    "architecture": "x64",
+    "developerMachineOnly": true,
+    "stableChromeStandardPathsAndAppPathsFound": false
+  },
+  "tests": {
+    "install": {
+      "passed": true,
+      "command": "pnpm install --frozen-lockfile"
+    },
+    "typecheck": {
+      "passed": true
+    },
+    "lint": {
+      "passed": true,
+      "warnings": 0
+    },
+    "format": {
+      "passed": true
+    },
+    "unit": {
+      "passed": true,
+      "files": 40,
+      "tests": 471,
+      "baselineTests": 468,
+      "newRegressionTests": 3
+    },
+    "build": {
+      "passed": true,
+      "extension": "Vite MV3",
+      "web": "Next.js 16.4 standalone"
+    },
+    "e2e": {
+      "passed": true,
+      "tests": 20,
+      "originalTestsRetained": 17,
+      "newLayoutTests": 3,
+      "duration": "1.8m",
+      "amazonData": "fixtures; not real-page quality"
+    },
+    "portable": {
+      "passed": true,
+      "checks": [
+        {
+          "name": "package inventory SHA-256, bundled runtime, MV3 permissions, no user data or env",
+          "passed": true
+        },
+        {
+          "name": "port conflict is explained, unknown listener preserved",
+          "passed": true
+        },
+        {
+          "name": "headless launcher with no installed Node.js/pnpm on PATH, localhost, Mock, authentication",
+          "passed": true
+        },
+        {
+          "name": "duplicate start creates no second service process",
+          "passed": true
+        },
+        {
+          "name": "complete Mock analysis persists; graceful stop releases port and retains user data",
+          "passed": true
+        },
+        {
+          "name": "packaged HTTPS guard rejects unapproved HTTP before any local-trap request and preserves complete analysis",
+          "passed": true
+        },
+        {
+          "name": "AI settings use Windows DPAPI CurrentUser, no plaintext test key on disk",
+          "passed": true
+        },
+        {
+          "name": "restart retains complete ProductAnalysis, product ID, creation and update times",
+          "passed": true
+        },
+        {
+          "name": "same-schema reinstall/moved package retains complete analysis and single instance",
+          "passed": true
+        },
+        {
+          "name": "launcher crash cleanup and abandoned mutex recovery preserve data",
+          "passed": true
+        }
+      ],
+      "startedAt": "2026-10-13T06:49:02.229Z",
+      "finishedAt": "2026-10-13T06:49:44.297Z"
+    },
+    "upgrades": [
+      {
+        "from": "0.5.1",
+        "to": "0.5.2",
+        "passed": true,
+        "fixtureOnly": true,
+        "startedAt": "2026-10-13T07:03:49.313Z",
+        "finishedAt": "2026-10-13T07:04:14.000Z",
+        "checks": [
+          {
+            "name": "distinct frozen source and closed-test target package versions and launcher/runtime hashes",
+            "passed": true
+          },
+          {
+            "name": "old frozen package decrypts all explicit DPAPI fixture preferences; no real Key or model request",
+            "passed": true
+          },
+          {
+            "name": "owned launcher 0.5.1: isolated user data, bundled runtime, Mock",
+            "passed": true
+          },
+          {
+            "name": "old frozen package saves nondefault browser analysis preferences through actual UI",
+            "passed": true
+          },
+          {
+            "name": "0.5.1 saves complete Product, edited analysis/history and supported group/tag metadata; stop leaves bytes unchanged",
+            "passed": true
+          },
+          {
+            "name": "owned launcher 0.5.2: isolated user data, bundled runtime, Mock",
+            "passed": true
+          },
+          {
+            "name": "upgrade preserves protected settings, paired token and old usage ledger byte-for-byte; original token remains usable",
+            "passed": true
+          },
+          {
+            "name": "same isolated browser retains saved analysis preferences across actual old-to-new package upgrade",
+            "passed": true
+          },
+          {
+            "name": "0.5.1 → current package preserves entire Product, ID, timestamps, group/tag definitions, analysis metadata and history",
+            "passed": true
+          },
+          {
+            "name": "legacy archive, manual version, Japanese partial generation, request replay and local usage ledger",
+            "passed": true
+          },
+          {
+            "name": "new groups/tags and partial batch failure preserve all upgraded AI versions and metadata",
+            "passed": true
+          },
+          {
+            "name": "new package updates existing ID, keeps createdAt, archives stale analysis and restores version without losing newer history",
+            "passed": true
+          },
+          {
+            "name": "owned launcher 0.5.2: isolated user data, bundled runtime, Mock",
+            "passed": true
+          },
+          {
+            "name": "new package restart retains DPAPI settings, original pairing and same-browser saved preferences",
+            "passed": true
+          },
+          {
+            "name": "new package restart preserves complete edited Product and analysis, then releases owned processes",
+            "passed": true
+          }
+        ],
+        "browserPreferences": {
+          "passed": true,
+          "stageCount": 3,
+          "deniedWrites": 0,
+          "cookiesInspected": false,
+          "preferenceMigrations": [
+            {
+              "stage": "old-package-baseline:analysis",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout", "group", "tag"],
+              "additiveDefaults": {}
+            },
+            {
+              "stage": "old-package-baseline:library",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout", "group", "tag"],
+              "additiveDefaults": {}
+            },
+            {
+              "stage": "after-upgrade:analysis",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout", "group", "tag"],
+              "additiveDefaults": {}
+            },
+            {
+              "stage": "after-upgrade:library",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout", "group", "tag"],
+              "additiveDefaults": {}
+            },
+            {
+              "stage": "after-restart:analysis",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout", "group", "tag"],
+              "additiveDefaults": {}
+            },
+            {
+              "stage": "after-restart:library",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout", "group", "tag"],
+              "additiveDefaults": {}
+            }
+          ],
+          "selectorChecks": [
+            {
+              "stage": "old-package-setup",
+              "selector": "explicit accessible label"
+            },
+            {
+              "stage": "old-package-baseline",
+              "selector": "explicit accessible label"
+            },
+            {
+              "stage": "after-upgrade",
+              "selector": "explicit accessible label"
+            },
+            {
+              "stage": "after-restart",
+              "selector": "explicit accessible label"
+            }
+          ]
+        },
+        "evidenceDirectory": ".test-data/phase16-upgrade/2026-10-13T07-03-49-310Z-BsLEst"
+      },
+      {
+        "from": "0.5.0",
+        "to": "0.5.2",
+        "passed": true,
+        "fixtureOnly": true,
+        "startedAt": "2026-10-13T07:09:47.091Z",
+        "finishedAt": "2026-10-13T07:10:12.049Z",
+        "checks": [
+          {
+            "name": "distinct frozen source and closed-test target package versions and launcher/runtime hashes",
+            "passed": true
+          },
+          {
+            "name": "old frozen package decrypts all explicit DPAPI fixture preferences; no real Key or model request",
+            "passed": true
+          },
+          {
+            "name": "owned launcher 0.5.0: isolated user data, bundled runtime, Mock",
+            "passed": true
+          },
+          {
+            "name": "old frozen package saves nondefault browser analysis preferences through actual UI",
+            "passed": true
+          },
+          {
+            "name": "0.5.0 saves complete Product, edited analysis/history and supported group/tag metadata; stop leaves bytes unchanged",
+            "passed": true
+          },
+          {
+            "name": "owned launcher 0.5.2: isolated user data, bundled runtime, Mock",
+            "passed": true
+          },
+          {
+            "name": "upgrade preserves protected settings, paired token and old usage ledger byte-for-byte; original token remains usable",
+            "passed": true
+          },
+          {
+            "name": "same isolated browser retains saved analysis preferences across actual old-to-new package upgrade",
+            "passed": true
+          },
+          {
+            "name": "0.5.0 → current package preserves entire Product, ID, timestamps, group/tag definitions, analysis metadata and history",
+            "passed": true
+          },
+          {
+            "name": "legacy archive, manual version, Japanese partial generation, request replay and local usage ledger",
+            "passed": true
+          },
+          {
+            "name": "new groups/tags and partial batch failure preserve all upgraded AI versions and metadata",
+            "passed": true
+          },
+          {
+            "name": "new package updates existing ID, keeps createdAt, archives stale analysis and restores version without losing newer history",
+            "passed": true
+          },
+          {
+            "name": "owned launcher 0.5.2: isolated user data, bundled runtime, Mock",
+            "passed": true
+          },
+          {
+            "name": "new package restart retains DPAPI settings, original pairing and same-browser saved preferences",
+            "passed": true
+          },
+          {
+            "name": "new package restart preserves complete edited Product and analysis, then releases owned processes",
+            "passed": true
+          }
+        ],
+        "browserPreferences": {
+          "passed": true,
+          "stageCount": 3,
+          "deniedWrites": 0,
+          "cookiesInspected": false,
+          "preferenceMigrations": [
+            {
+              "stage": "old-package-baseline:analysis",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout", "group", "tag"],
+              "additiveDefaults": {}
+            },
+            {
+              "stage": "old-package-baseline:library",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout", "group", "tag"],
+              "additiveDefaults": {}
+            },
+            {
+              "stage": "after-upgrade:analysis",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout", "group", "tag"],
+              "additiveDefaults": {}
+            },
+            {
+              "stage": "after-upgrade:library",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout", "group", "tag"],
+              "additiveDefaults": {}
+            },
+            {
+              "stage": "after-restart:analysis",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout", "group", "tag"],
+              "additiveDefaults": {}
+            },
+            {
+              "stage": "after-restart:library",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout", "group", "tag"],
+              "additiveDefaults": {}
+            }
+          ],
+          "selectorChecks": [
+            {
+              "stage": "old-package-setup",
+              "selector": "explicit accessible label"
+            },
+            {
+              "stage": "old-package-baseline",
+              "selector": "explicit accessible label"
+            },
+            {
+              "stage": "after-upgrade",
+              "selector": "explicit accessible label"
+            },
+            {
+              "stage": "after-restart",
+              "selector": "explicit accessible label"
+            }
+          ]
+        },
+        "evidenceDirectory": ".test-data/phase16-upgrade/2026-10-13T07-09-47-090Z-qLYSr8"
+      },
+      {
+        "from": "0.4.0",
+        "to": "0.5.2",
+        "passed": true,
+        "fixtureOnly": true,
+        "startedAt": "2026-10-13T06:59:49.883Z",
+        "finishedAt": "2026-10-13T07:00:13.623Z",
+        "checks": [
+          {
+            "name": "distinct frozen source and closed-test target package versions and launcher/runtime hashes",
+            "passed": true
+          },
+          {
+            "name": "old frozen package decrypts all explicit DPAPI fixture preferences; no real Key or model request",
+            "passed": true
+          },
+          {
+            "name": "owned launcher 0.4.0: isolated user data, bundled runtime, Mock",
+            "passed": true
+          },
+          {
+            "name": "old frozen package saves nondefault browser analysis preferences through actual UI",
+            "passed": true
+          },
+          {
+            "name": "0.4.0 saves complete Product, edited analysis/history and supported group/tag metadata; stop leaves bytes unchanged",
+            "passed": true
+          },
+          {
+            "name": "owned launcher 0.5.2: isolated user data, bundled runtime, Mock",
+            "passed": true
+          },
+          {
+            "name": "upgrade preserves protected settings, paired token and old usage ledger byte-for-byte; original token remains usable",
+            "passed": true
+          },
+          {
+            "name": "same isolated browser retains saved analysis preferences across actual old-to-new package upgrade",
+            "passed": true
+          },
+          {
+            "name": "0.4.0 → current package preserves entire Product, ID, timestamps, group/tag definitions, analysis metadata and history",
+            "passed": true
+          },
+          {
+            "name": "legacy archive, manual version, Japanese partial generation, request replay and local usage ledger",
+            "passed": true
+          },
+          {
+            "name": "new groups/tags and partial batch failure preserve all upgraded AI versions and metadata",
+            "passed": true
+          },
+          {
+            "name": "new package updates existing ID, keeps createdAt, archives stale analysis and restores version without losing newer history",
+            "passed": true
+          },
+          {
+            "name": "owned launcher 0.5.2: isolated user data, bundled runtime, Mock",
+            "passed": true
+          },
+          {
+            "name": "new package restart retains DPAPI settings, original pairing and same-browser saved preferences",
+            "passed": true
+          },
+          {
+            "name": "new package restart preserves complete edited Product and analysis, then releases owned processes",
+            "passed": true
+          }
+        ],
+        "browserPreferences": {
+          "passed": true,
+          "stageCount": 3,
+          "deniedWrites": 0,
+          "cookiesInspected": false,
+          "preferenceMigrations": [
+            {
+              "stage": "old-package-baseline:analysis",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout"],
+              "additiveDefaults": {}
+            },
+            {
+              "stage": "old-package-baseline:library",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout"],
+              "additiveDefaults": {}
+            },
+            {
+              "stage": "after-upgrade:analysis",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout"],
+              "additiveDefaults": {}
+            },
+            {
+              "stage": "after-upgrade:library",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout"],
+              "additiveDefaults": {}
+            },
+            {
+              "stage": "after-restart:analysis",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout"],
+              "additiveDefaults": {}
+            },
+            {
+              "stage": "after-restart:library",
+              "libraryStoredBytesUnchanged": true,
+              "preservedFields": ["query", "source", "analysis", "sort", "layout"],
+              "additiveDefaults": {}
+            }
+          ],
+          "selectorChecks": [
+            {
+              "stage": "old-package-setup",
+              "selector": "verified v0.4.0 label-scoped select"
+            },
+            {
+              "stage": "old-package-baseline",
+              "selector": "verified v0.4.0 label-scoped select"
+            },
+            {
+              "stage": "after-upgrade",
+              "selector": "explicit accessible label"
+            },
+            {
+              "stage": "after-restart",
+              "selector": "explicit accessible label"
+            }
+          ]
+        },
+        "evidenceDirectory": ".test-data/phase16-upgrade/2026-10-13T06-59-49-882Z-qWhtJ3"
+      }
+    ],
+    "zip": {
+      "passed": true,
+      "checks": [
+        {
+          "name": "portable: archive hash, bytes, count, CRC32, raw paths, private paths and credential scan",
+          "passed": true
+        },
+        {
+          "name": "portable: every bundle record matches actual ZIP bytes/SHA256; no missing or unlisted files",
+          "passed": true,
+          "records": 1927
+        },
+        {
+          "name": "extension: archive hash, bytes, count, CRC32, raw paths, private paths and credential scan",
+          "passed": true
+        },
+        {
+          "name": "extension: root MV3 0.5.2, original permission/host allowlist, CSP, no source maps; embedded extension matches ZIP",
+          "passed": true,
+          "embeddedFiles": 11
+        }
+      ],
+      "portable": {
+        "file": "ProductSpy-0.5.2-windows-x64.zip",
+        "bytes": 40684135,
+        "sha256": "3fcc3c79ad1962529b7a7ead96101ca2cb280537ddd38bb61b6482afe00deaed",
+        "entries": 1928,
+        "files": 1928,
+        "scannedTextFiles": 1898,
+        "crc32Verified": true,
+        "rawPathsVerified": true,
+        "privatePathsVerified": true,
+        "credentialPatternScanPassed": true,
+        "configuredApiKeysChecked": 0,
+        "bundleRecordsVerified": 1927,
+        "embeddedExtensionFilesVerified": 11
+      },
+      "extension": {
+        "file": "ProductSpy-0.5.2-extension.zip",
+        "bytes": 395638,
+        "sha256": "30a7cef68d1910327bb3528722c3dd5930b369ac2a163fb46987801df2a86d9a",
+        "entries": 226,
+        "files": 226,
+        "scannedTextFiles": 222,
+        "crc32Verified": true,
+        "rawPathsVerified": true,
+        "privatePathsVerified": true,
+        "credentialPatternScanPassed": true,
+        "configuredApiKeysChecked": 0,
+        "manifestVersion": 3,
+        "permissions": ["activeTab", "scripting", "storage"],
+        "hostPermissions": ["http://localhost/*", "http://127.0.0.1/*"],
+        "sourceMapsAbsent": true
+      }
+    },
+    "performance": {
+      "passed": true,
+      "synthetic": true,
+      "sampleScope": "500 basic products, 50 complete synthetic analyses/history; not maximum-size histories",
+      "metrics": [
+        {
+          "count": 100,
+          "importMs": 32.667899999996735,
+          "apiMedianMs": 5.60109999999986,
+          "apiMaxMs": 6.924599999998463,
+          "renderMs": 178.72109999999884,
+          "filterMs": 39.54709999999977,
+          "pageChangeMs": 78.3022000000019,
+          "renderedCards": 36
+        },
+        {
+          "count": 500,
+          "importMs": 78.7387000000017,
+          "apiMedianMs": 15.06329999999798,
+          "apiMaxMs": 15.95310000000245,
+          "renderMs": 130.52750000000015,
+          "filterMs": 42.86739999999918,
+          "pageChangeMs": 78.34970000000249,
+          "renderedCards": 36,
+          "batchMs": 114.93670000000202,
+          "backupMs": 37.661199999998644,
+          "backupBytes": 579586,
+          "restoreMs": 113.74080000000322
+        }
+      ],
+      "externalAiRequests": 0,
+      "caveat": "One developer machine, differing cache states; not real Amazon products or ordinary device guarantee."
+    }
+  },
+  "bugs": [
+    {
+      "id": "PS16-001",
+      "priority": "P2",
+      "reproduced": true,
+      "fixed": true,
+      "field": "description",
+      "regressionFailedOnOldLogic": true,
+      "realPatchedBookVerified": true
+    },
+    {
+      "id": "PS16-002",
+      "priority": "P2",
+      "reproduced": true,
+      "fixed": true,
+      "field": "brand",
+      "regressionFailedOnOldLogic": true,
+      "explicitBrandPreservationTest": true,
+      "realPatchedBookVerified": true
+    },
+    {
+      "id": "PS16-T01",
+      "scope": "acceptance tool, not product data loss",
+      "reproduced": true,
+      "fixed": true,
+      "failedRun": {
+        "directory": ".test-data/phase16-upgrade/2026-10-13T06-54-20-246Z-ZUPEfR",
+        "completedChecks": 3,
+        "error": "expect(locator).toBeVisible() failed\n\nLocator: getByLabel('商品排序', { exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByLabel('商品排序', { exact: true }) with timeout 5000ms\n  - waiting for getByLabel('商品排序', { exact: true })\n"
+      },
+      "oldPackageUnchanged": true
+    },
+    {
+      "id": "PS16-R01",
+      "priority": "reported P2 symptom",
+      "reproduced": false,
+      "fixed": false,
+      "status": "pending actual browser/manual reproduction; normal layout tests do not resolve 55x58 screenshot"
+    }
+  ],
+  "realAmazon": {
+    "report": "phase16/amazon-results.json",
+    "realPages": true,
+    "initialVersion": "0.5.1",
+    "initialPageAttempts": 10,
+    "initialCaptured": 10,
+    "uniqueAsinsIncludingVariant": 8,
+    "categories": ["electronics", "home", "beauty", "clothing", "kitchen", "books"],
+    "countryHosts": ["www.amazon.com", "www.amazon.de", "www.amazon.co.uk", "www.amazon.co.jp"],
+    "initialFieldCounts": {
+      "asin": {
+        "pass": 10,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "title": {
+        "pass": 10,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "price": {
+        "pass": 8,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 2,
+        "requires-content-review": 0
+      },
+      "currency": {
+        "pass": 8,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 2,
+        "requires-content-review": 0
+      },
+      "brand": {
+        "pass": 9,
+        "fail": 1,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "mainImage": {
+        "pass": 10,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "gallery": {
+        "pass": 10,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "highResolution": {
+        "pass": 10,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "bulletPoints": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 1,
+        "requires-content-review": 0
+      },
+      "rating": {
+        "pass": 10,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "reviewCount": {
+        "pass": 10,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "videos": {
+        "pass": 5,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 5,
+        "requires-content-review": 0
+      },
+      "mainImageHttp": {
+        "pass": 10,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "description": {
+        "pass": 0,
+        "fail": 1,
+        "unverified": 0,
+        "not-available": 1,
+        "requires-content-review": 8
+      }
+    },
+    "primaryNavigationCount": 12,
+    "snapshotCount": 13,
+    "repeatSnapshotsNotNewProducts": true,
+    "patchedRealBookVersion": "0.5.2",
+    "realPagesSavedToLibrary": 0,
+    "videoPlaybackVerified": false,
+    "variantAsinPriceMainImageVerified": true,
+    "variantGalleryAdvancedAudit": "unverified",
+    "merchantClaimsVerified": false
+  },
+  "ai": {
+    "authorization": {
+      "checkedAt": "2026-10-13T06:45:31.362Z",
+      "completePaidAuthorizationProvided": false,
+      "processKeyPresent": false,
+      "protectedSettingsExists": false,
+      "inspectedKeyContents": false,
+      "realModelQualityRuns": 0
+    },
+    "paidRequests": 0,
+    "qualityEvaluated": false,
+    "actualFees": null,
+    "humanEditingTimeSeconds": null,
+    "historicalRealSamplesPrepared": 6,
+    "scoreRowsFilled": 0,
+    "preparation": "phase16/ai-validation-preparation.md",
+    "scorecard": "phase16/ai-scorecard.csv",
+    "realQualityReportProduced": false
+  },
+  "externalUsers": {
+    "planned": [3, 5],
+    "invited": 0,
+    "participants": 0,
+    "feedbackReceived": 0,
+    "installationSuccessRate": null,
+    "firstCaptureSeconds": null,
+    "willingnessToReuse": null,
+    "workflow": "phase16/feedback-process.md",
+    "blankCsv": "phase16/feedback.csv",
+    "actualFeedbackSummaryProduced": false
+  },
+  "data": {
+    "storageSchemaChanged": false,
+    "localSchema": 2,
+    "exchangeSchema": 1,
+    "actualFrozenUpgradePackages": true,
+    "productGroupTagAnalysisHistoryPreserved": true,
+    "dpapiByteIdenticalAndSettingsDecodedInFixture": true,
+    "pairingTokenStillValidAfterUpgrade": true,
+    "oldUsageLedgerByteEqualBeforeNewWrites": true,
+    "browserPrefsVerifiedAcrossUpgrade": true,
+    "realUserFileGuard": {
+      "checkedAt": "2026-10-13T06:54:29.952Z",
+      "passed": true,
+      "comparedExistingFiles": 0,
+      "existingDataAndProtectedSettingsByteEqual": true,
+      "inspectedContents": false,
+      "note": "Hashes only; private file names and hashes remain in ignored evidence. Logs/runtime are excluded."
+    },
+    "note": "Default private folder had zero existing files; do not claim actual private user-library migration from this empty check. Compatibility is from full isolated fixtures.",
+    "recaptureDoesNotRunAutomatically": true,
+    "changedContentArchivesExistingAnalysis": true,
+    "rollbackRequiresStoppedFullBackup": true
+  },
+  "oldReleasePreservation": {
+    "checkedAt": "2026-10-13T07:02:06.485Z",
+    "passed": true,
+    "preserved": [
+      {
+        "version": "0.5.0",
+        "draft": true,
+        "sourceCommit": "80644311d216cfdffe3751777038dde36d9ee0e5",
+        "assetCount": 7,
+        "remoteAssetDigestsMatch": true,
+        "localZipsAndMetadataUnchanged": true,
+        "extractedPackageFilesVerified": 1928
+      },
+      {
+        "version": "0.5.1",
+        "draft": true,
+        "sourceCommit": "d13d7ee77e37a911988f6610b9a529f2d241bfbd",
+        "assetCount": 8,
+        "remoteAssetDigestsMatch": true,
+        "localZipsAndMetadataUnchanged": true,
+        "extractedPackageFilesVerified": 1928
+      }
+    ]
+  },
+  "artifacts": {
+    "portable": {
+      "file": "ProductSpy-0.5.2-windows-x64.zip",
+      "sha256": "3fcc3c79ad1962529b7a7ead96101ca2cb280537ddd38bb61b6482afe00deaed",
+      "bytes": 40684135,
+      "files": 1928
+    },
+    "extension": {
+      "file": "ProductSpy-0.5.2-extension.zip",
+      "version": "0.5.2",
+      "sha256": "30a7cef68d1910327bb3528722c3dd5930b369ac2a163fb46987801df2a86d9a",
+      "files": 226,
+      "bytes": 395638
+    },
+    "screenshots": "screenshots/phase16/provenance.json"
+  },
+  "remainingManual": [
+    "Exact pairing small-window reproduction/full browser evidence",
+    "Official stable Chrome mouse installation/pairing/core flow",
+    "Ordinary Windows10/11 x64 and125/150/200% DPI/security prompts",
+    "Advanced variant gallery and full video playback",
+    "Merchant description/content review",
+    "Authorized real model quality/fees/human editing timing",
+    "Actual3–5external user feedback"
+  ]
+}

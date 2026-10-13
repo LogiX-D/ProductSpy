@@ -1,1 +1,1 @@
-export const PRODUCTSPY_VERSION = '0.5.1';
+export const PRODUCTSPY_VERSION = '0.5.2';

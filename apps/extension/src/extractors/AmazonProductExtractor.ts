@@ -337,14 +337,32 @@ export class AmazonProductExtractor {
 
   extractDescription(): string | undefined {
     const description =
-      this.productText('description') ??
-      this.text('#productDescription', '#bookDescription_feature_div') ??
-      this.aplusDescription();
+      this.productText('description') ?? this.domDescription() ?? this.aplusDescription();
     if (!description) return undefined;
     const container = this.document.createElement('div');
     container.innerHTML = description;
     container.querySelectorAll('script,style').forEach((element) => element.remove());
     return cleanText(container.textContent)?.slice(0, 50_000);
+  }
+
+  private domDescription(): string | undefined {
+    for (const selector of ['#productDescription', '#bookDescription_feature_div']) {
+      const element = this.document.querySelector(selector);
+      if (!element) continue;
+      const copy = element.cloneNode(true) as Element;
+      copy
+        .querySelectorAll('script,style,noscript,.a-expander-header')
+        .forEach((node) => node.remove());
+      // The book description's real <br>, paragraphs and lists separate sentences.
+      // textContent alone concatenates their words; preserve boundaries in this field only.
+      for (const node of copy.querySelectorAll('br,p,div,ul,ol,li')) {
+        node.before(this.document.createTextNode(' '));
+        node.after(this.document.createTextNode(' '));
+      }
+      const text = cleanText(copy.textContent);
+      if (text) return text;
+    }
+    return undefined;
   }
 
   private aplusDescription(): string | undefined {
@@ -406,7 +424,10 @@ export class AmazonProductExtractor {
     }
     const brand =
       this.meta('brand', 'product:brand') ??
-      this.text('.po-brand .po-break-word', '#bylineInfo', '#brand', '[itemprop="brand"]');
+      this.text('.po-brand .po-break-word') ??
+      // On real book pages #bylineInfo contains author / format, rather than a brand store.
+      (this.document.querySelector('#bylineInfo .author') ? undefined : this.text('#bylineInfo')) ??
+      this.text('#brand', '[itemprop="brand"]');
     return brand
       ?.replace(/^Visit the\s+/i, '')
       .replace(/\s+Store$/i, '')

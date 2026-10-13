@@ -1,12 +1,12 @@
 # ProductSpy
 
-本地优先的 Amazon 竞品素材采集与 AI 分析工具。当前闭测修订版为 0.5.1，修复远程 HTTP AI 地址可能明文发送 Key 的问题；原 0.5.0 草稿和安装包保留且不公开。闭测资料见 [安装与测试指南](docs/closed-test/install-guide.md)和 [Phase 14 报告](docs/phase14-validation.md)。0.5.0 增加多分组、彩色标签、组合筛选、分页多选、批量操作、CSV / JSON / Markdown 导出和安全 JSON 备份恢复；沿用 Windows x64 便携分发、Next.js / Manifest V3、安全配对及 Phase 12 分析能力。兼容 v0.4.0 商品与完整历史。历史验收见 [Phase 13 报告](docs/phase13-validation.md)，操作见 [商品库指南](docs/library-guide.md)；[Phase 12 报告](docs/phase12-validation.md)与 [AI 质量报告](docs/phase12-ai-quality.md)保留原始结果。
+本地优先的 Amazon 竞品素材采集与 AI 分析工具。当前质量修订版为 0.5.2：修复真实图书页面的描述段落粘连、展开控件混入，以及作者栏误作品牌；补充 v0.5.1 设置与数据升级、配对弹窗布局检查。原版本及 Release 草稿保留，不公开。当前结果见 [Phase 16 报告](docs/phase16-validation.md)，普通用户操作见 [Windows 指南](docs/windows-guide.md)。沿用 Windows x64 便携分发、Next.js / Manifest V3、安全配对、远程 AI HTTPS、多分组标签、批量操作、完整分析与历史。原 [Phase 14 报告](docs/phase14-validation.md)、[Phase 13 报告](docs/phase13-validation.md)、[Phase 12 报告](docs/phase12-validation.md)与 [AI 质量报告](docs/phase12-ai-quality.md)保留各自历史结果；[旧版闭测指南](docs/closed-test/install-guide.md)适用于原 v0.5.1 包。
 
 仅支持 Amazon。此版本没有用户账号、支付、自动发布、价格监控、其他平台或多人协作。
 
 ## Windows 普通用户：不用安装开发工具
 
-1. 获取 `ProductSpy-0.5.1-windows-x64.zip`，**全部解压**，双击 **ProductSpy.cmd**。
+1. 获取 `ProductSpy-0.5.2-windows-x64.zip`，**全部解压**，双击 **ProductSpy.cmd**。
 2. 启动器使用内置 Node.js，启动本机工作台并打开 **http://127.0.0.1:3000**；不用安装 Node.js、pnpm 或数据库。
 3. 在启动窗口点击「打开插件文件夹」，按 Chrome `chrome://extensions` →「开发者模式」→「加载已解压的扩展程序」加载便携包的 **extension** 目录。
 4. 在工作台「安装与配对」中生成一次性配对码，填入插件并「连接工作台」。身份校验保留，配对码 2 分钟有效。
