@@ -34,6 +34,7 @@ import {
   type AnalysisPricingPreference,
 } from './analysis-preferences';
 import { LibraryDialog } from './library-dialog';
+import { HistoryManager } from './history-manager';
 import { Badge, Button, CopyButton, EmptyState, ErrorNotice } from './ui';
 import { comparisonTimestamp } from './comparison-table';
 
@@ -406,6 +407,18 @@ export function ComparisonAnalysisPanel({
         <p role="status" className="comparison-notice">
           {message}
         </p>
+      )}
+      {!busy && !editor && (
+        <HistoryManager
+          kind="comparison"
+          id={plan.id}
+          updatedAt={plan.updatedAt}
+          onChanged={() => {
+            void getComparison(plan.id)
+              .then(onUpdate)
+              .catch((cause: unknown) => setError(errorMessage(cause)));
+          }}
+        />
       )}
       {mode === 'mock' && (
         <p className="comparison-boundary">

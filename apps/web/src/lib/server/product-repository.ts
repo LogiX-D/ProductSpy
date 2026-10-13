@@ -1,9 +1,11 @@
 import { publishAtomicFile } from './atomic-file';
+import { withBusinessOperation } from './business-lock';
 import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import {
   MAX_ANALYSIS_VERSIONS,
+  cleanupHistoryVersions,
   MAX_LIBRARY_GROUPS,
   MAX_LIBRARY_TAGS,
   MAX_MEMBERSHIPS,
@@ -74,7 +76,7 @@ function archiveCurrent(product: Product): AnalysisVersion[] {
   if (history.length >= MAX_ANALYSIS_VERSIONS)
     throw new AppError(
       409,
-      '此商品已保存 50 个分析版本。请先导出历史内容；本次操作没有删除或覆盖已有版本。',
+      '此商品已保存 50 个分析版本。请在历史容量管理中先归档，再确认清理旧版本；本次操作没有删除或覆盖已有版本。',
     );
   history.push({
     id: randomUUID(),
@@ -90,7 +92,7 @@ function assertCapacity(product: Product): void {
   if (archiveCurrent(product).length >= MAX_ANALYSIS_VERSIONS)
     throw new AppError(
       409,
-      '此商品已保存 50 个分析版本。请先导出历史内容；不会自动删除历史，也不会发起新的 AI 请求。',
+      '此商品已保存 50 个分析版本。请在历史容量管理中先归档，再确认清理旧版本；不会自动删除历史，也不会发起新的 AI 请求。',
     );
 }
 
@@ -137,7 +139,9 @@ export class LocalJsonProductRepository implements ProductRepository {
   }
 
   private transaction<T>(operation: () => Promise<T>): Promise<T> {
-    const result = this.queue.tail.catch(() => undefined).then(operation);
+    const result = this.queue.tail
+      .catch(() => undefined)
+      .then(() => withBusinessOperation(this.directory, operation));
     this.queue.tail = result.catch(() => undefined);
     return result;
   }
@@ -496,6 +500,47 @@ export class LocalJsonProductRepository implements ProductRepository {
         if (restored) delete restored.metadata;
       }
       products[index] = product;
+      await this.writeLibrary(library);
+      return product;
+    });
+  }
+
+  cleanupHistory(
+    id: string,
+    expectedUpdatedAt: string,
+    versionIds: string[],
+    archiveSha256: string,
+    expectedRevision: string,
+  ): Promise<Product> {
+    return this.transaction(async () => {
+      const library = await this.readLibrary();
+      const index = library.products.findIndex((product) => product.id === id);
+      const product = library.products[index];
+      if (!product) throw new AppError(404, '商品已删除或不存在');
+      if (product.updatedAt !== expectedUpdatedAt)
+        throw new AppError(409, '商品或分析已变化，请重新导出归档；没有清理任何版本。');
+      if (createHash('sha256').update(JSON.stringify(product)).digest('hex') !== expectedRevision)
+        throw new AppError(409, '商品归档内容已变化，请重新导出；没有清理任何版本。');
+      const history = product.analysisHistory ?? [];
+      const current = [...history]
+        .reverse()
+        .find(
+          (version) =>
+            JSON.stringify(version.analysis) === JSON.stringify(product.aiAnalysis) &&
+            JSON.stringify(version.metadata) === JSON.stringify(product.analysisMetadata),
+        );
+      try {
+        product.analysisHistory = cleanupHistoryVersions(
+          history,
+          current?.id,
+          versionIds,
+          archiveSha256,
+        );
+      } catch (error) {
+        throw new AppError(400, error instanceof Error ? error.message : '历史清理无效');
+      }
+      product.updatedAt = nextUpdatedAt(product.updatedAt);
+      library.products[index] = product;
       await this.writeLibrary(library);
       return product;
     });

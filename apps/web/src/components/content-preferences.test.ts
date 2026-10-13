@@ -33,4 +33,35 @@ describe('content browser preferences', () => {
     expect(saved.options.duration).toBe(30);
     expect(saved.pricing).toEqual({});
   });
+  it('reuses existing analysis parameters only when content preferences are absent', () => {
+    const previous = JSON.stringify({
+      version: 1,
+      options: {
+        market: 'JP',
+        language: 'ja',
+        platform: 'Shorts',
+        duration: 60,
+        style: 'casual',
+        goal: 'consideration',
+        customInstructions: '避免功效承诺',
+      },
+      pricing: { inputUsdPerMillion: 2 },
+    });
+    const inherited = restoreContentPreferences(null, previous);
+    expect(inherited.options).toMatchObject({
+      market: 'JP',
+      language: 'ja',
+      duration: 60,
+      platform: 'Shorts',
+      customInstructions: '避免功效承诺',
+    });
+    expect(inherited.pricing.inputUsdPerMillion).toBe(2);
+    const own = restoreContentPreferences(
+      JSON.stringify({ version: 1, options: { market: 'US', duration: 45 } }),
+      previous,
+    );
+    expect(own.options.market).toBe('US');
+    expect(own.options.duration).toBe(45);
+    expect(restoreContentPreferences('invalid', previous).options.duration).toBe(30);
+  });
 });

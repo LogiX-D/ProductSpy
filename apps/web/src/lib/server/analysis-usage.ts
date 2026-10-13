@@ -1,4 +1,5 @@
 import { publishAtomicFile } from './atomic-file';
+import { withBusinessOperation } from './business-lock';
 import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
@@ -65,7 +66,9 @@ export class AnalysisUsageLedger {
 
   private transaction<T>(operation: () => Promise<T>): Promise<T> {
     const prior = registry.queues.get(this.filePath) ?? Promise.resolve();
-    const result = prior.catch(() => undefined).then(operation);
+    const result = prior
+      .catch(() => undefined)
+      .then(() => withBusinessOperation(this.directory, operation));
     registry.queues.set(
       this.filePath,
       result.catch(() => undefined),

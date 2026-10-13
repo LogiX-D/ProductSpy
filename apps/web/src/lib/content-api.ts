@@ -1,6 +1,7 @@
 import {
   contentPlanSchema,
   contentBackupSchema,
+  contentReferenceStatusSchema,
   type ContentPlan,
   type ContentOptions,
   type ContentOutput,
@@ -19,6 +20,9 @@ export async function listContentPlans(): Promise<ContentPlan[]> {
 export async function getContentPlan(id: string): Promise<ContentPlan> {
   return contentPlanSchema.parse(await webRequest(path(id)));
 }
+export async function getContentReferences(id: string) {
+  return contentReferenceStatusSchema.parse(await webRequest(`${path(id)}/references`));
+}
 export async function createContentPlan(input: {
   name: string;
   productId: string;
@@ -36,6 +40,7 @@ export async function updateContentPlan(
     name?: string;
     status?: ContentPlan['status'];
     favorite?: boolean;
+    selectedMedia?: ContentPlan['selectedMedia'];
     output?: ContentOutput;
     restoreVersionId?: string;
     adoptVersionId?: string;

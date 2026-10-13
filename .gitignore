@@ -2,6 +2,7 @@ node_modules/
 .next/
 dist/
 .data/
+.workspace-restore/
 .env*
 !.env.example
 *.tsbuildinfo

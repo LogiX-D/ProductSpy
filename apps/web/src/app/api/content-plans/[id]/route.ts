@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { contentOptionsSchema, contentOutputSchema } from '@productspy/shared';
+import {
+  contentOptionsSchema,
+  contentOutputSchema,
+  contentSelectedMediaSchema,
+} from '@productspy/shared';
 import { getContentRepository } from '../../../../lib/server/content-repository';
 import { AppError } from '../../../../lib/server/errors';
 import { preflight, readJsonBody, withApiRequest } from '../../../../lib/server/http';
@@ -12,6 +16,7 @@ const patchSchema = z
     name: z.string().trim().min(1).max(120).optional(),
     status: z.enum(['draft', 'needs-edit', 'completed']).optional(),
     favorite: z.boolean().optional(),
+    selectedMedia: contentSelectedMediaSchema.optional(),
     options: contentOptionsSchema.optional(),
     output: contentOutputSchema.optional(),
     restoreVersionId: z.string().uuid().optional(),

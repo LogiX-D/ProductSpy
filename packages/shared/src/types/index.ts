@@ -73,6 +73,8 @@ export interface AnalysisVersion {
   analysis: ProductAnalysis;
   metadata?: AnalysisMetadata;
   parentVersionId?: string;
+  archivedParentVersionId?: string;
+  archivedParentSha256?: string;
   restoredFrom?: string;
 }
 export interface AnalysisSaveContext {

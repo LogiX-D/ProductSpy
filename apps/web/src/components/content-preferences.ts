@@ -3,11 +3,14 @@ import {
   contentOptionsSchema,
   type ContentOptions,
 } from '@productspy/shared';
-import type { AnalysisPricingPreference } from './analysis-preferences';
+import { restoreAnalysisPreferences, type AnalysisPricingPreference } from './analysis-preferences';
 
 export const CONTENT_PREFERENCES_KEY = 'productspy:content-preferences:v1';
 
-export function restoreContentPreferences(raw: string | null): {
+export function restoreContentPreferences(
+  raw: string | null,
+  analysisRaw?: string | null,
+): {
   options: ContentOptions;
   pricing: AnalysisPricingPreference;
 } {
@@ -15,6 +18,12 @@ export function restoreContentPreferences(raw: string | null): {
     options: { ...DEFAULT_CONTENT_OPTIONS },
     pricing: {} as AnalysisPricingPreference,
   };
+  if (!raw && analysisRaw) {
+    const previous = restoreAnalysisPreferences(analysisRaw);
+    result.options = contentOptionsSchema.parse(previous.options);
+    result.pricing = previous.pricing;
+    return result;
+  }
   if (!raw || raw.length > 20000) return result;
   try {
     const saved: unknown = JSON.parse(raw);

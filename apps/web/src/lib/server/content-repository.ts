@@ -3,6 +3,7 @@ import { mkdir, readFile, stat, unlink, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import {
   MAX_CONTENT_BACKUP_BYTES,
+  cleanupHistoryVersions,
   MAX_CONTENT_PLANS,
   MAX_CONTENT_VERSIONS,
   contentBackupSchema,
@@ -24,6 +25,7 @@ import {
   type Product,
 } from '@productspy/shared';
 import { publishAtomicFile } from './atomic-file';
+import { withBusinessOperation } from './business-lock';
 import { dataDirectory } from './product-repository';
 import { AppError } from './errors';
 interface Registry {
@@ -52,7 +54,9 @@ export class LocalContentRepository {
   }
   private transaction<T>(operation: () => Promise<T>): Promise<T> {
     const prior = registry.queues.get(this.filePath) ?? Promise.resolve();
-    const result = prior.catch(() => undefined).then(operation);
+    const result = prior
+      .catch(() => undefined)
+      .then(() => withBusinessOperation(this.directory, operation));
     registry.queues.set(
       this.filePath,
       result.catch(() => undefined),
@@ -104,7 +108,7 @@ export class LocalContentRepository {
     if (plan.versions.length >= MAX_CONTENT_VERSIONS)
       throw new AppError(
         409,
-        '此方案已保存 50 个内容版本，请先导出或创建新方案；不会删除历史或发起 AI 请求。',
+        '此方案已保存 50 个内容版本，请在历史容量管理中先归档，再确认清理旧版本；不会自动删除历史或发起 AI 请求。',
       );
   }
   list(): Promise<ContentPlan[]> {
@@ -160,6 +164,7 @@ export class LocalContentRepository {
       status?: ContentPlan['status'];
       favorite?: boolean;
       options?: ContentOptions;
+      selectedMedia?: ContentPlan['selectedMedia'];
       output?: ContentOutput;
       restoreVersionId?: string;
       adoptVersionId?: string;
@@ -180,6 +185,7 @@ export class LocalContentRepository {
       if (input.status !== undefined) plan.status = input.status;
       if (input.favorite !== undefined) plan.favorite = input.favorite;
       if (input.options) plan.options = contentOptionsSchema.parse(input.options);
+      if (input.selectedMedia) plan.selectedMedia = input.selectedMedia;
       const time = now(plan.updatedAt);
       if (input.output || input.restoreVersionId) {
         this.capacity(plan);
@@ -268,6 +274,33 @@ export class LocalContentRepository {
       const plans = await this.read();
       this.required(plans, id, expectedUpdatedAt);
       await this.write(plans.filter((plan) => plan.id !== id));
+    });
+  }
+  cleanupHistory(
+    id: string,
+    expectedUpdatedAt: string,
+    versionIds: string[],
+    archiveSha256: string,
+    expectedRevision: string,
+  ): Promise<ContentPlan> {
+    return this.transaction(async () => {
+      const plans = await this.read();
+      const plan = this.required(plans, id, expectedUpdatedAt);
+      if (createHash('sha256').update(JSON.stringify(plan)).digest('hex') !== expectedRevision)
+        throw new AppError(409, '内容归档已经变化，请重新导出；没有清理任何版本。');
+      try {
+        plan.versions = cleanupHistoryVersions(
+          plan.versions,
+          plan.currentVersionId,
+          versionIds,
+          archiveSha256,
+        );
+      } catch (error) {
+        throw new AppError(400, error instanceof Error ? error.message : '历史清理无效');
+      }
+      plan.updatedAt = now(plan.updatedAt);
+      await this.write(plans);
+      return plan;
     });
   }
   backup(): Promise<{

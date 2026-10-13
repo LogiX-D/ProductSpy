@@ -1,10 +1,11 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { resolve, sep } from 'node:path';
+import { tmpdir } from 'node:os';
 import { workspace } from './files.mjs';
 import { writeNoticesFromInventory } from './notices.mjs';
 
-const testRoot = resolve(workspace, '.test-data/license-notices');
+const testRoot = resolve(tmpdir(), 'productspy-license-notices');
 const temporary = [];
 
 async function fixture() {

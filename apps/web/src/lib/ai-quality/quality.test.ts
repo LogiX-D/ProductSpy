@@ -1,6 +1,7 @@
 import { afterAll, describe, expect, it, vi } from 'vitest';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { dirname } from 'node:path';
 import { MockAIProvider } from '../ai/mock-provider';
 import { evaluateGeneration, type QualityCheck } from './evaluate';
 import { qualityOptions, qualitySamples } from './samples';
@@ -45,11 +46,16 @@ describe('repeatable AI quality guardrails: synthetic fixtures + local Mock only
     expect(checks.find((check) => check.name === '不冒充评论分析')?.passed).toBe(false);
   });
 });
-afterAll(async () => {
-  const output = resolve('.test-data/phase12-quality');
-  await mkdir(output, { recursive: true });
-  await writeFile(
-    resolve(output, 'report.json'),
+afterAll(() => {
+  const reportPath = resolve(
+    process.env.PRODUCTSPY_QUALITY_REPORT_PATH ?? '.test-data/phase12-quality/report.json',
+  );
+  const output = dirname(reportPath);
+  // Report publication is small and test-only. Complete it before the worker
+  // shutdown rather than leave report I/O competing in the async worker pool.
+  mkdirSync(output, { recursive: true });
+  writeFileSync(
+    reportPath,
     JSON.stringify(
       {
         schemaVersion: 1,

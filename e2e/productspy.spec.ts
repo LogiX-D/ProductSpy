@@ -8,8 +8,21 @@ import {
   type APIRequestContext,
 } from './test-fixtures';
 import { readFile } from 'node:fs/promises';
+import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
+import JSZip from '../apps/web/node_modules/jszip';
 import type { Product, ProductDraft } from '../packages/shared/src/types';
+import {
+  builtinTemplates,
+  templateDefinition,
+  type AITemplate,
+} from '../packages/shared/src/templates';
+import type { ContentPlan, ContentMetadata } from '../packages/shared/src/content';
+import { DEFAULT_ANALYSIS_OPTIONS } from '../packages/shared/src/schema';
+import type {
+  ComparisonPlan,
+  ComparisonGenerationResponse,
+} from '../packages/shared/src/comparison';
 import type { ExtensionResponse } from '../apps/extension/src/background/messages';
 
 const BASE = 'http://127.0.0.1:3000';
@@ -39,6 +52,21 @@ async function authenticateWeb(request: APIRequestContext) {
     delete: (url: string) => request.delete(url, { headers: WEB_HEADERS }),
   };
 }
+async function workspaceOperation<T>(
+  request: APIRequestContext,
+  path: string,
+  value?: unknown,
+  method = value === undefined ? 'GET' : 'POST',
+): Promise<T> {
+  const response = await request.fetch(`${BASE}${path}`, {
+    method,
+    headers: WEB_HEADERS,
+    ...(value === undefined ? {} : { data: value }),
+  });
+  const body = (await response.json()) as { data: T; error?: string };
+  expect(response.status(), body.error).toBe(200);
+  return body.data;
+}
 
 async function openPopup(context: BrowserContext, worker: Worker, amazon: Page): Promise<Page> {
   const id = new URL(worker.url()).hostname;
@@ -65,9 +93,13 @@ async function openPopup(context: BrowserContext, worker: Worker, amazon: Page):
   return popup;
 }
 
-test('production extension → capture → save → workspace → Mock AI → persistence and downloads', async ({
+test('production extension fixture → capture → save → workspace → Mock AI → template → content → export → persistence and recovery', async ({
   request,
 }, testInfo) => {
+  // This full chain now exercises 200+ actions across all core modules, followed
+  // by the existing offline queue and pairing recovery checks. Individual action
+  // limits remain unchanged; do not drop recovery assertions to fit the old total.
+  test.setTimeout(180000);
   const api = await authenticateWeb(request);
   await api.delete(`${BASE}/api/products/${encodeURIComponent(ID)}`);
   await api.delete(`${BASE}/api/products/${encodeURIComponent(SECOND_ID)}`);
@@ -83,6 +115,10 @@ test('production extension → capture → save → workspace → Mock AI → pe
     viewport: { width: 1360, height: 950 },
   });
   const pageErrors: string[] = [];
+  let integrationTemplate: AITemplate | undefined;
+  let integrationContent: ContentPlan | undefined;
+  let integrationComparison: ComparisonPlan | undefined;
+  let integrationPeerId: string | undefined;
   context.on('page', (page) => page.on('pageerror', (error) => pageErrors.push(error.message)));
   try {
     // MV3 startup can exceed the 15s action limit under Windows disk/build load.
@@ -235,6 +271,148 @@ test('production extension → capture → save → workspace → Mock AI → pe
     ).json()) as { data: Product };
     expect(analyzedBody.data.aiAnalysis?.hooks.length).toBeGreaterThanOrEqual(5);
     await workspace.screenshot({ path: testInfo.outputPath('analysis.png'), fullPage: true });
+
+    // This is a real production MV3/workspace integration driven by retained HTML and media
+    // fixtures, not evidence of access to a live Amazon page or real-model content quality.
+    const peer = await workspaceOperation<Product>(request, '/api/products', {
+      source: 'amazon',
+      sourceId: 'B019CMP001',
+      url: 'https://www.amazon.com/dp/B019CMP001',
+      title: 'Phase19 合成比较商品，非真实 Amazon 验收',
+      images: [],
+      videos: [],
+      bulletPoints: ['合成对比流程样本'],
+    });
+    integrationPeerId = peer.id;
+    integrationComparison = await workspaceOperation<ComparisonPlan>(request, '/api/comparisons', {
+      name: 'Phase19 MV3 来源对比（Fixture）',
+      productIds: [ID, peer.id],
+    });
+    const comparisonGeneration = await workspaceOperation<ComparisonGenerationResponse>(
+      request,
+      '/api/analyze-comparison',
+      {
+        comparisonId: integrationComparison.id,
+        expectedUpdatedAt: integrationComparison.updatedAt,
+        options: DEFAULT_ANALYSIS_OPTIONS,
+        requestId: randomUUID(),
+      },
+    );
+    integrationComparison = comparisonGeneration.plan;
+    expect(comparisonGeneration.metadata.mode).toBe('mock');
+    expect(comparisonGeneration.metadata.evidence.reviewTextAnalyzed).toBe(false);
+    integrationTemplate = await workspaceOperation<AITemplate>(request, '/api/templates', {
+      ...templateDefinition(builtinTemplates[0]),
+      name: 'Phase19 MV3 营销模板（Fixture）',
+    });
+    await workspace.getByRole('link', { name: '选择 AI 模板', exact: true }).click();
+    await expect(workspace).toHaveURL(new RegExp(`/templates\\?product=${encodeURIComponent(ID)}`));
+    const selectedTemplate = workspace
+      .locator('article')
+      .filter({ hasText: integrationTemplate.name });
+    await selectedTemplate.getByRole('link', { name: '用于创作', exact: true }).click();
+    await expect(workspace.getByLabel('创作商品')).toHaveValue(ID);
+    await expect(workspace.getByLabel('创作模板')).toHaveValue(integrationTemplate.id);
+    await expect(workspace.getByText(/已保存商品分析将作为带来源的既有推断引用/)).toBeVisible();
+    await workspace.getByLabel('引用竞品分析').selectOption(integrationComparison.id);
+    await workspace.getByLabel('方案名称').fill('Phase19 MV3 完整流程营销方案（Fixture）');
+    await workspace.getByRole('button', { name: '创建方案', exact: true }).click();
+    await expect(workspace.getByRole('button', { name: '生成内容', exact: true })).toBeVisible();
+    const beforeGeneration = await workspaceOperation<{ plans: ContentPlan[] }>(
+      request,
+      '/api/content-plans',
+    );
+    integrationContent = beforeGeneration.plans.find(
+      (item) => item.name === 'Phase19 MV3 完整流程营销方案（Fixture）',
+    );
+    expect(integrationContent).toBeTruthy();
+    expect(integrationContent!.productId).toBe(ID);
+    expect(integrationContent!.productSnapshot.sourceId).toBe(ASIN);
+    expect(integrationContent!.productSnapshot.aiAnalysis).toEqual(analyzedBody.data.aiAnalysis);
+    expect(integrationContent!.comparisonSource?.id).toBe(integrationComparison.id);
+    await workspace.getByRole('button', { name: '生成内容', exact: true }).click();
+    await expect(
+      workspace.getByRole('heading', { name: '当前采用内容', exact: true }),
+    ).toBeVisible();
+    integrationContent = await workspaceOperation<ContentPlan>(
+      request,
+      `/api/content-plans/${integrationContent!.id}`,
+    );
+    const version = integrationContent.versions.find(
+      (item) => item.id === integrationContent?.currentVersionId,
+    );
+    expect(integrationContent.versions).toHaveLength(1);
+    expect(version?.metadata?.mode).toBe('mock');
+    expect(version?.metadata?.evidence.reviewTextAnalyzed).toBe(false);
+    expect(version?.metadata?.productAnalysisReference).toMatchObject({
+      productId: ID,
+      asin: ASIN,
+      versionId: analyzedBody.data.analysisHistory!.at(-1)!.id,
+      mode: 'mock',
+      classification: 'saved-analysis-unverified',
+    });
+    await expect(
+      workspace
+        .getByRole('region', { name: '内容来源与更新状态' })
+        .getByText('商品分析', { exact: true }),
+    ).toBeVisible();
+    const contentArchiveDownload = workspace.waitForEvent('download');
+    await workspace.getByRole('button', { name: '导出内容包 ZIP', exact: true }).click();
+    const contentArchive = await contentArchiveDownload;
+    expect(contentArchive.suggestedFilename()).toMatch(new RegExp(`${ASIN}.*\\.zip$`));
+    const contentArchivePath = testInfo.outputPath(contentArchive.suggestedFilename());
+    await contentArchive.saveAs(contentArchivePath);
+    const contentZip = await JSZip.loadAsync(await readFile(contentArchivePath), {
+      checkCRC32: true,
+    });
+    const contentFiles = Object.keys(contentZip.files).filter(
+      (name) => !contentZip.files[name].dir,
+    );
+    expect(contentFiles.some((name) => name.endsWith('.md'))).toBe(true);
+    expect(contentFiles.some((name) => name.endsWith('.txt'))).toBe(true);
+    expect(contentFiles.some((name) => /\.(?:png|jpe?g|webp|mp4|webm|m3u8)$/i.test(name))).toBe(
+      false,
+    );
+    for (const name of contentFiles) expect(name).not.toMatch(/(?:^|\/)\.\.|[\\:]/);
+    const exportedJson = contentFiles.find((name) => name.endsWith('.json'));
+    expect(exportedJson).toBeTruthy();
+    const exported = JSON.parse(await contentZip.file(exportedJson!)!.async('string')) as {
+      product: Product;
+      metadata: ContentMetadata;
+      comparisonSource: ComparisonPlan;
+      template: AITemplate;
+      versionId: string;
+    };
+    expect(exported.product.id).toBe(ID);
+    expect(exported.product.sourceId).toBe(ASIN);
+    expect(exported.product.aiAnalysis).toEqual(analyzedBody.data.aiAnalysis);
+    expect(exported.template.id).toBe(integrationTemplate.id);
+    expect(exported.comparisonSource.id).toBe(integrationComparison.id);
+    expect(exported.versionId).toBe(integrationContent.currentVersionId);
+    expect(exported.metadata.productAnalysisReference).toEqual(
+      version!.metadata!.productAnalysisReference,
+    );
+    await workspace.reload();
+    await expect(
+      workspace.getByRole('heading', { name: '当前采用内容', exact: true }),
+    ).toBeVisible();
+    const reloadedContent = await workspaceOperation<ContentPlan>(
+      request,
+      `/api/content-plans/${integrationContent.id}`,
+    );
+    expect(reloadedContent).toEqual(integrationContent);
+    await workspace.screenshot({
+      path: testInfo.outputPath('integrated-content-fixture.png'),
+      fullPage: true,
+    });
+    // Remove the extra live product before the original offline/recovery and empty-library
+    // assertions. Its preserved comparison/content snapshots remain separate until cleanup.
+    await api.delete(`${BASE}/api/products/${encodeURIComponent(peer.id)}`);
+    integrationPeerId = undefined;
+    await workspace.goto(`${BASE}/products/${encodeURIComponent(ID)}?tab=analysis`);
+    await expect(workspace.locator('#analysis-summary')).toContainText(
+      analyzedBody.data.aiAnalysis!.summary,
+    );
 
     // Inject a transport failure only; the previously saved analysis must remain durable.
     const failedAnalysisMessage = '验收模拟：AI 服务暂时不可用';
@@ -411,6 +589,39 @@ test('production extension → capture → save → workspace → Mock AI → pe
     expect(pageErrors).toEqual([]);
   } finally {
     await context.close();
+    if (integrationContent) {
+      const current = await workspaceOperation<ContentPlan>(
+        request,
+        `/api/content-plans/${integrationContent.id}`,
+      );
+      await workspaceOperation(
+        request,
+        `/api/content-plans/${current.id}`,
+        { confirmed: true, expectedUpdatedAt: current.updatedAt },
+        'DELETE',
+      );
+    }
+    if (integrationComparison) {
+      const current = await workspaceOperation<ComparisonPlan>(
+        request,
+        `/api/comparisons/${integrationComparison.id}`,
+      );
+      await workspaceOperation(
+        request,
+        `/api/comparisons/${current.id}`,
+        { confirmed: true, expectedUpdatedAt: current.updatedAt },
+        'DELETE',
+      );
+    }
+    if (integrationTemplate)
+      await workspaceOperation(
+        request,
+        `/api/templates/${integrationTemplate.id}`,
+        { confirmed: true, expectedUpdatedAt: integrationTemplate.updatedAt },
+        'DELETE',
+      );
+    if (integrationPeerId)
+      await api.delete(`${BASE}/api/products/${encodeURIComponent(integrationPeerId)}`);
     await api.delete(`${BASE}/api/products/${encodeURIComponent(ID)}`);
     await api.delete(`${BASE}/api/products/${encodeURIComponent(SECOND_ID)}`);
   }

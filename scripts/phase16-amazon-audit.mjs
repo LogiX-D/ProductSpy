@@ -28,6 +28,7 @@ for (const directory of directories) {
   const report = JSON.parse(reportBytes.toString('utf8'));
   const audit = JSON.parse(auditBytes.toString('utf8'));
   batches.push({
+    phase: report.phase,
     extensionVersion: report.extensionVersion,
     browser: report.browser,
     startedAt: report.startedAt,
@@ -171,8 +172,13 @@ for (const directory of directories) {
 }
 
 const phase17 = batches.every((batch) => batch.extensionVersion === '0.6.0');
+const phase19 = batches.every((batch) => batch.phase === 19 && batch.extensionVersion === '0.8.0');
 const initial = rows
-  .filter((row) => row.kind === 'primary' && row.extensionVersion === (phase17 ? '0.6.0' : '0.5.1'))
+  .filter(
+    (row) =>
+      row.kind === 'primary' &&
+      row.extensionVersion === (phase19 ? '0.8.0' : phase17 ? '0.6.0' : '0.5.1'),
+  )
   .slice(0, 10);
 const countFields = (selected) =>
   Object.fromEntries(
@@ -188,7 +194,7 @@ const countFields = (selected) =>
   );
 const publicReport = {
   schemaVersion: 1,
-  phase: phase17 ? 17 : 16,
+  phase: phase19 ? 19 : phase17 ? 17 : 16,
   auditedAt: new Date().toISOString(),
   realPages: true,
   mock: false,

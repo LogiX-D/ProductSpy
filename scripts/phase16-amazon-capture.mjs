@@ -27,7 +27,7 @@ const selectedSamples = argument('--url')
   : samples;
 if (!selectedSamples.length) throw new Error('Choose one of the listed public sample URLs');
 const phase = Number(argument('--phase') ?? 16);
-if (![16, 17].includes(phase)) throw new Error('Supported evidence phases: 16, 17');
+if (![16, 17, 19].includes(phase)) throw new Error('Supported evidence phases: 16, 17, 19');
 const output = resolve(
   argument('--output') ??
     `.test-data/phase${phase}-amazon/${new Date().toISOString().replace(/[:.]/g, '-')}`,

@@ -1,0 +1,927 @@
+{
+  "schemaVersion": 1,
+  "phase": 19,
+  "auditedAt": "2026-10-13T16:32:13.498Z",
+  "realPages": true,
+  "mock": false,
+  "method": "Original production extension, activeTab granted by actual action, untouched direct Amazon pages and bounded settling. Independent live DOM values / retained HTML gallery data. Fresh isolated profiles; no accounts, proxy rotation, interception, CAPTCHA bypass, library saves or AI calls. Stop a host after the first challenge. Normal visible variant click, never force. All raw artifacts stay in ignored .test-data.",
+  "denominator": {
+    "initialPrimaryPages": 10,
+    "captured": 9,
+    "distinctCategories": ["electronics", "home", "beauty", "clothing", "kitchen", "books"],
+    "countryHosts": ["www.amazon.com", "www.amazon.de", "www.amazon.co.uk", "www.amazon.co.jp"],
+    "uniqueAsinsIncludingVariant": 7,
+    "additionalRepeatPagesAreNotNewProducts": true,
+    "initialFieldCounts": {
+      "asin": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "title": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "price": {
+        "pass": 7,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 2,
+        "requires-content-review": 0
+      },
+      "currency": {
+        "pass": 7,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 2,
+        "requires-content-review": 0
+      },
+      "brand": {
+        "pass": 8,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 1,
+        "requires-content-review": 0
+      },
+      "mainImage": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "gallery": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "highResolution": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "bulletPoints": {
+        "pass": 8,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 1,
+        "requires-content-review": 0
+      },
+      "rating": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "reviewCount": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "videos": {
+        "pass": 5,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 4,
+        "requires-content-review": 0
+      },
+      "mainImageHttp": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "description": {
+        "pass": 0,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 1,
+        "requires-content-review": 8
+      }
+    }
+  },
+  "boundaries": [
+    "Chrome for Testing automation does not replace stable Chrome / mouse / high-DPI / ordinary Windows manual acceptance.",
+    "Visible or structured merchant content comparison does not verify the merchant claims themselves.",
+    "Missing current buybox prices remain unknown; other variant / recommendation prices are not substituted.",
+    "Missing videos do not prove no video exists. HEAD status 200 is not playback or decoding success; video playback remains pending.",
+    "Each field verdict refers to its dated captured page; historical defects are not silently relabelled.",
+    "Actual duplicate library upsert / persistence belongs to isolated E2E and portable tests; this report repeats live extraction without saving to a library."
+  ],
+  "batches": [
+    {
+      "phase": 19,
+      "extensionVersion": "0.8.0",
+      "browser": {
+        "distribution": "Chrome for Testing (Playwright chromium channel)",
+        "version": "156.0.8078.4",
+        "headless": true,
+        "stableChromeManualAcceptance": false
+      },
+      "startedAt": "2026-10-13T16:25:36.712Z",
+      "completedAt": "2026-10-13T16:28:45.885Z",
+      "evidenceDirectory": ".test-data/phase19-amazon/acceptance",
+      "reportSha256": "16d6172f31f6ef5d286567741cc65102a6e548eebd3f666daaa0b5815a744ef6",
+      "auditSha256": "b4961071de09aabdcd381740526e3687203ea289fefe3f6514680fe33efd27e9",
+      "primaryAttempted": 10,
+      "primaryCaptured": 9,
+      "variantsCaptured": 1
+    }
+  ],
+  "rows": [
+    {
+      "extensionVersion": "0.8.0",
+      "category": "electronics",
+      "label": "Logitech C920",
+      "kind": "primary",
+      "url": "https://www.amazon.com/dp/B006JH8T3S",
+      "finalPublicProductUrl": "https://www.amazon.com/dp/B006JH8T3S",
+      "asin": "B006JH8T3S",
+      "title": "Logitech 罗技 HD Pro 网络摄像头 C920 宽屏视频通话和录制,1080p 摄像头,台式机或笔记本电脑网络摄像头",
+      "capturedAt": "2026-10-13T16:25:53.289Z",
+      "httpStatus": 200,
+      "outcome": "captured",
+      "challenge": false,
+      "price": "TWD2,162.76",
+      "currency": "TWD",
+      "brand": "Logitech",
+      "images": 10,
+      "videos": 2,
+      "bullets": 1,
+      "rating": 4.6,
+      "reviewCount": 32793,
+      "descriptionCharacters": 859,
+      "variationInteraction": {
+        "status": "not-performed"
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "pass",
+        "currency": "pass",
+        "brand": "pass",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "pass",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "pass",
+        "mainImageHttp": "pass",
+        "description": "requires-content-review"
+      },
+      "screenshotRecorded": false,
+      "evidenceHashes": {
+        "htmlSha256": "d6fb0b222bac669642f644cd21215aadb027a7a53defc908449024d12d850f66",
+        "screenshotSha256": null
+      },
+      "videoNetwork": [
+        {
+          "urlSha256": "795e5661a87e2a338c05bd8f46b956329d018f758ae8ac4398acacf461320cfe",
+          "publicHost": "m.media-amazon.com",
+          "status": 200,
+          "contentType": "video/mp4",
+          "error": null,
+          "playback": "not-performed"
+        },
+        {
+          "urlSha256": "609cd62693ea3ab1babd089e7202e6a1cfdfd6bd2c50a385d71b7674d41c4c97",
+          "publicHost": "m.media-amazon.com",
+          "status": 200,
+          "contentType": "application/vnd.apple.mpegurl",
+          "error": null,
+          "playback": "not-performed"
+        }
+      ],
+      "descriptionObservation": {
+        "visibleSources": 2,
+        "visibleTextSubstringMatch": true,
+        "contentClaimsVerified": false,
+        "status": "requires-content-review"
+      },
+      "mainImageHttp": "pass",
+      "videoPlayback": "pending-manual-or-decoder-acceptance"
+    },
+    {
+      "extensionVersion": "0.8.0",
+      "category": "home",
+      "label": "upsimples frame",
+      "kind": "primary",
+      "url": "https://www.amazon.com/dp/B0BQR2BQYZ",
+      "finalPublicProductUrl": "https://www.amazon.com/dp/B0BQR2BQYZ",
+      "asin": "B0BQR2BQYZ",
+      "title": "upsimples 27.94 x 35.56 厘米相框,墙壁装饰相框,黑色 1 件装",
+      "capturedAt": "2026-10-13T16:26:12.389Z",
+      "httpStatus": 200,
+      "outcome": "captured",
+      "challenge": false,
+      "price": "TWD202.29",
+      "currency": "TWD",
+      "brand": "upsimples",
+      "images": 8,
+      "videos": 2,
+      "bullets": 5,
+      "rating": 4.4,
+      "reviewCount": 44258,
+      "descriptionCharacters": 294,
+      "variationInteraction": {
+        "status": "not-performed"
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "pass",
+        "currency": "pass",
+        "brand": "pass",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "pass",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "pass",
+        "mainImageHttp": "pass",
+        "description": "requires-content-review"
+      },
+      "screenshotRecorded": true,
+      "evidenceHashes": {
+        "htmlSha256": "af3c6a1dbcbea6e0262ac225fee90195d46d784789552d2634cf95b46223cbbb",
+        "screenshotSha256": "885158397cd7293f2b0f0401e32308914b82589f387b6e0a9c562506bb8efb12"
+      },
+      "videoNetwork": [
+        {
+          "urlSha256": "e7ed4eea9ceec35cd6f7ec770b85ee101b655a7eb54967573c1ffccc9ff401d4",
+          "publicHost": "m.media-amazon.com",
+          "status": 200,
+          "contentType": "video/mp4",
+          "error": null,
+          "playback": "not-performed"
+        },
+        {
+          "urlSha256": "20aa60afd6663da6f1ab38c234bdb6dddcc6cf4c89e5c0af25495134416e59c7",
+          "publicHost": "m.media-amazon.com",
+          "status": 200,
+          "contentType": "application/vnd.apple.mpegurl",
+          "error": null,
+          "playback": "not-performed"
+        }
+      ],
+      "descriptionObservation": {
+        "visibleSources": 2,
+        "visibleTextSubstringMatch": true,
+        "contentClaimsVerified": false,
+        "status": "requires-content-review"
+      },
+      "mainImageHttp": "pass",
+      "videoPlayback": "pending-manual-or-decoder-acceptance"
+    },
+    {
+      "extensionVersion": "0.8.0",
+      "category": "beauty",
+      "label": "CeraVe moisturizer",
+      "kind": "primary",
+      "url": "https://www.amazon.com/dp/B00TTD9BRC",
+      "finalPublicProductUrl": "https://www.amazon.com/dp/B00TTD9BRC",
+      "asin": "B00TTD9BRC",
+      "title": "CeraVe 保湿霜 16 盎司（约 453.59 克）日常面部和身体保湿霜，适用于干性肌肤, 19 盎司",
+      "capturedAt": "2026-10-13T16:26:31.941Z",
+      "httpStatus": 200,
+      "outcome": "captured",
+      "challenge": false,
+      "price": "TWD610.72",
+      "currency": "TWD",
+      "brand": "CeraVe",
+      "images": 12,
+      "videos": 2,
+      "bullets": 5,
+      "rating": 4.7,
+      "reviewCount": 148939,
+      "descriptionCharacters": 293,
+      "variationInteraction": {
+        "status": "not-performed"
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "pass",
+        "currency": "pass",
+        "brand": "pass",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "pass",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "pass",
+        "mainImageHttp": "pass",
+        "description": "requires-content-review"
+      },
+      "screenshotRecorded": true,
+      "evidenceHashes": {
+        "htmlSha256": "abf2cefb63afcd06da69c907b29be466ac4107f675775b589051d1c5b574c8d9",
+        "screenshotSha256": "333f8b61611b46aaeb9b9aa29944d6bbfe89cae14ad8322ec8063fc0504750e7"
+      },
+      "videoNetwork": [
+        {
+          "urlSha256": "8f91bda774065a8cdc452e916f20aed9b83fe069404a74ef19883a50b2f246d6",
+          "publicHost": "m.media-amazon.com",
+          "status": 200,
+          "contentType": "video/mp4",
+          "error": null,
+          "playback": "not-performed"
+        },
+        {
+          "urlSha256": "2f7c2b412fa896d95c74ee78675d43eeff9e9f35249e8a51afa0524046b02401",
+          "publicHost": "m.media-amazon.com",
+          "status": 200,
+          "contentType": "application/vnd.apple.mpegurl",
+          "error": null,
+          "playback": "not-performed"
+        }
+      ],
+      "descriptionObservation": {
+        "visibleSources": 3,
+        "visibleTextSubstringMatch": true,
+        "contentClaimsVerified": false,
+        "status": "requires-content-review"
+      },
+      "mainImageHttp": "pass",
+      "videoPlayback": "pending-manual-or-decoder-acceptance"
+    },
+    {
+      "extensionVersion": "0.8.0",
+      "category": "clothing",
+      "label": "Hanes hoodie",
+      "kind": "primary",
+      "url": "https://www.amazon.com/dp/B00JUM2V4W",
+      "finalPublicProductUrl": null,
+      "asin": null,
+      "title": null,
+      "capturedAt": "2026-10-13T16:27:10.985Z",
+      "httpStatus": null,
+      "outcome": "navigation-or-capture-error",
+      "challenge": null,
+      "price": null,
+      "currency": null,
+      "brand": null,
+      "images": null,
+      "videos": null,
+      "bullets": null,
+      "rating": null,
+      "reviewCount": null,
+      "descriptionCharacters": 0,
+      "variationInteraction": {
+        "status": "not-performed"
+      },
+      "repeatCapture": null,
+      "fields": {},
+      "screenshotRecorded": false,
+      "evidenceHashes": {
+        "htmlSha256": null,
+        "screenshotSha256": null
+      },
+      "videoNetwork": [],
+      "failureReason": "Direct navigation or capture failed within bounded timeout; no protection bypass or retry"
+    },
+    {
+      "extensionVersion": "0.8.0",
+      "category": "kitchen",
+      "label": "OXO cookie scoop",
+      "kind": "primary",
+      "url": "https://www.amazon.com/dp/B0000CCY1E",
+      "finalPublicProductUrl": "https://www.amazon.com/dp/B0000CCY1E",
+      "asin": "B0000CCY1E",
+      "title": "OXO Good Grips 小号不锈钢饼干勺 - 1 汤匙",
+      "capturedAt": "2026-10-13T16:27:24.056Z",
+      "httpStatus": 200,
+      "outcome": "captured",
+      "challenge": false,
+      "price": "TWD577.27",
+      "currency": "TWD",
+      "brand": "OXO",
+      "images": 9,
+      "videos": 1,
+      "bullets": 5,
+      "rating": 4.4,
+      "reviewCount": 3518,
+      "descriptionCharacters": 221,
+      "variationInteraction": {
+        "status": "not-performed"
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "pass",
+        "currency": "pass",
+        "brand": "pass",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "pass",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "pass",
+        "mainImageHttp": "pass",
+        "description": "requires-content-review"
+      },
+      "screenshotRecorded": true,
+      "evidenceHashes": {
+        "htmlSha256": "c4035662dd472ff3d341b6c09389d3ed05b8c879bf17633ab0bbb1bcceba69ea",
+        "screenshotSha256": "fc62e50a6c8c343d0c299f8f04433e266bc3fd40da041cc8f46aac2a5c4f4d67"
+      },
+      "videoNetwork": [
+        {
+          "urlSha256": "f87199dd0d057c55538cb5e3ebe7fa8854f8afeedc3e1a729e48378c8fb8c850",
+          "publicHost": "m.media-amazon.com",
+          "status": 200,
+          "contentType": "video/mp4",
+          "error": null,
+          "playback": "not-performed"
+        }
+      ],
+      "descriptionObservation": {
+        "visibleSources": 2,
+        "visibleTextSubstringMatch": true,
+        "contentClaimsVerified": false,
+        "status": "requires-content-review"
+      },
+      "mainImageHttp": "pass",
+      "videoPlayback": "pending-manual-or-decoder-acceptance"
+    },
+    {
+      "extensionVersion": "0.8.0",
+      "category": "books",
+      "label": "Atomic Habits",
+      "kind": "primary",
+      "url": "https://www.amazon.com/dp/0735211299",
+      "finalPublicProductUrl": "https://www.amazon.com/dp/0735211299",
+      "asin": "0735211299",
+      "title": "Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones",
+      "capturedAt": "2026-10-13T16:27:33.029Z",
+      "httpStatus": 200,
+      "outcome": "captured",
+      "challenge": false,
+      "price": "TWD 607.18",
+      "currency": "TWD",
+      "brand": null,
+      "images": 1,
+      "videos": 2,
+      "bullets": 0,
+      "rating": 4.8,
+      "reviewCount": 150146,
+      "descriptionCharacters": 2002,
+      "variationInteraction": {
+        "status": "not-performed"
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "pass",
+        "currency": "pass",
+        "brand": "not-available",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "not-available",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "pass",
+        "mainImageHttp": "pass",
+        "description": "requires-content-review"
+      },
+      "screenshotRecorded": true,
+      "evidenceHashes": {
+        "htmlSha256": "4d8f89e43392379f4129ab00f0c63782abe2dc3668d3d0ae92db0d75d937d995",
+        "screenshotSha256": "cae9c9cb65997b876191895ff4dfea41a4ec51e15984db531cc8367497eb106f"
+      },
+      "videoNetwork": [
+        {
+          "urlSha256": "bc8de825c6f4e96d4e7976908f2d2d3ef12bc3bf0bbc99e54ab85b0c7f2d94f7",
+          "publicHost": "m.media-amazon.com",
+          "status": 200,
+          "contentType": "video/mp4",
+          "error": null,
+          "playback": "not-performed"
+        },
+        {
+          "urlSha256": "c5ec91b501f68dd146b434dd52388b88864cb6b43c44f84b5ef0322b1bdba339",
+          "publicHost": "m.media-amazon.com",
+          "status": 200,
+          "contentType": "application/vnd.apple.mpegurl",
+          "error": null,
+          "playback": "not-performed"
+        }
+      ],
+      "brandObservation": "Visible author / format byline is not a product brand; no explicit brand was observed",
+      "descriptionObservation": {
+        "visibleSources": 1,
+        "visibleTextSubstringMatch": true,
+        "contentClaimsVerified": false,
+        "status": "requires-content-review"
+      },
+      "mainImageHttp": "pass",
+      "videoPlayback": "pending-manual-or-decoder-acceptance"
+    },
+    {
+      "extensionVersion": "0.8.0",
+      "category": "clothing",
+      "label": "Crocs Classic variant",
+      "kind": "primary",
+      "url": "https://www.amazon.com/dp/B0014C5S7S",
+      "finalPublicProductUrl": "https://www.amazon.com/dp/B0014C5S7S",
+      "asin": "B0014C5S7S",
+      "title": "Crocs 卡骆驰中性款成人经典洞洞鞋,男女洞洞鞋",
+      "capturedAt": "2026-10-13T16:27:41.546Z",
+      "httpStatus": 200,
+      "outcome": "captured",
+      "challenge": false,
+      "price": null,
+      "currency": null,
+      "brand": "Crocs",
+      "images": 13,
+      "videos": 0,
+      "bullets": 5,
+      "rating": 4.8,
+      "reviewCount": 489112,
+      "descriptionCharacters": 384,
+      "variationInteraction": {
+        "status": "captured",
+        "originalAsin": "B0014C5S7S",
+        "tileAsin": "B0FPSBG9CY",
+        "tileId": "",
+        "activeAsin": "B0FPSBG9CY",
+        "capturedAsinMatches": true,
+        "tileAsinMatches": true,
+        "imageChanged": true,
+        "priceChanged": true
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "not-available",
+        "currency": "not-available",
+        "brand": "pass",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "pass",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "not-available",
+        "mainImageHttp": "pass",
+        "description": "requires-content-review"
+      },
+      "screenshotRecorded": true,
+      "evidenceHashes": {
+        "htmlSha256": "e258aad4c4a67d8376b082d670ac0ea9dc593cf04affd35caf722019e0f57232",
+        "screenshotSha256": "36b73b71ee71a1045737d0b4a74eae2f2a1e79c5505da05e1871d9d0bd41f7ae"
+      },
+      "videoNetwork": [],
+      "descriptionObservation": {
+        "visibleSources": 3,
+        "visibleTextSubstringMatch": true,
+        "contentClaimsVerified": false,
+        "status": "requires-content-review"
+      },
+      "mainImageHttp": "pass",
+      "videoPlayback": "not-available"
+    },
+    {
+      "extensionVersion": "0.8.0",
+      "category": "clothing",
+      "label": "Crocs Classic variant visible variant",
+      "kind": "visible-variant",
+      "url": "https://www.amazon.com/dp/B0FPSBG9CY",
+      "finalPublicProductUrl": "https://www.amazon.com/dp/B0FPSBG9CY",
+      "asin": "B0FPSBG9CY",
+      "title": "Crocs 卡骆驰中性款成人经典洞洞鞋,男女洞洞鞋",
+      "capturedAt": "2026-10-13T16:27:50.390Z",
+      "httpStatus": null,
+      "outcome": "captured",
+      "challenge": false,
+      "price": "TWD1,607.68",
+      "currency": "TWD",
+      "brand": "Crocs",
+      "images": 7,
+      "videos": 0,
+      "bullets": 5,
+      "rating": 4.8,
+      "reviewCount": 489112,
+      "descriptionCharacters": 384,
+      "variationInteraction": {
+        "status": "not-performed"
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "pass",
+        "currency": "pass",
+        "brand": "pass",
+        "mainImage": "pass",
+        "gallery": "unverified",
+        "highResolution": "unverified",
+        "bulletPoints": "pass",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "not-available",
+        "mainImageHttp": "pass",
+        "description": "requires-content-review"
+      },
+      "screenshotRecorded": true,
+      "evidenceHashes": {
+        "htmlSha256": "52f0fe66c26c29055b5fe090efb4660d455e5ae8c339ec5e443ab9382caa4a8d",
+        "screenshotSha256": "24bbe3d7e2898c3059481ef4f8b1f1574c099d0ec94c930ad859c0a90a47e09e"
+      },
+      "videoNetwork": [],
+      "descriptionObservation": {
+        "visibleSources": 1,
+        "visibleTextSubstringMatch": true,
+        "contentClaimsVerified": false,
+        "status": "requires-content-review"
+      },
+      "mainImageHttp": "pass",
+      "videoPlayback": "not-available"
+    },
+    {
+      "extensionVersion": "0.8.0",
+      "category": "electronics",
+      "label": "Logitech DE",
+      "kind": "primary",
+      "url": "https://www.amazon.de/dp/B006JH8T3S",
+      "finalPublicProductUrl": "https://www.amazon.de/dp/B006JH8T3S",
+      "asin": "B006JH8T3S",
+      "title": "Logitech HD Pro Webcam Schwarz schwarz",
+      "capturedAt": "2026-10-13T16:28:02.955Z",
+      "httpStatus": 200,
+      "outcome": "captured",
+      "challenge": false,
+      "price": null,
+      "currency": null,
+      "brand": "Logitech",
+      "images": 10,
+      "videos": 0,
+      "bullets": 5,
+      "rating": 4.7,
+      "reviewCount": 31941,
+      "descriptionCharacters": 222,
+      "variationInteraction": {
+        "status": "not-performed"
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "not-available",
+        "currency": "not-available",
+        "brand": "pass",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "pass",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "not-available",
+        "mainImageHttp": "pass",
+        "description": "requires-content-review"
+      },
+      "screenshotRecorded": true,
+      "evidenceHashes": {
+        "htmlSha256": "803f2758db443dc0f7ad130d787a6348bec1d1a41c9837a56b42e5be421ab510",
+        "screenshotSha256": "6fb61894d25d0a1d724ecffe53c0198903a30c94c256a9dee029c7e38b112d75"
+      },
+      "videoNetwork": [],
+      "descriptionObservation": {
+        "visibleSources": 1,
+        "visibleTextSubstringMatch": true,
+        "contentClaimsVerified": false,
+        "status": "requires-content-review"
+      },
+      "mainImageHttp": "pass",
+      "videoPlayback": "not-available"
+    },
+    {
+      "extensionVersion": "0.8.0",
+      "category": "kitchen",
+      "label": "OXO UK",
+      "kind": "primary",
+      "url": "https://www.amazon.co.uk/dp/B0000CCY1E",
+      "finalPublicProductUrl": "https://www.amazon.co.uk/dp/B0000CCY1E",
+      "asin": "B0000CCY1E",
+      "title": "OXO Good Grips Small Cookie Scoop",
+      "capturedAt": "2026-10-13T16:28:16.822Z",
+      "httpStatus": 200,
+      "outcome": "captured",
+      "challenge": false,
+      "price": "TWD1,091.81",
+      "currency": "TWD",
+      "brand": "OXO",
+      "images": 9,
+      "videos": 0,
+      "bullets": 5,
+      "rating": 4.3,
+      "reviewCount": 14655,
+      "descriptionCharacters": 0,
+      "variationInteraction": {
+        "status": "not-performed"
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "pass",
+        "currency": "pass",
+        "brand": "pass",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "pass",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "not-available",
+        "mainImageHttp": "pass",
+        "description": "not-available"
+      },
+      "screenshotRecorded": true,
+      "evidenceHashes": {
+        "htmlSha256": "b5ed705f1b636082969d7082c3ce97351f19e7f359db9f978f7d6eca432a8dce",
+        "screenshotSha256": "bbd5c13fd96fe872ac0f7017fd6b097c6c2358b68bffe5a260fe76e48455084e"
+      },
+      "videoNetwork": [],
+      "descriptionObservation": {
+        "visibleSources": 0,
+        "visibleTextSubstringMatch": null,
+        "contentClaimsVerified": false,
+        "status": "not-available"
+      },
+      "mainImageHttp": "pass",
+      "videoPlayback": "not-available"
+    },
+    {
+      "extensionVersion": "0.8.0",
+      "category": "electronics",
+      "label": "Logitech JP",
+      "kind": "primary",
+      "url": "https://www.amazon.co.jp/dp/B006JH8T3S",
+      "finalPublicProductUrl": "https://www.amazon.co.jp/dp/B006JH8T3S",
+      "asin": "B006JH8T3S",
+      "title": "LOGICOOL HD Pro 网络摄像头 C920",
+      "capturedAt": "2026-10-13T16:28:35.851Z",
+      "httpStatus": 200,
+      "outcome": "captured",
+      "challenge": false,
+      "price": "TWD2,735.12",
+      "currency": "TWD",
+      "brand": "Logitech",
+      "images": 10,
+      "videos": 0,
+      "bullets": 3,
+      "rating": 4.5,
+      "reviewCount": 32075,
+      "descriptionCharacters": 146,
+      "variationInteraction": {
+        "status": "not-performed"
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "pass",
+        "currency": "pass",
+        "brand": "pass",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "pass",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "not-available",
+        "mainImageHttp": "pass",
+        "description": "requires-content-review"
+      },
+      "screenshotRecorded": true,
+      "evidenceHashes": {
+        "htmlSha256": "a7c63799cbe0b7cf635a22520a3cac247bd235d2d9c8790a2a82effd4d6e71ce",
+        "screenshotSha256": "a45fc9d7aad527eaa41bcd1691b5798dd0acb0231293766bb20b535616a96377"
+      },
+      "videoNetwork": [],
+      "descriptionObservation": {
+        "visibleSources": 2,
+        "visibleTextSubstringMatch": true,
+        "contentClaimsVerified": false,
+        "status": "requires-content-review"
+      },
+      "mainImageHttp": "pass",
+      "videoPlayback": "not-available"
+    }
+  ]
+}

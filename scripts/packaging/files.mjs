@@ -8,7 +8,7 @@ const run = promisify(execFile);
 export const workspace = resolve(import.meta.dirname, '../..');
 export const artifactRoot = resolve(workspace, 'artifacts');
 const privateName =
-  /^(?:\.env(?:\..*)?|\.data|\.test-data|\.bridge-.*|products\.json|comparisons\.json|templates\.json|content-plans\.json|media-downloads\.json|analysis-usage\.json|settings\.json|ai-settings\.protected\.json|launcher-state\.json|stop-request\.json|logs|profile)$/i;
+  /^(?:\.env(?:\..*)?|\.data|\.test-data|\.workspace-restore|\.bridge-.*|products\.json|comparisons\.json|templates\.json|content-plans\.json|media-downloads\.json|analysis-usage\.json|settings\.json|ai-settings\.protected\.json|launcher-state\.json|stop-request\.json|logs|profile)$/i;
 
 export function artifactPath(name) {
   const target = resolve(artifactRoot, name);

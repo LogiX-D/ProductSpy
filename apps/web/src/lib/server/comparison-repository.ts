@@ -1,9 +1,11 @@
 import { publishAtomicFile } from './atomic-file';
+import { withBusinessOperation } from './business-lock';
 import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, readFile, stat, unlink, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import {
   MAX_COMPARISON_BACKUP_BYTES,
+  cleanupHistoryVersions,
   MAX_COMPARISON_PLANS,
   MAX_COMPARISON_VERSIONS,
   comparisonAnalysisSchema,
@@ -69,7 +71,9 @@ export class LocalComparisonRepository {
   }
   private transaction<T>(operation: () => Promise<T>): Promise<T> {
     const prior = registry.queues.get(this.filePath) ?? Promise.resolve();
-    const result = prior.catch(() => undefined).then(operation);
+    const result = prior
+      .catch(() => undefined)
+      .then(() => withBusinessOperation(this.directory, operation));
     registry.queues.set(
       this.filePath,
       result.catch(() => undefined),
@@ -194,7 +198,7 @@ export class LocalComparisonRepository {
       if (preservedHistory(plan).length >= MAX_COMPARISON_VERSIONS)
         throw new AppError(
           409,
-          '此方案已有 50 个分析版本，请先导出历史；不会删除旧内容或发起新的 AI 请求。',
+          '此方案已有 50 个分析版本，请在历史容量管理中先归档，再确认清理旧版本；不会自动删除旧内容或发起新的 AI 请求。',
         );
     });
   }
@@ -213,7 +217,10 @@ export class LocalComparisonRepository {
       const plan = this.required(plans, id, expectedUpdatedAt);
       const history = preservedHistory(plan);
       if (history.length >= MAX_COMPARISON_VERSIONS)
-        throw new AppError(409, '此方案已有 50 个分析版本。请先导出历史；现有内容未改动。');
+        throw new AppError(
+          409,
+          '此方案已有 50 个分析版本。请在历史容量管理中先归档，再确认清理旧版本；现有内容未改动。',
+        );
       const parsed = comparisonAnalysisSchema.safeParse(analysis);
       if (!parsed.success) throw new AppError(400, '对比分析内容缺少字段，请填写全部分区后保存。');
       const metadata =
@@ -260,6 +267,41 @@ export class LocalComparisonRepository {
       const plans = await this.read();
       this.required(plans, id, expectedUpdatedAt);
       await this.write(plans.filter((p) => p.id !== id));
+    });
+  }
+  cleanupHistory(
+    id: string,
+    expectedUpdatedAt: string,
+    versionIds: string[],
+    archiveSha256: string,
+    expectedRevision: string,
+  ): Promise<ComparisonPlan> {
+    return this.transaction(async () => {
+      const plans = await this.read();
+      const plan = this.required(plans, id, expectedUpdatedAt);
+      if (createHash('sha256').update(JSON.stringify(plan)).digest('hex') !== expectedRevision)
+        throw new AppError(409, '对比归档内容已变化，请重新导出；没有清理任何版本。');
+      const history = plan.analysisHistory ?? [];
+      const current = [...history]
+        .reverse()
+        .find(
+          (version) =>
+            JSON.stringify(version.analysis) === JSON.stringify(plan.analysis) &&
+            JSON.stringify(version.metadata) === JSON.stringify(plan.analysisMetadata),
+        );
+      try {
+        plan.analysisHistory = cleanupHistoryVersions(
+          history,
+          current?.id,
+          versionIds,
+          archiveSha256,
+        );
+      } catch (error) {
+        throw new AppError(400, error instanceof Error ? error.message : '历史清理无效');
+      }
+      plan.updatedAt = updatedAt(plan.updatedAt);
+      await this.write(plans);
+      return plan;
     });
   }
   backup(): Promise<{

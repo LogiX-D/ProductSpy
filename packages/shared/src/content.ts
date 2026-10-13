@@ -12,6 +12,8 @@ import {
   type ContentField,
 } from './templates';
 import { comparisonPlanSchema, comparisonEvidenceSchema } from './comparison';
+import { buildProductMediaAssets, identifyMedia, canonicalMediaUrl } from './media';
+import type { Product } from './types';
 
 export { contentOptionsSchema } from './schema';
 export type ContentOptions = z.infer<typeof contentOptionsSchema>;
@@ -21,6 +23,53 @@ export const MAX_CONTENT_VERSIONS = 50;
 export const MAX_CONTENT_BACKUP_BYTES = 25 * 1024 * 1024;
 const item = z.string().trim().min(1).max(12000);
 const list = z.array(item).min(1).max(30);
+export const contentSelectedMediaSchema = z
+  .array(
+    z
+      .object({
+        kind: z.enum(['image', 'video']),
+        url: z.string().url().max(4000),
+      })
+      .strict(),
+  )
+  .max(50)
+  .refine(
+    (selection) =>
+      new Set(selection.map((asset) => `${asset.kind}:${canonicalMediaUrl(asset.url)}`)).size ===
+      selection.length,
+    '素材引用不能重复',
+  );
+export type ContentSelectedMedia = z.infer<typeof contentSelectedMediaSchema>;
+export function contentMediaChoices(product: Product): ContentSelectedMedia {
+  const choices = buildProductMediaAssets(product)
+    .flatMap((asset) => [
+      { kind: asset.kind, url: asset.url },
+      ...asset.variants.map((variant) => ({ kind: asset.kind, url: variant.url })),
+    ])
+    .filter((asset) => identifyMedia(asset.url, asset.kind).downloadable);
+  return choices.filter(
+    (asset, index) =>
+      choices.findIndex(
+        (value) =>
+          value.kind === asset.kind &&
+          canonicalMediaUrl(value.url) === canonicalMediaUrl(asset.url),
+      ) === index,
+  );
+}
+/** One visible asset per captured media identity; keep every genuine quality source. */
+export function contentMediaChoiceGroups(product: Product) {
+  const allowed = new Set(
+    contentMediaChoices(product).map((item) => `${item.kind}:${canonicalMediaUrl(item.url)}`),
+  );
+  return buildProductMediaAssets(product)
+    .map((asset) => ({
+      ...asset,
+      variants: asset.variants.filter((variant) =>
+        allowed.has(`${asset.kind}:${canonicalMediaUrl(variant.url)}`),
+      ),
+    }))
+    .filter((asset) => asset.variants.length > 0);
+}
 export const contentOutputSchema = z
   .object({
     sellingCopy: list,
@@ -59,10 +108,22 @@ export const contentMetadataSchema = z
     sourceUpdatedAt: z.string().datetime(),
     templateId: z.string().min(1).max(100),
     templateVersionId: z.string().min(1).max(100).optional(),
+    productAnalysisReference: z
+      .object({
+        productId: z.string().min(1).max(100),
+        asin: z.string().regex(/^[A-Z0-9]{10}$/),
+        versionId: z.string().uuid().optional(),
+        mode: z.enum(['mock', 'real', 'legacy', 'edited']),
+        sourceUpdatedAt: z.string().datetime(),
+        classification: z.literal('saved-analysis-unverified'),
+      })
+      .strict()
+      .optional(),
     evidence: comparisonEvidenceSchema,
     usage: analysisUsageSchema.optional(),
     requestId: z.string().uuid().optional(),
     selectedFields: z.array(z.enum(CONTENT_FIELDS)).min(1).max(9).optional(),
+    selectedMedia: contentSelectedMediaSchema.optional(),
     textDurationEstimate: textDurationEstimateSchema,
   })
   .strict();
@@ -76,6 +137,11 @@ export const contentVersionSchema = z
     metadata: contentMetadataSchema.optional(),
     restoredFrom: z.string().uuid().optional(),
     parentVersionId: z.string().uuid().optional(),
+    archivedParentVersionId: z.string().uuid().optional(),
+    archivedParentSha256: z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .optional(),
   })
   .strict();
 export type ContentVersion = z.infer<typeof contentVersionSchema>;
@@ -87,6 +153,7 @@ export const contentPlanSchema = z
     productSnapshot: productSchema.strict(),
     templateSnapshot: aiTemplateSchema,
     comparisonSource: comparisonPlanSchema.optional(),
+    selectedMedia: contentSelectedMediaSchema.optional(),
     options: contentOptionsSchema,
     status: z.enum(['draft', 'needs-edit', 'completed']),
     favorite: z.boolean(),
@@ -106,6 +173,24 @@ export const contentPlanSchema = z
       context.addIssue({ code: 'custom', message: '已有内容历史时必须选择当前版本' });
     if (plan.productSnapshot.id !== plan.productId)
       context.addIssue({ code: 'custom', message: '商品来源编号不一致' });
+    const allowedMedia = new Set(
+      contentMediaChoices(plan.productSnapshot).map(
+        (asset) => `${asset.kind}:${canonicalMediaUrl(asset.url)}`,
+      ),
+    );
+    for (const selection of [
+      plan.selectedMedia,
+      ...plan.versions.map((version) => version.metadata?.selectedMedia),
+    ])
+      if (
+        selection?.some(
+          (asset) => !allowedMedia.has(`${asset.kind}:${canonicalMediaUrl(asset.url)}`),
+        )
+      )
+        context.addIssue({
+          code: 'custom',
+          message: '只能选择此商品快照中来源匹配且域名安全的图片或 MP4 / WebM 视频',
+        });
     if (
       plan.comparisonSource &&
       (!plan.comparisonSource.analysis ||
@@ -123,10 +208,31 @@ export const contentPlanSchema = z
     const seen = new Set<string>();
     const templateVersions = new Set(plan.templateSnapshot.versions.map((version) => version.id));
     for (const version of plan.versions) {
+      if (
+        Boolean(version.archivedParentVersionId) !== Boolean(version.archivedParentSha256) ||
+        (version.archivedParentVersionId && version.parentVersionId)
+      )
+        context.addIssue({
+          code: 'custom',
+          message: '已归档父版本编号和摘要必须成对保存，且不能同时保留父版本引用',
+        });
       if (version.parentVersionId && !seen.has(version.parentVersionId))
         context.addIssue({ code: 'custom', message: '内容父版本必须是本方案先前保存的版本' });
       if (version.restoredFrom && !seen.has(version.restoredFrom))
         context.addIssue({ code: 'custom', message: '恢复来源必须是本方案先前保存的版本' });
+      const reference = version.metadata?.productAnalysisReference;
+      if (
+        reference &&
+        (!plan.productSnapshot.aiAnalysis ||
+          reference.productId !== plan.productId ||
+          reference.asin !== plan.productSnapshot.sourceId ||
+          (reference.versionId &&
+            !plan.productSnapshot.analysisHistory?.some((item) => item.id === reference.versionId)))
+      )
+        context.addIssue({
+          code: 'custom',
+          message: '商品分析引用与保存的商品身份或分析版本不一致',
+        });
       if (
         version.metadata &&
         (version.metadata.templateId !== plan.templateSnapshot.id ||
@@ -172,6 +278,7 @@ export interface ContentGenerationResponse {
   requestId: string;
   replayed: boolean;
 }
+export * from './content-references';
 export function currentContentVersion(plan: ContentPlan): ContentVersion | undefined {
   return plan.versions.find((version) => version.id === plan.currentVersionId);
 }
@@ -261,6 +368,19 @@ export function exportContentMarkdown(
       '',
       `引用对比：${safeText(plan.comparisonSource.name)} · ${plan.comparisonSource.id} · ${plan.comparisonSource.updatedAt}（已保存快照，推断仍需核实）`,
     );
+  const selectedMedia = version
+    ? (version.metadata?.selectedMedia ?? [])
+    : (plan.selectedMedia ?? []);
+  lines.push(
+    '',
+    '## 引用素材（仅来源记录，未复制或上传媒体）',
+    '',
+    ...selectedMedia.map(
+      (asset, index) =>
+        `${index + 1}. ${asset.kind === 'image' ? '图片' : '视频'} · ASIN ${plan.productSnapshot.sourceId} · ${safeText(asset.url)}`,
+    ),
+  );
+  if (!selectedMedia.length) lines.push('该内容版本没有已记录的素材选择。');
   if (version?.metadata)
     for (const [key, label] of [
       ['facts', '页面采集事实'],
@@ -307,6 +427,7 @@ export function exportContentJson(
         ? Object.fromEntries(fields.map((field) => [field, version.output[field]]))
         : {},
       metadata: version?.metadata,
+      selectedMedia: version ? (version.metadata?.selectedMedia ?? []) : (plan.selectedMedia ?? []),
       options: version?.metadata?.options ?? plan.options,
       disclaimer: '历史页面资料；商家宣称与 AI 推断需人工验证。未上传或复制媒体，未分析评论正文。',
     },

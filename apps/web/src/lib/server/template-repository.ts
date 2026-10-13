@@ -3,6 +3,7 @@ import { mkdir, readFile, stat, unlink, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import {
   MAX_TEMPLATES,
+  cleanupHistoryVersions,
   MAX_TEMPLATE_BACKUP_BYTES,
   MAX_TEMPLATE_VERSIONS,
   aiTemplateSchema,
@@ -16,6 +17,7 @@ import {
   type TemplateDefinition,
 } from '@productspy/shared';
 import { publishAtomicFile } from './atomic-file';
+import { withBusinessOperation } from './business-lock';
 import { AppError } from './errors';
 import { dataDirectory } from './product-repository';
 
@@ -47,7 +49,9 @@ export class LocalTemplateRepository {
   }
   private transaction<T>(operation: () => Promise<T>): Promise<T> {
     const previous = registry.queues.get(this.filePath) ?? Promise.resolve();
-    const result = previous.catch(() => undefined).then(operation);
+    const result = previous
+      .catch(() => undefined)
+      .then(() => withBusinessOperation(this.directory, operation));
     registry.queues.set(
       this.filePath,
       result.catch(() => undefined),
@@ -162,7 +166,7 @@ export class LocalTemplateRepository {
       if (current.versions.length >= MAX_TEMPLATE_VERSIONS)
         throw new AppError(
           409,
-          '此模板已有 50 个历史版本。请先导出历史并复制为新模板；不会删除旧版本。',
+          '此模板已有 50 个历史版本。请在历史容量管理中先归档，再确认清理旧版本；不会自动删除已有编辑。',
         );
       const time = nextTime(current.updatedAt);
       const updated = aiTemplateSchema.parse({
@@ -191,6 +195,33 @@ export class LocalTemplateRepository {
       const templates = await this.read();
       this.required(templates, id, expectedUpdatedAt);
       await this.write(templates.filter((template) => template.id !== id));
+    });
+  }
+  cleanupHistory(
+    id: string,
+    expectedUpdatedAt: string,
+    versionIds: string[],
+    archiveSha256: string,
+    expectedRevision: string,
+  ): Promise<AITemplate> {
+    return this.transaction(async () => {
+      const templates = await this.read();
+      const template = this.required(templates, id, expectedUpdatedAt);
+      if (createHash('sha256').update(JSON.stringify(template)).digest('hex') !== expectedRevision)
+        throw new AppError(409, '模板归档内容已变化，请重新导出；没有清理任何版本。');
+      try {
+        template.versions = cleanupHistoryVersions(
+          template.versions,
+          template.versions.at(-1)?.id,
+          versionIds,
+          archiveSha256,
+        );
+      } catch (error) {
+        throw new AppError(400, error instanceof Error ? error.message : '历史清理无效');
+      }
+      template.updatedAt = nextTime(template.updatedAt);
+      await this.write(templates);
+      return template;
     });
   }
   backup(): Promise<TemplateBackup> {

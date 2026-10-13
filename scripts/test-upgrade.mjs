@@ -6,6 +6,7 @@ import { createServer } from 'node:net';
 import { basename, join, relative, resolve } from 'node:path';
 import { parseArgs, promisify } from 'node:util';
 import { openUpgradePreferenceProbe } from './phase16-browser-preferences.mjs';
+import { openContentUpgradePreferenceProbe } from './phase19-browser-preferences.mjs';
 
 const { values } = parseArgs({
   options: { from: { type: 'string' }, to: { type: 'string' }, help: { type: 'boolean' } },
@@ -37,6 +38,7 @@ const fixture = {
 };
 const draftFields = Object.keys(fixture);
 const baseUrl = 'http://127.0.0.1:3000';
+let sessionCookie;
 const run = promisify(execFile);
 const settingsFixture = {
   AI_MODE: 'mock',
@@ -52,8 +54,8 @@ const placeholderKey = 'phase16-upgrade-placeholder-no-real-key';
 
 if (values.help) {
   console.log(
-    'node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.6.0-windows-x64 --to artifacts/ProductSpy-0.7.0-windows-x64\n' +
-      'Requires Windows and a free port 3000. Accepts frozen 0.4.0, 0.5.0, 0.5.1, 0.5.2 or 0.6.0 source packages. Uses only fresh .test-data upgrade fixtures and isolated browser preferences. Existing services are never stopped.',
+    'node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.7.0-windows-x64 --to artifacts/ProductSpy-0.8.0-windows-x64\n' +
+      'Requires Windows and a free port 3000. Accepts frozen 0.4.0, 0.5.0, 0.5.1, 0.5.2, 0.6.0 or 0.7.0 source packages. Uses only fresh .test-data upgrade fixtures and isolated browser preferences. Existing services are never stopped.',
   );
 } else {
   await main();
@@ -62,14 +64,14 @@ if (values.help) {
 async function main() {
   assert.equal(process.platform, 'win32', 'Portable upgrade regression requires Windows.');
   const { version } = JSON.parse(await readFile(resolve('package.json'), 'utf8'));
-  const oldPackage = resolve(values.from ?? 'artifacts/ProductSpy-0.6.0-windows-x64');
+  const oldPackage = resolve(values.from ?? 'artifacts/ProductSpy-0.7.0-windows-x64');
   const newPackage = resolve(values.to ?? `artifacts/ProductSpy-${version}-windows-x64`);
   assert.notEqual(
     oldPackage.toLowerCase(),
     newPackage.toLowerCase(),
     'Upgrade requires two distinct package directories.',
   );
-  const evidenceParent = resolve('.test-data/phase17-upgrade');
+  const evidenceParent = resolve('.test-data/phase19-upgrade');
   await mkdir(evidenceParent, { recursive: true });
   const evidenceRoot = await mkdtemp(
     join(evidenceParent, `${new Date().toISOString().replace(/[:.]/g, '-')}-`),
@@ -94,6 +96,7 @@ async function main() {
   };
   let failure;
   let preferenceProbe;
+  let contentPreferenceProbe;
 
   async function readFixtureSettings(directory) {
     const command = `
@@ -262,6 +265,7 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
 
   async function start(directory, expectedVersion) {
     await assertPortFree();
+    sessionCookie = undefined;
     const record = launcher(directory);
     activeLaunchers.add(record);
     await eventually(
@@ -364,8 +368,8 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
     const oldInventory = await inspectPackage(oldPackage);
     const newInventory = await inspectPackage(newPackage);
     assert(
-      ['0.4.0', '0.5.0', '0.5.1', '0.5.2', '0.6.0'].includes(oldInventory.version),
-      'Upgrade fixture must run an actual frozen 0.4.0–0.6.0 portable package.',
+      ['0.4.0', '0.5.0', '0.5.1', '0.5.2', '0.6.0', '0.7.0'].includes(oldInventory.version),
+      'Upgrade fixture must run an actual frozen 0.4.0–0.7.0 portable package.',
     );
     assert.equal(
       newInventory.version,
@@ -410,7 +414,7 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
     });
     assertCompleteAnalysis(oldAnalysis);
     const baselineLibrary = { groups: [], tags: [] };
-    if (['0.5.0', '0.5.1', '0.5.2', '0.6.0'].includes(oldInventory.version)) {
+    if (['0.5.0', '0.5.1', '0.5.2', '0.6.0', '0.7.0'].includes(oldInventory.version)) {
       const grouped = await request('/api/library', 'POST', {
         kind: 'group',
         action: 'create',
@@ -440,12 +444,12 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
     }
     let oldComparison;
     let oldComparisonBytes;
-    if (oldInventory.version === '0.6.0') {
+    if (['0.6.0', '0.7.0'].includes(oldInventory.version)) {
       const peer = await request('/api/products', 'POST', {
         ...fixture,
         sourceId: 'B0OLDPEER1',
         url: 'https://www.amazon.com/dp/B0OLDPEER1',
-        title: 'v0.6.0 合成快照商品，非真实 Amazon 验收',
+        title: `v${oldInventory.version} 合成快照商品，非真实 Amazon 验收`,
         specifications: [{ name: 'Material', value: 'Merchant claim', source: 'page' }],
         mediaMetadata: [
           {
@@ -477,12 +481,33 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
       await request(`/api/products/${peer.id}`, 'DELETE');
       oldComparisonBytes = await readFile(join(dataRoot, 'data/comparisons.json'));
     }
+    let oldCreative;
+    let oldBusinessBytes;
+    if (oldInventory.version === '0.7.0') {
+      oldCreative = await seedContentFixture(saved.id, oldComparison?.id, '旧 v0.7.0 保存');
+      await snapshot('01-old-template-content', oldCreative);
+      report.checks.push({
+        name: 'actual frozen v0.7.0 saves custom template created/edited/restored history and Japanese 45-second Mock/manual/candidate/replayed/restored content with comparison snapshot before upgrade',
+        passed: true,
+      });
+    }
     const oldProduct = await onlyProduct(saved.id);
     assert.equal(oldProduct.createdAt, saved.createdAt);
     assert.deepEqual(oldProduct.aiAnalysis, oldAnalysis);
     assert(oldProduct.analysisHistory.length >= 2, 'Baseline must contain old analysis history.');
     await snapshot('01-old-product', oldProduct);
     preferenceProbe = await openUpgradePreferenceProbe(baseUrl, saved.id, evidenceRoot);
+    if (oldCreative) {
+      contentPreferenceProbe = await openContentUpgradePreferenceProbe(
+        baseUrl,
+        saved.id,
+        evidenceRoot,
+      );
+      report.checks.push({
+        name: 'old v0.7.0 actual UI saves nondefault content parameters/pricing and built-in template favorite in an isolated browser',
+        passed: true,
+      });
+    }
     report.checks.push({
       name: 'old frozen package saves nondefault browser analysis preferences through actual UI',
       passed: true,
@@ -526,6 +551,7 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
       assert.equal((await response.json()).data[0].id, saved.id);
     }
     const oldDatabase = await readFile(databaseFile, 'utf8');
+    if (oldCreative) oldBusinessBytes = await businessFileSnapshot(dataRoot);
     await stop(oldLaunch);
     assert.equal(
       await readFile(databaseFile, 'utf8'),
@@ -538,11 +564,31 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
     });
 
     const newLaunch = await start(newPackage, newInventory.version);
+    if (oldCreative) {
+      await assertBusinessFileSnapshot(dataRoot, oldBusinessBytes);
+      assert.deepEqual(
+        await request(`/api/templates/${oldCreative.template.id}`),
+        oldCreative.template,
+      );
+      assert.deepEqual(
+        await request(`/api/content-plans/${oldCreative.content.id}`),
+        oldCreative.content,
+      );
+      const status = await request('/api/workspace-backup?status=1');
+      assert.equal(status.counts.templates, 1);
+      assert.equal(status.counts.contentPlans, 1);
+      assert.equal(status.counts.comparisons, 1);
+      await assertBusinessFileSnapshot(dataRoot, oldBusinessBytes);
+      report.checks.push({
+        name: 'actual v0.7.0 → target first launch preserves products/comparisons/templates/content-plans/analysis-usage exact bytes, custom IDs, all histories/current selections and snapshot references without a read migration rewrite',
+        passed: true,
+      });
+    }
     if (oldComparison) {
       assert.deepEqual(await readFile(join(dataRoot, 'data/comparisons.json')), oldComparisonBytes);
       assert.deepEqual(await request(`/api/comparisons/${oldComparison.id}`), oldComparison);
       report.checks.push({
-        name: 'actual v0.6.0 comparison snapshots, media metadata, merchant specifications and complete generated/manual history are byte-preserved on upgrade',
+        name: `actual v${oldInventory.version} comparison snapshots, media metadata, merchant specifications and complete generated/manual history are byte-preserved on upgrade`,
         passed: true,
       });
     }
@@ -568,6 +614,7 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
       passed: true,
     });
     await preferenceProbe.verifyAfterRestart('after-upgrade');
+    if (contentPreferenceProbe) await contentPreferenceProbe.verifyAfterRestart('after-upgrade');
     report.checks.push({
       name: 'same isolated browser retains saved analysis preferences across actual old-to-new package upgrade',
       passed: true,
@@ -763,6 +810,33 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
     assert.deepEqual(await readFile(credentialFile), originalCredentials);
     await verifyPairedRead();
     await preferenceProbe.verifyAfterRestart('after-restart');
+    if (contentPreferenceProbe) await contentPreferenceProbe.verifyAfterRestart('after-restart');
+    if (oldCreative) {
+      assert.deepEqual(
+        await request(`/api/templates/${oldCreative.template.id}`),
+        oldCreative.template,
+      );
+      assert.deepEqual(
+        await request(`/api/content-plans/${oldCreative.content.id}`),
+        oldCreative.content,
+      );
+      assert.deepEqual(
+        await readFile(join(dataRoot, 'data/templates.json')),
+        oldBusinessBytes.get('templates.json'),
+      );
+      assert.deepEqual(
+        await readFile(join(dataRoot, 'data/content-plans.json')),
+        oldBusinessBytes.get('content-plans.json'),
+      );
+      assert.deepEqual(
+        await readFile(join(dataRoot, 'data/comparisons.json')),
+        oldBusinessBytes.get('comparisons.json'),
+      );
+      report.checks.push({
+        name: 'old v0.7.0 saved content/template/comparison snapshots and complete history remain byte-identical after source product recapture, new analysis/group/tag mutations and real new-package restart',
+        passed: true,
+      });
+    }
     report.checks.push({
       name: 'new package restart retains DPAPI settings, original pairing and same-browser saved preferences',
       passed: true,
@@ -787,7 +861,7 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
       name: 'new package restart preserves complete edited Product and analysis, then releases owned processes',
       passed: true,
     });
-    if (['0.6.0', '0.7.0'].includes(newInventory.version)) {
+    if (['0.6.0', '0.7.0', '0.8.0'].includes(newInventory.version)) {
       const comparisonLaunch = await start(newPackage, newInventory.version);
       const beforeComparison = await request(`/api/products/${encodeURIComponent(saved.id)}`);
       const extra = await request('/api/products', 'POST', {
@@ -872,94 +946,14 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
         passed: true,
       });
     }
-    if (newInventory.version === '0.7.0') {
+    if (['0.7.0', '0.8.0'].includes(newInventory.version)) {
       const contentLaunch = await start(newPackage, newInventory.version);
       const protectedProduct = await request(`/api/products/${saved.id}`);
-      const { templates } = await request('/api/templates');
-      const builtin = templates.find((template) => template.origin === 'builtin');
-      assert(builtin, 'Built-in templates must be available without rewriting user products.');
-      const definition = Object.fromEntries(
-        [
-          'name',
-          'description',
-          'scenario',
-          'category',
-          'tags',
-          'favorite',
-          'prompt',
-          'outputFields',
-          'outputRequirements',
-        ].map((key) => [key, builtin[key]]),
+      const { template, content } = await seedContentFixture(
+        saved.id,
+        oldComparison?.id,
+        '新包写入验证',
       );
-      let template = await request('/api/templates', 'POST', {
-        ...definition,
-        name: '升级回归自定义模板',
-        prompt: '仅使用 {{product_title}} 的页面资料，保留人工内容。',
-      });
-      const templateOriginal = template.versions[0];
-      template = await request(`/api/templates/${template.id}`, 'PATCH', {
-        expectedUpdatedAt: template.updatedAt,
-        definition: {
-          ...definition,
-          name: '升级后人工模板',
-          prompt: '按 {{duration}} 秒设计 {{product_title}} 的脚本。',
-        },
-      });
-      template = await request(`/api/templates/${template.id}`, 'PATCH', {
-        expectedUpdatedAt: template.updatedAt,
-        restoreVersionId: templateOriginal.id,
-      });
-      assert.equal(template.versions.length, 3);
-      let content = await request('/api/content-plans', 'POST', {
-        name: '真实旧包升级后的合成内容回归',
-        productId: saved.id,
-        templateId: template.id,
-        options: {
-          language: 'ja',
-          market: 'JP',
-          duration: 45,
-          creativeDirection: '日常可拍摄场景',
-        },
-        ...(oldComparison ? { comparisonId: oldComparison.id } : {}),
-      });
-      const first = await request('/api/generate-content', 'POST', {
-        planId: content.id,
-        expectedUpdatedAt: content.updatedAt,
-        options: content.options,
-        requestId: randomUUID(),
-      });
-      content = first.plan;
-      assert.equal(first.version.metadata.mode, 'mock');
-      assert.equal(first.version.metadata.options.duration, 45);
-      assert.equal(first.version.metadata.evidence.reviewTextAnalyzed, false);
-      const editedOutput = {
-        ...first.version.output,
-        sellingCopy: ['旧商品升级后人工创作，不得被重新生成覆盖'],
-      };
-      content = await request(`/api/content-plans/${content.id}`, 'PATCH', {
-        expectedUpdatedAt: content.updatedAt,
-        output: editedOutput,
-      });
-      const currentManualId = content.currentVersionId;
-      const regeneration = {
-        planId: content.id,
-        expectedUpdatedAt: content.updatedAt,
-        options: content.options,
-        selectedFields: ['hooks'],
-        requestId: randomUUID(),
-      };
-      const generatedCandidate = await request('/api/generate-content', 'POST', regeneration);
-      content = generatedCandidate.plan;
-      assert.equal(content.currentVersionId, currentManualId);
-      assert.deepEqual(generatedCandidate.version.output.sellingCopy, editedOutput.sellingCopy);
-      const replay = await request('/api/generate-content', 'POST', regeneration);
-      assert.equal(replay.replayed, true);
-      assert.equal(replay.plan.versions.length, 3);
-      content = await request(`/api/content-plans/${content.id}`, 'PATCH', {
-        expectedUpdatedAt: content.updatedAt,
-        restoreVersionId: first.version.id,
-      });
-      assert.equal(content.versions.length, 4);
       for (const endpoint of ['/api/templates/backup', '/api/content-plans/backup']) {
         const backup = await request(endpoint);
         const preview = await request(endpoint, 'POST', { backup });
@@ -1000,6 +994,16 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
     report.passed = false;
     report.error = error.message;
   } finally {
+    if (contentPreferenceProbe) {
+      try {
+        await contentPreferenceProbe.close();
+      } catch (error) {
+        report.cleanupErrors ??= [];
+        report.cleanupErrors.push(error.message);
+        report.passed = false;
+        failure ??= error;
+      }
+    }
     if (preferenceProbe) {
       try {
         await preferenceProbe.close();
@@ -1037,6 +1041,139 @@ function asDraft(product) {
   return Object.fromEntries(draftFields.map((field) => [field, product[field]]));
 }
 
+async function businessFileSnapshot(dataRoot) {
+  return new Map(
+    await Promise.all(
+      [
+        'products.json',
+        'comparisons.json',
+        'templates.json',
+        'content-plans.json',
+        'analysis-usage.json',
+      ].map(async (name) => [name, await readFile(join(dataRoot, 'data', name))]),
+    ),
+  );
+}
+
+async function assertBusinessFileSnapshot(dataRoot, expected) {
+  for (const [name, bytes] of expected)
+    assert.deepEqual(
+      await readFile(join(dataRoot, 'data', name)),
+      bytes,
+      `Read-only upgrade must preserve every original byte in ${name}.`,
+    );
+}
+
+/** Exercise the running frozen/new package APIs rather than writing a current-schema fixture. */
+async function seedContentFixture(productId, comparisonId, label) {
+  const { templates } = await request('/api/templates');
+  const builtin = templates.find((template) => template.origin === 'builtin');
+  assert(builtin, 'Running package must supply built-in templates.');
+  const definition = Object.fromEntries(
+    [
+      'name',
+      'description',
+      'scenario',
+      'category',
+      'tags',
+      'favorite',
+      'prompt',
+      'outputFields',
+      'outputRequirements',
+    ].map((key) => [key, builtin[key]]),
+  );
+  let template = await request('/api/templates', 'POST', {
+    ...definition,
+    name: `${label} 自定义模板`,
+    tags: ['升级回归'],
+    favorite: true,
+    prompt: '仅使用 {{product_title}} 的页面资料，保留人工内容。',
+  });
+  const originalVersion = template.versions[0];
+  template = await request(`/api/templates/${template.id}`, 'PATCH', {
+    expectedUpdatedAt: template.updatedAt,
+    definition: {
+      ...definition,
+      name: `${label} 人工模板`,
+      tags: ['人工修改'],
+      favorite: true,
+      prompt: '按 {{duration}} 秒设计 {{product_title}} 的脚本。',
+    },
+  });
+  template = await request(`/api/templates/${template.id}`, 'PATCH', {
+    expectedUpdatedAt: template.updatedAt,
+    restoreVersionId: originalVersion.id,
+  });
+  assert.equal(template.versions.length, 3);
+  assert.equal(template.versions.at(-1).restoredFrom, originalVersion.id);
+  let content = await request('/api/content-plans', 'POST', {
+    name: `${label} 合成内容回归`,
+    productId,
+    templateId: template.id,
+    options: {
+      language: 'ja',
+      market: 'JP',
+      platform: 'Reels',
+      style: 'casual',
+      goal: 'consideration',
+      duration: 45,
+      creativeDirection: '日常可拍摄场景',
+      customInstructions: '不要虚构评论或规格，只安排桌面演示。',
+      customPrompt: '输出具体可拍摄镜头，并注明待验证内容。',
+    },
+    ...(comparisonId ? { comparisonId } : {}),
+  });
+  const first = await request('/api/generate-content', 'POST', {
+    planId: content.id,
+    expectedUpdatedAt: content.updatedAt,
+    options: content.options,
+    requestId: randomUUID(),
+  });
+  content = first.plan;
+  assert.equal(first.version.metadata.mode, 'mock');
+  assert.equal(first.version.metadata.options.duration, 45);
+  assert.equal(first.version.metadata.evidence.reviewTextAnalyzed, false);
+  const editedOutput = {
+    ...first.version.output,
+    sellingCopy: [`${label} 人工创作，不得被重新生成覆盖`],
+  };
+  content = await request(`/api/content-plans/${content.id}`, 'PATCH', {
+    expectedUpdatedAt: content.updatedAt,
+    output: editedOutput,
+  });
+  const manualVersionId = content.currentVersionId;
+  const regeneration = {
+    planId: content.id,
+    expectedUpdatedAt: content.updatedAt,
+    options: content.options,
+    selectedFields: ['hooks'],
+    requestId: randomUUID(),
+  };
+  const candidate = await request('/api/generate-content', 'POST', regeneration);
+  content = candidate.plan;
+  assert.equal(content.currentVersionId, manualVersionId);
+  assert.deepEqual(candidate.version.output.sellingCopy, editedOutput.sellingCopy);
+  assert.deepEqual(candidate.version.metadata.selectedFields, ['hooks']);
+  const replay = await request('/api/generate-content', 'POST', regeneration);
+  assert.equal(replay.replayed, true);
+  assert.equal(replay.plan.versions.length, 3);
+  content = await request(`/api/content-plans/${content.id}`, 'PATCH', {
+    expectedUpdatedAt: content.updatedAt,
+    restoreVersionId: first.version.id,
+  });
+  content = await request(`/api/content-plans/${content.id}`, 'PATCH', {
+    expectedUpdatedAt: content.updatedAt,
+    favorite: true,
+    status: 'needs-edit',
+  });
+  assert.equal(content.versions.length, 4);
+  assert.equal(content.versions.at(-1).restoredFrom, first.version.id);
+  assert.equal(content.productId, productId);
+  assert.equal(content.templateSnapshot.id, template.id);
+  if (comparisonId) assert.equal(content.comparisonSource.id, comparisonId);
+  return { template, content };
+}
+
 async function request(path, method = 'GET', body) {
   const headers = {
     origin: baseUrl,
@@ -1044,7 +1181,7 @@ async function request(path, method = 'GET', body) {
     'x-productspy-client': 'web',
     'sec-fetch-site': 'same-origin',
   };
-  if (path !== '/api/status') {
+  if (path !== '/api/status' && !sessionCookie) {
     const session = await fetch(`${baseUrl}/api/session`, {
       method: 'POST',
       headers,
@@ -1054,8 +1191,9 @@ async function request(path, method = 'GET', body) {
     assert.equal(session.status, 200, 'Packaged web session authentication must succeed.');
     const cookie = session.headers.get('set-cookie')?.split(';')[0];
     assert(cookie, 'Session must issue an HttpOnly cookie.');
-    headers.cookie = cookie;
+    sessionCookie = cookie;
   }
+  if (path !== '/api/status') headers.cookie = sessionCookie;
   const response = await fetch(`${baseUrl}${path}`, {
     method,
     headers,

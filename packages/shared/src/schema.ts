@@ -112,6 +112,11 @@ export const analysisVersionSchema = z.object({
   analysis: analysisSchema,
   metadata: analysisMetadataSchema.optional(),
   parentVersionId: z.string().uuid().optional(),
+  archivedParentVersionId: z.string().uuid().optional(),
+  archivedParentSha256: z
+    .string()
+    .regex(/^[a-f0-9]{64}$/)
+    .optional(),
   restoredFrom: z.string().uuid().optional(),
 });
 export const analysisUsageRecordSchema = z.object({

@@ -8,4 +8,6 @@ export * from './library-transfer';
 export * from './media';
 export * from './comparison';
 export * from './content';
+export * from './history-management';
+export * from './business-backup';
 export * from './templates';

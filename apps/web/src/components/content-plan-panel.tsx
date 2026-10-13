@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
 import { Download, History, Pencil, Save, Sparkles } from 'lucide-react';
 import {
   apiRequest,
@@ -32,6 +31,9 @@ import { CONTENT_PREFERENCES_KEY } from './content-preferences';
 import type { AnalysisPricingPreference } from './analysis-preferences';
 import { AnalysisUsagePanel } from './analysis-usage';
 import { LibraryDialog } from './library-dialog';
+import { ContentReferences } from './content-references';
+import { HistoryManager } from './history-manager';
+import { ContentMediaSelection } from './content-media-selection';
 import { Badge, Button, CopyButton, EmptyState, ErrorNotice } from './ui';
 
 type Draft = Record<ContentField, string>;
@@ -65,11 +67,13 @@ export function ContentPlanPanel({
   onUpdate,
   onEditing,
   onBusy,
+  onRenew,
 }: {
   plan: ContentPlan;
   onUpdate: (value: ContentPlan) => void;
   onEditing: (value: boolean) => void;
   onBusy: (value: boolean) => void;
+  onRenew: (plan: ContentPlan) => Promise<void>;
 }) {
   const [mode, setMode] = useState<'mock' | 'real'>();
   const [modeError, setModeError] = useState('');
@@ -79,7 +83,10 @@ export function ContentPlanPanel({
   const [selectedFields, setSelectedFields] = useState<ContentField[]>([
     ...plan.templateSnapshot.outputFields,
   ]);
-  const [busy, setBusy] = useState(false);
+  const [operationBusy, setBusy] = useState(false);
+  const [mediaBusy, setMediaBusy] = useState(false);
+  const [mediaEditing, setMediaEditing] = useState(false);
+  const busy = operationBusy || mediaBusy;
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [editor, setEditor] = useState<{ draft: Draft; baseline: ContentPlan }>();
@@ -97,7 +104,7 @@ export function ContentPlanPanel({
   const version = currentContentVersion(plan);
   const compared = plan.versions.find((item) => item.id === compareId);
   const candidate = plan.versions.find((item) => item.id === versionId);
-  const editing = Boolean(editor);
+  const editing = Boolean(editor) || mediaEditing;
   const dirty = Boolean(
     editor &&
     JSON.stringify(editor.draft) !==
@@ -229,7 +236,7 @@ export function ContentPlanPanel({
   );
   useEffect(() => {
     if (editor && dirty) persistDraft(editor);
-    if (!dirty && !busy) return;
+    if (!dirty && !busy && !mediaEditing) return;
     const unload = (event: BeforeUnloadEvent) => {
       event.preventDefault();
       event.returnValue = '';
@@ -240,10 +247,16 @@ export function ContentPlanPanel({
         !(anchor instanceof HTMLAnchorElement) ||
         anchor.target === '_blank' ||
         anchor.origin !== window.location.origin ||
-        !dirty
+        (!dirty && !mediaEditing)
       )
         return;
-      if (!window.confirm('尚有未保存编辑，确定离开吗？当前草稿会保留在本浏览器。')) {
+      if (
+        !window.confirm(
+          mediaEditing
+            ? '素材选择尚未保存，确定离开并放弃选择改动吗？'
+            : '尚有未保存编辑，确定离开吗？当前草稿会保留在本浏览器。',
+        )
+      ) {
         event.preventDefault();
         event.stopPropagation();
       }
@@ -254,7 +267,7 @@ export function ContentPlanPanel({
       window.removeEventListener('beforeunload', unload);
       document.removeEventListener('click', navigate, true);
     };
-  }, [editor, dirty, busy, persistDraft]);
+  }, [editor, dirty, busy, mediaEditing, persistDraft]);
   async function action(operation: () => Promise<void>) {
     setBusy(true);
     setError('');
@@ -442,18 +455,9 @@ export function ContentPlanPanel({
           </Badge>
         </div>
         <div className="creation-actions">
-          <Link href={`/products/${encodeURIComponent(plan.productId)}`} className="ws-text-link">
-            ASIN {plan.productSnapshot.sourceId}
-          </Link>
+          <Badge>ASIN {plan.productSnapshot.sourceId}</Badge>
           <Badge>{plan.templateSnapshot.name}</Badge>
-          {plan.comparisonSource && (
-            <Link
-              className="ws-text-link"
-              href={`/comparisons?plan=${encodeURIComponent(plan.comparisonSource.id)}`}
-            >
-              引用：{plan.comparisonSource.name}
-            </Link>
-          )}
+          {plan.comparisonSource && <Badge>引用：{plan.comparisonSource.name}</Badge>}
         </div>
         <p className="creation-note">
           商品采集时间 {new Date(plan.productSnapshot.updatedAt).toLocaleString('zh-CN')}
@@ -472,6 +476,26 @@ export function ContentPlanPanel({
           </p>
         )}
         {modeError && <ErrorNotice message={modeError} onRetry={() => void loadMode()} />}
+        <ContentReferences plan={plan} disabled={busy || editing} onRenew={onRenew} />
+        <ContentMediaSelection
+          plan={plan}
+          disabled={operationBusy || Boolean(editor)}
+          onUpdate={onUpdate}
+          onBusy={setMediaBusy}
+          onDirty={setMediaEditing}
+        />
+        {!editing && !busy && (
+          <HistoryManager
+            kind="content"
+            id={plan.id}
+            updatedAt={plan.updatedAt}
+            onChanged={() => {
+              void getContentPlan(plan.id)
+                .then(onUpdate)
+                .catch((cause: unknown) => setError(errorMessage(cause)));
+            }}
+          />
+        )}
       </section>
       <ContentOptionsPanel
         options={options}

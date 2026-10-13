@@ -7,6 +7,7 @@ import {
   contentOptionsSchema,
   contentGenerationSchema,
   estimateContentDuration,
+  productAnalysisReference,
   type ContentGenerationResponse,
   type ContentMetadata,
   type AnalysisUsage,
@@ -156,6 +157,10 @@ export function POST(request: Request): Promise<Response> {
             options: input.data.options,
             generatedAt: new Date().toISOString(),
             sourceUpdatedAt: plan.productSnapshot.updatedAt,
+            selectedMedia: plan.selectedMedia ?? [],
+            ...(productAnalysisReference(plan.productSnapshot)
+              ? { productAnalysisReference: productAnalysisReference(plan.productSnapshot) }
+              : {}),
             templateId: plan.templateSnapshot.id,
             templateVersionId: plan.templateSnapshot.versions.at(-1)?.id,
             evidence,

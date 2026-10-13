@@ -42,6 +42,7 @@ export function ComparisonWorkspace() {
   const [dialog, setDialog] = useState<'delete' | 'refresh' | 'discard'>();
   const [nextPlanId, setNextPlanId] = useState<string>();
   const [showBackup, setShowBackup] = useState(false);
+  const [creationProduct, setCreationProduct] = useState('');
   const validSelection = selected.length >= 2 && selected.length <= 5;
   const modified = Boolean(
     plan &&
@@ -414,12 +415,63 @@ export function ComparisonWorkspace() {
             </p>
           )}
           {plan && !modified ? (
-            <ComparisonAnalysisPanel
-              key={plan.id}
-              plan={plan}
-              onUpdate={applyPlan}
-              onEditing={onEditing}
-            />
+            <>
+              {plan.analysis && (
+                <div className="comparison-notice">
+                  <label className="ws-filter">
+                    <span>引用此竞品结论创作内容</span>
+                    <select
+                      aria-label="选择创作商品"
+                      value={creationProduct}
+                      disabled={locked}
+                      onChange={(event) => setCreationProduct(event.currentTarget.value)}
+                    >
+                      <option value="">选择仍在商品库中的商品…</option>
+                      {plan.products
+                        .filter((snapshot) =>
+                          products.some(
+                            (product) =>
+                              product.id === snapshot.id &&
+                              product.sourceId === snapshot.sourceId &&
+                              product.source === snapshot.source,
+                          ),
+                        )
+                        .map((product) => (
+                          <option key={product.id} value={product.id}>
+                            {product.title} · {product.sourceId}
+                          </option>
+                        ))}
+                    </select>
+                  </label>
+                  {plan.products.some(
+                    (snapshot) =>
+                      snapshot.id === creationProduct &&
+                      products.some(
+                        (product) =>
+                          product.id === snapshot.id && product.sourceId === snapshot.sourceId,
+                      ),
+                  ) &&
+                    !locked && (
+                      <Link
+                        className="button button-secondary"
+                        href={`/content?product=${encodeURIComponent(creationProduct)}&comparison=${encodeURIComponent(plan.id)}`}
+                      >
+                        引用结论创作
+                      </Link>
+                    )}
+                  <p className="muted">
+                    结论及商品来源会保存在新内容方案中。已删除的商品快照仍可查看，不会悄悄替换为其他
+                    ASIN。
+                  </p>
+                </div>
+              )}
+              <ComparisonAnalysisPanel
+                key={plan.id}
+                plan={plan}
+                onUpdate={applyPlan}
+                onEditing={onEditing}
+              />
+            </>
           ) : (
             <p className="comparison-boundary">
               先保存当前对比方案，再进行 AI 对比分析。{plan && '原方案的分析与历史仍保留。'}

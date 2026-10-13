@@ -27,13 +27,16 @@ import { downloadLibraryFile } from '../lib/library-api';
 import { TemplateEditor, emptyTemplateDefinition } from './template-editor';
 import { singleTemplateBackup } from './template-export';
 import { LibraryDialog } from './library-dialog';
+import { HistoryManager } from './history-manager';
 import { Badge, Button, EmptyState, ErrorNotice, LoadingState, PageHeading } from './ui';
 import './library.css';
 import './content-workspace.css';
+import './integration.css';
 
 export function TemplatesWorkspace() {
   const [templates, setTemplates] = useState<AITemplate[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [sourceProduct, setSourceProduct] = useState<Product>();
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -74,6 +77,10 @@ export function TemplatesWorkspace() {
       const [fresh, savedProducts] = await Promise.all([listTemplates(), productRepository.list()]);
       setTemplates(fresh);
       setProducts(savedProducts);
+      const requested = new URLSearchParams(window.location.search).get('product');
+      setSourceProduct(savedProducts.find((product) => product.id === requested));
+      if (requested && !savedProducts.some((product) => product.id === requested))
+        setMessage('入口商品已删除，请从商品库重新选择；模板及已保存内容快照不受影响。');
     } catch (cause) {
       setError(errorMessage(cause));
     } finally {
@@ -224,6 +231,14 @@ export function TemplatesWorkspace() {
           只看收藏
         </label>
       </div>
+      {sourceProduct && (
+        <p className="integration-context">
+          为 ASIN {sourceProduct.sourceId} 选择模板：{sourceProduct.title}
+          <Link className="ws-text-link" href={`/products/${encodeURIComponent(sourceProduct.id)}`}>
+            返回商品资料
+          </Link>
+        </p>
+      )}
       {!filtered.length ? (
         <EmptyState
           title="没有符合条件的模板"
@@ -283,7 +298,7 @@ export function TemplatesWorkspace() {
               <div className="creation-actions">
                 <Link
                   className="button button-primary"
-                  href={`/content?template=${encodeURIComponent(template.id)}`}
+                  href={`/content?template=${encodeURIComponent(template.id)}${sourceProduct ? `&product=${encodeURIComponent(sourceProduct.id)}` : ''}`}
                 >
                   用于创作
                 </Link>
@@ -395,6 +410,19 @@ export function TemplatesWorkspace() {
           onClose={() => setHistory(undefined)}
         >
           <p className="creation-note">恢复会增加新版本，原历史保留。</p>
+          <HistoryManager
+            kind="template"
+            id={history.id}
+            updatedAt={history.updatedAt}
+            onChanged={() => {
+              void listTemplates()
+                .then((values) => {
+                  setTemplates(values);
+                  setHistory(values.find((item) => item.id === history.id));
+                })
+                .catch((cause: unknown) => setError(errorMessage(cause)));
+            }}
+          />
           <div className="creation-versions">
             {[...history.versions].reverse().map((version) => (
               <div className="creation-version" key={version.id}>

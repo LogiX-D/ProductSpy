@@ -3,14 +3,8 @@ import { execFile } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { basename, resolve, sep } from 'node:path';
 import { promisify } from 'node:util';
-import {
-  artifactPath,
-  artifactRoot,
-  copyPublic,
-  inventory,
-  workspace,
-  zipDirectory,
-} from './files.mjs';
+import { tmpdir } from 'node:os';
+import { artifactPath, artifactRoot, copyPublic, inventory, zipDirectory } from './files.mjs';
 
 const run = promisify(execFile);
 
@@ -36,7 +30,9 @@ async function zipEntryNames(path) {
 }
 
 async function fixture(run) {
-  const parent = resolve(workspace, '.test-data/packaging-unit');
+  // Private fixture churn stays in isolated OS temp, outside watched source and
+  // report directories. The actual ZIP still goes through artifactPath checks.
+  const parent = resolve(tmpdir(), 'productspy-packaging-unit');
   await mkdir(parent, { recursive: true });
   const root = await mkdtemp(resolve(parent, 'case-'));
   if (!root.startsWith(`${parent}${sep}`)) throw new Error('Unsafe test cleanup');
@@ -58,6 +54,7 @@ describe('distributable package boundaries', () => {
     await fixture(async (root) => {
       const source = resolve(root, 'source');
       await mkdir(resolve(source, '.data'), { recursive: true });
+      await mkdir(resolve(source, '.workspace-restore'), { recursive: true });
       await writeFile(resolve(source, 'server.js'), 'console.log("ready");');
       for (const file of [
         '.env.local',
@@ -72,6 +69,10 @@ describe('distributable package boundaries', () => {
       ])
         await writeFile(resolve(source, file), 'private');
       await writeFile(resolve(source, '.data/products.json'), 'private');
+      await writeFile(
+        resolve(source, '.workspace-restore/products.json.old'),
+        'private staging snapshot',
+      );
       const target = resolve(root, 'target');
       await copyPublic(source, target);
       expect((await inventory(target)).map((file) => file.path)).toEqual(['server.js']);

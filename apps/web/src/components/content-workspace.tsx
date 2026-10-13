@@ -34,7 +34,7 @@ import { CONTENT_PREFERENCES_KEY, restoreContentPreferences } from './content-pr
 import { ContentOptionsPanel } from './content-options';
 import { LibraryDialog } from './library-dialog';
 import { Button, EmptyState, ErrorNotice, LoadingState, PageHeading } from './ui';
-import type { AnalysisPricingPreference } from './analysis-preferences';
+import { ANALYSIS_PREFERENCES_KEY, type AnalysisPricingPreference } from './analysis-preferences';
 import './library.css';
 import './content-workspace.css';
 
@@ -100,11 +100,41 @@ export function ContentWorkspace() {
       setPlans(savedPlans);
       setComparisons(savedComparisons);
       const params = new URLSearchParams(window.location.search);
-      setProductId(params.get('product') ?? savedProducts[0]?.id ?? '');
-      setTemplateId(params.get('template') ?? savedTemplates[0]?.id ?? '');
+      const requestedProduct = params.get('product');
+      const requestedTemplate = params.get('template');
+      const selectedProduct = requestedProduct
+        ? savedProducts.find((item) => item.id === requestedProduct)
+        : savedProducts[0];
+      const selectedTemplate = requestedTemplate
+        ? savedTemplates.find((item) => item.id === requestedTemplate)
+        : savedTemplates[0];
+      setProductId(selectedProduct?.id ?? '');
+      setTemplateId(selectedTemplate?.id ?? '');
+      const requestedComparison = params.get('comparison');
+      const selectedComparison = savedComparisons.find(
+        (item) =>
+          item.id === requestedComparison &&
+          item.analysis &&
+          item.products.some(
+            (product) =>
+              product.id === selectedProduct?.id &&
+              product.sourceId === selectedProduct.sourceId &&
+              product.source === selectedProduct.source,
+          ),
+      );
+      setComparisonId(selectedComparison?.id ?? '');
+      if ((requestedProduct && !selectedProduct) || (requestedTemplate && !selectedTemplate))
+        setMessage('入口指定的商品或模板已删除。请选择仍在库中的资料；不会自动替换为其他商品。');
+      else if (requestedComparison && !selectedComparison)
+        setMessage('所选竞品结论已删除、尚未分析或与商品身份不符，未添加该引用。');
       const existing = savedPlans.find((item) => item.id === params.get('plan'));
       if (existing) setPlan(existing);
-      else if (params.has('product') || params.has('template') || !savedPlans.length)
+      else if (
+        params.has('product') ||
+        params.has('template') ||
+        params.has('comparison') ||
+        !savedPlans.length
+      )
         setCreating(true);
       else setPlan(savedPlans[0]);
     } catch (cause) {
@@ -116,7 +146,10 @@ export function ContentWorkspace() {
   useEffect(() => {
     void load();
     try {
-      const saved = restoreContentPreferences(localStorage.getItem(CONTENT_PREFERENCES_KEY));
+      const saved = restoreContentPreferences(
+        localStorage.getItem(CONTENT_PREFERENCES_KEY),
+        localStorage.getItem(ANALYSIS_PREFERENCES_KEY),
+      );
       setOptions(saved.options);
       setPricing(saved.pricing);
     } catch {
@@ -125,7 +158,12 @@ export function ContentWorkspace() {
   }, []);
   function selectPlan(value: ContentPlan) {
     if (childBusy) return;
-    if (editing && !window.confirm('尚有未保存编辑，确定切换吗？当前草稿会保留在本浏览器。'))
+    if (
+      editing &&
+      !window.confirm(
+        '尚有未保存更改，确定切换吗？人工编辑草稿会保留在本浏览器，未保存素材选择将放弃。',
+      )
+    )
       return;
     setPlan(value);
     setCreating(false);
@@ -163,6 +201,46 @@ export function ContentWorkspace() {
       apply(value);
       selectPlan(value);
       setMessage('方案已保存。点击生成后才会请求 AI；再次生成会保留现有版本。');
+    });
+  }
+  async function prepareLatest(source: ContentPlan) {
+    await action(async () => {
+      const [freshProducts, freshTemplates, freshComparisons] = await Promise.all([
+        productRepository.list(),
+        listTemplates(),
+        listComparisons(),
+      ]);
+      const product = freshProducts.find(
+        (item) =>
+          item.id === source.productId &&
+          item.sourceId === source.productSnapshot.sourceId &&
+          item.source === source.productSnapshot.source,
+      );
+      const template = freshTemplates.find((item) => item.id === source.templateSnapshot.id);
+      if (!product || !template)
+        throw new Error('原商品或模板已删除，无法用最新资料建立新方案。旧方案快照仍保留。');
+      const comparison = freshComparisons.find(
+        (item) =>
+          item.id === source.comparisonSource?.id &&
+          item.analysis &&
+          item.products.some(
+            (value) =>
+              value.id === product.id &&
+              value.sourceId === product.sourceId &&
+              value.source === product.source,
+          ),
+      );
+      setProducts(freshProducts);
+      setTemplates(freshTemplates);
+      setComparisons(freshComparisons);
+      setProductId(product.id);
+      setTemplateId(template.id);
+      setComparisonId(comparison?.id ?? '');
+      setOptions(source.options);
+      setName(`${source.name.slice(0, 110)}（最新资料）`);
+      setCreating(true);
+      setEditing(false);
+      setMessage('最新资料已载入，请检查后创建新方案。旧方案及人工编辑保持不变；尚未调用 AI。');
     });
   }
   async function readImport(file?: File) {
@@ -213,7 +291,12 @@ export function ContentWorkspace() {
             <Button
               disabled={busy || childBusy}
               onClick={() => {
-                if (!editing || window.confirm('编辑草稿会保留在本浏览器，确定创建新方案吗？')) {
+                if (
+                  !editing ||
+                  window.confirm(
+                    '人工编辑草稿会保留在本浏览器，未保存素材选择将放弃。确定创建新方案吗？',
+                  )
+                ) {
                   setCreating(true);
                   setEditing(false);
                 }
@@ -342,6 +425,7 @@ export function ContentWorkspace() {
                           setComparisonId('');
                         }}
                       >
+                        {!productId && <option value="">请选择商品</option>}
                         {products.map((product) => (
                           <option key={product.id} value={product.id}>
                             {product.title} · {product.sourceId}
@@ -357,6 +441,7 @@ export function ContentWorkspace() {
                         disabled={busy || childBusy}
                         onChange={(event) => setTemplateId(event.target.value)}
                       >
+                        {!templateId && <option value="">请选择模板</option>}
                         {templates.map((template) => (
                           <option key={template.id} value={template.id}>
                             {template.name} · {template.origin === 'builtin' ? '内置' : '自定义'}
@@ -430,6 +515,9 @@ export function ContentWorkspace() {
                   </div>
                   <p className="creation-note">
                     创建方案不调用付费模型。商品、模板与对比来源保存为独立快照。
+                    {products.find((item) => item.id === productId)?.aiAnalysis
+                      ? '已保存商品分析将作为带来源的既有推断引用，不能替代页面事实。'
+                      : '此商品尚无分析，可直接创作，或先在商品详情完成分析。'}
                   </p>
                 </>
               )}
@@ -488,6 +576,7 @@ export function ContentWorkspace() {
                 onUpdate={apply}
                 onEditing={setEditing}
                 onBusy={setChildBusy}
+                onRenew={prepareLatest}
               />
             </>
           ) : (

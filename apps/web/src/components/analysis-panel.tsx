@@ -23,6 +23,7 @@ import { analysisCopy } from './analysis-copy';
 import { AnalysisEditor } from './analysis-editor';
 import { AnalysisOptionsPanel } from './analysis-options';
 import { AnalysisHistory, analysisProvenance } from './analysis-history';
+import { HistoryManager } from './history-manager';
 import { AnalysisEvidence } from './analysis-evidence';
 import { AnalysisUsagePanel } from './analysis-usage';
 import { analysisFieldLabels, downloadAnalysis } from './analysis-export';
@@ -952,6 +953,17 @@ function AnalysisContent({
         hasDraft={Boolean(retained || dirty)}
         onRestore={restoreVersion}
       />
+      <div inert={controlsDisabled || Boolean(editor) ? true : undefined}>
+        <HistoryManager
+          kind="product"
+          id={product.id}
+          updatedAt={product.updatedAt}
+          onChanged={async () => {
+            const fresh = await productRepository.get(product.id);
+            if (fresh) onUpdate(fresh);
+          }}
+        />
+      </div>
       <AnalysisUsagePanel
         report={usageReport}
         loading={usageLoading}

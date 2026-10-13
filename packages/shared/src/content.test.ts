@@ -13,6 +13,8 @@ import {
   exportContentTxt,
   exportContentJson,
   contentExportFilename,
+  contentMediaChoices,
+  contentMediaChoiceGroups,
 } from './content';
 import { mockContent } from '../../../apps/web/src/lib/ai/content-generation';
 const product = mergeProduct({
@@ -25,6 +27,15 @@ const product = mergeProduct({
   bulletPoints: ['Page-listed steel'],
 });
 const time = '2026-10-13T00:00:00.000Z';
+it('groups captured quality sources into one visible reference asset without removing saved URL choices', () => {
+  const low = 'https://m.media-amazon.com/images/I/31test._AC_SX300_.jpg';
+  const high = 'https://m.media-amazon.com/images/I/31test._AC_SL1500_.jpg';
+  const sample = { ...product, images: [low, high] };
+  expect(contentMediaChoices(sample)).toHaveLength(2);
+  const groups = contentMediaChoiceGroups(sample);
+  expect(groups).toHaveLength(1);
+  expect(groups[0].variants.map((item) => item.url).sort()).toEqual([low, high].sort());
+});
 const plan = contentPlanSchema.parse({
   id: randomUUID(),
   name: '../Package: [link](evil)',
@@ -38,7 +49,103 @@ const plan = contentPlanSchema.parse({
   updatedAt: time,
   versions: [],
 });
+const imageUrl = 'https://m.media-amazon.com/images/I/current-product.jpg';
+const videoUrl = 'https://m.media-amazon.com/images/S/current-product.mp4';
+const mediaPlan = {
+  ...plan,
+  productSnapshot: {
+    ...product,
+    images: [imageUrl],
+    videos: [{ url: videoUrl }],
+    mediaMetadata: [
+      {
+        kind: 'image' as const,
+        url: 'https://m.media-amazon.com/images/I/wrong-product.jpg',
+        sourceUrl: 'https://www.amazon.com/dp/B012345679',
+        productSourceId: 'B012345679',
+        extractedAt: time,
+      },
+    ],
+  },
+};
 describe('content contracts, duration and safe text exports', () => {
+  it('accepts optional bounded selection for legacy plans and only approves media belonging to their snapshots', () => {
+    expect(contentPlanSchema.parse(plan).selectedMedia).toBeUndefined();
+    expect(
+      contentPlanSchema.parse({ ...mediaPlan, selectedMedia: [{ kind: 'image', url: imageUrl }] })
+        .selectedMedia,
+    ).toEqual([{ kind: 'image', url: imageUrl }]);
+    expect(contentMediaChoices(mediaPlan.productSnapshot)).toEqual([
+      { kind: 'image', url: imageUrl },
+      { kind: 'video', url: videoUrl },
+    ]);
+    for (const invalid of [
+      [
+        { kind: 'image', url: imageUrl },
+        { kind: 'image', url: `${imageUrl}#duplicate` },
+      ],
+      [{ kind: 'image', url: 'https://m.media-amazon.com/images/I/wrong-product.jpg' }],
+      [{ kind: 'image', url: 'http://127.0.0.1:3000/api/private' }],
+      [{ kind: 'image', url: 'https://example.com/current-product.jpg' }],
+      [{ kind: 'video', url: imageUrl }],
+      Array.from({ length: 51 }, (_, index) => ({ kind: 'image', url: `${imageUrl}?${index}` })),
+    ])
+      expect(contentPlanSchema.safeParse({ ...mediaPlan, selectedMedia: invalid }).success).toBe(
+        false,
+      );
+  });
+  it('refuses unsupported HLS selection and preserves per-generation media provenance in all text exports', () => {
+    const unsupported = {
+      ...mediaPlan,
+      productSnapshot: {
+        ...mediaPlan.productSnapshot,
+        videos: [{ url: 'https://m.media-amazon.com/images/S/index.m3u8' }],
+      },
+    };
+    expect(
+      contentMediaChoices(unsupported.productSnapshot).some((asset) => asset.kind === 'video'),
+    ).toBe(false);
+    const options = contentOptionsSchema.parse({});
+    const output = mockContent(mediaPlan).output;
+    const version = {
+      id: randomUUID(),
+      createdAt: time,
+      kind: 'generated' as const,
+      output,
+      metadata: {
+        mode: 'mock' as const,
+        options,
+        generatedAt: time,
+        sourceUpdatedAt: mediaPlan.productSnapshot.updatedAt,
+        templateId: mediaPlan.templateSnapshot.id,
+        evidence: mockContent(mediaPlan).evidence,
+        textDurationEstimate: estimateContentDuration(output, options),
+        selectedMedia: [{ kind: 'image' as const, url: imageUrl }],
+      },
+    };
+    const saved = contentPlanSchema.parse({
+      ...mediaPlan,
+      selectedMedia: [{ kind: 'video', url: videoUrl }],
+      currentVersionId: version.id,
+      versions: [version],
+    });
+    const json = JSON.parse(exportContentJson(saved)) as {
+      selectedMedia: { kind: string; url: string }[];
+    };
+    expect(json.selectedMedia).toEqual([{ kind: 'image', url: imageUrl }]);
+    expect(exportContentTxt(saved)).toContain(imageUrl);
+    expect(exportContentTxt(saved)).not.toContain(videoUrl);
+    const wrong = {
+      ...version,
+      metadata: {
+        ...version.metadata,
+        selectedMedia: [
+          { kind: 'image', url: 'https://m.media-amazon.com/images/I/wrong-product.jpg' },
+        ],
+      },
+    };
+    expect(contentPlanSchema.safeParse({ ...saved, versions: [wrong] }).success).toBe(false);
+  });
   it('keeps legacy defaults and accepts a custom content duration independently', () => {
     expect(contentOptionsSchema.parse({}).duration).toBe(30);
     expect(contentOptionsSchema.parse({ duration: 45 }).duration).toBe(45);

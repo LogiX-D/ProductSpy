@@ -1,0 +1,146 @@
+.backup-workspace {
+  display: grid;
+  gap: 22px;
+  min-width: 0;
+}
+.backup-section {
+  padding: 24px;
+  border: 1px solid var(--border, #e2e8e7);
+  border-radius: 12px;
+  background: #fff;
+  min-width: 0;
+}
+.backup-section h2 {
+  font-size: 18px;
+  margin: 0 0 12px;
+}
+.backup-section p {
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.backup-section-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+.backup-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+  padding: 14px 0;
+  border-bottom: 1px solid #e5e9e8;
+}
+.backup-counts dt {
+  color: #667875;
+  font-size: 13px;
+}
+.backup-counts dd {
+  margin: 6px 0 0;
+  font-size: 18px;
+  font-weight: 650;
+}
+.backup-privacy {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 15px;
+  background: #f0f7f5;
+  border-radius: 8px;
+  margin: 18px 0;
+}
+.backup-privacy svg {
+  flex: 0 0 auto;
+  margin-top: 4px;
+  color: #24665b;
+}
+.backup-privacy p {
+  margin: 0;
+  font-size: 13px;
+}
+.backup-checkbox {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  font-size: 14px;
+  margin: 16px 0;
+}
+.backup-checkbox input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  flex: 0 0 auto;
+}
+.backup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+.backup-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 16px;
+  font-size: 14px;
+}
+.backup-notice {
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #eaf5f0;
+  color: #245b45;
+  overflow-wrap: anywhere;
+}
+.backup-capacity-warning {
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #fff7e9;
+  color: #765824;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.backup-table-wrap {
+  overflow-x: auto;
+}
+.backup-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  min-width: 560px;
+  font-size: 14px;
+}
+.backup-table th,
+.backup-table td {
+  border-bottom: 1px solid #e5e9e8;
+  padding: 13px 12px;
+}
+.backup-table th {
+  color: #526b66;
+  font-weight: 600;
+}
+.backup-warnings {
+  padding-left: 22px;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.backup-section select {
+  display: block;
+  max-width: 100%;
+  margin-top: 8px;
+  padding: 9px 12px;
+  border: 1px solid #d5dedb;
+  border-radius: 8px;
+  background: #fff;
+}
+@media (max-width: 600px) {
+  .backup-section {
+    padding: 17px;
+  }
+  .backup-actions .button {
+    width: 100%;
+  }
+  .backup-counts {
+    gap: 14px 22px;
+  }
+}

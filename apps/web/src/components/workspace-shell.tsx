@@ -17,6 +17,7 @@ import {
   WandSparkles,
   ShieldCheck,
   X,
+  Settings2,
 } from 'lucide-react';
 import { workspaceCopy as copy } from './workspace-copy';
 
@@ -68,12 +69,14 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
   const comparisonPage = pathname.startsWith('/comparisons');
   const templatesPage = pathname.startsWith('/templates');
   const contentPage = pathname.startsWith('/content');
+  const settingsPage = pathname.startsWith('/settings');
   const navigation = [
     { href: '/', label: copy.common.dashboard, icon: LayoutDashboard, active: pathname === '/' },
     { href: '/products', label: copy.common.library, icon: Library, active: productPage },
     { href: '/comparisons', label: '竞品对比', icon: GitCompareArrows, active: comparisonPage },
     { href: '/templates', label: 'AI 模板', icon: FilePenLine, active: templatesPage },
     { href: '/content', label: '内容创作', icon: WandSparkles, active: contentPage },
+    { href: '/settings', label: '设置与备份', icon: Settings2, active: settingsPage },
   ];
   return (
     <div className="ws-shell">
@@ -115,15 +118,17 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
               <span className="ws-desktop-title">{copy.common.workspace}</span>
               <ChevronRight size={14} />
               <span>
-                {templatesPage
-                  ? 'AI 模板'
-                  : contentPage
-                    ? '内容创作'
-                    : comparisonPage
-                      ? '竞品对比'
-                      : productPage
-                        ? copy.common.library
-                        : copy.common.dashboard}
+                {settingsPage
+                  ? '设置与备份'
+                  : templatesPage
+                    ? 'AI 模板'
+                    : contentPage
+                      ? '内容创作'
+                      : comparisonPage
+                        ? '竞品对比'
+                        : productPage
+                          ? copy.common.library
+                          : copy.common.dashboard}
               </span>
             </div>
             <button

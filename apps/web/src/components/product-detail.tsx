@@ -165,6 +165,12 @@ export function ProductDetail({ id, initialTab }: { id: string; initialTab?: str
               <GitCompareArrows size={14} />
               加入竞品对比
             </Link>
+            <Link
+              className="button button-secondary"
+              href={`/templates?product=${encodeURIComponent(product.id)}`}
+            >
+              选择 AI 模板
+            </Link>
             <a
               className="button button-secondary"
               href={product.url}

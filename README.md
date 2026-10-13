@@ -1,12 +1,12 @@
 # ProductSpy
 
-本地优先的 Amazon 竞品素材采集与 AI 分析工具。当前版本 **0.7.0** 增加可自定义、校验、备份和恢复历史的 AI 模板，以及营销内容创作工作台：脚本、开场、分镜、口播、标题、创意和提示词；支持候选版本、人工编辑保护、比较、恢复及文本内容包导出。保留商品库、素材、竞品对比、Next.js、Manifest V3、安全配对、Windows 便携启动器和旧商品分析。操作见 [内容创作指南](docs/content-creation-guide.md)、[素材与对比指南](docs/media-comparison-guide.md)，验收见 [Phase 18 报告](docs/phase18-validation.md)；[Phase 17](docs/phase17-validation.md)、[Phase 16](docs/phase16-validation.md)及 Phase 9–14 报告保留原始历史结果。所有 Release 保持草稿，不公开发布。
+本地优先的 Amazon 竞品素材采集与 AI 分析工具。当前版本 **0.8.0** 连接商品、素材、竞品对比、AI 模板与内容方案：保留来源快照，提示资料更新或删除，选择创作参考素材，明确引用保存的商品分析与竞品推断。新增完整业务备份及历史容量管理，保留原 Next.js、Manifest V3、安全配对、Windows 便携启动器和全部旧资料。操作见 [完整工作流与备份指南](docs/workflow-backup-guide.md)、[内容创作指南](docs/content-creation-guide.md)、[素材与对比指南](docs/media-comparison-guide.md)，验收见 [Phase 19 报告](docs/phase19-validation.md)；[Phase 18](docs/phase18-validation.md)、[Phase 17](docs/phase17-validation.md)、[Phase 16](docs/phase16-validation.md)及 Phase 9–14 报告保留原始历史结果。所有 Release 保持草稿，不公开发布。
 
 仅支持 Amazon。此版本没有用户账号、支付、自动发布、价格监控、其他平台或多人协作。
 
 ## Windows 普通用户：不用安装开发工具
 
-1. 获取 `ProductSpy-0.7.0-windows-x64.zip`，**全部解压**，双击 **ProductSpy.cmd**。
+1. 获取 `ProductSpy-0.8.0-windows-x64.zip`，**全部解压**，双击 **ProductSpy.cmd**。
 2. 启动器使用内置 Node.js，启动本机工作台并打开 **http://127.0.0.1:3000**；不用安装 Node.js、pnpm 或数据库。
 3. 在启动窗口点击「打开插件文件夹」，按 Chrome `chrome://extensions` →「开发者模式」→「加载已解压的扩展程序」加载便携包的 **extension** 目录。
 4. 在工作台「安装与配对」中生成一次性配对码，填入插件并「连接工作台」。身份校验保留，配对码 2 分钟有效。

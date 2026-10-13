@@ -1,0 +1,107 @@
+.integration-references {
+  margin-top: 18px;
+  border-top: 1px solid var(--ws-border, #e2e8ed);
+  padding-top: 16px;
+  min-width: 0;
+}
+.integration-references h3 {
+  font-size: 14px;
+  margin: 0;
+}
+.integration-source-list {
+  margin: 8px 0 14px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+.integration-source-list li {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr);
+  gap: 10px;
+  font-size: 12px;
+  color: #52636d;
+  overflow-wrap: anywhere;
+}
+.integration-source-list strong {
+  color: #233c46;
+}
+.integration-snapshot {
+  margin-top: 14px;
+  font-size: 12px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.integration-snapshot summary {
+  cursor: pointer;
+  color: #317a78;
+}
+.integration-snapshot summary:focus-visible {
+  outline: 2px solid #317a78;
+  outline-offset: 3px;
+}
+.integration-snapshot p {
+  margin: 8px 0;
+}
+.integration-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin: 12px 0;
+  max-height: 380px;
+  overflow-y: auto;
+}
+.integration-media-choice {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 6px 10px;
+  align-items: start;
+  border: 1px solid var(--line);
+  padding: 9px;
+  border-radius: 7px;
+  min-width: 0;
+}
+.integration-media-choice img,
+.integration-video-label {
+  height: 70px;
+  width: 100%;
+  object-fit: contain;
+}
+.integration-media-choice > span {
+  grid-column: 2;
+  min-width: 0;
+}
+.integration-media-choice small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  overflow-wrap: anywhere;
+}
+.integration-media-choice select,
+.integration-media-source-note {
+  grid-column: 2;
+  width: 100%;
+  min-width: 0;
+  font-size: 11px;
+}
+.integration-context {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+  font-size: 13px;
+}
+@media (max-width: 375px) {
+  .integration-source-list li {
+    grid-template-columns: 65px minmax(0, 1fr);
+    gap: 7px;
+  }
+  .creation-panel-heading {
+    align-items: flex-start;
+  }
+  .creation-actions .button {
+    max-width: 100%;
+    white-space: normal;
+  }
+}
