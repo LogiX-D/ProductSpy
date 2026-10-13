@@ -1,12 +1,12 @@
 # ProductSpy
 
-本地优先的 Amazon 竞品素材采集与 AI 分析工具。当前版本 **0.6.0** 增加素材来源与质量信息、多选下载、目录选择、内容去重，以及 2–5 商品竞品对比、独立方案快照和 AI 对比历史。保留 Next.js、Manifest V3、安全配对、Windows 便携启动器、分组标签和旧商品分析。操作见 [素材与对比指南](docs/media-comparison-guide.md)，功能、真实页面证据与验收结果见 [Phase 17 报告](docs/phase17-validation.md)；[Phase 16](docs/phase16-validation.md)及 Phase 9–14 报告保留原始历史结果。所有 Release 保持草稿，不公开发布。
+本地优先的 Amazon 竞品素材采集与 AI 分析工具。当前版本 **0.7.0** 增加可自定义、校验、备份和恢复历史的 AI 模板，以及营销内容创作工作台：脚本、开场、分镜、口播、标题、创意和提示词；支持候选版本、人工编辑保护、比较、恢复及文本内容包导出。保留商品库、素材、竞品对比、Next.js、Manifest V3、安全配对、Windows 便携启动器和旧商品分析。操作见 [内容创作指南](docs/content-creation-guide.md)、[素材与对比指南](docs/media-comparison-guide.md)，验收见 [Phase 18 报告](docs/phase18-validation.md)；[Phase 17](docs/phase17-validation.md)、[Phase 16](docs/phase16-validation.md)及 Phase 9–14 报告保留原始历史结果。所有 Release 保持草稿，不公开发布。
 
 仅支持 Amazon。此版本没有用户账号、支付、自动发布、价格监控、其他平台或多人协作。
 
 ## Windows 普通用户：不用安装开发工具
 
-1. 获取 `ProductSpy-0.6.0-windows-x64.zip`，**全部解压**，双击 **ProductSpy.cmd**。
+1. 获取 `ProductSpy-0.7.0-windows-x64.zip`，**全部解压**，双击 **ProductSpy.cmd**。
 2. 启动器使用内置 Node.js，启动本机工作台并打开 **http://127.0.0.1:3000**；不用安装 Node.js、pnpm 或数据库。
 3. 在启动窗口点击「打开插件文件夹」，按 Chrome `chrome://extensions` →「开发者模式」→「加载已解压的扩展程序」加载便携包的 **extension** 目录。
 4. 在工作台「安装与配对」中生成一次性配对码，填入插件并「连接工作台」。身份校验保留，配对码 2 分钟有效。
@@ -261,7 +261,7 @@ pnpm test:portable
 Phase 11 新增分析编辑、草稿恢复、复制权限失败、版本冲突与 375 / 768 / 1280 宽度回归。E2E 每次使用独立 `.test-data/e2e/<时间>`，避免失败重跑被旧验收商品污染。跨版本升级、最终 ZIP 完整性与真实界面截图可单独复现（都先停止 3000 服务）：
 
 ```powershell
-pnpm test:upgrade --from artifacts/ProductSpy-0.5.2-windows-x64 --to artifacts/ProductSpy-0.6.0-windows-x64
+pnpm test:upgrade --from artifacts/ProductSpy-0.6.0-windows-x64 --to artifacts/ProductSpy-0.7.0-windows-x64
 node scripts/validate-release.mjs
 pnpm test:library-performance
 pnpm capture:experience

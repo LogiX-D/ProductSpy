@@ -110,6 +110,7 @@ for (const file of [
   'phase12-ai-quality.md',
   'library-guide.md',
   'media-comparison-guide.md',
+  'content-creation-guide.md',
 ])
   await cp(resolve(workspace, 'docs', file), resolve(directory, file));
 const firstRun = (await readFile(resolve(workspace, 'docs/windows-guide.md'), 'utf8'))

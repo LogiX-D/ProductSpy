@@ -2,7 +2,14 @@
 
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import Link from 'next/link';
-import { ChevronRight, ExternalLink, GitCompareArrows, RefreshCw, Star } from 'lucide-react';
+import {
+  ChevronRight,
+  ExternalLink,
+  GitCompareArrows,
+  RefreshCw,
+  Star,
+  WandSparkles,
+} from 'lucide-react';
 import { ApiRequestError, errorMessage, type Product } from '@productspy/shared';
 import { productRepository } from '../lib/storage/product-api';
 import { comparisonSelectionHref } from '../lib/comparison-api';
@@ -147,6 +154,13 @@ export function ProductDetail({ id, initialTab }: { id: string; initialTab?: str
             </div>
           </dl>
           <div className="ws-detail-actions">
+            <Link
+              className="button button-primary"
+              href={`/content?product=${encodeURIComponent(product.id)}`}
+            >
+              <WandSparkles size={14} />
+              创作营销内容
+            </Link>
             <Link className="button button-secondary" href={comparisonSelectionHref([product.id])}>
               <GitCompareArrows size={14} />
               加入竞品对比

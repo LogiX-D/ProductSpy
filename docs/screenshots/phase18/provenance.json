@@ -1,0 +1,122 @@
+{
+  "phase": 18,
+  "version": "0.7.0",
+  "capturedAt": "2026-10-13T12:57:29.415Z",
+  "verified": true,
+  "production": true,
+  "ai": "mock",
+  "realAiCalls": 0,
+  "productSource": "Retained actual Phase17 Amazon captures; no new Phase18 Amazon accuracy acceptance claimed",
+  "sourceEvidence": {
+    "phase": 17,
+    "captureStartedAt": "2026-10-13T08:23:03.216Z",
+    "file": ".test-data/phase17-amazon/acceptance/report.json",
+    "sha256": "14ef4ff3e0f255b3e1a853531edf9166710f176f3c8d6c294c37d20c09c0644f"
+  },
+  "stableChromeManualAcceptance": false,
+  "interceptedResponses": false,
+  "screenshots": [
+    {
+      "file": "01-templates-desktop.png",
+      "path": "docs/screenshots/phase18/01-templates-desktop.png",
+      "width": 1440,
+      "height": 1000,
+      "geometry": {
+        "viewport": 1440,
+        "documentWidth": 1440
+      },
+      "sha256": "c24c97f71cbaa7b39b345a23dc37af79be237b8aec6829fdb34c41bf0f0b70c3",
+      "realRenderedInterface": true
+    },
+    {
+      "file": "02-template-editor-preview.png",
+      "path": "docs/screenshots/phase18/02-template-editor-preview.png",
+      "width": 1440,
+      "height": 1000,
+      "geometry": {
+        "viewport": 1440,
+        "documentWidth": 1440
+      },
+      "sha256": "9738e42617053b0416de1b1c0b8074ed1c6b0566414931d8088aefe2127fd09b",
+      "realRenderedInterface": true
+    },
+    {
+      "file": "08-template-variable-preview.png",
+      "path": "docs/screenshots/phase18/08-template-variable-preview.png",
+      "width": 1440,
+      "height": 1000,
+      "geometry": {
+        "viewport": 1440,
+        "documentWidth": 1440
+      },
+      "sha256": "ae0b3f8dc5c1fc041a7a14e9e7d6bed1d144c2737d616d491014d9880ddcdead",
+      "realRenderedInterface": true
+    },
+    {
+      "file": "03-content-desktop.png",
+      "path": "docs/screenshots/phase18/03-content-desktop.png",
+      "width": 1440,
+      "height": 1000,
+      "geometry": {
+        "viewport": 1440,
+        "documentWidth": 1440
+      },
+      "sha256": "577879f23d19a5b941e2bfb6e65a5125fb99a065f823a057a6817b41017eaebb",
+      "realRenderedInterface": true
+    },
+    {
+      "file": "04-content-edit.png",
+      "path": "docs/screenshots/phase18/04-content-edit.png",
+      "width": 1440,
+      "height": 1000,
+      "geometry": {
+        "viewport": 1440,
+        "documentWidth": 1440
+      },
+      "sha256": "0ba5302ed64ca681c1aa8ce41792a475eb3a5a67cde7ebfee61ecfc563a12df5",
+      "realRenderedInterface": true
+    },
+    {
+      "file": "05-content-history.png",
+      "path": "docs/screenshots/phase18/05-content-history.png",
+      "width": 1440,
+      "height": 1000,
+      "geometry": {
+        "viewport": 1440,
+        "documentWidth": 1440
+      },
+      "sha256": "e9b4eeceb39960d100649d4902e75798e42451083237bf1cdb529c560fc93d7b",
+      "realRenderedInterface": true
+    },
+    {
+      "file": "06-content-mobile.png",
+      "path": "docs/screenshots/phase18/06-content-mobile.png",
+      "width": 375,
+      "height": 812,
+      "geometry": {
+        "viewport": 375,
+        "documentWidth": 375
+      },
+      "sha256": "dedcd010c8bd2c0ad38d0c62c73a4008fb0bd2610dbea5e2ca1d62376c330a0d",
+      "realRenderedInterface": true
+    },
+    {
+      "file": "07-templates-mobile.png",
+      "path": "docs/screenshots/phase18/07-templates-mobile.png",
+      "width": 375,
+      "height": 812,
+      "geometry": {
+        "viewport": 375,
+        "documentWidth": 375
+      },
+      "sha256": "5da63473b2f291688780a11ad03493b4b7770672302030b5e5294cc84600d061",
+      "realRenderedInterface": true
+    }
+  ],
+  "checks": [
+    "Production API writes actual retained public capture snapshots to the caller-owned portable data directory.",
+    "Mock first generation, manual editing and partial regeneration create 3 saved versions while retaining manual current.",
+    "Final disk JSON preserves current manual version and all 3 versions; no page errors or document-level overflow at1440/375px."
+  ],
+  "pageErrors": []
+}

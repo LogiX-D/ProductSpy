@@ -118,7 +118,7 @@ function centralDirectory(bytes) {
 }
 
 const privateSegment =
-  /^(?:\.env(?:\..*)?|\.data|\.test-data|\.git|\.pack-cache|\.bridge-.*|products\.json|comparisons\.json|media-downloads\.json|analysis-usage\.json|settings\.json|ai-settings\.protected\.json|launcher-state\.json|stop-request\.json|pairing(?:-settings)?\.json|logs|profile)$/i;
+  /^(?:\.env(?:\..*)?|\.data|\.test-data|\.git|\.pack-cache|\.bridge-.*|products\.json|comparisons\.json|templates\.json|content-plans\.json|media-downloads\.json|analysis-usage\.json|settings\.json|ai-settings\.protected\.json|launcher-state\.json|stop-request\.json|pairing(?:-settings)?\.json|logs|profile)$/i;
 const textFile =
   /(?:\.(?:js|cjs|mjs|json|map|html|css|svg|xml|ya?ml|md|txt|ps1|cmd|ini|conf|config)$|(?:^|\/)(?:LICENSE|NOTICE)(?:\.[^/]*)?$)/i;
 const tokenPatterns = [

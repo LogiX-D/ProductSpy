@@ -1,0 +1,333 @@
+.creation-layout {
+  display: grid;
+  grid-template-columns: minmax(210px, 270px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.creation-sidebar {
+  min-width: 0;
+  display: grid;
+  gap: 14px;
+  position: sticky;
+  top: 20px;
+}
+.creation-sidebar-list {
+  display: grid;
+  gap: 6px;
+  max-height: 65vh;
+  overflow-y: auto;
+}
+.creation-plan-button {
+  display: grid;
+  gap: 5px;
+  width: 100%;
+  padding: 13px 14px;
+  text-align: left;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  cursor: pointer;
+}
+.creation-plan-button[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 5%, var(--surface));
+}
+.creation-plan-button strong {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.creation-plan-button small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.creation-main {
+  min-width: 0;
+  display: grid;
+  gap: 20px;
+}
+.creation-panel {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface);
+  min-width: 0;
+}
+.creation-panel h2,
+.creation-panel h3 {
+  margin: 0;
+}
+.creation-panel h2 {
+  font-size: 19px;
+}
+.creation-panel h3 {
+  font-size: 15px;
+}
+.creation-panel-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.creation-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.creation-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 550;
+}
+.creation-field small {
+  color: var(--muted);
+  line-height: 1.6;
+  font-weight: 400;
+}
+.creation-field input,
+.creation-field select,
+.creation-field textarea,
+.creation-search {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 11px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--ink);
+  background: var(--surface);
+  font: inherit;
+}
+.creation-field textarea {
+  resize: vertical;
+  min-height: 92px;
+  line-height: 1.7;
+}
+.creation-field-wide {
+  grid-column: 1 / -1;
+}
+.creation-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px 15px;
+}
+.creation-checks label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+  font-size: 13px;
+  white-space: nowrap;
+}
+.creation-checks input {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  padding: 0;
+}
+.creation-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.creation-note {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.75;
+  margin: 10px 0 0;
+}
+.creation-notice {
+  padding: 12px 15px;
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 5%, var(--surface));
+  font-size: 13px;
+  line-height: 1.7;
+}
+.creation-output {
+  display: grid;
+  gap: 20px;
+}
+.creation-result {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 20px;
+  min-width: 0;
+}
+.creation-result:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.creation-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 9px;
+}
+.creation-result-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+  line-height: 1.85;
+  margin: 0 0 12px;
+}
+.creation-script {
+  padding: 14px 16px;
+  background: var(--bg);
+  border-radius: 8px;
+}
+.creation-versions {
+  display: grid;
+  gap: 8px;
+  max-height: 350px;
+  overflow-y: auto;
+  margin-top: 14px;
+}
+.creation-version {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+}
+.creation-version > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.creation-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.creation-comparison > div {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.creation-comparison h4 {
+  font-size: 13px;
+  margin: 12px 0 8px;
+}
+.creation-comparison p {
+  font-size: 13px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.8;
+}
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.template-card {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.template-card h2 {
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+}
+.template-card p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 0;
+}
+.template-card .creation-actions {
+  margin-top: auto;
+  padding-top: 6px;
+}
+.template-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+}
+.template-toolbar .creation-field {
+  flex: 1 1 180px;
+}
+.template-preview {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.8;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 14px;
+  background: var(--bg);
+  border-radius: 7px;
+}
+.template-variables {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.template-variables button {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 5px 7px;
+  background: var(--surface);
+  color: var(--accent);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.ws-mobile-nav {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+@media (max-width: 1100px) {
+  .template-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .creation-layout {
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+@media (max-width: 760px) {
+  .creation-layout {
+    grid-template-columns: 1fr;
+  }
+  .creation-sidebar {
+    position: static;
+  }
+  .creation-sidebar-list {
+    display: flex;
+    overflow-x: auto;
+    max-height: none;
+    padding-bottom: 6px;
+  }
+  .creation-plan-button {
+    flex: 0 0 220px;
+  }
+  .creation-fields,
+  .creation-comparison {
+    grid-template-columns: 1fr;
+  }
+  .creation-panel {
+    padding: 16px;
+  }
+  .template-grid {
+    grid-template-columns: 1fr;
+  }
+  .creation-result-header .creation-actions {
+    gap: 4px;
+  }
+}

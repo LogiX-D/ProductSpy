@@ -4,7 +4,7 @@
 
 ## 1. 解压并启动工作台
 
-1. 获取 `ProductSpy-0.6.0-windows-x64.zip`。本地构建产物位于项目的 `artifacts` 目录；当前 Release 保持草稿，下载需相应权限或维护者私下提供原包。
+1. 获取 `ProductSpy-0.7.0-windows-x64.zip`。本地构建产物位于项目的 `artifacts` 目录；当前 Release 保持草稿，下载需相应权限或维护者私下提供原包。
 2. 右键 ZIP，选择「全部解压缩」，放到你准备保留的目录。**先完整解压，再运行；不要在 ZIP 压缩窗口里双击。**
 3. 打开解压后的 ProductSpy 文件夹，双击 **ProductSpy.cmd**。
 4. 启动窗口出现后，会自动启动本机工作台并打开浏览器。如果默认浏览器不是 Chrome，在 Chrome 地址栏输入 **http://127.0.0.1:3000**。
@@ -24,7 +24,7 @@
 5. 选择便携包中的 **extension** 文件夹，而不是外层 ProductSpy 文件夹，也不是 ZIP 文件。
 6. 从 Chrome 工具栏的拼图按钮中找到 ProductSpy，将其固定到工具栏。
 
-如果只下载了 `ProductSpy-0.6.0-extension.zip`，先把它完整解压到长期保留的文件夹，再加载包含 `manifest.json` 的那个文件夹。不要在加载后删除或移动文件夹，否则 Chrome 将无法继续读取扩展。商店正式发布后可改用商店安装，但这个版本没有可用的正式商店安装链接。
+如果只下载了 `ProductSpy-0.7.0-extension.zip`，先把它完整解压到长期保留的文件夹，再加载包含 `manifest.json` 的那个文件夹。不要在加载后删除或移动文件夹，否则 Chrome 将无法继续读取扩展。商店正式发布后可改用商店安装，但这个版本没有可用的正式商店安装链接。
 
 源码开发者加载的是 `apps/extension/dist`，普通便携用户加载的是 **extension**。开发者命令见项目 README 的「源码开发」部分。
 
@@ -121,4 +121,4 @@
 | AI 未配置                    | 使用 Mock 即可完整演示；真实模式要配置自己的服务并重启工作台。                                                 |
 | 更新后商品不见               | 在「打开用户数据」检查 data 目录和备份，不要先删除目录；确认使用的是同一个 Windows 用户。                      |
 
-隐私详情见 [PRIVACY.md](../PRIVACY.md)。当前质量结果与人工待办见 [Phase 17 报告](phase17-validation.md)；[Phase 11 报告](phase11-validation.md)保留历史证据。不能把 Chrome for Testing 自动化结果当作正式 Chrome 人工验收。
+创作功能见 [内容创作指南](content-creation-guide.md)。隐私详情见 [PRIVACY.md](../PRIVACY.md)。当前质量结果与人工待办见 [Phase 18 报告](phase18-validation.md)；[Phase 17 报告](phase17-validation.md)、[Phase 11 报告](phase11-validation.md)保留历史证据。不能把 Chrome for Testing 自动化结果当作正式 Chrome 人工验收。

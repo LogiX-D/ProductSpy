@@ -7,9 +7,14 @@ import {
   type Product,
   type ProductAnalysis,
   type ComparisonGenerationResult,
+  type ContentPlan,
+  type ContentOptions,
+  type ContentField,
+  type ContentGenerationResult,
 } from '@productspy/shared';
 import { capturedEvidence, scriptDurations } from './generation';
 import { mockComparison } from './comparison-mock';
+import { mockContent } from './content-generation';
 
 const markets = {
   'zh-CN': { US: '美国', UK: '英国', EU: '欧洲', JP: '日本' },
@@ -105,6 +110,13 @@ function scenario(product: Product, language: AnalysisOptions['language']): stri
 }
 
 export class MockAIProvider implements AIProvider {
+  async createContent(
+    plan: ContentPlan,
+    options?: ContentOptions,
+    selectedFields?: ContentField[],
+  ): Promise<ContentGenerationResult> {
+    return mockContent(plan, options, selectedFields);
+  }
   async compare(
     products: Product[],
     options?: AnalysisOptions,

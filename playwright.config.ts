@@ -7,7 +7,11 @@ export default defineConfig({
   expect: { timeout: 15000 },
   workers: 1,
   use: { baseURL: 'http://127.0.0.1:3000', trace: 'retain-on-failure', actionTimeout: 15000 },
-  reporter: [['list'], ['html', { open: 'never' }]],
+  reporter: [
+    ['list'],
+    ['html', { open: 'never' }],
+    ['json', { outputFile: '.test-data/phase18/e2e-report.json' }],
+  ],
   webServer: {
     command: 'pnpm start',
     url: 'http://127.0.0.1:3000/api/status',

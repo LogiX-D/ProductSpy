@@ -1,4 +1,5 @@
 import type { ComparisonGenerationResult } from '../comparison';
+import type { ContentOptions, ContentPlan, ContentGenerationResult } from '../content';
 
 export interface ProductVideo {
   url: string;
@@ -89,7 +90,9 @@ export interface AnalysisUsageRecord {
   mode: 'mock' | 'real';
   model?: string;
   status: 'started' | 'succeeded' | 'failed' | 'conflict';
-  options: AnalysisOptions;
+  options?: AnalysisOptions;
+  contentOptions?: ContentOptions;
+  contentFields?: import('../templates').ContentField[];
   fields?: AnalysisField[];
   usage?: AnalysisUsage;
   error?: string;
@@ -222,6 +225,11 @@ export interface ProductSyncAdapter {
 }
 
 export interface AIProvider {
+  createContent?(
+    plan: ContentPlan,
+    options?: ContentOptions,
+    selectedFields?: import('../templates').ContentField[],
+  ): Promise<ContentGenerationResult>;
   compare?(products: Product[], options?: AnalysisOptions): Promise<ComparisonGenerationResult>;
   analyze(product: Product, options?: AnalysisOptions): Promise<ProductAnalysis>;
   generate?(product: Product, options?: AnalysisOptions): Promise<AIGenerationResult>;

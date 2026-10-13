@@ -61,6 +61,14 @@ export const analysisOptionsSchema = z.object({
   goal: z.enum(['awareness', 'consideration', 'conversion']).default('consideration'),
   customInstructions: z.string().trim().max(4000).default(''),
 });
+/** Content duration is independent of the legacy product-analysis preference contract. */
+export const contentOptionsSchema = analysisOptionsSchema
+  .extend({
+    duration: z.number().int().min(5).max(180).default(30),
+    creativeDirection: z.string().trim().max(2000).default(''),
+    customPrompt: z.string().trim().max(4000).default(''),
+  })
+  .strict();
 export const analysisPricingSchema = z.object({
   inputUsdPerMillion: z.number().finite().min(0).max(10000),
   outputUsdPerMillion: z.number().finite().min(0).max(10000),
@@ -115,7 +123,25 @@ export const analysisUsageRecordSchema = z.object({
   mode: z.enum(['mock', 'real']),
   model: z.string().max(200).optional(),
   status: z.enum(['started', 'succeeded', 'failed', 'conflict']),
-  options: analysisOptionsSchema,
+  options: analysisOptionsSchema.optional(),
+  contentOptions: contentOptionsSchema.optional(),
+  contentFields: z
+    .array(
+      z.enum([
+        'sellingCopy',
+        'shortVideoScript',
+        'hooks',
+        'storyboard',
+        'voiceover',
+        'titlesDescriptions',
+        'imagePrompts',
+        'videoPrompts',
+        'adAngles',
+      ]),
+    )
+    .min(1)
+    .max(9)
+    .optional(),
   fields: z.array(analysisFieldSchema).min(1).max(12).optional(),
   usage: analysisUsageSchema.optional(),
   error: z.string().max(1000).optional(),

@@ -63,6 +63,8 @@ describe('distributable package boundaries', () => {
         '.env.local',
         'products.json',
         'comparisons.json',
+        'templates.json',
+        'content-plans.json',
         'media-downloads.json',
         'analysis-usage.json',
         '.bridge-credentials.json',

@@ -7,3 +7,5 @@ export * from './library';
 export * from './library-transfer';
 export * from './media';
 export * from './comparison';
+export * from './content';
+export * from './templates';

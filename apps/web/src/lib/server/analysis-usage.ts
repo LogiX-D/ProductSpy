@@ -11,12 +11,17 @@ import {
 import { AppError } from './errors';
 import { dataDirectory } from './product-repository';
 
-const usageRecordSchema = analysisUsageRecordSchema.extend({
-  fingerprint: z.string().regex(/^[a-f0-9]{64}$/),
-  versionId: z.string().min(1).max(100).optional(),
-  errorCode: z.number().int().optional(),
-  cooldownUntil: z.string().datetime().optional(),
-});
+const usageRecordSchema = analysisUsageRecordSchema
+  .extend({
+    fingerprint: z.string().regex(/^[a-f0-9]{64}$/),
+    versionId: z.string().min(1).max(100).optional(),
+    errorCode: z.number().int().optional(),
+    cooldownUntil: z.string().datetime().optional(),
+  })
+  .refine(
+    (record) => Boolean(record.options) !== Boolean(record.contentOptions),
+    '用量记录必须具有唯一且准确的生成参数',
+  );
 export type UsageRecord = z.infer<typeof usageRecordSchema>;
 
 interface UsageRegistry {
@@ -115,7 +120,15 @@ export class AnalysisUsageLedger {
   begin(
     input: Pick<
       UsageRecord,
-      'requestId' | 'productId' | 'fingerprint' | 'mode' | 'model' | 'options' | 'fields'
+      | 'requestId'
+      | 'productId'
+      | 'fingerprint'
+      | 'mode'
+      | 'model'
+      | 'options'
+      | 'fields'
+      | 'contentOptions'
+      | 'contentFields'
     >,
   ): Promise<void> {
     return this.transaction(async () => {
@@ -155,11 +168,21 @@ export class AnalysisUsageLedger {
       const record = usageRecordSchema.safeParse({
         ...input,
         id: randomUUID(),
-        options: { ...input.options, customInstructions: '' },
+        ...(input.options ? { options: { ...input.options, customInstructions: '' } } : {}),
+        ...(input.contentOptions
+          ? {
+              contentOptions: {
+                ...input.contentOptions,
+                customInstructions: '',
+                customPrompt: '',
+                creativeDirection: '',
+              },
+            }
+          : {}),
         status: 'started',
         createdAt: new Date().toISOString(),
       });
-      if (!record.success)
+      if (!record.success || Boolean(input.options) === Boolean(input.contentOptions))
         throw new AppError(
           503,
           'AI 请求配置或用量记录格式无效，请检查模型名称与参数；尚未调用 AI 服务。',
