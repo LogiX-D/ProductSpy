@@ -1,5 +1,6 @@
+import { publishAtomicFile } from './atomic-file';
 import { createHash, randomUUID } from 'node:crypto';
-import { mkdir, readFile, rename, unlink, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import {
   MAX_ANALYSIS_VERSIONS,
@@ -199,7 +200,7 @@ export class LocalJsonProductRepository implements ProductRepository {
         flag: 'wx',
         mode: 0o600,
       });
-      await rename(temporaryFile, this.filePath);
+      await publishAtomicFile(temporaryFile, this.filePath);
     } finally {
       await unlink(temporaryFile).catch((error: unknown) => {
         if (!(error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT')) {

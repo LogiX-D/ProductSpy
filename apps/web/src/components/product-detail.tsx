@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import Link from 'next/link';
-import { ChevronRight, ExternalLink, RefreshCw, Star } from 'lucide-react';
+import { ChevronRight, ExternalLink, GitCompareArrows, RefreshCw, Star } from 'lucide-react';
 import { ApiRequestError, errorMessage, type Product } from '@productspy/shared';
 import { productRepository } from '../lib/storage/product-api';
+import { comparisonSelectionHref } from '../lib/comparison-api';
 import { formatDate, formatPrice } from '../lib/format';
 import { Badge, Button, CopyButton, EmptyState, ErrorNotice, LoadingState } from './ui';
 import { ProductGallery } from './product-gallery';
@@ -146,6 +147,10 @@ export function ProductDetail({ id, initialTab }: { id: string; initialTab?: str
             </div>
           </dl>
           <div className="ws-detail-actions">
+            <Link className="button button-secondary" href={comparisonSelectionHref([product.id])}>
+              <GitCompareArrows size={14} />
+              加入竞品对比
+            </Link>
             <a
               className="button button-secondary"
               href={product.url}
@@ -215,7 +220,9 @@ export function ProductDetail({ id, initialTab }: { id: string; initialTab?: str
               </section>
             </div>
           )}
-          {tab === value && value === 'media' && <ProductMedia product={product} />}
+          {tab === value && value === 'media' && (
+            <ProductMedia key={product.id} product={product} />
+          )}
           {tab === value && value === 'analysis' && (
             <AnalysisPanel product={product} onUpdate={setProduct} />
           )}

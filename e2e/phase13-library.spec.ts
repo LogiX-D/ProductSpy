@@ -1,4 +1,4 @@
-import { test, expect, type APIRequestContext } from '@playwright/test';
+import { test, expect, type APIRequestContext } from './test-fixtures';
 import type { Product } from '../packages/shared/src/types';
 import { libraryFixtures } from './library-fixtures';
 import type {

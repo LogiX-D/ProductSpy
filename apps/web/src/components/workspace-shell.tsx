@@ -8,6 +8,7 @@ import { FirstUseGuide, OPEN_SETUP_EVENT } from './first-use-guide';
 import { PRODUCTSPY_VERSION } from '@productspy/shared';
 import {
   ChevronRight,
+  GitCompareArrows,
   LayoutDashboard,
   Library,
   Puzzle,
@@ -62,9 +63,11 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
     };
   }, [showHelp]);
   const productPage = pathname.startsWith('/products');
+  const comparisonPage = pathname.startsWith('/comparisons');
   const navigation = [
-    { href: '/', label: copy.common.dashboard, icon: LayoutDashboard, active: !productPage },
+    { href: '/', label: copy.common.dashboard, icon: LayoutDashboard, active: pathname === '/' },
     { href: '/products', label: copy.common.library, icon: Library, active: productPage },
+    { href: '/comparisons', label: '竞品对比', icon: GitCompareArrows, active: comparisonPage },
   ];
   return (
     <div className="ws-shell">
@@ -105,7 +108,13 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
               <span className="ws-mobile-brand">ProductSpy</span>
               <span className="ws-desktop-title">{copy.common.workspace}</span>
               <ChevronRight size={14} />
-              <span>{productPage ? copy.common.library : copy.common.dashboard}</span>
+              <span>
+                {comparisonPage
+                  ? '竞品对比'
+                  : productPage
+                    ? copy.common.library
+                    : copy.common.dashboard}
+              </span>
             </div>
             <button
               type="button"

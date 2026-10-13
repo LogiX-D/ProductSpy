@@ -33,6 +33,7 @@ export class AmazonProductExtractor {
     if (!sourceId || !title) return null;
     const price = this.field('price', () => this.extractPrice()) ?? {};
     const images = this.field('images', () => this.extractImages()) ?? [];
+    const videos = this.field('videos', () => this.extractVideos()) ?? [];
     return {
       source: 'amazon',
       sourceId,
@@ -41,7 +42,11 @@ export class AmazonProductExtractor {
       ...price,
       mainImage: images[0],
       images,
-      videos: this.field('videos', () => this.extractVideos()) ?? [],
+      videos,
+      specifications: this.field('specifications', () => this.extractSpecifications()) ?? [],
+      mediaMetadata:
+        this.field('media metadata', () => this.extractMediaMetadata(images, videos, sourceId)) ??
+        [],
       description: this.field('description', () => this.extractDescription()),
       bulletPoints: this.field('bullet points', () => this.extractBulletPoints()) ?? [],
       brand: this.field('brand', () => this.extractBrand()),
@@ -56,6 +61,94 @@ export class AmazonProductExtractor {
       this.productText('name') ??
       this.meta('og:title', 'twitter:title', 'title')
     );
+  }
+
+  extractSpecifications(): NonNullable<ProductDraft['specifications']> {
+    const entries = new Map<string, { name: string; value: string; source: 'page' }>();
+    // These are the current product's own tables. Never scan recommendation/A+ comparison tables.
+    for (const row of this.document.querySelectorAll(
+      '#productOverview_feature_div tr, #productDetails_techSpec_section_1 tr, #productDetails_techSpec_section_2 tr, #productDetails_detailBullets_sections1 tr',
+    )) {
+      const cells = row.querySelectorAll('th, td');
+      const name = cleanText(cells[0]?.textContent)
+        ?.replace(/[:：]$/, '')
+        .trim();
+      const value = cleanText(cells[1]?.textContent);
+      if (!name || !value || name.length > 200 || value.length > 2000) continue;
+      if (/customer reviews|best sellers rank|客户评价|畅销商品排名/i.test(name)) continue;
+      if (/^ASIN$/i.test(name) && value.toUpperCase() !== this.extractAsin()) continue;
+      if (!entries.has(name.toLowerCase()))
+        entries.set(name.toLowerCase(), { name, value, source: 'page' });
+    }
+    return [...entries.values()].slice(0, 80);
+  }
+
+  extractMediaMetadata(
+    images: string[],
+    videos: ProductVideo[],
+    sourceId: string,
+  ): NonNullable<ProductDraft['mediaMetadata']> {
+    const extractedAt = new Date().toISOString();
+    const sourceUrl = new URL(`/dp/${sourceId}`, this.url).href;
+    const metadata = new Map<string, NonNullable<ProductDraft['mediaMetadata']>[number]>();
+    const known = new Set(images.map((image) => this.imageIdentity(image)));
+    const add = (value: unknown, size?: unknown): void => {
+      const url = httpUrl(value, this.url);
+      if (!url || !known.has(this.imageIdentity(url)) || metadata.size >= 370) return;
+      const dims =
+        Array.isArray(size) &&
+        size.length === 2 &&
+        size.every(
+          (n: unknown) => typeof n === 'number' && Number.isInteger(n) && n > 0 && n <= 30000,
+        )
+          ? { width: size[0] as number, height: size[1] as number }
+          : {};
+      metadata.set(url, {
+        ...metadata.get(url),
+        url,
+        kind: 'image',
+        extractedAt,
+        sourceUrl,
+        productSourceId: sourceId,
+        ...dims,
+      });
+    };
+    images.forEach((url) => add(url));
+    for (const element of this.document.querySelectorAll(
+      '#landingImage, #imgBlkFront, #main-image, #ebooksImgBlkFront, #altImages img, #imageBlock img.a-dynamic-image',
+    )) {
+      add(element.getAttribute('data-old-hires'));
+      add(element.getAttribute('src'));
+      try {
+        const dynamic = asRecord(
+          JSON.parse(element.getAttribute('data-a-dynamic-image') ?? '{}') as unknown,
+        );
+        Object.entries(dynamic ?? {}).forEach(([url, size]) => add(url, size));
+      } catch {
+        /* Preserve URLs when dimension data is malformed. */
+      }
+    }
+    for (const value of scriptValues(this.document, [
+      'colorImages',
+      'imageGalleryData',
+      'imageData',
+    ])) {
+      for (const image of flattenRecords(value)) {
+        add(image.hiRes);
+        add(image.large);
+        Object.entries(asRecord(image.main) ?? {}).forEach(([url, size]) => add(url, size));
+      }
+    }
+    videos.forEach((video) =>
+      metadata.set(video.url, {
+        url: video.url,
+        kind: 'video',
+        extractedAt,
+        sourceUrl,
+        productSourceId: sourceId,
+      }),
+    );
+    return [...metadata.values()].slice(0, 400);
   }
 
   extractPrice(): PriceValue {
@@ -232,7 +325,7 @@ export class AmazonProductExtractor {
             (group) => Array.isArray(group) && hasCurrentMain(group),
           );
           if (matching.length) groups.push(...matching);
-          else if (!initial && Object.values(record).length === 1)
+          else if (!mainKeys.size && !initial && Object.values(record).length === 1)
             groups.push(...Object.values(record));
           else if ('hiRes' in record || 'large' in record || 'main' in record) groups.push(record);
         }

@@ -92,6 +92,17 @@ for (const directory of directories) {
         raw.outcome === 'navigation-or-capture-error'
           ? 'Direct navigation or capture failed within bounded timeout; no protection bypass or retry'
           : 'Capture failed; technical details remain in ignored evidence';
+    if (!raw.draft && raw.outcome === 'error') {
+      const prefix = `${String(index + 1).padStart(2, '0')}-${new URL(raw.requestedUrl).hostname}-${raw.requestedUrl.split('/dp/')[1]}`;
+      const document = new JSDOM(await readFile(resolve(directory, `${prefix}.html`), 'utf8'), {
+        virtualConsole: new VirtualConsole(),
+      }).window.document;
+      if (document.querySelector('form[action*="validateCaptcha" i], #captchacharacters')) {
+        row.challenge = true;
+        row.failureReason =
+          'Retained real HTML contains an Amazon verification form (errors_page/validateCaptcha); capture failed, no form submitted or bypass attempted. Initial live tool missed this marker; independent retained-HTML audit corrects the classification.';
+      }
+    }
     if (raw.draft) {
       const prefix = `${String(index + 1).padStart(2, '0')}-${new URL(raw.requestedUrl).hostname}-${raw.requestedUrl.split('/dp/')[1]}`;
       const document = new JSDOM(await readFile(resolve(directory, `${prefix}.html`), 'utf8'), {
@@ -159,8 +170,9 @@ for (const directory of directories) {
   }
 }
 
+const phase17 = batches.every((batch) => batch.extensionVersion === '0.6.0');
 const initial = rows
-  .filter((row) => row.kind === 'primary' && row.extensionVersion === '0.5.1')
+  .filter((row) => row.kind === 'primary' && row.extensionVersion === (phase17 ? '0.6.0' : '0.5.1'))
   .slice(0, 10);
 const countFields = (selected) =>
   Object.fromEntries(
@@ -176,7 +188,7 @@ const countFields = (selected) =>
   );
 const publicReport = {
   schemaVersion: 1,
-  phase: 16,
+  phase: phase17 ? 17 : 16,
   auditedAt: new Date().toISOString(),
   realPages: true,
   mock: false,
@@ -194,9 +206,9 @@ const publicReport = {
   boundaries: [
     'Chrome for Testing automation does not replace stable Chrome / mouse / high-DPI / ordinary Windows manual acceptance.',
     'Visible or structured merchant content comparison does not verify the merchant claims themselves.',
-    'No current buybox price on two initial pages; other variant / recommendation prices were not substituted.',
+    'Missing current buybox prices remain unknown; other variant / recommendation prices are not substituted.',
     'Missing videos do not prove no video exists. HEAD status 200 is not playback or decoding success; video playback remains pending.',
-    'Initial book author-as-brand and joined-description defects remain shown as failures, separate from later corrected captures.',
+    'Each field verdict refers to its dated captured page; historical defects are not silently relabelled.',
     'Actual duplicate library upsert / persistence belongs to isolated E2E and portable tests; this report repeats live extraction without saving to a library.',
   ],
   batches,

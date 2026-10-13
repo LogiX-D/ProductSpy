@@ -1,4 +1,4 @@
-import { test, expect, type APIRequestContext, type Page } from '@playwright/test';
+import { test, expect, type APIRequestContext, type Page } from './test-fixtures';
 import { readFile } from 'node:fs/promises';
 import type { Product } from '../packages/shared/src/types';
 

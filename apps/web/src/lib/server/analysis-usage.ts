@@ -1,5 +1,6 @@
+import { publishAtomicFile } from './atomic-file';
 import { createHash, randomUUID } from 'node:crypto';
-import { mkdir, readFile, rename, unlink, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { z } from 'zod';
 import {
@@ -94,7 +95,7 @@ export class AnalysisUsageLedger {
         flag: 'wx',
         mode: 0o600,
       });
-      await rename(temporary, this.filePath);
+      await publishAtomicFile(temporary, this.filePath);
     } catch {
       throw new AppError(
         500,

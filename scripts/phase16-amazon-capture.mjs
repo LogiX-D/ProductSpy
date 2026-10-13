@@ -26,9 +26,11 @@ const selectedSamples = argument('--url')
   ? samples.filter((sample) => sample[2] === argument('--url'))
   : samples;
 if (!selectedSamples.length) throw new Error('Choose one of the listed public sample URLs');
+const phase = Number(argument('--phase') ?? 16);
+if (![16, 17].includes(phase)) throw new Error('Supported evidence phases: 16, 17');
 const output = resolve(
   argument('--output') ??
-    `.test-data/phase16-amazon/${new Date().toISOString().replace(/[:.]/g, '-')}`,
+    `.test-data/phase${phase}-amazon/${new Date().toISOString().replace(/[:.]/g, '-')}`,
 );
 await mkdir(output, { recursive: true });
 const extension = resolve('apps/extension/dist');
@@ -48,7 +50,7 @@ const blockedHosts = new Set();
 const startedAt = new Date().toISOString();
 const metadata = {
   schemaVersion: 1,
-  phase: 16,
+  phase,
   extensionVersion: manifest.version,
   realPages: true,
   mock: false,
@@ -80,6 +82,8 @@ let session;
 let extensionId;
 
 async function pageChallenge() {
+  if (await page.locator('form[action*="validateCaptcha" i], #captchacharacters').count())
+    return true;
   const body = await page.locator('body').innerText({ timeout: 8000 });
   return (
     /validateCaptcha|\/errors\/validateCaptcha/.test(page.url()) ||

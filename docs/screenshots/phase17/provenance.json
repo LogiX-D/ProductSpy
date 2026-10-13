@@ -1,0 +1,203 @@
+{
+  "phase": 17,
+  "version": "0.6.0",
+  "source": "Caller-owned isolated production workspace using actual Phase 17 Amazon captures",
+  "capturedAt": "2026-10-13T11:38:24.833Z",
+  "verified": true,
+  "realProductCaptures": true,
+  "fixture": false,
+  "ai": "mock",
+  "realAiCalls": 0,
+  "stableChromeManualAcceptance": false,
+  "nativeFolderPickerManualAcceptance": false,
+  "isolatedDataRoot": ".test-data/phase17-screenshots-delivery/user",
+  "originalCaptureReport": ".test-data/phase17-amazon/acceptance/report.json",
+  "originalCaptureReportSha256": "14ef4ff3e0f255b3e1a853531edf9166710f176f3c8d6c294c37d20c09c0644f",
+  "products": [
+    {
+      "asin": "B006JH8T3S",
+      "title": "Logitech 罗技 HD Pro 网络摄像头 C920 宽屏视频通话和录制,1080p 摄像头,台式机或笔记本电脑网络摄像头",
+      "pageUrl": "https://www.amazon.com/dp/B006JH8T3S",
+      "originalCapturedAt": "2026-10-13T08:23:17.971Z",
+      "category": "electronics",
+      "kind": "primary",
+      "imageCount": 10,
+      "videoCount": 2
+    },
+    {
+      "asin": "B00JUM2V4W",
+      "title": "Hanes P170 - EcoSmart 连帽运动衫",
+      "pageUrl": "https://www.amazon.com/dp/B00JUM2V4W",
+      "originalCapturedAt": "2026-10-13T08:23:41.269Z",
+      "category": "clothing",
+      "kind": "primary",
+      "imageCount": 8,
+      "videoCount": 0
+    },
+    {
+      "asin": "B00JUM2V5G",
+      "title": "Hanes P170 - EcoSmart 连帽运动衫",
+      "pageUrl": "https://www.amazon.com/dp/B00JUM2V5G?th=1&psc=1",
+      "originalCapturedAt": "2026-10-13T08:23:45.558Z",
+      "category": "clothing",
+      "kind": "visible-variant",
+      "imageCount": 7,
+      "videoCount": 0
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "01-comparison-desktop.png",
+      "width": 1440,
+      "height": 940,
+      "fullPage": false,
+      "path": "docs/screenshots/phase17/01-comparison-desktop.png",
+      "sha256": "23c91965d23c300d3ca92cddd23f77fe7e4789ae075b33c173f19def561c1223",
+      "geometry": {
+        "viewport": 1440,
+        "bodyWidth": 1440,
+        "tableViewport": 1186,
+        "tableContent": 1186
+      },
+      "realRenderedInterface": true,
+      "interceptedResponses": false
+    },
+    {
+      "file": "02-comparison-mock-analysis.png",
+      "width": 1440,
+      "height": 940,
+      "fullPage": false,
+      "path": "docs/screenshots/phase17/02-comparison-mock-analysis.png",
+      "sha256": "8e290ff4041af472139026fce4418af3e3d24f44f84b25afdd89446c9f51c67d",
+      "geometry": {
+        "viewport": 1440,
+        "bodyWidth": 1440,
+        "tableViewport": 1186,
+        "tableContent": 1186
+      },
+      "realRenderedInterface": true,
+      "interceptedResponses": false
+    },
+    {
+      "file": "03-comparison-editor.png",
+      "width": 1440,
+      "height": 940,
+      "fullPage": false,
+      "path": "docs/screenshots/phase17/03-comparison-editor.png",
+      "sha256": "ca179b26541b5f9b6108853d15173833cd1206972cab4070df7663a45f3fa109",
+      "geometry": {
+        "viewport": 1440,
+        "bodyWidth": 1440,
+        "tableViewport": 1186,
+        "tableContent": 1186
+      },
+      "realRenderedInterface": true,
+      "interceptedResponses": false
+    },
+    {
+      "file": "04-media-images-desktop.png",
+      "width": 1440,
+      "height": 940,
+      "fullPage": false,
+      "path": "docs/screenshots/phase17/04-media-images-desktop.png",
+      "sha256": "eabfddf1865b57fcf031ffdde69702f9c00afc0965ecf098715dbc0aaeb56138",
+      "geometry": {
+        "viewport": 1440,
+        "bodyWidth": 1440,
+        "tableViewport": null,
+        "tableContent": null
+      },
+      "realRenderedInterface": true,
+      "interceptedResponses": false
+    },
+    {
+      "file": "05-media-videos-desktop.png",
+      "width": 1440,
+      "height": 940,
+      "fullPage": false,
+      "path": "docs/screenshots/phase17/05-media-videos-desktop.png",
+      "sha256": "febebf0c1439db297cd065cfb8830813919c1bfa7c447693e136047b19d9a2ce",
+      "geometry": {
+        "viewport": 1440,
+        "bodyWidth": 1440,
+        "tableViewport": null,
+        "tableContent": null
+      },
+      "realRenderedInterface": true,
+      "interceptedResponses": false
+    },
+    {
+      "file": "06-comparison-mobile.png",
+      "width": 375,
+      "height": 812,
+      "fullPage": false,
+      "path": "docs/screenshots/phase17/06-comparison-mobile.png",
+      "sha256": "94d2b968de6ee4b09efcb93e80520b803ad627945e362c5986eec18ad10ad7ea",
+      "geometry": {
+        "viewport": 375,
+        "bodyWidth": 375,
+        "tableViewport": 341,
+        "tableContent": 600
+      },
+      "realRenderedInterface": true,
+      "interceptedResponses": false
+    },
+    {
+      "file": "07-comparison-analysis-mobile.png",
+      "width": 375,
+      "height": 812,
+      "fullPage": false,
+      "path": "docs/screenshots/phase17/07-comparison-analysis-mobile.png",
+      "sha256": "0b7edc7eb9b8158645dde82421b1a98ae1402778d487575520b2455be5f817e3",
+      "geometry": {
+        "viewport": 375,
+        "bodyWidth": 375,
+        "tableViewport": 341,
+        "tableContent": 600
+      },
+      "realRenderedInterface": true,
+      "interceptedResponses": false
+    },
+    {
+      "file": "08-media-mobile.png",
+      "width": 375,
+      "height": 812,
+      "fullPage": false,
+      "path": "docs/screenshots/phase17/08-media-mobile.png",
+      "sha256": "9361a978bbc4584fad4e3e8bab53013eb020702248e7ddc0edff10f9ed7e6288",
+      "geometry": {
+        "viewport": 375,
+        "bodyWidth": 375,
+        "tableViewport": null,
+        "tableContent": null
+      },
+      "realRenderedInterface": true,
+      "interceptedResponses": false
+    }
+  ],
+  "checks": [
+    "Fresh caller-owned isolated library verified in local data directory",
+    "Three real Amazon captures reused with original extraction timestamps and ASINs",
+    "Two distinct Hanes clothing variants selected via actual UI",
+    "Comparison saved and reloaded with two independent product snapshots",
+    "Actual Mock analysis generated through UI; zero real AI requests",
+    "Actual edit UI rendered without fabricating output",
+    "Images and videos rendered separately using real extracted links",
+    "Desktop and 375px layouts have no page-level horizontal overflow",
+    "No DOM rewriting, no network response mocks, no stable Chrome or native Windows dialog claims"
+  ],
+  "consoleErrors": [],
+  "browser": {
+    "distribution": "Chrome for Testing (Playwright Chromium channel), not installed Chrome stable",
+    "version": "156.0.8078.4",
+    "headless": true
+  },
+  "comparisonId": "4b6ec69c-5926-415e-91ad-0ddf9c3a1a42",
+  "mediaSourceSelection": {
+    "passed": true,
+    "sourceChoices": 8,
+    "preservesCapturedPreferred": true,
+    "previewSwitchVerified": true
+  },
+  "completedAt": "2026-10-13T11:38:30.409Z"
+}

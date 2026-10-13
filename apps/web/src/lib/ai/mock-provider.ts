@@ -6,8 +6,10 @@ import {
   type AnalysisOptions,
   type Product,
   type ProductAnalysis,
+  type ComparisonGenerationResult,
 } from '@productspy/shared';
 import { capturedEvidence, scriptDurations } from './generation';
+import { mockComparison } from './comparison-mock';
 
 const markets = {
   'zh-CN': { US: '美国', UK: '英国', EU: '欧洲', JP: '日本' },
@@ -103,6 +105,12 @@ function scenario(product: Product, language: AnalysisOptions['language']): stri
 }
 
 export class MockAIProvider implements AIProvider {
+  async compare(
+    products: Product[],
+    options?: AnalysisOptions,
+  ): Promise<ComparisonGenerationResult> {
+    return mockComparison(products, options);
+  }
   async analyze(product: Product, options?: AnalysisOptions): Promise<ProductAnalysis> {
     return (await this.generate(product, options)).analysis;
   }

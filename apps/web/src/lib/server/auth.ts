@@ -1,5 +1,6 @@
+import { publishAtomicFile } from './atomic-file';
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
-import { mkdir, readFile, rename, unlink, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { AppError } from './errors';
 import { dataDirectory } from './product-repository';
@@ -124,7 +125,7 @@ async function writeCredentials(credentials: Credentials): Promise<void> {
       flag: 'wx',
       mode: 0o600,
     });
-    await rename(temporaryFile, join(directory, '.bridge-credentials.json'));
+    await publishAtomicFile(temporaryFile, join(directory, '.bridge-credentials.json'));
     state().credentials = credentials;
   } catch {
     throw new AppError(500, '无法保存本机扩展配对配置，请检查工作台文件权限');

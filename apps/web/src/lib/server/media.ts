@@ -1,6 +1,8 @@
 import { AppError } from './errors';
+import { identifyMedia } from '@productspy/shared';
 
 export const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+export const MAX_VIDEO_BYTES = 64 * 1024 * 1024;
 const ALLOWED_IMAGE_HOSTS = new Set([
   'm.media-amazon.com',
   'images-na.ssl-images-amazon.com',
@@ -38,7 +40,7 @@ export function validateImageUrl(value: string | null): URL {
   return url;
 }
 
-function hasImageSignature(bytes: Uint8Array, contentType: string): boolean {
+export function hasImageSignature(bytes: Uint8Array, contentType: string): boolean {
   const header = new TextDecoder('ascii').decode(bytes.subarray(0, 32));
   switch (contentType) {
     case 'image/jpeg':
@@ -74,12 +76,17 @@ export interface DownloadedImage {
 }
 
 /** Narrow image downloader, never an arbitrary URL proxy. */
-export async function fetchAmazonImage(value: string | null): Promise<DownloadedImage> {
+export async function fetchAmazonImage(
+  value: string | null,
+  signal?: AbortSignal,
+): Promise<DownloadedImage> {
   const url = validateImageUrl(value);
   try {
     const response = await fetch(url, {
       redirect: 'error',
-      signal: AbortSignal.timeout(15000),
+      signal: signal
+        ? AbortSignal.any([signal, AbortSignal.timeout(15000)])
+        : AbortSignal.timeout(15000),
       cache: 'no-store',
       headers: { Accept: 'image/jpeg,image/png,image/webp,image/gif,image/avif' },
     });
@@ -131,8 +138,97 @@ export async function fetchAmazonImage(value: string | null): Promise<Downloaded
     }
     return { bytes, contentType, filename: downloadFilename(url, extension) };
   } catch (error) {
+    if (signal?.aborted) throw new AppError(499, '已取消素材下载');
     if (error instanceof AppError) throw error;
     console.error('[ProductSpy media] Image download failed', error);
     throw new AppError(502, '图片下载失败或超时，请重试，或打开原图后手动保存');
+  }
+}
+
+export function validateVideoUrl(value: string | null): URL {
+  if (!value || value.length > 4096) throw new AppError(400, '缺少有效的视频地址');
+  const media = identifyMedia(value, 'video');
+  if (media.format === 'hls') throw new AppError(415, 'HLS 视频流不支持直接下载，请打开原始链接');
+  if (!media.downloadable)
+    throw new AppError(400, '仅支持 Amazon 媒体 CDN 上公开的 MP4 或 WebM HTTPS 视频');
+  const url = new URL(value);
+  url.hash = '';
+  return url;
+}
+
+/** Bounded public-file retrieval only; no HLS conversion, cookies, redirects or authentication. */
+export async function fetchAmazonVideo(
+  value: string | null,
+  signal?: AbortSignal,
+): Promise<DownloadedImage> {
+  const url = validateVideoUrl(value);
+  try {
+    const response = await fetch(url, {
+      redirect: 'error',
+      cache: 'no-store',
+      signal: signal
+        ? AbortSignal.any([signal, AbortSignal.timeout(60000)])
+        : AbortSignal.timeout(60000),
+      headers: { Accept: 'video/mp4,video/webm' },
+    });
+    if (!response.ok || response.redirected)
+      throw new AppError(502, '视频链接失效或无法公开访问，请打开原始链接确认');
+    const contentType =
+      response.headers.get('content-type')?.split(';')[0]?.trim().toLowerCase() ?? '';
+    const expected = url.pathname.toLowerCase().endsWith('.webm') ? 'video/webm' : 'video/mp4';
+    if (contentType !== expected) {
+      await response.body?.cancel();
+      throw new AppError(415, '视频响应格式不匹配，不下载 HTML、受保护内容或视频流');
+    }
+    const declared = response.headers.get('content-length');
+    if (declared && (!/^\d+$/.test(declared) || Number(declared) > MAX_VIDEO_BYTES)) {
+      await response.body?.cancel();
+      throw new AppError(413, '视频超过 64 MiB 限制，请打开原始链接');
+    }
+    if (!response.body) throw new AppError(502, '视频响应为空');
+    const reader = response.body.getReader();
+    const chunks: Uint8Array[] = [];
+    let length = 0;
+    try {
+      while (true) {
+        const chunk = await reader.read();
+        if (chunk.done) break;
+        length += chunk.value.byteLength;
+        if (length > MAX_VIDEO_BYTES) {
+          await reader.cancel();
+          throw new AppError(413, '视频超过 64 MiB 限制，请打开原始链接');
+        }
+        chunks.push(chunk.value);
+      }
+    } finally {
+      reader.releaseLock();
+    }
+    const bytes = new Uint8Array(length);
+    let offset = 0;
+    for (const chunk of chunks) {
+      bytes.set(chunk, offset);
+      offset += chunk.byteLength;
+    }
+    const header = new TextDecoder('ascii').decode(bytes.subarray(0, 32));
+    const imageBrands = /avif|avis|heic|heix|hevc|mif1|msf1/;
+    const mp4Brands = /isom|iso[2-9]|mp4[12]|avc1|M4V |M4A |qt {2}|dash|MSNV/;
+    const valid =
+      expected === 'video/mp4'
+        ? bytes.length >= 12 &&
+          header.slice(4, 8) === 'ftyp' &&
+          !imageBrands.test(header.slice(8)) &&
+          mp4Brands.test(header.slice(8))
+        : [0x1a, 0x45, 0xdf, 0xa3].every((byte, index) => bytes[index] === byte);
+    if (!valid) throw new AppError(415, '响应内容不是有效的 MP4 / WebM 视频');
+    return {
+      bytes,
+      contentType,
+      filename: downloadFilename(url, expected === 'video/mp4' ? 'mp4' : 'webm'),
+    };
+  } catch (error) {
+    if (signal?.aborted) throw new AppError(499, '已取消素材下载');
+    if (error instanceof AppError) throw error;
+    console.error('[ProductSpy media] Public video download failed', error);
+    throw new AppError(502, '视频下载失败或超时，请重试或打开原始链接');
   }
 }

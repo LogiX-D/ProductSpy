@@ -1,5 +1,6 @@
 import { AmazonProductExtractor } from '../extractors';
 import type { ContentRequest, ContentResponse } from '../background/messages';
+import { isAmazonVerificationPage } from '../extractors/access-state';
 
 declare global {
   interface Window {
@@ -14,6 +15,14 @@ if (!window.__productspyExtractorInstalled) {
     (request: ContentRequest, sender, respond: (result: ContentResponse) => void) => {
       if (sender.id !== chrome.runtime.id || request.type !== 'PRODUCTSPY_EXTRACT') return;
       try {
+        if (isAmazonVerificationPage(document)) {
+          respond({
+            status: 'error',
+            error:
+              'Amazon 当前显示访问验证页面，暂时无法采集。请在浏览器自行确认访问状态后再使用插件；ProductSpy 不绕过验证。',
+          });
+          return;
+        }
         const draft = new AmazonProductExtractor(document, location.href).extract();
         respond(
           draft

@@ -95,6 +95,18 @@ function validateProductUrls(product: Product): void {
     safeUrl(video.url, true);
     if (video.thumbnail) safeUrl(video.thumbnail, true);
   }
+  for (const asset of product.mediaMetadata ?? []) {
+    safeUrl(asset.url, true);
+    const source = safeUrl(asset.sourceUrl, false);
+    const sourceAsin = source.pathname.match(
+      /\/(?:dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})(?:\/|$)/i,
+    )?.[1];
+    if (
+      asset.productSourceId !== product.sourceId ||
+      sourceAsin?.toUpperCase() !== product.sourceId
+    )
+      throw new Error('素材元数据与所属商品 ASIN 不匹配');
+  }
   const versionIds = product.analysisHistory?.map((version) => version.id) ?? [];
   if (new Set(versionIds).size !== versionIds.length)
     throw new Error('商品分析历史包含重复的版本编号，请检查导入文件');

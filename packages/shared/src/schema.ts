@@ -178,6 +178,34 @@ export const draftSchema = z.object({
   videos: z.array(z.object({ url: httpUrlSchema, thumbnail: httpUrlSchema.optional() })).max(30),
   bulletPoints: z.array(z.string().max(12000)).max(50),
   description: z.string().max(50000).optional(),
+  specifications: z
+    .array(
+      z
+        .object({
+          name: z.string().trim().min(1).max(200),
+          value: z.string().trim().min(1).max(2000),
+          source: z.literal('page'),
+        })
+        .strict(),
+    )
+    .max(80)
+    .optional(),
+  mediaMetadata: z
+    .array(
+      z
+        .object({
+          url: httpUrlSchema,
+          kind: z.enum(['image', 'video']),
+          extractedAt: z.string().datetime(),
+          sourceUrl: httpUrlSchema.refine(isAmazonProductUrl),
+          productSourceId: z.string().regex(/^[A-Z0-9]{10}$/),
+          width: z.number().int().min(1).max(30000).optional(),
+          height: z.number().int().min(1).max(30000).optional(),
+        })
+        .strict(),
+    )
+    .max(400)
+    .optional(),
 });
 export const productSchema = draftSchema.extend({
   id: z.string().min(1).max(100),

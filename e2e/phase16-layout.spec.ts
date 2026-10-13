@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './test-fixtures';
 
 // Normal viewport checks do not reproduce or resolve the user's 55 × 58 blank
 // window. That symptom remains a separate manual browser acceptance item.

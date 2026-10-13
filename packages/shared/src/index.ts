@@ -5,3 +5,5 @@ export * from './http';
 export * from './version';
 export * from './library';
 export * from './library-transfer';
+export * from './media';
+export * from './comparison';

@@ -105,7 +105,12 @@ for (const file of ['node.exe', 'LICENSE'])
     resolve(directory, 'runtime', file),
   );
 await cp(resolve(workspace, 'PRIVACY.md'), resolve(directory, 'PRIVACY.md'));
-for (const file of ['ai-provider-guide.md', 'phase12-ai-quality.md', 'library-guide.md'])
+for (const file of [
+  'ai-provider-guide.md',
+  'phase12-ai-quality.md',
+  'library-guide.md',
+  'media-comparison-guide.md',
+])
   await cp(resolve(workspace, 'docs', file), resolve(directory, file));
 const firstRun = (await readFile(resolve(workspace, 'docs/windows-guide.md'), 'utf8'))
   .replace('(../PRIVACY.md)', '(PRIVACY.md)')

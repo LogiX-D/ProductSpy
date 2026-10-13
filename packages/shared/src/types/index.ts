@@ -1,3 +1,5 @@
+import type { ComparisonGenerationResult } from '../comparison';
+
 export interface ProductVideo {
   url: string;
   thumbnail?: string;
@@ -134,6 +136,17 @@ export interface Product {
   videos: ProductVideo[];
   bulletPoints: string[];
   description?: string;
+  /** Text observed on the product's own specifications table, not independently verified. */
+  specifications?: { name: string; value: string; source: 'page' }[];
+  mediaMetadata?: {
+    url: string;
+    kind: 'image' | 'video';
+    extractedAt: string;
+    sourceUrl: string;
+    productSourceId: string;
+    width?: number;
+    height?: number;
+  }[];
   createdAt: string;
   updatedAt: string;
   aiAnalysis?: ProductAnalysis;
@@ -209,6 +222,7 @@ export interface ProductSyncAdapter {
 }
 
 export interface AIProvider {
+  compare?(products: Product[], options?: AnalysisOptions): Promise<ComparisonGenerationResult>;
   analyze(product: Product, options?: AnalysisOptions): Promise<ProductAnalysis>;
   generate?(product: Product, options?: AnalysisOptions): Promise<AIGenerationResult>;
 }

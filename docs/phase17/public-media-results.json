@@ -1,0 +1,30 @@
+{
+  "phase": 17,
+  "version": "0.6.0",
+  "capturedAt": "2026-10-13T08:51:38.431Z",
+  "realPublicResources": true,
+  "noProtectionBypass": true,
+  "nativePickerAcceptance": false,
+  "aiCalls": 0,
+  "rows": [
+    {
+      "kind": "image",
+      "asin": "B006JH8T3S",
+      "publicHost": "m.media-amazon.com",
+      "httpStatus": 200,
+      "contentType": "image/jpeg",
+      "bytes": 92396,
+      "sha256": "c245688dc38fc6e473043682d02dcd3d6a7b72169af0f78a22c8456767eb34f5",
+      "status": "downloaded"
+    },
+    {
+      "kind": "video",
+      "asin": "B006JH8T3S",
+      "publicHost": "m.media-amazon.com",
+      "httpStatus": 413,
+      "contentType": "application/json",
+      "status": "failed",
+      "error": "视频超过 64 MiB 限制，请打开原始链接"
+    }
+  ]
+}

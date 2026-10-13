@@ -6,7 +6,7 @@ import {
   type Page,
   type Worker,
   type APIRequestContext,
-} from '@playwright/test';
+} from './test-fixtures';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import type { Product, ProductDraft } from '../packages/shared/src/types';
@@ -85,7 +85,11 @@ test('production extension → capture → save → workspace → Mock AI → pe
   const pageErrors: string[] = [];
   context.on('page', (page) => page.on('pageerror', (error) => pageErrors.push(error.message)));
   try {
-    const worker = context.serviceWorkers()[0] ?? (await context.waitForEvent('serviceworker'));
+    // MV3 startup can exceed the 15s action limit under Windows disk/build load.
+    // Keep a separate bounded startup wait; capture/save assertions remain unchanged.
+    const worker =
+      context.serviceWorkers()[0] ??
+      (await context.waitForEvent('serviceworker', { timeout: 45000 }));
     const html = await readFile(
       resolve('apps/extension/tests/fixtures/jsonld-product.html'),
       'utf8',
@@ -170,18 +174,26 @@ test('production extension → capture → save → workspace → Mock AI → pe
     await context.route(`${BASE}/api/media?**`, (route) =>
       route.fulfill({ status: 200, contentType: 'image/png', body: PNG }),
     );
+    // Headless browser cannot display a system save dialog. Explicit fallback acknowledgement
+    // covers browser download handling; Windows directory picker is a separate manual gate.
+    await context.addInitScript(() =>
+      Object.defineProperty(window, 'showSaveFilePicker', { value: undefined, configurable: true }),
+    );
+    await workspace.reload();
+    await workspace.getByRole('tab', { name: /^素材/ }).click();
+    await workspace.getByRole('checkbox', { name: /我的浏览器已开启/ }).check();
     const singleDownload = workspace.waitForEvent('download');
     await workspace
       .getByRole('button', { name: /^下载图片 \d+$/ })
       .first()
       .click();
     const image = await singleDownload;
-    expect(image.suggestedFilename()).toBe(`${ASIN}-01.png`);
+    expect(image.suggestedFilename()).toBe(`Portable Coffee Grinder-${ASIN}-图片-01.png`);
     await image.saveAs(testInfo.outputPath(image.suggestedFilename()));
     const zipDownload = workspace.waitForEvent('download');
     await workspace.getByRole('button', { name: '下载全部图片（ZIP）', exact: true }).click();
     const archive = await zipDownload;
-    expect(archive.suggestedFilename()).toBe(`${ASIN}-images.zip`);
+    expect(archive.suggestedFilename()).toBe(`Portable Coffee Grinder-${ASIN}-图片-素材.zip`);
     const zipPath = testInfo.outputPath(archive.suggestedFilename());
     await archive.saveAs(zipPath);
     expect((await readFile(zipPath)).subarray(0, 2).toString()).toBe('PK');
@@ -422,7 +434,9 @@ test('the first action grants activeTab after activating a previously background
     },
   );
   try {
-    const worker = context.serviceWorkers()[0] ?? (await context.waitForEvent('serviceworker'));
+    const worker =
+      context.serviceWorkers()[0] ??
+      (await context.waitForEvent('serviceworker', { timeout: 45000 }));
     const extensionId = new URL(worker.url()).hostname;
     const popup = await context.newPage();
     await popup.goto(`chrome-extension://${extensionId}/popup.html`);
@@ -494,7 +508,9 @@ test('API rejects untrusted writes and unsupported media URLs', async ({ request
 test('local API rejects anonymous reads, forged extension access and cross-site session bootstrap', async ({
   playwright,
 }) => {
-  const anonymous = await playwright.request.newContext();
+  const anonymous = await playwright.request.newContext({
+    storageState: { cookies: [], origins: [] },
+  });
   try {
     const read = await anonymous.get(`${BASE}/api/products`, { headers: WEB_HEADERS });
     expect([401, 403]).toContain(read.status());
@@ -532,6 +548,13 @@ test('empty workspace explains portable installation and expired pairing can rec
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({ ok: true, data: [] }),
+    }),
+  );
+  await page.route(`${BASE}/api/library`, (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: true, data: { products: [], groups: [], tags: [] } }),
     }),
   );
   await page.clock.install();

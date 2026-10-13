@@ -1,0 +1,122 @@
+.media-destination {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  padding: 16px;
+  margin: 18px 0;
+}
+.media-destination > div:first-child {
+  flex: 1;
+  min-width: 220px;
+}
+.media-destination p {
+  overflow-wrap: anywhere;
+  margin-top: 6px;
+}
+.media-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.media-destination > p,
+.media-browser-confirm {
+  flex-basis: 100%;
+}
+.media-browser-confirm,
+.media-selection > label,
+.media-select-image {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.media-browser-confirm input,
+.media-selection input,
+.media-select-image input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent, #176b62);
+}
+.media-selection {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin: 14px 0 18px;
+}
+.media-select-image {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.ws-media-card .product-image {
+  height: 210px;
+  padding: 18px;
+  background: white;
+}
+.media-quality {
+  display: grid;
+  gap: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.media-quality > label {
+  display: grid;
+  gap: 5px;
+}
+.media-quality select {
+  width: 100%;
+  padding: 7px;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.media-quality small {
+  font-size: 11px;
+}
+.media-results {
+  margin: 14px 0 22px;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+.media-results li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+  padding: 8px 0;
+  overflow-wrap: anywhere;
+}
+.media-video-placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 160px;
+  margin-bottom: 12px;
+  border-radius: 7px;
+  background: #eef3f4;
+  color: #4e6269;
+  padding: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+.media-image-error {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--muted);
+}
+@media (max-width: 500px) {
+  .media-actions,
+  .media-selection .button {
+    flex-grow: 1;
+  }
+  .media-destination {
+    padding: 12px;
+  }
+}

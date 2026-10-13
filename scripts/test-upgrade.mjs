@@ -52,8 +52,8 @@ const placeholderKey = 'phase16-upgrade-placeholder-no-real-key';
 
 if (values.help) {
   console.log(
-    'node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.5.1-windows-x64 --to artifacts/ProductSpy-0.5.2-windows-x64\n' +
-      'Requires Windows and a free port 3000. Accepts frozen 0.4.0, 0.5.0 or 0.5.1 source packages. Uses only fresh .test-data/phase16-upgrade data and isolated browser preferences. Existing services are never stopped.',
+    'node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.5.2-windows-x64 --to artifacts/ProductSpy-0.6.0-windows-x64\n' +
+      'Requires Windows and a free port 3000. Accepts frozen 0.4.0, 0.5.0, 0.5.1 or 0.5.2 source packages. Uses only fresh .test-data upgrade fixtures and isolated browser preferences. Existing services are never stopped.',
   );
 } else {
   await main();
@@ -62,14 +62,14 @@ if (values.help) {
 async function main() {
   assert.equal(process.platform, 'win32', 'Portable upgrade regression requires Windows.');
   const { version } = JSON.parse(await readFile(resolve('package.json'), 'utf8'));
-  const oldPackage = resolve(values.from ?? 'artifacts/ProductSpy-0.4.0-windows-x64');
+  const oldPackage = resolve(values.from ?? 'artifacts/ProductSpy-0.5.2-windows-x64');
   const newPackage = resolve(values.to ?? `artifacts/ProductSpy-${version}-windows-x64`);
   assert.notEqual(
     oldPackage.toLowerCase(),
     newPackage.toLowerCase(),
     'Upgrade requires two distinct package directories.',
   );
-  const evidenceParent = resolve('.test-data/phase16-upgrade');
+  const evidenceParent = resolve('.test-data/phase17-upgrade');
   await mkdir(evidenceParent, { recursive: true });
   const evidenceRoot = await mkdtemp(
     join(evidenceParent, `${new Date().toISOString().replace(/[:.]/g, '-')}-`),
@@ -364,8 +364,8 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
     const oldInventory = await inspectPackage(oldPackage);
     const newInventory = await inspectPackage(newPackage);
     assert(
-      ['0.4.0', '0.5.0', '0.5.1'].includes(oldInventory.version),
-      'Upgrade fixture must run the actual frozen 0.4.0, 0.5.0 or 0.5.1 portable package.',
+      ['0.4.0', '0.5.0', '0.5.1', '0.5.2'].includes(oldInventory.version),
+      'Upgrade fixture must run an actual frozen 0.4.0–0.5.2 portable package.',
     );
     assert.equal(
       newInventory.version,
@@ -410,7 +410,7 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
     });
     assertCompleteAnalysis(oldAnalysis);
     const baselineLibrary = { groups: [], tags: [] };
-    if (['0.5.0', '0.5.1'].includes(oldInventory.version)) {
+    if (['0.5.0', '0.5.1', '0.5.2'].includes(oldInventory.version)) {
       const grouped = await request('/api/library', 'POST', {
         kind: 'group',
         action: 'create',
@@ -740,6 +740,91 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
       name: 'new package restart preserves complete edited Product and analysis, then releases owned processes',
       passed: true,
     });
+    if (newInventory.version === '0.6.0') {
+      const comparisonLaunch = await start(newPackage, newInventory.version);
+      const beforeComparison = await request(`/api/products/${encodeURIComponent(saved.id)}`);
+      const extra = await request('/api/products', 'POST', {
+        ...fixture,
+        sourceId: 'B0COMPARE2',
+        url: 'https://www.amazon.com/dp/B0COMPARE2',
+        title: 'Phase 17 合成竞品（升级测试）',
+        currency: 'GBP',
+        price: '£18',
+        specifications: [{ name: 'Material', value: 'Merchant-declared steel', source: 'page' }],
+        mediaMetadata: [
+          {
+            url: fixture.mainImage,
+            kind: 'image',
+            productSourceId: 'B0COMPARE2',
+            sourceUrl: 'https://www.amazon.com/dp/B0COMPARE2',
+            extractedAt: new Date().toISOString(),
+            width: 1800,
+            height: 1800,
+          },
+        ],
+      });
+      let plan = await request('/api/comparisons', 'POST', {
+        name: 'Upgrade snapshot fixture',
+        productIds: [saved.id, extra.id],
+      });
+      const generated = await request('/api/analyze-comparison', 'POST', {
+        comparisonId: plan.id,
+        expectedUpdatedAt: plan.updatedAt,
+        requestId: randomUUID(),
+        options: { language: 'ja', market: 'JP', platform: 'Shorts' },
+      });
+      plan = generated.plan;
+      assert.equal(plan.analysisMetadata.mode, 'mock');
+      assert.equal(plan.analysisMetadata.evidence.reviewTextAnalyzed, false);
+      const firstVersion = plan.analysisHistory[0];
+      plan = await request(`/api/comparisons/${plan.id}`, 'PATCH', {
+        expectedUpdatedAt: plan.updatedAt,
+        analysis: { ...plan.analysis, coreDifferences: ['人工对比结论，升级与恢复必须保留。'] },
+      });
+      assert.equal(plan.analysisHistory.length, 2);
+      const backup = await request('/api/comparisons/backup');
+      const preview = await request('/api/comparisons/backup', 'POST', { backup });
+      assert.equal(preview.conflicts.length, 1);
+      const restoredBackup = await request('/api/comparisons/backup', 'POST', {
+        backup,
+        commit: true,
+        expectedRevision: preview.revision,
+        policy: 'preserve',
+      });
+      assert.equal(restoredBackup.skipped, 1);
+      assert.deepEqual(await request(`/api/comparisons/${plan.id}`), plan);
+      await request(`/api/products/${encodeURIComponent(extra.id)}`, 'DELETE');
+      assert.deepEqual(
+        await request(`/api/comparisons/${plan.id}`),
+        plan,
+        'Deleting source product cannot delete independent snapshots/history.',
+      );
+      assert.deepEqual(
+        await request(`/api/products/${encodeURIComponent(saved.id)}`),
+        beforeComparison,
+        'Comparison operations cannot alter original upgraded product or AI versions.',
+      );
+      const comparisonBytes = await readFile(join(dataRoot, 'data/comparisons.json'));
+      await stop(comparisonLaunch);
+      const comparisonRestart = await start(newPackage, newInventory.version);
+      assert.deepEqual(await readFile(join(dataRoot, 'data/comparisons.json')), comparisonBytes);
+      assert.deepEqual(await request(`/api/comparisons/${plan.id}`), plan);
+      const restored = await request(`/api/comparisons/${plan.id}`, 'PATCH', {
+        expectedUpdatedAt: plan.updatedAt,
+        restoreVersionId: firstVersion.id,
+      });
+      assert.equal(restored.analysisHistory.length, 3);
+      assert.deepEqual(restored.analysis, firstVersion.analysis);
+      assert.deepEqual(
+        await request(`/api/products/${encodeURIComponent(saved.id)}`),
+        beforeComparison,
+      );
+      await stop(comparisonRestart);
+      report.checks.push({
+        name: '0.6.0 independent comparison snapshots, Mock/edited/restored versions, safe backup conflicts, deleted source survival and restart preserve original upgraded Product/history',
+        passed: true,
+      });
+    }
     report.passed = true;
   } catch (error) {
     failure = error;

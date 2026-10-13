@@ -1,10 +1,22 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { Download, FolderCog, Grid2X2, List, ListChecks, RefreshCw, Search, X } from 'lucide-react';
+import Link from 'next/link';
+import {
+  Download,
+  FolderCog,
+  GitCompareArrows,
+  Grid2X2,
+  List,
+  ListChecks,
+  RefreshCw,
+  Search,
+  X,
+} from 'lucide-react';
 import { errorMessage, MAX_BATCH_PRODUCTS } from '@productspy/shared';
 import { useLibrary } from '@/lib/use-library';
 import { productRepository } from '@/lib/storage/product-api';
+import { comparisonSelectionHref } from '@/lib/comparison-api';
 import { Button, EmptyState, ErrorNotice, LoadingState, PageHeading } from './ui';
 import { ProductCard } from './product-card';
 import { OpenSetupButton } from './first-use-guide';
@@ -334,6 +346,20 @@ export function ProductsLibrary() {
       {selecting && (
         <>
           <div className="library-selection-row">
+            {selected.length >= 2 && selected.length <= 5 && !writesDisabled ? (
+              <Link
+                className="button button-primary"
+                href={comparisonSelectionHref(selected.map((product) => product.id))}
+              >
+                <GitCompareArrows size={15} />
+                加入竞品对比
+              </Link>
+            ) : (
+              <Button variant="secondary" disabled title="请选择 2–5 个商品">
+                <GitCompareArrows size={15} />
+                加入竞品对比（2–5 个）
+              </Button>
+            )}
             <Button
               variant="ghost"
               disabled={writesDisabled || !paginated.products.length}

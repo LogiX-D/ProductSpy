@@ -3,7 +3,22 @@ import { resolve } from 'node:path';
 const config: NextConfig = {
   output: 'standalone',
   outputFileTracingRoot: resolve(import.meta.dirname, '../..'),
-  outputFileTracingExcludes: { '/*': ['.env*', '.data/**/*', '../../.test-data/**/*'] },
+  outputFileTracingExcludes: {
+    '/*': [
+      '.env*',
+      '.data/**/*',
+      '../../.test-data/**/*',
+      '../../.pack-cache/**/*',
+      '../../artifacts/**/*',
+      '../../.git/**/*',
+      '../../docs/**/*',
+      '../../e2e/**/*',
+      '**/*.test.ts',
+      '../../packages/**/*.test.ts',
+      '../../scripts/**/*',
+      '../../apps/extension/tests/**/*',
+    ],
+  },
   transpilePackages: ['@productspy/shared'],
   poweredByHeader: false,
   devIndicators: false,

@@ -8,7 +8,7 @@ const fromWeb = createRequire(resolve(workspace, 'apps/web/package.json'));
 const JSZip = fromWeb('jszip');
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const stamp = new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-');
-const output = resolve(workspace, '.test-data/phase16-release', stamp, 'zip-validation.json');
+const output = resolve(workspace, '.test-data/release-validation', stamp, 'zip-validation.json');
 const report = {
   schemaVersion: 1,
   checkedAt: new Date().toISOString(),
@@ -118,7 +118,7 @@ function centralDirectory(bytes) {
 }
 
 const privateSegment =
-  /^(?:\.env(?:\..*)?|\.data|\.test-data|\.git|\.pack-cache|\.bridge-.*|products\.json|analysis-usage\.json|settings\.json|ai-settings\.protected\.json|launcher-state\.json|stop-request\.json|pairing(?:-settings)?\.json|logs|profile)$/i;
+  /^(?:\.env(?:\..*)?|\.data|\.test-data|\.git|\.pack-cache|\.bridge-.*|products\.json|comparisons\.json|media-downloads\.json|analysis-usage\.json|settings\.json|ai-settings\.protected\.json|launcher-state\.json|stop-request\.json|pairing(?:-settings)?\.json|logs|profile)$/i;
 const textFile =
   /(?:\.(?:js|cjs|mjs|json|map|html|css|svg|xml|ya?ml|md|txt|ps1|cmd|ini|conf|config)$|(?:^|\/)(?:LICENSE|NOTICE)(?:\.[^/]*)?$)/i;
 const tokenPatterns = [
