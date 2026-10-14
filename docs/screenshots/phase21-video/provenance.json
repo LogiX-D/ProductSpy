@@ -1,0 +1,35 @@
+{
+  "capturedWith": "Frozen rc.1 popup.html in CFT 156.0.8078.4 headless browser tab",
+  "viewport": { "width": 1365, "height": 900 },
+  "stableChromeManualAcceptance": false,
+  "nativeToolbarDimensionsVerified": false,
+  "realPublicPages": true,
+  "librarySaves": 0,
+  "paidAiCalls": 0,
+  "images": [
+    {
+      "file": "docs/screenshots/phase21-video/cerave-capture-3.png",
+      "source": ".test-data/final-video-timing/2026-10-14T07-48-33-767Z/B00TTD9BRC-3-popup.png",
+      "sha256": "6b473926ffb358507690b8d32e5b5b943c447f74396d9826b1bae177ff1a7420",
+      "bytes": 45182,
+      "asin": "B00TTD9BRC",
+      "captureOrdinal": 3,
+      "captureCompletedAt": "2026-10-14T07:49:06.915Z",
+      "videoCount": 2,
+      "visualInspection": "Viewed original screenshot; ASIN and video count match report. No credentials visible.",
+      "edited": false
+    },
+    {
+      "file": "docs/screenshots/phase21-video/oxo-capture-3.png",
+      "source": ".test-data/final-video-timing/2026-10-14T07-48-33-767Z/B0000CCY1E-3-popup.png",
+      "sha256": "d2cbd1bb39eb813c1b95fd5b2ca106cac054d9990dc212e55708f4b278afb7cc",
+      "bytes": 37554,
+      "asin": "B0000CCY1E",
+      "captureOrdinal": 3,
+      "captureCompletedAt": "2026-10-14T07:49:30.287Z",
+      "videoCount": 1,
+      "visualInspection": "Viewed original screenshot; ASIN and video count match report. No credentials visible.",
+      "edited": false
+    }
+  ]
+}

@@ -65,7 +65,7 @@ describe('first-use popup recovery', () => {
     );
   });
   afterEach(async () => {
-    await act(() => root.unmount());
+    await act(async () => root.unmount());
     container.remove();
     vi.useRealTimers();
     vi.unstubAllGlobals();
@@ -82,7 +82,7 @@ describe('first-use popup recovery', () => {
 
   it('explains double-click startup while disconnected and recovers without recapturing', async () => {
     vi.mocked(fetch).mockRejectedValueOnce(new TypeError('offline'));
-    await act(() => root.render(createElement(App)));
+    await act(async () => root.render(createElement(App)));
     const connection = container.querySelector('details');
     expect(connection?.open).toBe(false);
     expect(connection?.querySelector('summary')?.textContent).toContain(
@@ -91,9 +91,9 @@ describe('first-use popup recovery', () => {
     expect(container.querySelector('h1')?.textContent).toBe(draft.title);
     expect(container.textContent).toContain('双击便携包中的 ProductSpy.cmd');
     expect(container.textContent).toContain('商品可以先暂存于扩展');
-    await act(() => connection?.querySelector('summary')?.click());
+    await act(async () => connection?.querySelector('summary')?.click());
     expect(connection?.open).toBe(true);
-    await act(() => button(popupCopy.workspace.recheck).click());
+    await act(async () => button(popupCopy.workspace.recheck).click());
     expect(container.textContent).not.toContain(popupCopy.workspace.offlineHint);
     expect(container.textContent).toContain(popupCopy.analysis.mock);
     expect(
@@ -105,7 +105,7 @@ describe('first-use popup recovery', () => {
 
   it('does not read an Amazon page before first consent and starts capture after accepting', async () => {
     vi.mocked(hasCaptureConsent).mockResolvedValue(false);
-    await act(() => root.render(createElement(App)));
+    await act(async () => root.render(createElement(App)));
     expect(container.textContent).toContain(popupCopy.consent.title);
     expect(container.textContent).toContain('选定商品的文字资料才会发送至你配置的 AI 服务商');
     expect(
@@ -113,7 +113,7 @@ describe('first-use popup recovery', () => {
         .mocked(extensionRequest)
         .mock.calls.some(([request]) => request.type === 'PRODUCTSPY_CAPTURE'),
     ).toBe(false);
-    await act(() => button(popupCopy.consent.accept).click());
+    await act(async () => button(popupCopy.consent.accept).click());
     expect(rememberCaptureConsent).toHaveBeenCalledOnce();
     expect(
       vi
@@ -127,8 +127,8 @@ describe('first-use popup recovery', () => {
     vi.mocked(hasCaptureConsent).mockResolvedValue(false);
     vi.mocked(rememberCaptureConsent).mockRejectedValue(new Error('disk unavailable'));
     vi.spyOn(console, 'error').mockImplementation(() => {});
-    await act(() => root.render(createElement(App)));
-    await act(() => button(popupCopy.consent.accept).click());
+    await act(async () => root.render(createElement(App)));
+    await act(async () => button(popupCopy.consent.accept).click());
     expect(container.textContent).toContain('尚未读取商品页面');
     expect(
       vi
@@ -149,12 +149,62 @@ describe('first-use popup recovery', () => {
       if (request.type === 'PRODUCTSPY_PENDING_COUNT') return { status: 'pending-count', count: 0 };
       return { status: 'bridge-state', paired: false };
     });
-    await act(() => root.render(createElement(App)));
+    await act(async () => root.render(createElement(App)));
     expect(container.textContent).toContain('等待页面加载完成后');
-    await act(() => button(popupCopy.capture.retry).click());
+    await act(async () => button(popupCopy.capture.retry).click());
     expect(container.textContent).toContain('Recovery test product');
     expect(container.querySelector('footer')?.textContent).toContain('保存到素材库');
     expect(container.textContent).not.toContain('暂时无法识别商品');
+  });
+
+  it('re-identifies a synthetic captured product with later videos only on user action and saves the updated draft', async () => {
+    // Stub contract, not a real Amazon video-availability or timing acceptance result.
+    const withVideos: ProductDraft = {
+      ...draft,
+      videos: [
+        { url: 'https://m.media-amazon.com/images/S/synthetic-current.mp4' },
+        { url: 'https://m.media-amazon.com/images/S/synthetic-current.webm' },
+      ],
+    };
+    let captures = 0;
+    vi.mocked(extensionRequest).mockImplementation(async (request): Promise<ExtensionResponse> => {
+      if (request.type === 'PRODUCTSPY_CAPTURE') {
+        captures += 1;
+        return { status: 'captured', draft: captures === 1 ? draft : withVideos };
+      }
+      if (request.type === 'PRODUCTSPY_SAVE')
+        return { status: 'saved', product: { ...product, ...withVideos } };
+      return captureResponse(request);
+    });
+    const displayedVideoCount = () =>
+      [...container.querySelectorAll('div')].find(
+        (element) => element.firstElementChild?.textContent === popupCopy.product.videos,
+      )?.lastElementChild?.textContent;
+
+    await act(async () => root.render(createElement(App)));
+    expect(container.querySelector('h1')?.textContent).toBe(draft.title);
+    expect(container.textContent).toContain(draft.sourceId);
+    expect(displayedVideoCount()).toBe('0');
+    expect(button(popupCopy.actions.save).disabled).toBe(false);
+
+    await act(async () => vi.advanceTimersByTimeAsync(24000));
+    expect(captures).toBe(1);
+    expect(displayedVideoCount()).toBe('0');
+    await act(async () => button(popupCopy.capture.retry).click());
+    expect(captures).toBe(2);
+    expect(displayedVideoCount()).toBe('2');
+    expect(container.textContent).toContain(draft.sourceId);
+    expect(container.querySelector('h1')?.textContent).toBe(draft.title);
+    expect(button(popupCopy.actions.save).disabled).toBe(false);
+
+    await act(async () => vi.advanceTimersByTimeAsync(24000));
+    expect(captures).toBe(2);
+    await act(async () => button(popupCopy.actions.save).click());
+    expect(extensionRequest).toHaveBeenCalledWith({ type: 'PRODUCTSPY_SAVE', draft: withVideos });
+    expect(container.querySelector('footer [role="status"]')?.textContent).toBe(
+      popupCopy.feedback.saved,
+    );
+    expect(captures).toBe(2);
   });
 
   it('confirms saving in the action bar and opens analysis without saving a second time', async () => {
@@ -162,13 +212,13 @@ describe('first-use popup recovery', () => {
       if (request.type === 'PRODUCTSPY_SAVE') return { status: 'saved', product };
       return captureResponse(request);
     });
-    await act(() => root.render(createElement(App)));
-    await act(() => button(popupCopy.actions.save).click());
+    await act(async () => root.render(createElement(App)));
+    await act(async () => button(popupCopy.actions.save).click());
     expect(container.querySelector('footer [role="status"]')?.textContent).toBe(
       popupCopy.feedback.saved,
     );
     expect(button(popupCopy.actions.update).disabled).toBe(false);
-    await act(() => button(popupCopy.actions.openAnalysis).click());
+    await act(async () => button(popupCopy.actions.openAnalysis).click());
     expect(chrome.tabs.create).toHaveBeenCalledWith({
       url: 'http://127.0.0.1:3000/products/amazon%3AB012345678?tab=analysis',
     });
@@ -191,8 +241,8 @@ describe('first-use popup recovery', () => {
         return { status: 'error', error: '工作台连接中断，暂存商品仍保留。' };
       return captureResponse(request);
     });
-    await act(() => root.render(createElement(App)));
-    await act(() => button(popupCopy.actions.sync).click());
+    await act(async () => root.render(createElement(App)));
+    await act(async () => button(popupCopy.actions.sync).click());
     expect(container.querySelector('main [role="alert"]')?.textContent).toContain(
       '商品页面尚未加载完成',
     );
@@ -215,14 +265,14 @@ describe('first-use popup recovery', () => {
       }
       return captureResponse(request);
     });
-    await act(() => root.render(createElement(App)));
-    await act(() => button(popupCopy.actions.save).click());
+    await act(async () => root.render(createElement(App)));
+    await act(async () => button(popupCopy.actions.save).click());
     expect(container.querySelector('footer [role="alert"]')?.textContent).toContain(
       '素材库暂时无法写入',
     );
     expect(container.querySelector('h1')?.textContent).toBe(draft.title);
     expect(chrome.tabs.create).not.toHaveBeenCalled();
-    await act(() => button(popupCopy.actions.retrySave).click());
+    await act(async () => button(popupCopy.actions.retrySave).click());
     expect(container.querySelector('footer [role="alert"]')).toBeNull();
     expect(button(popupCopy.actions.update).disabled).toBe(false);
     expect(saves).toBe(2);
@@ -246,18 +296,18 @@ describe('first-use popup recovery', () => {
       }
       return captureResponse(request);
     });
-    await act(() => root.render(createElement(App)));
-    await act(() => button(popupCopy.actions.analyze).click());
+    await act(async () => root.render(createElement(App)));
+    await act(async () => button(popupCopy.actions.analyze).click());
     expect(chrome.tabs.create).not.toHaveBeenCalled();
     expect(container.querySelector('footer [role="status"]')?.textContent).toBe(
       popupCopy.feedback.pendingAnalysis,
     );
     expect(container.textContent).toContain(popupCopy.feedback.pendingCount(1));
     expect(button(popupCopy.actions.save).disabled).toBe(false);
-    await act(() => button(popupCopy.actions.sync).click());
+    await act(async () => button(popupCopy.actions.sync).click());
     expect(container.textContent).toContain(popupCopy.feedback.pendingCount(1));
     expect(container.querySelector('footer [role="alert"]')?.textContent).toContain('同步暂时失败');
-    await act(() => button(popupCopy.actions.sync).click());
+    await act(async () => button(popupCopy.actions.sync).click());
     expect(container.textContent).not.toContain(popupCopy.feedback.pendingCount(1));
     expect(container.querySelector('footer [role="status"]')?.textContent).toBe(
       popupCopy.feedback.synced(1),
@@ -270,8 +320,8 @@ describe('first-use popup recovery', () => {
       return captureResponse(request);
     });
     vi.mocked(chrome.tabs.create).mockRejectedValueOnce(new Error('无法打开分析页。'));
-    await act(() => root.render(createElement(App)));
-    await act(() => button(popupCopy.actions.analyze).click());
+    await act(async () => root.render(createElement(App)));
+    await act(async () => button(popupCopy.actions.analyze).click());
     expect(container.querySelector('footer [role="status"]')?.textContent).toBe(
       popupCopy.feedback.saved,
     );
@@ -279,7 +329,7 @@ describe('first-use popup recovery', () => {
       '无法打开分析页',
     );
     expect(button(popupCopy.actions.update).disabled).toBe(false);
-    await act(() => button(popupCopy.actions.openAnalysis).click());
+    await act(async () => button(popupCopy.actions.openAnalysis).click());
     expect(container.querySelector('footer [role="alert"]')).toBeNull();
     expect(chrome.tabs.create).toHaveBeenCalledTimes(2);
     expect(

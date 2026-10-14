@@ -168,6 +168,45 @@ describe('AmazonProductExtractor DOM fallbacks', () => {
     ]);
   });
 
+  it('reads later current-ASIN video state on explicit re-extraction of the same synthetic document', () => {
+    // Synthetic delayed-data fixture; this does not establish the timing of a real Amazon page.
+    const dom = new JSDOM(
+      '<input id="ASIN" value="B012345678"><h1 id="productTitle">Synthetic delayed video product</h1><script>var videos=[{url:"https://m.media-amazon.com/images/S/synthetic-current.mp4"},{asin:"B098765432",url:"https://m.media-amazon.com/images/S/synthetic-other.mp4"}];</script>',
+      { url },
+    );
+    try {
+      const document = dom.window.document;
+      const initial = new AmazonProductExtractor(document, url).extract();
+      expect(initial?.sourceId).toBe('B012345678');
+      expect(initial?.videos).toEqual([]);
+
+      const state = document.createElement('script');
+      state.type = 'a-state';
+      state.textContent = JSON.stringify([
+        {
+          productAsin: 'B012345678',
+          videoUrl: 'https://m.media-amazon.com/images/S/synthetic-current.mp4',
+        },
+        {
+          productAsin: 'B098765432',
+          videoUrl: 'https://m.media-amazon.com/images/S/synthetic-other.mp4',
+        },
+      ]);
+      document.body.appendChild(state);
+
+      const recaptured = new AmazonProductExtractor(document, url).extract();
+      expect(recaptured?.sourceId).toBe(initial?.sourceId);
+      expect(recaptured?.title).toBe(initial?.title);
+      expect(recaptured?.videos).toEqual([
+        { url: 'https://m.media-amazon.com/images/S/synthetic-current.mp4' },
+      ]);
+      expect(recaptured?.videos.some((video) => video.url.includes('synthetic-other'))).toBe(false);
+      expect(draftSchema.safeParse(recaptured).success).toBe(true);
+    } finally {
+      dom.window.close();
+    }
+  });
+
   it('excludes observed A+ video label tooltips from product descriptions', () => {
     const html =
       '<h1 id="productTitle">Current</h1><div id="aplus"><div class="aplus-v2"><p>Absorbent bath mat.</p><div class="vse-player-container"><span class="ive-player-label-tooltip aok-hidden">This video shows the product in use.</span></div></div></div>';

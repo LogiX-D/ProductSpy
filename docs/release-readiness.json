@@ -1,0 +1,412 @@
+{
+  "format": "productspy-final-release-readiness",
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-14T08:02:48.142Z",
+  "candidateVersion": "1.0.0-rc.1",
+  "baselineAtStart": "f7de970305867b5387f8700c1ad94335c5409687",
+  "runtimeSource": "bcf049d45e65ea6da798b53aa6b57b20508927f9",
+  "assessment": {
+    "featureDevelopmentComplete": true,
+    "engineeringAutomationPassed": true,
+    "criticalManualAcceptancePassed": false,
+    "confirmedUnresolvedP0P1": [],
+    "absenceOfUntestedDefectsProven": false,
+    "realAiQualityVerified": false,
+    "readyToBuildV100": false,
+    "keepCandidate": "1.0.0-rc.1",
+    "runtimeChanges": false,
+    "rebuild": false,
+    "releasePublished": false,
+    "storeSubmitted": false,
+    "paidAiCalls": 0
+  },
+  "currentChecks": {
+    "startedAt": "2026-10-14T08:00:14.317Z",
+    "finishedAt": "2026-10-14T08:00:29.396Z",
+    "passed": true,
+    "checks": [
+      {
+        "name": "typecheck",
+        "command": "pnpm typecheck",
+        "executedCommand": "pnpm typecheck",
+        "startedAt": "2026-10-14T08:00:14.317Z",
+        "finishedAt": "2026-10-14T08:00:22.714Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/final-acceptance/typecheck.log",
+        "sha256": "aec22f396c01fb6baa65ba859a0b95232bafc4c4ed2d7e8664c7a9b825f5548f"
+      },
+      {
+        "name": "lint",
+        "command": "pnpm lint",
+        "executedCommand": "pnpm lint",
+        "startedAt": "2026-10-14T08:00:14.328Z",
+        "finishedAt": "2026-10-14T08:00:21.993Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/final-acceptance/lint.log",
+        "sha256": "dc55de83696687991d2a4553be741a7a037c0333e191a5030b32f516531e89b2"
+      },
+      {
+        "name": "format",
+        "command": "pnpm format:check",
+        "executedCommand": "pnpm format:check",
+        "startedAt": "2026-10-14T08:00:14.333Z",
+        "finishedAt": "2026-10-14T08:00:26.265Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/final-acceptance/format.log",
+        "sha256": "defe600d1c948ef3979f779a914e22910f484bccddd5a9c6c9097eb4503e261c"
+      },
+      {
+        "name": "unit",
+        "command": "Vitest full suite (isolated quality report)",
+        "executedCommand": "node node_modules/vitest/vitest.mjs run --reporter=default --reporter=json --outputFile=.test-data/final-acceptance/unit.json",
+        "startedAt": "2026-10-14T08:00:14.338Z",
+        "finishedAt": "2026-10-14T08:00:29.395Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/final-acceptance/unit.log",
+        "sha256": "c03c3b0d9f9ad210a586c24fa608178401be77d7ab0b9503b82de9814b614209"
+      },
+      {
+        "name": "syntax",
+        "command": "node --check scripts/phase21-video-timing.mjs",
+        "executedCommand": "node --check scripts/phase21-video-timing.mjs",
+        "startedAt": "2026-10-14T08:00:14.344Z",
+        "finishedAt": "2026-10-14T08:00:15.554Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/final-acceptance/syntax.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "unit": {
+      "files": 71,
+      "passed": 713,
+      "failed": 0,
+      "pending": 0,
+      "evidence": ".test-data/final-acceptance/unit.json",
+      "sha256": "5d154b150ca01a0ff9885577c1c4dd910d52f269ce22bb70d9c0dec5bdb8d413"
+    },
+    "targetedUnit": {
+      "files": 2,
+      "passed": 58,
+      "failed": 0,
+      "evidence": ".test-data/final-acceptance/targeted-unit.json",
+      "sha256": "d7d5443d32f878e0cc792e9a43a69592a627dbcad85294da9433282d0a0ccb51"
+    },
+    "existingOtherTestWarnings": {
+      "component": "BridgePairing",
+      "count": 6,
+      "kind": "React act warning; retained, not a production-window diagnosis"
+    },
+    "finalDocumentFormat": {
+      "command": "pnpm format:check",
+      "passed": true,
+      "completedAt": "2026-10-14T08:03:27.005Z",
+      "evidence": ".test-data/final-acceptance/final-format.log",
+      "sha256": "a90d5ea0801dc84e3751c08e78c837eb91146a88090ae349a1978cbbdc975089"
+    }
+  },
+  "unchangedCandidateEvidence": {
+    "evidence": "docs/phase21-results.json",
+    "sha256": "4004b154465c6e9a9366654292b05c2c4e0865ae3e7d5e251833b02a41d322c2",
+    "buildPassed": true,
+    "priorUnit": {
+      "files": 71,
+      "passed": 711,
+      "failed": 0,
+      "pending": 0,
+      "evidence": ".test-data/phase21/unit-report.json",
+      "sha256": "73037401a8114f9667ff8b345698da18dc6b66fb1a75484dc12212cc7b8664b7"
+    },
+    "e2e": {
+      "startTime": "2026-10-14T07:10:23.322Z",
+      "duration": 127525.38900000001,
+      "expected": 33,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0,
+      "evidence": ".test-data/phase21/e2e-report.json",
+      "sha256": "32615b94f479659e74535305a4d45a88721b9892d71c4d3992d0a380d9303015",
+      "browserScope": "Chrome for Testing; actual frozen portable service; fixtures and Mock; not stable Chrome manual acceptance"
+    },
+    "portable": {
+      "passed": true,
+      "checks": 13,
+      "startedAt": "2026-10-14T07:13:59.402Z",
+      "finishedAt": "2026-10-14T07:15:02.562Z",
+      "evidence": ".test-data/phase10-portable/2026-10-14T07-13-59-401Z/report.json",
+      "sha256": "75ccac9fc54d3deb3412edf33497a0655f9c4131e8b9307ca6fcfeb434e14485",
+      "nativeGuiAcceptance": false
+    },
+    "upgrades": [
+      {
+        "from": "0.8.0",
+        "to": "1.0.0-rc.1",
+        "checks": 28,
+        "passed": true,
+        "fixtureOnly": true,
+        "evidence": ".test-data/phase20-upgrade/2026-10-14T07-15-03-732Z-lKNcdO/report.json",
+        "sha256": "df195f3bb747f11437242bebb4e02313519ee9ac331e6b3904b57b37b8c62385"
+      },
+      {
+        "from": "0.7.0",
+        "to": "1.0.0-rc.1",
+        "checks": 26,
+        "passed": true,
+        "fixtureOnly": true,
+        "evidence": ".test-data/phase20-upgrade/2026-10-14T07-16-09-453Z-OfR2c9/report.json",
+        "sha256": "f7bdfea60c085db4522c55908ca85be17463906ce8f42b87e13cd0eef0160b34"
+      },
+      {
+        "from": "0.6.0",
+        "to": "1.0.0-rc.1",
+        "checks": 22,
+        "passed": true,
+        "fixtureOnly": true,
+        "evidence": ".test-data/phase20-upgrade/2026-10-14T07-17-18-602Z-BuHf8M/report.json",
+        "sha256": "aade9dfc862afc737935bbb214714f4f1177786f6a53623cb6e96f3db5de7439"
+      },
+      {
+        "from": "0.5.2",
+        "to": "1.0.0-rc.1",
+        "checks": 21,
+        "passed": true,
+        "fixtureOnly": true,
+        "evidence": ".test-data/phase20-upgrade/2026-10-14T07-18-06-732Z-6G8OFm/report.json",
+        "sha256": "5e4c5d0badce2e16ddad8ca59636f364ef0a751f1bd9cbb167d4926c31b03795"
+      },
+      {
+        "from": "0.5.1",
+        "to": "1.0.0-rc.1",
+        "checks": 21,
+        "passed": true,
+        "fixtureOnly": true,
+        "evidence": ".test-data/phase20-upgrade/2026-10-14T07-18-52-382Z-ndWjas/report.json",
+        "sha256": "fe947ec4f8007b07774c3844d22ac84d1e9eee01865ad091af255eaad36c754b"
+      },
+      {
+        "from": "0.5.0",
+        "to": "1.0.0-rc.1",
+        "checks": 21,
+        "passed": true,
+        "fixtureOnly": true,
+        "evidence": ".test-data/phase20-upgrade/2026-10-14T07-19-53-112Z-L2Must/report.json",
+        "sha256": "8708b7bea009110395295e90c0a3ebd4436af2403e9bfabd91381abb5dca51e4"
+      },
+      {
+        "from": "0.4.0",
+        "to": "1.0.0-rc.1",
+        "checks": 21,
+        "passed": true,
+        "fixtureOnly": true,
+        "evidence": ".test-data/phase20-upgrade/2026-10-14T07-20-39-733Z-eylnJO/report.json",
+        "sha256": "34c3259a1b17bb8f9b65f51d3c9f274c0d9c50ad0c9e602d7e0e6b537db72b27"
+      }
+    ],
+    "zip": {
+      "passed": true,
+      "checks": [
+        {
+          "name": "portable: archive hash, bytes, count, CRC32, raw paths, private paths and credential scan",
+          "passed": true
+        },
+        {
+          "name": "portable: every bundle record matches actual ZIP bytes/SHA256; no missing or unlisted files",
+          "passed": true,
+          "records": 2334
+        },
+        {
+          "name": "extension: archive hash, bytes, count, CRC32, raw paths, private paths and credential scan",
+          "passed": true
+        },
+        {
+          "name": "extension: root MV3 1.0.0 (1.0.0-rc.1), original permission/host allowlist, CSP, no source maps; embedded extension matches ZIP",
+          "passed": true,
+          "embeddedFiles": 11
+        }
+      ],
+      "failures": [],
+      "checkedAt": "2026-10-14T07:21:26.399Z",
+      "portable": {
+        "file": "ProductSpy-1.0.0-rc.1-windows-x64.zip",
+        "bytes": 42529040,
+        "sha256": "27c49c6d17e6688d7708158302d5921f3415147ebfae91be63156eac849856c5",
+        "entries": 2335,
+        "scannedTextFiles": 2159,
+        "crc32Verified": true,
+        "rawPathsVerified": true,
+        "privatePathsVerified": true,
+        "credentialPatternScanPassed": true,
+        "configuredApiKeysChecked": 0,
+        "bundleRecordsVerified": 2334,
+        "embeddedExtensionFilesVerified": 11
+      },
+      "extension": {
+        "file": "ProductSpy-1.0.0-rc.1-extension.zip",
+        "bytes": 408531,
+        "sha256": "a498b531b634e8b89fe52082f6283cc9d3d8813c4cd7b85e81e9f4d6c214d63f",
+        "entries": 226,
+        "scannedTextFiles": 222,
+        "crc32Verified": true,
+        "rawPathsVerified": true,
+        "privatePathsVerified": true,
+        "credentialPatternScanPassed": true,
+        "configuredApiKeysChecked": 0,
+        "manifestVersion": 3,
+        "extensionVersion": "1.0.0",
+        "extensionVersionName": "1.0.0-rc.1",
+        "permissions": ["activeTab", "scripting", "storage"],
+        "hostPermissions": ["http://localhost/*", "http://127.0.0.1/*"],
+        "sourceMapsAbsent": true
+      },
+      "evidence": ".test-data/release-validation/2026-10-14T07-21-26-398Z/zip-validation.json",
+      "sha256": "cdf487ed58232e276be71820a149dbd7b54ed46c7b2968fe360aaae59ac28bce",
+      "inventoryScope": "Detailed CRC/path/private-file inventory remains in the hashed validation report; not duplicated here."
+    },
+    "evidenceScope": "Prior actual full frozen-candidate run. No runtime changes, E2E/build/portable/upgrades not redundantly rerun during final QA/docs-only follow-up."
+  },
+  "freeze": {
+    "evidence": ".test-data/phase21/freeze-2026-10-14T08-00-43-127Z.json",
+    "sha256": "03810e5da768d0eaa42c36265cd4e25bea4e455b01ee18ee744035c607e37ed3",
+    "passed": true,
+    "candidateAssets": 10,
+    "olderArchives": 18,
+    "releasesUnchanged": true,
+    "readOnlyRemote": true,
+    "rebuiltOrRepackaged": false
+  },
+  "preservedRecords": [
+    {
+      "evidence": "docs/phase21/manual-results.csv",
+      "sha256": "0cd82f61208bd408d65a2ec4230c29841ad34e711b5a2311ee88377ae12f6780"
+    },
+    {
+      "evidence": "docs/phase21/ai-scorecard.csv",
+      "sha256": "dd7768dbeaa703b23bb1dfdd53d4da2f986e891c12e6d1ae6c481fe96e83961e"
+    },
+    {
+      "evidence": "docs/phase21/ai-authorization.template.json",
+      "sha256": "1b579d96f39019862c2e3306bc7ee4e9d0103176d72a1cc59a633fcdd5a92dae"
+    },
+    {
+      "evidence": "docs/phase21/amazon-results.json",
+      "sha256": "b759361a41aa02ceb39304cad5063979816da8db07b63cb48a38f47718c0c039"
+    },
+    {
+      "evidence": "docs/phase21/video-timing-probe.json",
+      "sha256": "20ad2bbd6b8ac244453e63c22e41f02ae8342d9011931e27c4111cf8bf124716"
+    },
+    {
+      "evidence": "docs/phase21-results.json",
+      "sha256": "4004b154465c6e9a9366654292b05c2c4e0865ae3e7d5e251833b02a41d322c2"
+    },
+    {
+      "evidence": "docs/phase21-validation.md",
+      "sha256": "ff532c5a19124bce7c60a7c7e3f3f87c9a95f27c7103d81ab453d80bae21b0a5"
+    }
+  ],
+  "manual": {
+    "total": 53,
+    "pending": 53,
+    "pass": 0,
+    "newMaintainerResultsReceived": 0,
+    "existingResultsUnchanged": true,
+    "partialNativeObservationIsNotManualPass": true
+  },
+  "videoFollowUp": {
+    "evidence": "docs/phase21/video-timing-final.json",
+    "sha256": "8bf83a5655edacc70fc4eab130e1da2f7ff6fe610780a794ce6019a377132502",
+    "distribution": "Chrome for Testing",
+    "headless": true,
+    "popupPresentation": "Frozen popup.html opened in a browser tab; not a Stable Chrome toolbar Popup or native window-size acceptance.",
+    "realPublicPages": 2,
+    "completedCaptures": 6,
+    "results": [
+      {
+        "asin": "B00TTD9BRC",
+        "counts": [2, 2, 2],
+        "allAsinsMatched": true,
+        "bracketsMatched": true,
+        "laterIncreaseObserved": false
+      },
+      {
+        "asin": "B0000CCY1E",
+        "counts": [1, 1, 1],
+        "allAsinsMatched": true,
+        "bracketsMatched": true,
+        "laterIncreaseObserved": false
+      }
+    ],
+    "historicalCauseResolved": false,
+    "originalFailuresRetained": true,
+    "playbackVerified": false,
+    "liveResponseUrlsObserved": false
+  },
+  "native": {
+    "evidence": "docs/phase21/native-final-observation.json",
+    "sha256": "99c5825ff4aee21ddef8d9ee5b1e560ac4f72b5f935499da3bed0f7629e19550",
+    "actualNonHeadlessLauncherStarted": true,
+    "ownedServiceVersion": "1.0.0-rc.1",
+    "mode": "mock",
+    "defaultDataDirectoryUsed": false,
+    "noBrowser": true,
+    "processWindowTitle": "ProductSpy",
+    "responding": true,
+    "desktopToolReturnedWindow": false,
+    "guiButtonsOrCloseVerified": false,
+    "dpiOrNativeDialogVerified": false,
+    "ownedCliServiceStopVerified": true
+  },
+  "pairing": {
+    "historical55x58SymptomReproduced": false,
+    "rootCauseIdentified": false,
+    "productionFixClaimed": false,
+    "windowTypesDistinguished": [
+      "workspace-page-dialog",
+      "extension-action-popup",
+      "browser-tab-or-window",
+      "native-windows-form"
+    ],
+    "focusedManualInstructions": "docs/phase21/manual-acceptance.md",
+    "focusedManualCase": "C07"
+  },
+  "screenshots": {
+    "capturedWith": "Frozen rc.1 popup.html in CFT 156.0.8078.4 headless browser tab",
+    "viewport": { "width": 1365, "height": 900 },
+    "stableChromeManualAcceptance": false,
+    "nativeToolbarDimensionsVerified": false,
+    "realPublicPages": true,
+    "librarySaves": 0,
+    "paidAiCalls": 0,
+    "images": [
+      {
+        "file": "docs/screenshots/phase21-video/cerave-capture-3.png",
+        "source": ".test-data/final-video-timing/2026-10-14T07-48-33-767Z/B00TTD9BRC-3-popup.png",
+        "sha256": "6b473926ffb358507690b8d32e5b5b943c447f74396d9826b1bae177ff1a7420",
+        "bytes": 45182,
+        "asin": "B00TTD9BRC",
+        "captureOrdinal": 3,
+        "captureCompletedAt": "2026-10-14T07:49:06.915Z",
+        "videoCount": 2,
+        "visualInspection": "Viewed original screenshot; ASIN and video count match report. No credentials visible.",
+        "edited": false
+      },
+      {
+        "file": "docs/screenshots/phase21-video/oxo-capture-3.png",
+        "source": ".test-data/final-video-timing/2026-10-14T07-48-33-767Z/B0000CCY1E-3-popup.png",
+        "sha256": "d2cbd1bb39eb813c1b95fd5b2ca106cac054d9990dc212e55708f4b278afb7cc",
+        "bytes": 37554,
+        "asin": "B0000CCY1E",
+        "captureOrdinal": 3,
+        "captureCompletedAt": "2026-10-14T07:49:30.287Z",
+        "videoCount": 1,
+        "visualInspection": "Viewed original screenshot; ASIN and video count match report. No credentials visible.",
+        "edited": false
+      }
+    ]
+  },
+  "releaseDecision": "Retain rc.1 until critical native Windows/Stable Chrome evidence and real AI quality authorization/verification are addressed. No new phase, runtime rewrite or public release."
+}
