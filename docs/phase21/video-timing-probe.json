@@ -1,0 +1,245 @@
+{
+  "kind": "offline-retained-real-html-probe",
+  "livePageRevisited": false,
+  "frozenContentScriptSha256": "a175fdf76ee7efd6ea5bb7e0e240ce9885608560dee44f1086da41155484787d",
+  "collectionOrder": "snapshot initializes capturedAt -> observeDom -> actual extension capture -> immediate repeat -> afterDom -> mainImage GET -> up to 3 video HEAD -> page.content HTML -> screenshot; capture-time a-state scripts were not frozen independently",
+  "rows": [
+    {
+      "label": "CeraVe moisturizer",
+      "asin": "B00TTD9BRC",
+      "capturedAt": "2026-10-14T06:59:32.019Z",
+      "htmlSha256": "9edfb8a02a1777ffe1ddf2ef2a1caa9d9501bf8193bd24aa42defe24c3430240",
+      "liveCapturedVideoCount": 0,
+      "frozenRetainedHtmlStatus": "captured",
+      "frozenRetainedHtmlVideos": [
+        {
+          "sha256": "8f91bda774065a8cdc452e916f20aed9b83fe069404a74ef19883a50b2f246d6",
+          "host": "m.media-amazon.com",
+          "type": "mp4"
+        }
+      ],
+      "currentRetainedHtmlVideoCount": 1,
+      "states": [
+        {
+          "scriptIndex": 12,
+          "stateKey": "{\"key\":\"mbsoftlines-player-ps\"}",
+          "textCharacters": 4739,
+          "paths": [
+            {
+              "pointer": "$",
+              "keys": [
+                "clickstreamNexusMetricsConfig",
+                "aciContentId",
+                "clientPrefix",
+                "ccvDisclosure",
+                "closedCaptionsConfig",
+                "sushiMetricsConfig",
+                "mimeType",
+                "reportUrl",
+                "nexusMetricsConfig",
+                "videoHeight",
+                "disableReportIllegalLink",
+                "videoWidth",
+                "eligibleToTriggerCCWeblab",
+                "videoUrl",
+                "metricsEmissionMethod",
+                "imageUrl",
+                "awaConfig",
+                "needPlayerFactory",
+                "isMobile"
+              ],
+              "asins": ["B00TTD9BRC"],
+              "host": "m.media-amazon.com",
+              "type": "mp4",
+              "urlSha256": "8f91bda774065a8cdc452e916f20aed9b83fe069404a74ef19883a50b2f246d6",
+              "queryPresent": false,
+              "boundToCurrentAsin": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "OXO cookie scoop",
+      "asin": "B0000CCY1E",
+      "capturedAt": "2026-10-14T07:00:22.615Z",
+      "htmlSha256": "80dd14daf3c70df655303aa28350a546636b325350edc163a62a20b33b1f4e0a",
+      "liveCapturedVideoCount": 0,
+      "frozenRetainedHtmlStatus": "captured",
+      "frozenRetainedHtmlVideos": [
+        {
+          "sha256": "f87199dd0d057c55538cb5e3ebe7fa8854f8afeedc3e1a729e48378c8fb8c850",
+          "host": "m.media-amazon.com",
+          "type": "mp4"
+        }
+      ],
+      "currentRetainedHtmlVideoCount": 1,
+      "states": [
+        {
+          "scriptIndex": 12,
+          "stateKey": "{\"key\":\"detailpage-imageblock-player-f4593f6a-067f-4519-a407-07894ac7e7f6-player-ps\"}",
+          "textCharacters": 5677,
+          "paths": [
+            {
+              "pointer": "$",
+              "keys": [
+                "parentAsin",
+                "enableFullScreenByDefault",
+                "clickstreamNexusMetricsConfig",
+                "contentId",
+                "ccvDisclosure",
+                "closedCaptionsConfig",
+                "mimeType",
+                "videoHeight",
+                "disableReportIllegalLink",
+                "videoWidth",
+                "initialClosedCaptions",
+                "useHotspotsNX",
+                "eligibleToTriggerCCWeblab",
+                "videoUrl",
+                "metricsEmissionMethod",
+                "imageUrl",
+                "isMobile",
+                "showHotspots",
+                "aciContentId",
+                "altText",
+                "videoContentId",
+                "creatorType",
+                "clientPrefix",
+                "hotSpotsV3Weblab",
+                "videoType",
+                "productAsin",
+                "labelDetails",
+                "sushiMetricsConfig",
+                "reportUrl",
+                "videoTitle",
+                "vendorName",
+                "nexusMetricsConfig",
+                "awaConfig",
+                "placement"
+              ],
+              "asins": ["B0000CCY1E", "B0000CCY1E"],
+              "host": "m.media-amazon.com",
+              "type": "mp4",
+              "urlSha256": "f87199dd0d057c55538cb5e3ebe7fa8854f8afeedc3e1a729e48378c8fb8c850",
+              "queryPresent": false,
+              "boundToCurrentAsin": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Atomic Habits",
+      "asin": "0735211299",
+      "capturedAt": "2026-10-14T07:00:43.502Z",
+      "htmlSha256": "e35785f610b4e4662ff2659bce7cb79f2a33f8e15e22397c9f3ed4789d80c0cf",
+      "liveCapturedVideoCount": 2,
+      "frozenRetainedHtmlStatus": "captured",
+      "frozenRetainedHtmlVideos": [
+        {
+          "sha256": "bc8de825c6f4e96d4e7976908f2d2d3ef12bc3bf0bbc99e54ab85b0c7f2d94f7",
+          "host": "m.media-amazon.com",
+          "type": "mp4"
+        },
+        {
+          "sha256": "c5ec91b501f68dd146b434dd52388b88864cb6b43c44f84b5ef0322b1bdba339",
+          "host": "m.media-amazon.com",
+          "type": "m3u8"
+        }
+      ],
+      "currentRetainedHtmlVideoCount": 2,
+      "states": [
+        {
+          "scriptIndex": 12,
+          "stateKey": "{\"key\":\"mbsoftlines-player-ps\"}",
+          "textCharacters": 4732,
+          "paths": [
+            {
+              "pointer": "$",
+              "keys": [
+                "clickstreamNexusMetricsConfig",
+                "aciContentId",
+                "clientPrefix",
+                "ccvDisclosure",
+                "closedCaptionsConfig",
+                "sushiMetricsConfig",
+                "mimeType",
+                "reportUrl",
+                "nexusMetricsConfig",
+                "videoHeight",
+                "disableReportIllegalLink",
+                "videoWidth",
+                "eligibleToTriggerCCWeblab",
+                "videoUrl",
+                "metricsEmissionMethod",
+                "imageUrl",
+                "awaConfig",
+                "needPlayerFactory",
+                "isMobile"
+              ],
+              "asins": ["0735211299"],
+              "host": "m.media-amazon.com",
+              "type": "mp4",
+              "urlSha256": "bc8de825c6f4e96d4e7976908f2d2d3ef12bc3bf0bbc99e54ab85b0c7f2d94f7",
+              "queryPresent": false,
+              "boundToCurrentAsin": true
+            }
+          ]
+        },
+        {
+          "scriptIndex": 13,
+          "stateKey": "{\"key\":\"detailpage-imageblock-player-8858f320-93f5-43fe-b318-36070ca0d206-player-ps\"}",
+          "textCharacters": 5686,
+          "paths": [
+            {
+              "pointer": "$",
+              "keys": [
+                "parentAsin",
+                "enableFullScreenByDefault",
+                "clickstreamNexusMetricsConfig",
+                "contentId",
+                "ccvDisclosure",
+                "closedCaptionsConfig",
+                "mimeType",
+                "videoHeight",
+                "disableReportIllegalLink",
+                "videoWidth",
+                "initialClosedCaptions",
+                "useHotspotsNX",
+                "eligibleToTriggerCCWeblab",
+                "videoUrl",
+                "metricsEmissionMethod",
+                "imageUrl",
+                "isMobile",
+                "showHotspots",
+                "aciContentId",
+                "altText",
+                "videoContentId",
+                "creatorType",
+                "clientPrefix",
+                "hotSpotsV3Weblab",
+                "videoType",
+                "productAsin",
+                "labelDetails",
+                "sushiMetricsConfig",
+                "reportUrl",
+                "videoTitle",
+                "vendorName",
+                "nexusMetricsConfig",
+                "awaConfig",
+                "placement"
+              ],
+              "asins": ["0735211299", "0735211299"],
+              "host": "m.media-amazon.com",
+              "type": "m3u8",
+              "urlSha256": "c5ec91b501f68dd146b434dd52388b88864cb6b43c44f84b5ef0322b1bdba339",
+              "queryPresent": false,
+              "boundToCurrentAsin": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

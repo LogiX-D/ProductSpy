@@ -1,6 +1,6 @@
 # ProductSpy
 
-本地优先的 Amazon 竞品素材采集与 AI 营销工作台。当前为 **1.0.0-rc.1 正式发布候选版**，沿用 v0.8.0 商品、素材、竞品对比、AI 分析、模板与内容方案、安全配对和 Windows 便携架构。普通用户先读 [候选版安装与完整使用指南](docs/release-candidate-guide.md)，工程与真实环境状态分别见 [Phase 20 验收](docs/phase20-validation.md)。Release 保持草稿；候选版不代表可以直接公开发布。历史 [Phase 19](docs/phase19-validation.md)、[Phase 18](docs/phase18-validation.md)、[Phase 17](docs/phase17-validation.md)、[Phase 16](docs/phase16-validation.md)与 Phase 9–14 记录保留原始结果，更新记录见 [CHANGELOG](CHANGELOG.md)。
+本地优先的 Amazon 竞品素材采集与 AI 营销工作台。当前为 **1.0.0-rc.1 正式发布候选版**，沿用 v0.8.0 商品、素材、竞品对比、AI 分析、模板与内容方案、安全配对和 Windows 便携架构。普通用户先读 [候选版安装与完整使用指南](docs/release-candidate-guide.md)。最新冻结与回归见 [Phase 21 验收](docs/phase21-validation.md)，维护者可直接使用 [Windows／正式 Chrome 人工操作单](docs/phase21/manual-acceptance.md)及[结果表](docs/phase21/manual-results.csv)。Release 保持草稿；候选版不代表可以直接公开发布。历史 [Phase 20](docs/phase20-validation.md)、[Phase 19](docs/phase19-validation.md)、[Phase 18](docs/phase18-validation.md)、[Phase 17](docs/phase17-validation.md)、[Phase 16](docs/phase16-validation.md)与 Phase 9–14 记录保留原始结果，更新记录见 [CHANGELOG](CHANGELOG.md)。
 
 仅支持 Amazon。此版本没有用户账号、支付、自动发布、价格监控、其他平台或多人协作。
 

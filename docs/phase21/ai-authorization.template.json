@@ -1,0 +1,56 @@
+{
+  "format": "productspy-phase21-ai-test-authorization-template",
+  "schemaVersion": 1,
+  "purpose": "人工执行记录模板；不是程序配置，不读取凭据，不触发调用。填写副本应留在受限本机目录，不提交 Git。",
+  "approved": false,
+  "approvedByLocalAlias": null,
+  "approvedAt": null,
+  "expiresAt": null,
+  "providerName": null,
+  "httpsBaseUrl": null,
+  "exactModel": null,
+  "authorizedFunctions": [],
+  "sampleIds": [],
+  "totalMaxRequestsIncludingFailuresTimeoutsAndRetries": null,
+  "totalBudget": {
+    "amount": null,
+    "currency": null
+  },
+  "keyHandling": {
+    "storage": "Windows 启动器受当前用户 DPAPI 保护的本机设置",
+    "keyValueNotPermittedInThisFile": true,
+    "doNotSendInChatOrGitOrCommandLine": true
+  },
+  "providerControls": {
+    "dedicatedTestCredentialConfiguredLocally": false,
+    "providerHardSpendingLimitVerified": false,
+    "providerHardLimitAmount": null,
+    "providerHardLimitCurrency": null,
+    "hardLimitEvidenceLocalPath": null,
+    "unsupportedHardLimitResidualRiskExplicitlyAccepted": false
+  },
+  "pricing": {
+    "checkedAt": null,
+    "sourceUrl": null,
+    "inputPerMillion": null,
+    "outputPerMillion": null,
+    "currency": null,
+    "extraChargeRulesReviewed": false
+  },
+  "perRequestPlan": [],
+  "safeguards": {
+    "eachRequestNeedsUiAuthorization": true,
+    "noAutomaticRetries": true,
+    "noDefaultBatchCalls": true,
+    "failuresAndTimeoutsConsumeRequestAllowance": true,
+    "pauseIfCostUnknown": true,
+    "defaultMediaUpload": false,
+    "localDailyLimitIsNotMonetaryBudget": true,
+    "refundOrZeroCostMustNotBeAssumed": true
+  },
+  "stopConditions": [
+    "达到本批最大请求次数、金额上限或截止时间。",
+    "费用或请求状态未知，先核对服务商账单与本机记录。",
+    "发现未授权传输、重复请求、Key 泄露或重大事实虚构。"
+  ]
+}

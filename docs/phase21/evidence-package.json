@@ -1,0 +1,15 @@
+{
+  "phase": 21,
+  "createdAt": "2026-10-14T07:33:52.197Z",
+  "file": "ProductSpy-1.0.0-rc.1-phase21-evidence-20261014T073352158Z.zip",
+  "localDirectory": "artifacts",
+  "bytes": 4652323,
+  "sha256": "f30e5268693f5e15080b54d9832c3fb34ad006497db3f6ba7b1e06493d7225bd",
+  "fileCount": 124,
+  "crc32Verified": true,
+  "privateSourcesExcluded": true,
+  "sourceLogsUsePathRedaction": true,
+  "releaseDraftModified": false,
+  "publicRelease": false,
+  "originalRcPackagesUnchanged": true
+}

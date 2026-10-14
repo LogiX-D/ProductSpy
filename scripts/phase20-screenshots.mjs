@@ -11,7 +11,10 @@ assert(index >= 0 && process.argv[index + 1], 'Pass owned --data-root inside .te
 const dataRoot = resolve(process.argv[index + 1]);
 const localPath = relative(resolve('.test-data'), dataRoot);
 assert(localPath && !localPath.startsWith('..') && !isAbsolute(localPath));
-const output = resolve('docs/screenshots/phase20');
+const phaseIndex = process.argv.indexOf('--phase');
+const phase = phaseIndex < 0 ? 20 : Number(process.argv[phaseIndex + 1]);
+assert([20, 21].includes(phase), 'Screenshot evidence phase must be 20 or 21.');
+const output = resolve(`docs/screenshots/phase${phase}`);
 await mkdir(output, { recursive: true });
 const capturePath = resolve('.test-data/phase17-amazon/acceptance/report.json');
 const bundleManifestPath = resolve(
@@ -33,7 +36,7 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
 const errors = [];
 page.on('pageerror', (error) => errors.push(error.message));
 const report = {
-  phase: 20,
+  phase,
   version: '1.0.0-rc.1',
   capturedAt: new Date().toISOString(),
   verified: false,
@@ -44,8 +47,7 @@ const report = {
   },
   ai: 'mock',
   realAiCalls: 0,
-  productSource:
-    'Retained actual Phase17 Amazon captures; no new Phase20 Amazon accuracy acceptance claimed',
+  productSource: `Retained actual Phase17 Amazon captures; no new Phase${phase} Amazon accuracy acceptance claimed`,
   sourceEvidence: {
     phase: 17,
     captureStartedAt: captures.startedAt,
@@ -321,6 +323,15 @@ try {
     report.pairingDialogGeometry.push({
       width,
       rectangle,
+      browserGeometry: await page.evaluate(() => ({
+        innerWidth,
+        innerHeight,
+        outerWidth,
+        outerHeight,
+        devicePixelRatio,
+        visualViewportScale: visualViewport?.scale ?? null,
+      })),
+      osDisplayScaling: 'not measured; viewport/devicePixelRatio is not Windows DPI acceptance',
       generatedCode: false,
       actualNativeWindowReproduced: false,
     });
@@ -379,8 +390,21 @@ try {
       (await popupContext.waitForEvent('serviceworker', { timeout: 45000 }));
     const extensionId = new URL(worker.url()).hostname;
     const popup = await popupContext.newPage();
+    popup.on('pageerror', (error) => errors.push(`Extension: ${error.message}`));
+    const popupStarted = Date.now();
     await popup.goto(`chrome-extension://${extensionId}/popup.html`);
+    // A toolbar popup is foreground. Explicitly activate the standalone QA tab too.
+    await popup.bringToFront();
     await expect(popup.getByRole('button', { name: '同意并开始采集', exact: true })).toBeVisible();
+    report.popupInitialization = {
+      consentVisibleMs: Date.now() - popupStarted,
+      assertionTimeoutMs: 5000,
+      storageSeeded: false,
+      state: await popup.evaluate(() => ({
+        visibility: document.visibilityState,
+        focused: document.hasFocus(),
+      })),
+    };
     const popupFile = join(output, 'popup-first-use-400.png');
     await popup.screenshot({ path: popupFile });
     report.screenshots.push({

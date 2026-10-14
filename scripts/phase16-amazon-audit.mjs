@@ -181,12 +181,18 @@ const phase20 = batches.every(
     batch.extensionVersion === '1.0.0' &&
     batch.releaseVersion === '1.0.0-rc.1',
 );
+const phase21 = batches.every(
+  (batch) =>
+    batch.phase === 21 &&
+    batch.extensionVersion === '1.0.0' &&
+    batch.releaseVersion === '1.0.0-rc.1',
+);
 const initial = rows
   .filter(
     (row) =>
       row.kind === 'primary' &&
       row.extensionVersion ===
-        (phase20 ? '1.0.0' : phase19 ? '0.8.0' : phase17 ? '0.6.0' : '0.5.1'),
+        (phase21 || phase20 ? '1.0.0' : phase19 ? '0.8.0' : phase17 ? '0.6.0' : '0.5.1'),
   )
   .slice(0, 10);
 const countFields = (selected) =>
@@ -203,7 +209,7 @@ const countFields = (selected) =>
   );
 const publicReport = {
   schemaVersion: 1,
-  phase: phase20 ? 20 : phase19 ? 19 : phase17 ? 17 : 16,
+  phase: phase21 ? 21 : phase20 ? 20 : phase19 ? 19 : phase17 ? 17 : 16,
   auditedAt: new Date().toISOString(),
   realPages: true,
   mock: false,

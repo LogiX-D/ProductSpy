@@ -1,0 +1,20 @@
+{
+  "phase": 21,
+  "observedAt": "2026-10-14T06:53:50.459Z",
+  "method": "Computer Use sky.list_apps read-only inventory and common Chrome executable/App Paths checks",
+  "desktopLocked": false,
+  "applicationCount": 40,
+  "productSpyOrChromeWindowsReturned": 0,
+  "chromeCommonExecutablePathsFound": 0,
+  "chromeAppPathsEntriesFound": 0,
+  "inventoryLimit": "Three common executable paths and three registry entries; no whole-disk absence claim. Unrelated application titles and browser data were not retained.",
+  "nativeGuiAttemptedThisPhase": false,
+  "priorGuiRestriction": "Phase20 GUI process launch was rejected by automatic approval review; the rejected launch was not retried through an equivalent workaround in this phase.",
+  "nativeWindowsGuiPassed": false,
+  "stableChromeManualPassed": false,
+  "dpi125150200Passed": false,
+  "smartScreenPassed": false,
+  "nativeFolderDialogPassed": false,
+  "smallPairingWindowReproduced": false,
+  "manualSteps": "docs/phase21/manual-acceptance.md"
+}

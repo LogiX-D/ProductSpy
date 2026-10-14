@@ -1,0 +1,1298 @@
+{
+  "phase": 21,
+  "version": "1.0.0-rc.1",
+  "checkedAt": "2026-10-14T07:22:10.811Z",
+  "mode": "verify-again",
+  "passed": true,
+  "readOnlyRemote": true,
+  "repackagePerformed": false,
+  "realAiCalls": 0,
+  "publicReportWritten": true,
+  "source": {
+    "candidateCommit": "bcf049d45e65ea6da798b53aa6b57b20508927f9",
+    "mainAtCheck": "bcf049d45e65ea6da798b53aa6b57b20508927f9",
+    "localHead": "bcf049d45e65ea6da798b53aa6b57b20508927f9",
+    "beforeInventorySha256": "789d53d5d15966a1916b29d5d4f0008e39df2aaafee45ad2de08fd1ffd56d789",
+    "mainIsCandidateOrQaOnlyDescendant": true,
+    "changedSinceCandidate": []
+  },
+  "releases": [
+    {
+      "id": 407114898,
+      "tag": "v0.2.0",
+      "target": "1d89e780178e278a88f1736fb2c3f6d589ad005f",
+      "title": "ProductSpy 0.2.0 — Windows 便携预览版",
+      "draft": true,
+      "prerelease": true,
+      "immutable": false,
+      "createdAt": "2026-10-08T17:55:23Z",
+      "updatedAt": "2026-10-08T17:55:41Z",
+      "publishedAt": null,
+      "releaseUrl": "https://github.com/LogiX-D/ProductSpy/releases/tag/untagged-7ad92804a01abb9be461",
+      "bodySha256": "bd0efe85a519e477480c9d985ed9662747d5b3dbdb2fba1f9ec56cc05db958ce",
+      "assets": [
+        {
+          "id": 622573470,
+          "name": "ProductSpy-0.2.0-extension.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 391275,
+          "digest": "sha256:c2edcf4e81b63e74ad3f5b0a8026d8c00baff27fd3415532aa78883a61c15f79",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-08T17:55:30Z",
+          "updatedAt": "2026-10-08T17:55:31Z"
+        },
+        {
+          "id": 622573473,
+          "name": "ProductSpy-0.2.0-store-materials.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 277164,
+          "digest": "sha256:131413a18975e47c679f3635cc4c0148948e6aab8675c76a6303fdbd55282dd4",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-08T17:55:30Z",
+          "updatedAt": "2026-10-08T17:55:31Z"
+        },
+        {
+          "id": 622573455,
+          "name": "ProductSpy-0.2.0-windows-x64.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 40317756,
+          "digest": "sha256:423108b1446ce5f457d1bfa63e68bb7fe074bc6a0eb897446d2958898439c530",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-08T17:55:30Z",
+          "updatedAt": "2026-10-08T17:55:41Z"
+        },
+        {
+          "id": 622573462,
+          "name": "release-manifest.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 408,
+          "digest": "sha256:c4908d765e88d04bdae57fcd1a876adc38d7606abeef2a13d662133e0ea19a4e",
+          "contentType": "application/json",
+          "createdAt": "2026-10-08T17:55:30Z",
+          "updatedAt": "2026-10-08T17:55:30Z"
+        },
+        {
+          "id": 622573477,
+          "name": "SHA256SUMS.txt",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 299,
+          "digest": "sha256:e39490d8d4ef735141adf564b7b81978d1b17ae1b419d69ae5065a6e5115344a",
+          "contentType": "text/plain; charset=utf-8",
+          "createdAt": "2026-10-08T17:55:30Z",
+          "updatedAt": "2026-10-08T17:55:31Z"
+        }
+      ]
+    },
+    {
+      "id": 407514626,
+      "tag": "v0.3.0",
+      "target": "1335832b7c75979ac1e58cf0b0eb980e441391ba",
+      "title": "ProductSpy 0.3.0 — 中文体验与分析编辑预览版",
+      "draft": true,
+      "prerelease": true,
+      "immutable": false,
+      "createdAt": "2026-10-09T04:40:19Z",
+      "updatedAt": "2026-10-09T04:40:28Z",
+      "publishedAt": null,
+      "releaseUrl": "https://github.com/LogiX-D/ProductSpy/releases/tag/untagged-21d64fb6fa716f4788fc",
+      "bodySha256": "f36cf5666b1fcc811d9f1d9b4a79f9f6f26f4294113e7656b830db48f7074854",
+      "assets": [
+        {
+          "id": 623908025,
+          "name": "phase11-results.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 8933,
+          "digest": "sha256:827ad0722c2c33c43151845b2acbb16943d0dbca38a630aacd7631fa1d4ea9f9",
+          "contentType": "application/json",
+          "createdAt": "2026-10-09T04:40:21Z",
+          "updatedAt": "2026-10-09T04:40:21Z"
+        },
+        {
+          "id": 623907936,
+          "name": "ProductSpy-0.3.0-experience.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 998619,
+          "digest": "sha256:e724cb39a6f69cd35e1d9ab3f356cdbd27488caa0c452d59ffe4e2f9cc4db7fe",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-09T04:40:19Z",
+          "updatedAt": "2026-10-09T04:40:20Z"
+        },
+        {
+          "id": 623907937,
+          "name": "ProductSpy-0.3.0-extension.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 392371,
+          "digest": "sha256:03f659fc83c297d1f6326f2884292367a06217eaebb50b802f1b663bde0fb3ca",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-09T04:40:19Z",
+          "updatedAt": "2026-10-09T04:40:20Z"
+        },
+        {
+          "id": 623907934,
+          "name": "ProductSpy-0.3.0-SHA256SUMS.txt",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 294,
+          "digest": "sha256:9ab68cbd2a2fe73f06bec2b50d1b536e404bf1003590d293abe4edbb5c74a6f8",
+          "contentType": "text/plain; charset=utf-8",
+          "createdAt": "2026-10-09T04:40:19Z",
+          "updatedAt": "2026-10-09T04:40:20Z"
+        },
+        {
+          "id": 623907944,
+          "name": "ProductSpy-0.3.0-windows-x64.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 40367396,
+          "digest": "sha256:c67112a546ded37e49a12ecfdd546cc80278f7bcf86c2cac54491539ec48faa5",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-09T04:40:20Z",
+          "updatedAt": "2026-10-09T04:40:28Z"
+        },
+        {
+          "id": 623907952,
+          "name": "release-manifest.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 408,
+          "digest": "sha256:0c779287296ee4f74d168c6985c2fb080fb3b4b96053bc1c455b6bf4af7042c6",
+          "contentType": "application/json",
+          "createdAt": "2026-10-09T04:40:20Z",
+          "updatedAt": "2026-10-09T04:40:20Z"
+        }
+      ]
+    },
+    {
+      "id": 407616879,
+      "tag": "v0.4.0",
+      "target": "7a3c9192578465862cd585b28967d5c5748d6687",
+      "title": "ProductSpy v0.4.0 — Phase 12 AI 分析升级",
+      "draft": true,
+      "prerelease": false,
+      "immutable": false,
+      "createdAt": "2026-10-09T06:55:57Z",
+      "updatedAt": "2026-10-09T06:56:27Z",
+      "publishedAt": null,
+      "releaseUrl": "https://github.com/LogiX-D/ProductSpy/releases/tag/untagged-ff341cdfa1c19f010207",
+      "bodySha256": "9bac4243d45cba8d8c06c252c2afbcc03af74643f453bfb4e228a0e774716438",
+      "assets": [
+        {
+          "id": 624169478,
+          "name": "ProductSpy-0.4.0-ai-quality.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 131471,
+          "digest": "sha256:e5b6a42e6ffbc1db497703c9d71ade8f45448e4a79ef6fe0ea68e1e4a9767145",
+          "contentType": "application/json",
+          "createdAt": "2026-10-09T06:55:58Z",
+          "updatedAt": "2026-10-09T06:55:59Z"
+        },
+        {
+          "id": 624169463,
+          "name": "ProductSpy-0.4.0-experience.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 1367783,
+          "digest": "sha256:725d1f26505b7e7c027dd80d168b6fe5672caceb9e41b0e2e76c888e4bffc291",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-09T06:55:58Z",
+          "updatedAt": "2026-10-09T06:56:03Z"
+        },
+        {
+          "id": 624169476,
+          "name": "ProductSpy-0.4.0-extension.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 393729,
+          "digest": "sha256:2e3949146f78442c843a5e5b44cc5f5b208c121f16b044df8ce5babb0b086e97",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-09T06:55:58Z",
+          "updatedAt": "2026-10-09T06:56:01Z"
+        },
+        {
+          "id": 624169537,
+          "name": "ProductSpy-0.4.0-release-manifest.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 408,
+          "digest": "sha256:b98eedb2bbd8e699c4b57ddfa37203ed34b3ec0b54cbbbabe58958ab9e15a70f",
+          "contentType": "application/json",
+          "createdAt": "2026-10-09T06:55:59Z",
+          "updatedAt": "2026-10-09T06:56:00Z"
+        },
+        {
+          "id": 624169462,
+          "name": "ProductSpy-0.4.0-validation.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 7481,
+          "digest": "sha256:9e29d179a6fd4c29a75711f94c1a294858fb41cc67bc1eb395c094a064f88f14",
+          "contentType": "application/json",
+          "createdAt": "2026-10-09T06:55:58Z",
+          "updatedAt": "2026-10-09T06:55:58Z"
+        },
+        {
+          "id": 624169485,
+          "name": "ProductSpy-0.4.0-windows-x64.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 40572620,
+          "digest": "sha256:f5afb902764db9ddc960d98289ba56e4b77f90b5683c2e1e9fe80c5c5621dbb8",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-09T06:55:58Z",
+          "updatedAt": "2026-10-09T06:56:27Z"
+        },
+        {
+          "id": 624169578,
+          "name": "SHA256SUMS-0.4.0.txt",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 603,
+          "digest": "sha256:6387bfe6d8e228d27afd242b5c9934670fa017f2a802aa629a47028a9f86f7d6",
+          "contentType": "text/plain; charset=utf-8",
+          "createdAt": "2026-10-09T06:56:01Z",
+          "updatedAt": "2026-10-09T06:56:01Z"
+        }
+      ]
+    },
+    {
+      "id": 407666139,
+      "tag": "v0.5.0",
+      "target": "80644311d216cfdffe3751777038dde36d9ee0e5",
+      "title": "ProductSpy v0.5.0 — 商品库与批量工作流",
+      "draft": true,
+      "prerelease": false,
+      "immutable": false,
+      "createdAt": "2026-10-09T07:46:34Z",
+      "updatedAt": "2026-10-09T07:46:44Z",
+      "publishedAt": null,
+      "releaseUrl": "https://github.com/LogiX-D/ProductSpy/releases/tag/untagged-b70281b31c2e3ec9d73e",
+      "bodySha256": "6415bf63f9cc2f252495303a2e037b0a29a0cfc6d972936a57931b12fbd92b58",
+      "assets": [
+        {
+          "id": 624276071,
+          "name": "ProductSpy-0.5.0-extension.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 395516,
+          "digest": "sha256:1b352d96f5008778753d6ebd237e707f94e31f58103cfbaf66d92e789b4caf1c",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-09T07:46:35Z",
+          "updatedAt": "2026-10-09T07:46:36Z"
+        },
+        {
+          "id": 624276057,
+          "name": "ProductSpy-0.5.0-library-experience.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 623089,
+          "digest": "sha256:36cfa48ef09564283a79b681774fdc98273a4d7b6f6be5d9b4f74252df86e4e9",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-09T07:46:35Z",
+          "updatedAt": "2026-10-09T07:46:36Z"
+        },
+        {
+          "id": 624276168,
+          "name": "ProductSpy-0.5.0-SHA256SUMS.txt",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 302,
+          "digest": "sha256:3a20773cd7557dd78091751b8bd89eecda1514ca87c36afc73e96ec6afca1d1e",
+          "contentType": "text/plain; charset=utf-8",
+          "createdAt": "2026-10-09T07:46:37Z",
+          "updatedAt": "2026-10-09T07:46:37Z"
+        },
+        {
+          "id": 624276052,
+          "name": "ProductSpy-0.5.0-validation.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 9800,
+          "digest": "sha256:ce8c44f62b93dccdc8c785ce724dffdb54cb1b751956ce1d41aa13ac77066e03",
+          "contentType": "application/json",
+          "createdAt": "2026-10-09T07:46:35Z",
+          "updatedAt": "2026-10-09T07:46:35Z"
+        },
+        {
+          "id": 624276053,
+          "name": "ProductSpy-0.5.0-validation.md",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 9172,
+          "digest": "sha256:8e81f5d579bfa0e9a14de84e524f0b78322c9e3e676c7bc700cb01b61cf65c0c",
+          "contentType": "text/markdown; charset=utf-8",
+          "createdAt": "2026-10-09T07:46:35Z",
+          "updatedAt": "2026-10-09T07:46:35Z"
+        },
+        {
+          "id": 624276062,
+          "name": "ProductSpy-0.5.0-windows-x64.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 40683526,
+          "digest": "sha256:e0d36ffb201f2b0ac2452d4e8bceffce5b8c71dd83ed4fcc001a2e31544a3c35",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-09T07:46:35Z",
+          "updatedAt": "2026-10-09T07:46:44Z"
+        },
+        {
+          "id": 624276167,
+          "name": "release-manifest.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 408,
+          "digest": "sha256:99dfed436cb47cf65c87e890c87a5ed32a36393fa9f872eb40600a32a3a2c3e5",
+          "contentType": "application/json",
+          "createdAt": "2026-10-09T07:46:37Z",
+          "updatedAt": "2026-10-09T07:46:37Z"
+        }
+      ]
+    },
+    {
+      "id": 407716460,
+      "tag": "v0.5.1",
+      "target": "d13d7ee77e37a911988f6610b9a529f2d241bfbd",
+      "title": "ProductSpy v0.5.1 — Phase 14 封闭测试修订版",
+      "draft": true,
+      "prerelease": false,
+      "immutable": false,
+      "createdAt": "2026-10-09T08:35:53Z",
+      "updatedAt": "2026-10-09T08:36:19Z",
+      "publishedAt": null,
+      "releaseUrl": "https://github.com/LogiX-D/ProductSpy/releases/tag/untagged-80feb26d9df7af0fdc68",
+      "bodySha256": "a29f1b1179bd177086864666bd464868c4f5d8f4a868205c4ff2b47939224714",
+      "assets": [
+        {
+          "id": 624386126,
+          "name": "ProductSpy-0.5.1-closed-test-kit.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 473739,
+          "digest": "sha256:bfb27ef8bc72321dbdc1986e1c74221d246ccb67e163a7920517c84641009913",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-09T08:35:55Z",
+          "updatedAt": "2026-10-09T08:35:55Z"
+        },
+        {
+          "id": 624386109,
+          "name": "ProductSpy-0.5.1-experience.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 1268350,
+          "digest": "sha256:5523c86d891ae8821a03c4a52df003fd76dc544cc4fade622fb21aae0e8e795e",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-09T08:35:54Z",
+          "updatedAt": "2026-10-09T08:35:56Z"
+        },
+        {
+          "id": 624386114,
+          "name": "ProductSpy-0.5.1-extension.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 395519,
+          "digest": "sha256:5404465164ce8f4349999bf9d00c432840e0a66f0890a2a308033146eeb3d1c2",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-09T08:35:54Z",
+          "updatedAt": "2026-10-09T08:35:55Z"
+        },
+        {
+          "id": 624386192,
+          "name": "ProductSpy-0.5.1-phase14-validation.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 16300,
+          "digest": "sha256:22b09cf7f058a8384208ef29752b84d8b81f538a6203a0705f48bd7034b1e301",
+          "contentType": "application/json",
+          "createdAt": "2026-10-09T08:35:57Z",
+          "updatedAt": "2026-10-09T08:35:57Z"
+        },
+        {
+          "id": 624386129,
+          "name": "ProductSpy-0.5.1-phase14-validation.md",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 11316,
+          "digest": "sha256:f9d654d87450fd54ca0c52348df235ddabe7e53ce5449907748a2c3f6b47b696",
+          "contentType": "text/markdown; charset=utf-8",
+          "createdAt": "2026-10-09T08:35:55Z",
+          "updatedAt": "2026-10-09T08:35:55Z"
+        },
+        {
+          "id": 624386213,
+          "name": "ProductSpy-0.5.1-SHA256SUMS.txt",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 397,
+          "digest": "sha256:271fadc33f43efc7bd270c571a6a1fbdb511555e68843aa49b919b520e75a52a",
+          "contentType": "text/plain; charset=utf-8",
+          "createdAt": "2026-10-09T08:35:57Z",
+          "updatedAt": "2026-10-09T08:35:57Z"
+        },
+        {
+          "id": 624386111,
+          "name": "ProductSpy-0.5.1-windows-x64.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 40683947,
+          "digest": "sha256:241cb6e43bca958927a0804a8c77b0b0ca3a02e620b5c1d5db6d4357a4d7373e",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-09T08:35:54Z",
+          "updatedAt": "2026-10-09T08:36:19Z"
+        },
+        {
+          "id": 624386217,
+          "name": "release-manifest.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 408,
+          "digest": "sha256:5182d18c60a7293529969468f34c438e87a140bcb126b42fbb82c5c5e427e7f0",
+          "contentType": "application/json",
+          "createdAt": "2026-10-09T08:35:57Z",
+          "updatedAt": "2026-10-09T08:35:57Z"
+        }
+      ]
+    },
+    {
+      "id": 411402596,
+      "tag": "v0.5.2",
+      "target": "b3d873e42be35eae97c5b6d14bc81d2a762a2533",
+      "title": "ProductSpy v0.5.2 — Phase 16 质量修订版",
+      "draft": true,
+      "prerelease": false,
+      "immutable": false,
+      "createdAt": "2026-10-13T07:26:54Z",
+      "updatedAt": "2026-10-13T07:27:03Z",
+      "publishedAt": null,
+      "releaseUrl": "https://github.com/LogiX-D/ProductSpy/releases/tag/untagged-49cfb6683b238cc9c936",
+      "bodySha256": "f6c966b59c270e6a1c15eae847b6007c3d0d23fc1a8be359836f41cc861bab57",
+      "assets": [
+        {
+          "id": 636251936,
+          "name": "ProductSpy-0.5.2-amazon-results.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 37804,
+          "digest": "sha256:2aed466a5b6253b915cc56ba206fa9c9e2e42a2b1d659e1c1b787a06f7c56d44",
+          "contentType": "application/json",
+          "createdAt": "2026-10-13T07:26:57Z",
+          "updatedAt": "2026-10-13T07:26:57Z"
+        },
+        {
+          "id": 636251832,
+          "name": "ProductSpy-0.5.2-extension.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 395638,
+          "digest": "sha256:30a7cef68d1910327bb3528722c3dd5930b369ac2a163fb46987801df2a86d9a",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-13T07:26:55Z",
+          "updatedAt": "2026-10-13T07:26:55Z"
+        },
+        {
+          "id": 636251833,
+          "name": "ProductSpy-0.5.2-phase16-validation.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 30147,
+          "digest": "sha256:a2baef26ec228c802dac61b32662ba0f5e6ceb317817eee01890ab446113904d",
+          "contentType": "application/json",
+          "createdAt": "2026-10-13T07:26:55Z",
+          "updatedAt": "2026-10-13T07:26:55Z"
+        },
+        {
+          "id": 636251849,
+          "name": "ProductSpy-0.5.2-phase16-validation.md",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 13723,
+          "digest": "sha256:7261dac42ba29dc8a4b41f6a20cc8b9fbc566fc32f9917cf6dfbe98461a2e2d0",
+          "contentType": "text/markdown; charset=utf-8",
+          "createdAt": "2026-10-13T07:26:55Z",
+          "updatedAt": "2026-10-13T07:26:55Z"
+        },
+        {
+          "id": 636251845,
+          "name": "ProductSpy-0.5.2-quality-kit.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 532309,
+          "digest": "sha256:47ad9b3fec085db6e3fa247963b0275bd5bff5cd604e6775ebe8014c1971a62c",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-13T07:26:55Z",
+          "updatedAt": "2026-10-13T07:26:55Z"
+        },
+        {
+          "id": 636251950,
+          "name": "ProductSpy-0.5.2-SHA256SUMS.txt",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 295,
+          "digest": "sha256:3d377bf5bf75fa1255cd21290cc3ae416549bd16cd027d6ab63e715f3832f176",
+          "contentType": "text/plain; charset=utf-8",
+          "createdAt": "2026-10-13T07:26:57Z",
+          "updatedAt": "2026-10-13T07:26:57Z"
+        },
+        {
+          "id": 636251840,
+          "name": "ProductSpy-0.5.2-windows-x64.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 40684135,
+          "digest": "sha256:3fcc3c79ad1962529b7a7ead96101ca2cb280537ddd38bb61b6482afe00deaed",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-13T07:26:55Z",
+          "updatedAt": "2026-10-13T07:27:03Z"
+        },
+        {
+          "id": 636251958,
+          "name": "release-manifest.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 408,
+          "digest": "sha256:3a13c4616bc0b9924dc8f3b0f9c1e4aec0d11510f82e2629b0ef3d44b173ae92",
+          "contentType": "application/json",
+          "createdAt": "2026-10-13T07:26:57Z",
+          "updatedAt": "2026-10-13T07:26:57Z"
+        }
+      ]
+    },
+    {
+      "id": 411610819,
+      "tag": "v0.6.0",
+      "target": "a1c749e0760015f58c258b56837a416e2d4cb74a",
+      "title": "ProductSpy v0.6.0 — 素材管理与竞品对比（草稿）",
+      "draft": true,
+      "prerelease": false,
+      "immutable": false,
+      "createdAt": "2026-10-13T11:41:13Z",
+      "updatedAt": "2026-10-13T11:44:07Z",
+      "publishedAt": null,
+      "releaseUrl": "https://github.com/LogiX-D/ProductSpy/releases/tag/untagged-68095e50c97580b7a6bd",
+      "bodySha256": "32b5bb87944e7aab3cda9429d9dad176a23f78b1a3b6dac0d6ce35beb73fc3d4",
+      "assets": [
+        {
+          "id": 636852580,
+          "name": "ProductSpy-0.6.0-amazon-results.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 31657,
+          "digest": "sha256:2f0b48fb4747cc8fdcff17ef3ba5208e814f8459f5932cdab4030fe99706bb2d",
+          "contentType": "application/json",
+          "createdAt": "2026-10-13T11:41:19Z",
+          "updatedAt": "2026-10-13T11:41:19Z"
+        },
+        {
+          "id": 636852409,
+          "name": "ProductSpy-0.6.0-extension.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 397481,
+          "digest": "sha256:12af684bdd9d7aee2f98622a68e745bac56097e4aa1deaa7a2964d5b57f7d841",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-13T11:41:14Z",
+          "updatedAt": "2026-10-13T11:41:26Z"
+        },
+        {
+          "id": 636852885,
+          "name": "ProductSpy-0.6.0-media-audit.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 459140,
+          "digest": "sha256:e364e2df6d9ea1de1db6c710ff40647feacbbf98269ff6f473fc9b3f8d6d0175",
+          "contentType": "application/json",
+          "createdAt": "2026-10-13T11:41:26Z",
+          "updatedAt": "2026-10-13T11:41:32Z"
+        },
+        {
+          "id": 636852422,
+          "name": "ProductSpy-0.6.0-phase17-validation.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 612364,
+          "digest": "sha256:83125f512c85c88c2a4ee12e36ec39b11a6428b82d6c78a26dca379a046a0693",
+          "contentType": "application/json",
+          "createdAt": "2026-10-13T11:41:15Z",
+          "updatedAt": "2026-10-13T11:41:33Z"
+        },
+        {
+          "id": 636852418,
+          "name": "ProductSpy-0.6.0-phase17-validation.md",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 14274,
+          "digest": "sha256:31db81609ccbd6df44ca91e31c80a81ce7978751acd7fc5559e10858c3658b1a",
+          "contentType": "text/markdown; charset=utf-8",
+          "createdAt": "2026-10-13T11:41:14Z",
+          "updatedAt": "2026-10-13T11:41:15Z"
+        },
+        {
+          "id": 636853218,
+          "name": "ProductSpy-0.6.0-release-manifest.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 408,
+          "digest": "sha256:4f3f341e9eaabfaafd6f6bcb4a2479151128efc101808c166e38cb10294d73f2",
+          "contentType": "application/json",
+          "createdAt": "2026-10-13T11:41:32Z",
+          "updatedAt": "2026-10-13T11:41:32Z"
+        },
+        {
+          "id": 636852410,
+          "name": "ProductSpy-0.6.0-screenshots.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 763602,
+          "digest": "sha256:a38628fc04405dd9ab2e1eff12b07171dffb57a8eb7868c89201e2355bf00dd1",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-13T11:41:14Z",
+          "updatedAt": "2026-10-13T11:41:38Z"
+        },
+        {
+          "id": 636853523,
+          "name": "ProductSpy-0.6.0-SHA256SUMS.txt",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 815,
+          "digest": "sha256:7a756414d12aab0a5a479122bda67295325c334cd61192f4a45fef06a7e757f9",
+          "contentType": "text/plain; charset=utf-8",
+          "createdAt": "2026-10-13T11:41:38Z",
+          "updatedAt": "2026-10-13T11:41:38Z"
+        },
+        {
+          "id": 636852423,
+          "name": "ProductSpy-0.6.0-windows-x64.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 41281684,
+          "digest": "sha256:3ddbb37bfb0b222d709a002dc5f201983b38389d1703ec93355e8ffe505cfa78",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-13T11:41:15Z",
+          "updatedAt": "2026-10-13T11:44:07Z"
+        }
+      ]
+    },
+    {
+      "id": 411680347,
+      "tag": "v0.7.0",
+      "target": "a0f12f19f4b216eba3aeebb3b69b199d11ab4213",
+      "title": "ProductSpy v0.7.0 — AI 模板与内容创作（草稿）",
+      "draft": true,
+      "prerelease": false,
+      "immutable": false,
+      "createdAt": "2026-10-13T13:01:22Z",
+      "updatedAt": "2026-10-13T13:01:42Z",
+      "publishedAt": null,
+      "releaseUrl": "https://github.com/LogiX-D/ProductSpy/releases/tag/untagged-16079389133d58130841",
+      "bodySha256": "99e55d11adca1b2b7613c3c5aeb31c20e79d8722d84e7a40b520a1f93ae54314",
+      "assets": [
+        {
+          "id": 637052903,
+          "name": "ProductSpy-0.7.0-ai-quality.md",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 4182,
+          "digest": "sha256:cc2a2f2440a83917bce40aef63d83f66a126ebf826593b2fdd341956815c3826",
+          "contentType": "text/markdown; charset=utf-8",
+          "createdAt": "2026-10-13T13:01:26Z",
+          "updatedAt": "2026-10-13T13:01:26Z"
+        },
+        {
+          "id": 637052913,
+          "name": "ProductSpy-0.7.0-content-guide.md",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 4626,
+          "digest": "sha256:7b30cce78e6e21e3ceb8594e4184b5d8685b13166a4ed565a3ad6d73249b3da3",
+          "contentType": "text/markdown; charset=utf-8",
+          "createdAt": "2026-10-13T13:01:26Z",
+          "updatedAt": "2026-10-13T13:01:27Z"
+        },
+        {
+          "id": 637052741,
+          "name": "ProductSpy-0.7.0-extension.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 403918,
+          "digest": "sha256:22026c734b06d46f5f29bd922b028914326995173ff5c5d01ec67bb5ddbc59ee",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-13T13:01:22Z",
+          "updatedAt": "2026-10-13T13:01:23Z"
+        },
+        {
+          "id": 637052924,
+          "name": "ProductSpy-0.7.0-release-manifest.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 408,
+          "digest": "sha256:8c0c930a31fe56e4085aa92c9643b0de196691e7e9b48715be4fb22f102092b4",
+          "contentType": "application/json",
+          "createdAt": "2026-10-13T13:01:27Z",
+          "updatedAt": "2026-10-13T13:01:27Z"
+        },
+        {
+          "id": 637052742,
+          "name": "ProductSpy-0.7.0-screenshots.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 756212,
+          "digest": "sha256:fd80893729bca22156abea1ac853e43149753721e0f7145f15b5623c10603652",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-13T13:01:22Z",
+          "updatedAt": "2026-10-13T13:01:24Z"
+        },
+        {
+          "id": 637052945,
+          "name": "ProductSpy-0.7.0-SHA256SUMS.txt",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 793,
+          "digest": "sha256:5d65d828c7764c363259f90da43c241a3f1a750bcf1d4905e0bc60dca00d08a7",
+          "contentType": "text/plain; charset=utf-8",
+          "createdAt": "2026-10-13T13:01:27Z",
+          "updatedAt": "2026-10-13T13:01:27Z"
+        },
+        {
+          "id": 637052738,
+          "name": "ProductSpy-0.7.0-validation.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 611017,
+          "digest": "sha256:e647de7e99220d11b3d97090d28ba4e0310796f148ba641ed58322c064d73427",
+          "contentType": "application/json",
+          "createdAt": "2026-10-13T13:01:22Z",
+          "updatedAt": "2026-10-13T13:01:24Z"
+        },
+        {
+          "id": 637052744,
+          "name": "ProductSpy-0.7.0-validation.md",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 12753,
+          "digest": "sha256:eeaab1e055ab4d68fd150ca7b8bc792c43a685ff15dc50f16d4395ec2bec6dd7",
+          "contentType": "text/markdown; charset=utf-8",
+          "createdAt": "2026-10-13T13:01:22Z",
+          "updatedAt": "2026-10-13T13:01:23Z"
+        },
+        {
+          "id": 637052740,
+          "name": "ProductSpy-0.7.0-windows-x64.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 41929877,
+          "digest": "sha256:ca6b3932664dc826522db00c7d5c6a8abca8a6cf26299a02191be60e048c0416",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-13T13:01:22Z",
+          "updatedAt": "2026-10-13T13:01:42Z"
+        }
+      ]
+    },
+    {
+      "id": 411946560,
+      "tag": "v0.8.0",
+      "target": "08eefad297816b6b6b2cb236ba40ef7951960000",
+      "title": "ProductSpy v0.8.0 — 全模块集成与稳定性优化",
+      "draft": true,
+      "prerelease": false,
+      "immutable": false,
+      "createdAt": "2026-10-13T17:42:03Z",
+      "updatedAt": "2026-10-13T17:42:13Z",
+      "publishedAt": null,
+      "releaseUrl": "https://github.com/LogiX-D/ProductSpy/releases/tag/untagged-f87919bde63e81053d7f",
+      "bodySha256": "024b90445b9fd22a9d93e0977cae9361a2a98ec20116b9a528dc407386f9a182",
+      "assets": [
+        {
+          "id": 637781700,
+          "name": "ProductSpy-0.8.0-extension.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 408521,
+          "digest": "sha256:c3700ecc74b59159bfaae54b69a81205cf4ad8db4bb4417369c64cd24cc40518",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-13T17:42:04Z",
+          "updatedAt": "2026-10-13T17:42:05Z"
+        },
+        {
+          "id": 637781823,
+          "name": "ProductSpy-0.8.0-release-manifest.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 408,
+          "digest": "sha256:8766c8cb7883fda5457392b2fe4d334ffe7efaa4a08f6968a504087d7ea71b61",
+          "contentType": "application/json",
+          "createdAt": "2026-10-13T17:42:07Z",
+          "updatedAt": "2026-10-13T17:42:07Z"
+        },
+        {
+          "id": 637781697,
+          "name": "ProductSpy-0.8.0-screenshots.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 4622886,
+          "digest": "sha256:2315810897141ea73f3f73a5342a3ef76238490e7b183891eeba93f7ef6e03f1",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-13T17:42:04Z",
+          "updatedAt": "2026-10-13T17:42:06Z"
+        },
+        {
+          "id": 637781777,
+          "name": "ProductSpy-0.8.0-security.md",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 5605,
+          "digest": "sha256:d382051e1a2e80dd0255b70507677f10ddf171ee68dece398bc5eeb47479387d",
+          "contentType": "text/markdown; charset=utf-8",
+          "createdAt": "2026-10-13T17:42:06Z",
+          "updatedAt": "2026-10-13T17:42:06Z"
+        },
+        {
+          "id": 637781879,
+          "name": "ProductSpy-0.8.0-SHA256SUMS.txt",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 792,
+          "digest": "sha256:63f8ffea59f164a9cea1aaa710fd6e1a5168c8fcc9f4a00063362c17ccdd39c3",
+          "contentType": "text/plain; charset=utf-8",
+          "createdAt": "2026-10-13T17:42:09Z",
+          "updatedAt": "2026-10-13T17:42:09Z"
+        },
+        {
+          "id": 637781694,
+          "name": "ProductSpy-0.8.0-validation.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 654897,
+          "digest": "sha256:608ccb4584fb289a028db05871d941ea52963deedd32992d8de6851a61d05491",
+          "contentType": "application/json",
+          "createdAt": "2026-10-13T17:42:04Z",
+          "updatedAt": "2026-10-13T17:42:05Z"
+        },
+        {
+          "id": 637781691,
+          "name": "ProductSpy-0.8.0-validation.md",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 13807,
+          "digest": "sha256:82993ce6264e1ff15d172a9e2837cfdee8144c9d58f655747f3a791de747b144",
+          "contentType": "text/markdown; charset=utf-8",
+          "createdAt": "2026-10-13T17:42:04Z",
+          "updatedAt": "2026-10-13T17:42:04Z"
+        },
+        {
+          "id": 637781690,
+          "name": "ProductSpy-0.8.0-windows-x64.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 42496774,
+          "digest": "sha256:df3ff9852e975d9eae80b458675f6b25bc2de8f635c6f3f846868b24b946a73a",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-13T17:42:04Z",
+          "updatedAt": "2026-10-13T17:42:13Z"
+        },
+        {
+          "id": 637781776,
+          "name": "ProductSpy-0.8.0-workflow-guide.md",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 5661,
+          "digest": "sha256:f32a5f50f2d8f67d969459d60e55981e72f6a5790a4b21544ef4651ed82634c0",
+          "contentType": "text/markdown; charset=utf-8",
+          "createdAt": "2026-10-13T17:42:06Z",
+          "updatedAt": "2026-10-13T17:42:06Z"
+        }
+      ]
+    },
+    {
+      "id": 412410841,
+      "tag": "v1.0.0-rc.1",
+      "target": "bcf049d45e65ea6da798b53aa6b57b20508927f9",
+      "title": "ProductSpy v1.0.0-rc.1 — 正式发布候选版",
+      "draft": true,
+      "prerelease": true,
+      "immutable": false,
+      "createdAt": "2026-10-14T06:42:03Z",
+      "updatedAt": "2026-10-14T06:42:15Z",
+      "publishedAt": null,
+      "releaseUrl": "https://github.com/LogiX-D/ProductSpy/releases/tag/untagged-becb755db8d1c15adad2",
+      "bodySha256": "71a840bd15312bcd589ba6ac971052c86947b7dc15070fb17b0c1734a1f76f50",
+      "assets": [
+        {
+          "id": 639500841,
+          "name": "ProductSpy-1.0.0-rc.1-extension.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 408531,
+          "digest": "sha256:a498b531b634e8b89fe52082f6283cc9d3d8813c4cd7b85e81e9f4d6c214d63f",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-14T06:42:04Z",
+          "updatedAt": "2026-10-14T06:42:05Z"
+        },
+        {
+          "id": 639500948,
+          "name": "ProductSpy-1.0.0-rc.1-release-manifest.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 524,
+          "digest": "sha256:1156af6c1108acfb648eaa0e877d1b1ef40d449b8cbf7b6258d04330eca965d5",
+          "contentType": "application/json",
+          "createdAt": "2026-10-14T06:42:07Z",
+          "updatedAt": "2026-10-14T06:42:08Z"
+        },
+        {
+          "id": 639500837,
+          "name": "ProductSpy-1.0.0-rc.1-screenshots.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 4625783,
+          "digest": "sha256:49232b6cb5372fbf911166ead051020b4c3a5527e3e9319c271064303aae6e14",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-14T06:42:04Z",
+          "updatedAt": "2026-10-14T06:42:07Z"
+        },
+        {
+          "id": 639500891,
+          "name": "ProductSpy-1.0.0-rc.1-security.md",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 8951,
+          "digest": "sha256:c3ce3b6688f43a123af4e5265e9223b56b5278a4dcda20fbab314ff2323cc75a",
+          "contentType": "text/markdown; charset=utf-8",
+          "createdAt": "2026-10-14T06:42:06Z",
+          "updatedAt": "2026-10-14T06:42:06Z"
+        },
+        {
+          "id": 639500921,
+          "name": "ProductSpy-1.0.0-rc.1-user-guide.md",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 8637,
+          "digest": "sha256:8aa8c390fa4738418a91b8b562f1b41f1e6fb9592b3616208339cf8357d71dc6",
+          "contentType": "text/markdown; charset=utf-8",
+          "createdAt": "2026-10-14T06:42:07Z",
+          "updatedAt": "2026-10-14T06:42:07Z"
+        },
+        {
+          "id": 639500843,
+          "name": "ProductSpy-1.0.0-rc.1-validation.json",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 666999,
+          "digest": "sha256:c2574584edc67b5ffe36433b61f8de23f4d24a92a7bb72f3f550a9ba7f6011a9",
+          "contentType": "application/json",
+          "createdAt": "2026-10-14T06:42:04Z",
+          "updatedAt": "2026-10-14T06:42:05Z"
+        },
+        {
+          "id": 639500839,
+          "name": "ProductSpy-1.0.0-rc.1-validation.md",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 12873,
+          "digest": "sha256:f83a496e127aae01f63a2cddc43a2b929e33e867e257e9305e916b5811673b0b",
+          "contentType": "text/markdown; charset=utf-8",
+          "createdAt": "2026-10-14T06:42:04Z",
+          "updatedAt": "2026-10-14T06:42:05Z"
+        },
+        {
+          "id": 639500840,
+          "name": "ProductSpy-1.0.0-rc.1-windows-x64.zip",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 42529040,
+          "digest": "sha256:27c49c6d17e6688d7708158302d5921f3415147ebfae91be63156eac849856c5",
+          "contentType": "application/zip",
+          "createdAt": "2026-10-14T06:42:04Z",
+          "updatedAt": "2026-10-14T06:42:15Z"
+        },
+        {
+          "id": 639500919,
+          "name": "ProductSpy-1.0.0-rc.1-workflow-guide.md",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 5884,
+          "digest": "sha256:da52f8c9e4d1f7dca9a0cfaf5a063ef199e1cc7bdfedc65e9c3452308737d369",
+          "contentType": "text/markdown; charset=utf-8",
+          "createdAt": "2026-10-14T06:42:07Z",
+          "updatedAt": "2026-10-14T06:42:07Z"
+        },
+        {
+          "id": 639500983,
+          "name": "SHA256SUMS.txt",
+          "label": "",
+          "state": "uploaded",
+          "bytes": 934,
+          "digest": "sha256:8d443641eb7c0b6607ad911f67b70ebc6a1aab5532b1d96060e27098f1373e59",
+          "contentType": "text/plain; charset=utf-8",
+          "createdAt": "2026-10-14T06:42:08Z",
+          "updatedAt": "2026-10-14T06:42:08Z"
+        }
+      ]
+    }
+  ],
+  "allReleasesUnchanged": true,
+  "olderReleasesUnchanged": 9,
+  "releaseUrl": "https://github.com/LogiX-D/ProductSpy/releases/tag/untagged-becb755db8d1c15adad2",
+  "assets": [
+    {
+      "name": "ProductSpy-1.0.0-rc.1-extension.zip",
+      "bytes": 408531,
+      "sha256": "a498b531b634e8b89fe52082f6283cc9d3d8813c4cd7b85e81e9f4d6c214d63f",
+      "remoteAssetId": 639500841
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.1-release-manifest.json",
+      "bytes": 524,
+      "sha256": "1156af6c1108acfb648eaa0e877d1b1ef40d449b8cbf7b6258d04330eca965d5",
+      "remoteAssetId": 639500948
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.1-screenshots.zip",
+      "bytes": 4625783,
+      "sha256": "49232b6cb5372fbf911166ead051020b4c3a5527e3e9319c271064303aae6e14",
+      "remoteAssetId": 639500837
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.1-security.md",
+      "bytes": 8951,
+      "sha256": "c3ce3b6688f43a123af4e5265e9223b56b5278a4dcda20fbab314ff2323cc75a",
+      "remoteAssetId": 639500891
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.1-user-guide.md",
+      "bytes": 8637,
+      "sha256": "8aa8c390fa4738418a91b8b562f1b41f1e6fb9592b3616208339cf8357d71dc6",
+      "remoteAssetId": 639500921
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.1-validation.json",
+      "bytes": 666999,
+      "sha256": "c2574584edc67b5ffe36433b61f8de23f4d24a92a7bb72f3f550a9ba7f6011a9",
+      "remoteAssetId": 639500843
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.1-validation.md",
+      "bytes": 12873,
+      "sha256": "f83a496e127aae01f63a2cddc43a2b929e33e867e257e9305e916b5811673b0b",
+      "remoteAssetId": 639500839
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.1-windows-x64.zip",
+      "bytes": 42529040,
+      "sha256": "27c49c6d17e6688d7708158302d5921f3415147ebfae91be63156eac849856c5",
+      "remoteAssetId": 639500840
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.1-workflow-guide.md",
+      "bytes": 5884,
+      "sha256": "da52f8c9e4d1f7dca9a0cfaf5a063ef199e1cc7bdfedc65e9c3452308737d369",
+      "remoteAssetId": 639500919
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "bytes": 934,
+      "sha256": "8d443641eb7c0b6607ad911f67b70ebc6a1aab5532b1d96060e27098f1373e59",
+      "remoteAssetId": 639500983
+    }
+  ],
+  "olderPackages": [
+    {
+      "name": "ProductSpy-0.2.0-extension.zip",
+      "bytes": 391275,
+      "sha256": "c2edcf4e81b63e74ad3f5b0a8026d8c00baff27fd3415532aa78883a61c15f79",
+      "remoteAssetId": 622573470
+    },
+    {
+      "name": "ProductSpy-0.2.0-windows-x64.zip",
+      "bytes": 40317756,
+      "sha256": "423108b1446ce5f457d1bfa63e68bb7fe074bc6a0eb897446d2958898439c530",
+      "remoteAssetId": 622573455
+    },
+    {
+      "name": "ProductSpy-0.3.0-extension.zip",
+      "bytes": 392371,
+      "sha256": "03f659fc83c297d1f6326f2884292367a06217eaebb50b802f1b663bde0fb3ca",
+      "remoteAssetId": 623907937
+    },
+    {
+      "name": "ProductSpy-0.3.0-windows-x64.zip",
+      "bytes": 40367396,
+      "sha256": "c67112a546ded37e49a12ecfdd546cc80278f7bcf86c2cac54491539ec48faa5",
+      "remoteAssetId": 623907944
+    },
+    {
+      "name": "ProductSpy-0.4.0-extension.zip",
+      "bytes": 393729,
+      "sha256": "2e3949146f78442c843a5e5b44cc5f5b208c121f16b044df8ce5babb0b086e97",
+      "remoteAssetId": 624169476
+    },
+    {
+      "name": "ProductSpy-0.4.0-windows-x64.zip",
+      "bytes": 40572620,
+      "sha256": "f5afb902764db9ddc960d98289ba56e4b77f90b5683c2e1e9fe80c5c5621dbb8",
+      "remoteAssetId": 624169485
+    },
+    {
+      "name": "ProductSpy-0.5.0-extension.zip",
+      "bytes": 395516,
+      "sha256": "1b352d96f5008778753d6ebd237e707f94e31f58103cfbaf66d92e789b4caf1c",
+      "remoteAssetId": 624276071
+    },
+    {
+      "name": "ProductSpy-0.5.0-windows-x64.zip",
+      "bytes": 40683526,
+      "sha256": "e0d36ffb201f2b0ac2452d4e8bceffce5b8c71dd83ed4fcc001a2e31544a3c35",
+      "remoteAssetId": 624276062
+    },
+    {
+      "name": "ProductSpy-0.5.1-extension.zip",
+      "bytes": 395519,
+      "sha256": "5404465164ce8f4349999bf9d00c432840e0a66f0890a2a308033146eeb3d1c2",
+      "remoteAssetId": 624386114
+    },
+    {
+      "name": "ProductSpy-0.5.1-windows-x64.zip",
+      "bytes": 40683947,
+      "sha256": "241cb6e43bca958927a0804a8c77b0b0ca3a02e620b5c1d5db6d4357a4d7373e",
+      "remoteAssetId": 624386111
+    },
+    {
+      "name": "ProductSpy-0.5.2-extension.zip",
+      "bytes": 395638,
+      "sha256": "30a7cef68d1910327bb3528722c3dd5930b369ac2a163fb46987801df2a86d9a",
+      "remoteAssetId": 636251832
+    },
+    {
+      "name": "ProductSpy-0.5.2-windows-x64.zip",
+      "bytes": 40684135,
+      "sha256": "3fcc3c79ad1962529b7a7ead96101ca2cb280537ddd38bb61b6482afe00deaed",
+      "remoteAssetId": 636251840
+    },
+    {
+      "name": "ProductSpy-0.6.0-extension.zip",
+      "bytes": 397481,
+      "sha256": "12af684bdd9d7aee2f98622a68e745bac56097e4aa1deaa7a2964d5b57f7d841",
+      "remoteAssetId": 636852409
+    },
+    {
+      "name": "ProductSpy-0.6.0-windows-x64.zip",
+      "bytes": 41281684,
+      "sha256": "3ddbb37bfb0b222d709a002dc5f201983b38389d1703ec93355e8ffe505cfa78",
+      "remoteAssetId": 636852423
+    },
+    {
+      "name": "ProductSpy-0.7.0-extension.zip",
+      "bytes": 403918,
+      "sha256": "22026c734b06d46f5f29bd922b028914326995173ff5c5d01ec67bb5ddbc59ee",
+      "remoteAssetId": 637052741
+    },
+    {
+      "name": "ProductSpy-0.7.0-windows-x64.zip",
+      "bytes": 41929877,
+      "sha256": "ca6b3932664dc826522db00c7d5c6a8abca8a6cf26299a02191be60e048c0416",
+      "remoteAssetId": 637052740
+    },
+    {
+      "name": "ProductSpy-0.8.0-extension.zip",
+      "bytes": 408521,
+      "sha256": "c3700ecc74b59159bfaae54b69a81205cf4ad8db4bb4417369c64cd24cc40518",
+      "remoteAssetId": 637781700
+    },
+    {
+      "name": "ProductSpy-0.8.0-windows-x64.zip",
+      "bytes": 42496774,
+      "sha256": "df3ff9852e975d9eae80b458675f6b25bc2de8f635c6f3f846868b24b946a73a",
+      "remoteAssetId": 637781690
+    }
+  ],
+  "sourceVersions": {
+    "package.json": "1.0.0-rc.1",
+    "apps/web/package.json": "1.0.0-rc.1",
+    "apps/extension/package.json": "1.0.0-rc.1",
+    "packages/shared/package.json": "1.0.0-rc.1"
+  },
+  "extension": {
+    "manifestVersion": 3,
+    "version": "1.0.0",
+    "versionName": "1.0.0-rc.1",
+    "minimumChromeVersion": "120",
+    "permissions": ["activeTab", "scripting", "storage"],
+    "hostPermissions": ["http://localhost/*", "http://127.0.0.1/*"],
+    "csp": {
+      "extension_pages": "script-src 'self'; object-src 'self';"
+    },
+    "sourceMatchesFrozenManifest": true
+  },
+  "phase20": {
+    "reportSha256": "c2574584edc67b5ffe36433b61f8de23f4d24a92a7bb72f3f550a9ba7f6011a9",
+    "reportPassed": true,
+    "packageManifestMatches": true,
+    "unit": {
+      "files": 71,
+      "passed": 711,
+      "failed": 0
+    },
+    "e2e": {
+      "startTime": "2026-10-14T06:14:47.427Z",
+      "duration": 134887.683,
+      "expected": 33,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "portableChecks": 13,
+    "upgradePaths": [
+      {
+        "from": "0.8.0",
+        "to": "1.0.0-rc.1",
+        "checks": 28,
+        "passed": true
+      },
+      {
+        "from": "0.7.0",
+        "to": "1.0.0-rc.1",
+        "checks": 26,
+        "passed": true
+      },
+      {
+        "from": "0.6.0",
+        "to": "1.0.0-rc.1",
+        "checks": 22,
+        "passed": true
+      },
+      {
+        "from": "0.5.2",
+        "to": "1.0.0-rc.1",
+        "checks": 21,
+        "passed": true
+      },
+      {
+        "from": "0.5.1",
+        "to": "1.0.0-rc.1",
+        "checks": 21,
+        "passed": true
+      },
+      {
+        "from": "0.5.0",
+        "to": "1.0.0-rc.1",
+        "checks": 21,
+        "passed": true
+      },
+      {
+        "from": "0.4.0",
+        "to": "1.0.0-rc.1",
+        "checks": 21,
+        "passed": true
+      }
+    ],
+    "evidenceScope": "Historical Phase 20 results; Phase 21 reruns are reported separately"
+  },
+  "initialCheckAt": "2026-10-14T06:54:57.540Z",
+  "reverifiedUnchanged": true
+}

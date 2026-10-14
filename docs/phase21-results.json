@@ -1,0 +1,1367 @@
+{
+  "phase": 21,
+  "version": "1.0.0-rc.1",
+  "generatedAt": "2026-10-14T07:33:31.647Z",
+  "passed": true,
+  "meaningOfPassed": "Frozen candidate integrity and this engineering rerun only; manual and real AI quality remain pending.",
+  "environment": {
+    "observedAt": "2026-10-14T06:53:50.9626960Z",
+    "windows": "Microsoft Windows 11 专业工作站版",
+    "osVersion": "10.0.26300",
+    "architecture": "64 位",
+    "isElevated": false,
+    "chromeCommonPaths": [],
+    "chromeAppPaths": [],
+    "coverage": "three common executable paths and three App Paths entries; not a full disk scan",
+    "nativeGuiAcceptance": "pending; no ProductSpy or Chrome window returned by computer-use",
+    "node": "v24.14.0",
+    "pnpm": "10.32.1"
+  },
+  "desktop": {
+    "phase": 21,
+    "observedAt": "2026-10-14T06:53:50.459Z",
+    "method": "Computer Use sky.list_apps read-only inventory and common Chrome executable/App Paths checks",
+    "desktopLocked": false,
+    "applicationCount": 40,
+    "productSpyOrChromeWindowsReturned": 0,
+    "chromeCommonExecutablePathsFound": 0,
+    "chromeAppPathsEntriesFound": 0,
+    "inventoryLimit": "Three common executable paths and three registry entries; no whole-disk absence claim. Unrelated application titles and browser data were not retained.",
+    "nativeGuiAttemptedThisPhase": false,
+    "priorGuiRestriction": "Phase20 GUI process launch was rejected by automatic approval review; the rejected launch was not retried through an equivalent workaround in this phase.",
+    "nativeWindowsGuiPassed": false,
+    "stableChromeManualPassed": false,
+    "dpi125150200Passed": false,
+    "smartScreenPassed": false,
+    "nativeFolderDialogPassed": false,
+    "smallPairingWindowReproduced": false,
+    "manualSteps": "docs/phase21/manual-acceptance.md",
+    "evidence": "docs/phase21/desktop-evidence.json",
+    "sha256": "f2d9c16e53e8991fa45f78bae708534b9f6b7e0bfea15e3587852d8be83c7159"
+  },
+  "baseline": {
+    "candidateCommit": "bcf049d45e65ea6da798b53aa6b57b20508927f9",
+    "candidateVersion": "1.0.0-rc.1",
+    "initialFreezeAt": "2026-10-14T06:54:57.540Z",
+    "frozenCandidateUnchanged": true,
+    "remoteReleaseStillDraft": true,
+    "rebuiltOrRepackaged": false,
+    "evidence": "docs/phase21/freeze-results.json",
+    "sha256": "5a502018938f6bf68db32c6005dbc3c1f14ad5581afa5dbc70b77f06dd185dd8",
+    "initialEvidence": ".test-data/phase21/freeze-initial.json",
+    "initialSha256": "94b3d19018dd015f5b45ddafcaa38788ce3a52ce9c2facbc47290032c1755b02"
+  },
+  "checks": {
+    "evidence": ".test-data/phase21/checks.json",
+    "sha256": "42a5413908f93a95e614ad53a5967349c5ccd81877a2956313c8d6f5f5272b00",
+    "startedAt": "2026-10-14T07:09:27.188Z",
+    "finishedAt": "2026-10-14T07:21:28.338Z",
+    "commands": [
+      {
+        "name": "install",
+        "command": "pnpm install --frozen-lockfile",
+        "startedAt": "2026-10-14T07:09:27.189Z",
+        "finishedAt": "2026-10-14T07:09:28.867Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/install.log",
+        "logSha256": "39ea0aca1815757cf5085bee1b69874bd68a777e558ae3e417ec52ca20c3f8c6"
+      },
+      {
+        "name": "typecheck",
+        "command": "pnpm typecheck",
+        "startedAt": "2026-10-14T07:09:28.868Z",
+        "finishedAt": "2026-10-14T07:09:34.480Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/typecheck.log",
+        "logSha256": "aec22f396c01fb6baa65ba859a0b95232bafc4c4ed2d7e8664c7a9b825f5548f"
+      },
+      {
+        "name": "lint",
+        "command": "pnpm lint",
+        "startedAt": "2026-10-14T07:09:34.481Z",
+        "finishedAt": "2026-10-14T07:09:38.989Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/lint.log",
+        "logSha256": "dc55de83696687991d2a4553be741a7a037c0333e191a5030b32f516531e89b2"
+      },
+      {
+        "name": "format",
+        "command": "pnpm format:check",
+        "startedAt": "2026-10-14T07:09:38.990Z",
+        "finishedAt": "2026-10-14T07:09:45.968Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/format.log",
+        "logSha256": "defe600d1c948ef3979f779a914e22910f484bccddd5a9c6c9097eb4503e261c"
+      },
+      {
+        "name": "unit",
+        "command": "pnpm test --reporter=default --reporter=json --outputFile=.test-data/phase21/unit-report.json",
+        "startedAt": "2026-10-14T07:09:45.969Z",
+        "finishedAt": "2026-10-14T07:09:59.520Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/unit.log",
+        "logSha256": "ba7f55e8579e75acf1633b7cc068c751ab5f37910977848c6ef027b98d361cc9"
+      },
+      {
+        "name": "build",
+        "command": "pnpm build",
+        "startedAt": "2026-10-14T07:09:59.521Z",
+        "finishedAt": "2026-10-14T07:10:19.099Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/build.log",
+        "logSha256": "1e02fff005a259558821da25a8e5da7d7a247bc1c707b61e9ef5f0bc5d76fd10"
+      },
+      {
+        "name": "e2e-and-screenshots",
+        "command": "node scripts/phase21-portable-workflow.mjs",
+        "startedAt": "2026-10-14T07:10:19.100Z",
+        "finishedAt": "2026-10-14T07:13:58.451Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/e2e-and-screenshots.log",
+        "logSha256": "e0baa58ee792f92449bae7818b530ee9faad1c7f2becf28395727f008a38e713"
+      },
+      {
+        "name": "portable",
+        "command": "node scripts/test-portable.mjs --package artifacts/ProductSpy-1.0.0-rc.1-windows-x64",
+        "startedAt": "2026-10-14T07:13:58.452Z",
+        "finishedAt": "2026-10-14T07:15:02.607Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/portable.log",
+        "logSha256": "d2c148ebcbc0a07d4d13faf9044b2cb5924c48d322d4e41d308dddb9c4ff46b8"
+      },
+      {
+        "name": "upgrade-0.8.0",
+        "command": "node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.8.0-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.1-windows-x64",
+        "startedAt": "2026-10-14T07:15:02.607Z",
+        "finishedAt": "2026-10-14T07:16:08.328Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/upgrade-0.8.0.log",
+        "logSha256": "8362466d09861ec073475fbde815f094cda84c413686c50b22f5d0fdf7516b61"
+      },
+      {
+        "name": "upgrade-0.7.0",
+        "command": "node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.7.0-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.1-windows-x64",
+        "startedAt": "2026-10-14T07:16:08.328Z",
+        "finishedAt": "2026-10-14T07:17:17.478Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/upgrade-0.7.0.log",
+        "logSha256": "ad33970d5107be684b3109a265ac1d19e4f52e4a625207ccbb2665e53d91eb69"
+      },
+      {
+        "name": "upgrade-0.6.0",
+        "command": "node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.6.0-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.1-windows-x64",
+        "startedAt": "2026-10-14T07:17:17.479Z",
+        "finishedAt": "2026-10-14T07:18:05.607Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/upgrade-0.6.0.log",
+        "logSha256": "c04bbbb035478872bdfc9d80bbb25593b9e40615d9d32951a4ee82b126cc4468"
+      },
+      {
+        "name": "upgrade-0.5.2",
+        "command": "node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.5.2-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.1-windows-x64",
+        "startedAt": "2026-10-14T07:18:05.608Z",
+        "finishedAt": "2026-10-14T07:18:51.259Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/upgrade-0.5.2.log",
+        "logSha256": "4d1d4db3b5789838fde46690fe0d47bead7bb0003a5c9f2b071d44267027535d"
+      },
+      {
+        "name": "upgrade-0.5.1",
+        "command": "node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.5.1-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.1-windows-x64",
+        "startedAt": "2026-10-14T07:18:51.259Z",
+        "finishedAt": "2026-10-14T07:19:51.993Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/upgrade-0.5.1.log",
+        "logSha256": "2bcff2556d555cb6b79d19590607c27bab782333ac03998ed6817dfe0988a0b1"
+      },
+      {
+        "name": "upgrade-0.5.0",
+        "command": "node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.5.0-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.1-windows-x64",
+        "startedAt": "2026-10-14T07:19:51.993Z",
+        "finishedAt": "2026-10-14T07:20:38.595Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/upgrade-0.5.0.log",
+        "logSha256": "f8bcd83f049405eac0b08815d18982447ec79a34c9e7d09ae8b3778e94afeb1f"
+      },
+      {
+        "name": "upgrade-0.4.0",
+        "command": "node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.4.0-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.1-windows-x64",
+        "startedAt": "2026-10-14T07:20:38.596Z",
+        "finishedAt": "2026-10-14T07:21:25.444Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/upgrade-0.4.0.log",
+        "logSha256": "664b12407586a42003a4c1a38c7800a409e60ca0f8464493a09cc7ea1ebbb8c8"
+      },
+      {
+        "name": "zip-validation",
+        "command": "node scripts/validate-release.mjs",
+        "startedAt": "2026-10-14T07:21:25.445Z",
+        "finishedAt": "2026-10-14T07:21:28.338Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/zip-validation.log",
+        "logSha256": "8587e46a19bb131e75f9716eda3aea6cff519729b9ca373fc5a7426e102760a4"
+      }
+    ]
+  },
+  "unit": {
+    "files": 71,
+    "passed": 711,
+    "failed": 0,
+    "pending": 0,
+    "evidence": ".test-data/phase21/unit-report.json",
+    "sha256": "73037401a8114f9667ff8b345698da18dc6b66fb1a75484dc12212cc7b8664b7"
+  },
+  "e2e": {
+    "startTime": "2026-10-14T07:10:23.322Z",
+    "duration": 127525.38900000001,
+    "expected": 33,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "evidence": ".test-data/phase21/e2e-report.json",
+    "sha256": "32615b94f479659e74535305a4d45a88721b9892d71c4d3992d0a380d9303015",
+    "browserScope": "Chrome for Testing; actual frozen portable service; fixtures and Mock; not stable Chrome manual acceptance"
+  },
+  "frozenPortableWorkflow": {
+    "passed": true,
+    "aiMode": "mock",
+    "paidRequests": 0,
+    "sessions": [
+      {
+        "dataRoot": ".test-data/phase21/workflow/2026-10-14T07-10-20-088Z/user",
+        "launcherPid": 7488,
+        "serverPid": 23688,
+        "version": "1.0.0-rc.1",
+        "verifiedOwned": true
+      },
+      {
+        "dataRoot": ".test-data/phase21/workflow/2026-10-14T07-10-20-088Z/screenshots-user",
+        "launcherPid": 66248,
+        "serverPid": 45288,
+        "version": "1.0.0-rc.1",
+        "verifiedOwned": true
+      }
+    ],
+    "extensionFileCount": 11,
+    "builtExtensionBytesMatchFrozen": true,
+    "extensionFiles": [
+      {
+        "file": "assets/messages-vW1u_Lm5.js",
+        "sha256": "d58035d278781a2104005e2759c420172cc3c36bb6f1b010718631a01e134225"
+      },
+      {
+        "file": "assets/popup-CWcVFWwW.css",
+        "sha256": "c3bd401f8311027ea4989c7a75715aca4f2334877d6f534458d34d2fc5bb0061"
+      },
+      {
+        "file": "assets/popup-dY-OKtvd.js",
+        "sha256": "ee6d6bcdba78ed845877c1c09d659058da7f9e3eb464b0af5c9c1b1044fdee74"
+      },
+      {
+        "file": "background.js",
+        "sha256": "110827d83e0458fdf70b7a01073d1ca6a5163f8ffbfcb31a6e82a5a617619648"
+      },
+      {
+        "file": "content.js",
+        "sha256": "a175fdf76ee7efd6ea5bb7e0e240ce9885608560dee44f1086da41155484787d"
+      },
+      {
+        "file": "icons/icon-128.png",
+        "sha256": "df81194f3b69d533e4bd0bc5122002ab3325d8d96e552d4f7427b164d1271f08"
+      },
+      {
+        "file": "icons/icon-16.png",
+        "sha256": "65cdf483d5c37219c54eff71a38b2f1e639c8f8c91fae44e6f41b211b0b620dd"
+      },
+      {
+        "file": "icons/icon-32.png",
+        "sha256": "4d586ce0f3d8ee4589fc7853dc371156ce1fbbb98f4781b898a0738e8c8bbd9e"
+      },
+      {
+        "file": "icons/icon-48.png",
+        "sha256": "a6c211ddaae806142e96da2fc171293926bfbc38df6730c9495f1f8cc4640ab6"
+      },
+      {
+        "file": "manifest.json",
+        "sha256": "da5d9be2104fd165d98402542571714fdc290aba234d3f74d09000e8f288e02c"
+      },
+      {
+        "file": "popup.html",
+        "sha256": "15368c997dcec6f551863858046e52c344718c9e3e9fc3345f03c2c11e967297"
+      }
+    ],
+    "evidence": ".test-data/phase21/workflow.json",
+    "sha256": "1024ff7930e6f31dc3fd0028c2fc765caf71e61296437e0f233dfd487e24d4bd"
+  },
+  "portable": {
+    "passed": true,
+    "checks": 13,
+    "startedAt": "2026-10-14T07:13:59.402Z",
+    "finishedAt": "2026-10-14T07:15:02.562Z",
+    "evidence": ".test-data/phase10-portable/2026-10-14T07-13-59-401Z/report.json",
+    "sha256": "75ccac9fc54d3deb3412edf33497a0655f9c4131e8b9307ca6fcfeb434e14485",
+    "nativeGuiAcceptance": false
+  },
+  "upgrades": [
+    {
+      "from": "0.8.0",
+      "to": "1.0.0-rc.1",
+      "checks": 28,
+      "passed": true,
+      "fixtureOnly": true,
+      "evidence": ".test-data/phase20-upgrade/2026-10-14T07-15-03-732Z-lKNcdO/report.json",
+      "sha256": "df195f3bb747f11437242bebb4e02313519ee9ac331e6b3904b57b37b8c62385"
+    },
+    {
+      "from": "0.7.0",
+      "to": "1.0.0-rc.1",
+      "checks": 26,
+      "passed": true,
+      "fixtureOnly": true,
+      "evidence": ".test-data/phase20-upgrade/2026-10-14T07-16-09-453Z-OfR2c9/report.json",
+      "sha256": "f7bdfea60c085db4522c55908ca85be17463906ce8f42b87e13cd0eef0160b34"
+    },
+    {
+      "from": "0.6.0",
+      "to": "1.0.0-rc.1",
+      "checks": 22,
+      "passed": true,
+      "fixtureOnly": true,
+      "evidence": ".test-data/phase20-upgrade/2026-10-14T07-17-18-602Z-BuHf8M/report.json",
+      "sha256": "aade9dfc862afc737935bbb214714f4f1177786f6a53623cb6e96f3db5de7439"
+    },
+    {
+      "from": "0.5.2",
+      "to": "1.0.0-rc.1",
+      "checks": 21,
+      "passed": true,
+      "fixtureOnly": true,
+      "evidence": ".test-data/phase20-upgrade/2026-10-14T07-18-06-732Z-6G8OFm/report.json",
+      "sha256": "5e4c5d0badce2e16ddad8ca59636f364ef0a751f1bd9cbb167d4926c31b03795"
+    },
+    {
+      "from": "0.5.1",
+      "to": "1.0.0-rc.1",
+      "checks": 21,
+      "passed": true,
+      "fixtureOnly": true,
+      "evidence": ".test-data/phase20-upgrade/2026-10-14T07-18-52-382Z-ndWjas/report.json",
+      "sha256": "fe947ec4f8007b07774c3844d22ac84d1e9eee01865ad091af255eaad36c754b"
+    },
+    {
+      "from": "0.5.0",
+      "to": "1.0.0-rc.1",
+      "checks": 21,
+      "passed": true,
+      "fixtureOnly": true,
+      "evidence": ".test-data/phase20-upgrade/2026-10-14T07-19-53-112Z-L2Must/report.json",
+      "sha256": "8708b7bea009110395295e90c0a3ebd4436af2403e9bfabd91381abb5dca51e4"
+    },
+    {
+      "from": "0.4.0",
+      "to": "1.0.0-rc.1",
+      "checks": 21,
+      "passed": true,
+      "fixtureOnly": true,
+      "evidence": ".test-data/phase20-upgrade/2026-10-14T07-20-39-733Z-eylnJO/report.json",
+      "sha256": "34c3259a1b17bb8f9b65f51d3c9f274c0d9c50ad0c9e602d7e0e6b537db72b27"
+    }
+  ],
+  "zip": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "portable: archive hash, bytes, count, CRC32, raw paths, private paths and credential scan",
+        "passed": true
+      },
+      {
+        "name": "portable: every bundle record matches actual ZIP bytes/SHA256; no missing or unlisted files",
+        "passed": true,
+        "records": 2334
+      },
+      {
+        "name": "extension: archive hash, bytes, count, CRC32, raw paths, private paths and credential scan",
+        "passed": true
+      },
+      {
+        "name": "extension: root MV3 1.0.0 (1.0.0-rc.1), original permission/host allowlist, CSP, no source maps; embedded extension matches ZIP",
+        "passed": true,
+        "embeddedFiles": 11
+      }
+    ],
+    "failures": [],
+    "checkedAt": "2026-10-14T07:21:26.399Z",
+    "portable": {
+      "file": "ProductSpy-1.0.0-rc.1-windows-x64.zip",
+      "bytes": 42529040,
+      "sha256": "27c49c6d17e6688d7708158302d5921f3415147ebfae91be63156eac849856c5",
+      "entries": 2335,
+      "scannedTextFiles": 2159,
+      "crc32Verified": true,
+      "rawPathsVerified": true,
+      "privatePathsVerified": true,
+      "credentialPatternScanPassed": true,
+      "configuredApiKeysChecked": 0,
+      "bundleRecordsVerified": 2334,
+      "embeddedExtensionFilesVerified": 11
+    },
+    "extension": {
+      "file": "ProductSpy-1.0.0-rc.1-extension.zip",
+      "bytes": 408531,
+      "sha256": "a498b531b634e8b89fe52082f6283cc9d3d8813c4cd7b85e81e9f4d6c214d63f",
+      "entries": 226,
+      "scannedTextFiles": 222,
+      "crc32Verified": true,
+      "rawPathsVerified": true,
+      "privatePathsVerified": true,
+      "credentialPatternScanPassed": true,
+      "configuredApiKeysChecked": 0,
+      "manifestVersion": 3,
+      "extensionVersion": "1.0.0",
+      "extensionVersionName": "1.0.0-rc.1",
+      "permissions": ["activeTab", "scripting", "storage"],
+      "hostPermissions": ["http://localhost/*", "http://127.0.0.1/*"],
+      "sourceMapsAbsent": true
+    },
+    "evidence": ".test-data/release-validation/2026-10-14T07-21-26-398Z/zip-validation.json",
+    "sha256": "cdf487ed58232e276be71820a149dbd7b54ed46c7b2968fe360aaae59ac28bce",
+    "inventoryScope": "Detailed CRC/path/private-file inventory remains in the hashed validation report; not duplicated here."
+  },
+  "release": {
+    "version": "1.0.0-rc.1",
+    "portable": {
+      "file": "ProductSpy-1.0.0-rc.1-windows-x64.zip",
+      "sha256": "27c49c6d17e6688d7708158302d5921f3415147ebfae91be63156eac849856c5",
+      "bytes": 42529040,
+      "files": 2335
+    },
+    "extension": {
+      "file": "ProductSpy-1.0.0-rc.1-extension.zip",
+      "version": "1.0.0-rc.1",
+      "extensionVersion": "1.0.0",
+      "extensionVersionName": "1.0.0-rc.1",
+      "sha256": "a498b531b634e8b89fe52082f6283cc9d3d8813c4cd7b85e81e9f4d6c214d63f",
+      "bytes": 408531,
+      "files": 226
+    }
+  },
+  "frozenAttachments": [
+    {
+      "name": "ProductSpy-1.0.0-rc.1-extension.zip",
+      "bytes": 408531,
+      "sha256": "a498b531b634e8b89fe52082f6283cc9d3d8813c4cd7b85e81e9f4d6c214d63f",
+      "remoteAssetId": 639500841
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.1-release-manifest.json",
+      "bytes": 524,
+      "sha256": "1156af6c1108acfb648eaa0e877d1b1ef40d449b8cbf7b6258d04330eca965d5",
+      "remoteAssetId": 639500948
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.1-screenshots.zip",
+      "bytes": 4625783,
+      "sha256": "49232b6cb5372fbf911166ead051020b4c3a5527e3e9319c271064303aae6e14",
+      "remoteAssetId": 639500837
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.1-security.md",
+      "bytes": 8951,
+      "sha256": "c3ce3b6688f43a123af4e5265e9223b56b5278a4dcda20fbab314ff2323cc75a",
+      "remoteAssetId": 639500891
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.1-user-guide.md",
+      "bytes": 8637,
+      "sha256": "8aa8c390fa4738418a91b8b562f1b41f1e6fb9592b3616208339cf8357d71dc6",
+      "remoteAssetId": 639500921
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.1-validation.json",
+      "bytes": 666999,
+      "sha256": "c2574584edc67b5ffe36433b61f8de23f4d24a92a7bb72f3f550a9ba7f6011a9",
+      "remoteAssetId": 639500843
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.1-validation.md",
+      "bytes": 12873,
+      "sha256": "f83a496e127aae01f63a2cddc43a2b929e33e867e257e9305e916b5811673b0b",
+      "remoteAssetId": 639500839
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.1-windows-x64.zip",
+      "bytes": 42529040,
+      "sha256": "27c49c6d17e6688d7708158302d5921f3415147ebfae91be63156eac849856c5",
+      "remoteAssetId": 639500840
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.1-workflow-guide.md",
+      "bytes": 5884,
+      "sha256": "da52f8c9e4d1f7dca9a0cfaf5a063ef199e1cc7bdfedc65e9c3452308737d369",
+      "remoteAssetId": 639500919
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "bytes": 934,
+      "sha256": "8d443641eb7c0b6607ad911f67b70ebc6a1aab5532b1d96060e27098f1373e59",
+      "remoteAssetId": 639500983
+    }
+  ],
+  "olderArchiveCountUnchanged": 18,
+  "screenshots": {
+    "count": 57,
+    "evidence": "docs/screenshots/phase21/provenance.json",
+    "sha256": "cfe8fb42366a2b687cc96f2a4453ddcb27977fbf41d3a1527d025c0d0e2aa0a1",
+    "capturedAt": "2026-10-14T07:12:36.489Z",
+    "production": true,
+    "bundleManifestSha256": "429b34bc27776a4572873f31ecb534413ed309e8b7e1627df5d486c333263c85",
+    "browser": {
+      "distribution": "Chrome for Testing; installed stable Chrome manual acceptance remains pending",
+      "version": "156.0.8078.4",
+      "headless": true
+    },
+    "aiMode": "mock",
+    "stableChromeManualAcceptance": false,
+    "productSource": "Retained actual Phase17 Amazon captures; no new Phase21 Amazon accuracy acceptance claimed",
+    "sourceEvidence": {
+      "phase": 17,
+      "captureStartedAt": "2026-10-13T08:23:03.216Z",
+      "file": ".test-data/phase17-amazon/acceptance/report.json",
+      "sha256": "14ef4ff3e0f255b3e1a853531edf9166710f176f3c8d6c294c37d20c09c0644f"
+    },
+    "newAmazonAccuracyAcceptance": false,
+    "pairingSmallWindowRootCauseResolved": false,
+    "files": [
+      {
+        "file": "first-use-empty-library-375.png",
+        "path": "docs/screenshots/phase21/first-use-empty-library-375.png",
+        "width": 375,
+        "height": 900,
+        "geometry": { "viewport": 375, "documentWidth": 375 },
+        "sha256": "76a15c12a345348ebf8af916553be44622d8c88c061ee3aae536ce7f35a87f29",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-dashboard-1280.png",
+        "path": "docs/screenshots/phase21/module-dashboard-1280.png",
+        "width": 1280,
+        "height": 1000,
+        "geometry": { "viewport": 1280, "documentWidth": 1280 },
+        "sha256": "abb8ab3417a524c998d31bea34a319a38285a91033258c81c9c6f06299018967",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-dashboard-768.png",
+        "path": "docs/screenshots/phase21/module-dashboard-768.png",
+        "width": 768,
+        "height": 1000,
+        "geometry": { "viewport": 768, "documentWidth": 768 },
+        "sha256": "11e974b74a4087cbd29f0233b5133e5459f17be864e44f2c7a818b3aad6c1939",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-dashboard-375.png",
+        "path": "docs/screenshots/phase21/module-dashboard-375.png",
+        "width": 375,
+        "height": 900,
+        "geometry": { "viewport": 375, "documentWidth": 375 },
+        "sha256": "ee861c150c880a9fd7210e907fcd3498377bbe9cd741b7480acbffb390fe8087",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-dashboard-320.png",
+        "path": "docs/screenshots/phase21/module-dashboard-320.png",
+        "width": 320,
+        "height": 900,
+        "geometry": { "viewport": 320, "documentWidth": 320 },
+        "sha256": "8bf990a20a26e5cfe2da201a904d93c69d04caeed63effc30286b1797b1e88ec",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-library-1280.png",
+        "path": "docs/screenshots/phase21/module-library-1280.png",
+        "width": 1280,
+        "height": 1000,
+        "geometry": { "viewport": 1280, "documentWidth": 1280 },
+        "sha256": "3f291dc068ed5dc70da6548cb410deba3fb46a3c20fcf60ae46345aa9be726cd",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-library-768.png",
+        "path": "docs/screenshots/phase21/module-library-768.png",
+        "width": 768,
+        "height": 1000,
+        "geometry": { "viewport": 768, "documentWidth": 768 },
+        "sha256": "14f5ef3bcdc43d9ddfa5902ac7419fbb0d3ad2cbbfc73474fff315be1b09dd5b",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-library-375.png",
+        "path": "docs/screenshots/phase21/module-library-375.png",
+        "width": 375,
+        "height": 900,
+        "geometry": { "viewport": 375, "documentWidth": 375 },
+        "sha256": "95b352e4c4164f1ce32b2aed6cc9bceed4efae0cdc6537a6b9d472a719bd0230",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-library-320.png",
+        "path": "docs/screenshots/phase21/module-library-320.png",
+        "width": 320,
+        "height": 900,
+        "geometry": { "viewport": 320, "documentWidth": 320 },
+        "sha256": "078279d462d6b45c746850fa34ea942fe158792633a9f36074c4ab5677864683",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-detail-1280.png",
+        "path": "docs/screenshots/phase21/module-detail-1280.png",
+        "width": 1280,
+        "height": 1000,
+        "geometry": { "viewport": 1280, "documentWidth": 1280 },
+        "sha256": "8451a07c4b52ce9af968870d1b9695ab2f26cdd2b3741bc6d4b43aae75a55a9f",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-detail-768.png",
+        "path": "docs/screenshots/phase21/module-detail-768.png",
+        "width": 768,
+        "height": 1000,
+        "geometry": { "viewport": 768, "documentWidth": 768 },
+        "sha256": "34ec8f645bde91ecc08ecf87bc1f87406dab97ed3eae79489c906a37bab5b72f",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-detail-375.png",
+        "path": "docs/screenshots/phase21/module-detail-375.png",
+        "width": 375,
+        "height": 900,
+        "geometry": { "viewport": 375, "documentWidth": 375 },
+        "sha256": "1fe43e5ed16f55df78f9117b7285bd6f9190b93f8c5b010b275cadd25640d5a6",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-detail-320.png",
+        "path": "docs/screenshots/phase21/module-detail-320.png",
+        "width": 320,
+        "height": 900,
+        "geometry": { "viewport": 320, "documentWidth": 320 },
+        "sha256": "243803a3633b21e911d1018ba5d07d6f4ebc3b4866fc57ec70173de19d6af964",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-media-1280.png",
+        "path": "docs/screenshots/phase21/module-media-1280.png",
+        "width": 1280,
+        "height": 1000,
+        "geometry": { "viewport": 1280, "documentWidth": 1280 },
+        "sha256": "2562d75d718a00d3c3be1d847d8aa404ca1af85ca803fe242effcfeb2f7b80be",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-media-768.png",
+        "path": "docs/screenshots/phase21/module-media-768.png",
+        "width": 768,
+        "height": 1000,
+        "geometry": { "viewport": 768, "documentWidth": 768 },
+        "sha256": "a6cdb8b8e0eceee9c7bfff6684b458d96a55bdd195b0e019d345218d4c8d64cf",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-media-375.png",
+        "path": "docs/screenshots/phase21/module-media-375.png",
+        "width": 375,
+        "height": 900,
+        "geometry": { "viewport": 375, "documentWidth": 375 },
+        "sha256": "ab98ae0a4aa4be613c5871fcac27dc4dc4d6b3507f1ffbb04c172ec4a4834109",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-media-320.png",
+        "path": "docs/screenshots/phase21/module-media-320.png",
+        "width": 320,
+        "height": 900,
+        "geometry": { "viewport": 320, "documentWidth": 320 },
+        "sha256": "41eb390c67e49a6d543f02f4e36f69f236a9f656f66ea9b0dbb488ebcf4289be",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-analysis-1280.png",
+        "path": "docs/screenshots/phase21/module-analysis-1280.png",
+        "width": 1280,
+        "height": 1000,
+        "geometry": { "viewport": 1280, "documentWidth": 1280 },
+        "sha256": "2bd4750243cdb901d58b0af659369e5bfab240cd38e7b53929eca63eb4a2148d",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-analysis-768.png",
+        "path": "docs/screenshots/phase21/module-analysis-768.png",
+        "width": 768,
+        "height": 1000,
+        "geometry": { "viewport": 768, "documentWidth": 768 },
+        "sha256": "3bf427714dd43dc7aabdd391885d5e6ff40284c41d5550cd9e76297e7f4a2d8c",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-analysis-375.png",
+        "path": "docs/screenshots/phase21/module-analysis-375.png",
+        "width": 375,
+        "height": 900,
+        "geometry": { "viewport": 375, "documentWidth": 375 },
+        "sha256": "efda217761d9d5e095e1fa941f13aea3c8f17e610b867a6d71b349f228c583e0",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-analysis-320.png",
+        "path": "docs/screenshots/phase21/module-analysis-320.png",
+        "width": 320,
+        "height": 900,
+        "geometry": { "viewport": 320, "documentWidth": 320 },
+        "sha256": "a6e44c64c8dea694aa172fc65648c13c39044e0e3c98d08756857ad77c0ef840",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-comparison-1280.png",
+        "path": "docs/screenshots/phase21/module-comparison-1280.png",
+        "width": 1280,
+        "height": 1000,
+        "geometry": { "viewport": 1280, "documentWidth": 1280 },
+        "sha256": "60719affa3d015b982505121cc215e85b891bdcd2bb63dcf88091e0a815ef5d3",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-comparison-768.png",
+        "path": "docs/screenshots/phase21/module-comparison-768.png",
+        "width": 768,
+        "height": 1000,
+        "geometry": { "viewport": 768, "documentWidth": 768 },
+        "sha256": "6ac865f30dae010896052fcefb88c79b9ab8e0aa0a08ae3f710d9c5c2c36027b",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-comparison-375.png",
+        "path": "docs/screenshots/phase21/module-comparison-375.png",
+        "width": 375,
+        "height": 900,
+        "geometry": { "viewport": 375, "documentWidth": 375 },
+        "sha256": "e984907e8daad5e42c1f59b5f79412487492f9f4f804111853da27fe88ac86c6",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-comparison-320.png",
+        "path": "docs/screenshots/phase21/module-comparison-320.png",
+        "width": 320,
+        "height": 900,
+        "geometry": { "viewport": 320, "documentWidth": 320 },
+        "sha256": "bbb4d98b64b937181f2dc986af12039d16b9c5841713e5c0753a5b603cf3b057",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-templates-1280.png",
+        "path": "docs/screenshots/phase21/module-templates-1280.png",
+        "width": 1280,
+        "height": 1000,
+        "geometry": { "viewport": 1280, "documentWidth": 1280 },
+        "sha256": "aa86c680bb34432b27e61aaf7866e36b5a2c244b5fd6c0056770b5bea16dcf14",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-templates-768.png",
+        "path": "docs/screenshots/phase21/module-templates-768.png",
+        "width": 768,
+        "height": 1000,
+        "geometry": { "viewport": 768, "documentWidth": 768 },
+        "sha256": "27d5c7e0505d00834f65617264accae557ee445258a3e907b3b7bd07ec972127",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-templates-375.png",
+        "path": "docs/screenshots/phase21/module-templates-375.png",
+        "width": 375,
+        "height": 900,
+        "geometry": { "viewport": 375, "documentWidth": 375 },
+        "sha256": "048c1bff2f791b3f14347e66294d4d20ea4c0f60492683233268ba8e544ee5b4",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-templates-320.png",
+        "path": "docs/screenshots/phase21/module-templates-320.png",
+        "width": 320,
+        "height": 900,
+        "geometry": { "viewport": 320, "documentWidth": 320 },
+        "sha256": "96e5f613ec9d5a58f35811c19b8bbf95dd2d7fd5d4be20d642110f922e6e55fc",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-content-1280.png",
+        "path": "docs/screenshots/phase21/module-content-1280.png",
+        "width": 1280,
+        "height": 1000,
+        "geometry": { "viewport": 1280, "documentWidth": 1280 },
+        "sha256": "1e09691c5427e9e8385d9a1d38c474213f9136e8f16c6d296574723aa6360cbd",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-content-768.png",
+        "path": "docs/screenshots/phase21/module-content-768.png",
+        "width": 768,
+        "height": 1000,
+        "geometry": { "viewport": 768, "documentWidth": 768 },
+        "sha256": "a587e05e7b8965882d4ab257edbe735b2bd0496ee5a08785bc28490e29e2bd46",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-content-375.png",
+        "path": "docs/screenshots/phase21/module-content-375.png",
+        "width": 375,
+        "height": 900,
+        "geometry": { "viewport": 375, "documentWidth": 375 },
+        "sha256": "841c08e08498af0d0051c44649b11a8efa8af6603fc09229329fcd3b2b2717a4",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-content-320.png",
+        "path": "docs/screenshots/phase21/module-content-320.png",
+        "width": 320,
+        "height": 900,
+        "geometry": { "viewport": 320, "documentWidth": 320 },
+        "sha256": "434d3cd0d1c8ea97420d6ac89023edf43e5f87ebede8ee572a0bc5b98aa181aa",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-settings-1280.png",
+        "path": "docs/screenshots/phase21/module-settings-1280.png",
+        "width": 1280,
+        "height": 1000,
+        "geometry": { "viewport": 1280, "documentWidth": 1280 },
+        "sha256": "a6c4f2e1fd12f4ac239e30604c098ac352eafae76bead96da8efd6ef6ce22fcd",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-settings-768.png",
+        "path": "docs/screenshots/phase21/module-settings-768.png",
+        "width": 768,
+        "height": 1000,
+        "geometry": { "viewport": 768, "documentWidth": 768 },
+        "sha256": "8a9a17c6c4fc5a05e842496ea37206931ca305834fafe0a450d21d011c200231",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-settings-375.png",
+        "path": "docs/screenshots/phase21/module-settings-375.png",
+        "width": 375,
+        "height": 900,
+        "geometry": { "viewport": 375, "documentWidth": 375 },
+        "sha256": "28129c3cca2c0134216eba4b4748eae16b226766ed938baf4a37a346d19462fb",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "module-settings-320.png",
+        "path": "docs/screenshots/phase21/module-settings-320.png",
+        "width": 320,
+        "height": 900,
+        "geometry": { "viewport": 320, "documentWidth": 320 },
+        "sha256": "6dcb239a9eaeb6e67c2bebc3a403aaad11b08eaad8154fce35b8e146f646ae3a",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "comparison-table-1280.png",
+        "path": "docs/screenshots/phase21/comparison-table-1280.png",
+        "width": 1280,
+        "height": 900,
+        "geometry": { "viewport": 1280, "documentWidth": 1280 },
+        "sha256": "adb9746b79b8359fc9b08adb7ad4e35a39989a4d6eabafc81e69d62c55633fc9",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "comparison-table-768.png",
+        "path": "docs/screenshots/phase21/comparison-table-768.png",
+        "width": 768,
+        "height": 900,
+        "geometry": { "viewport": 768, "documentWidth": 768 },
+        "sha256": "5b94867e61444e3461f1ff5a0c7a73b1d0f94917dd3af1d3d362840f326d2151",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "comparison-table-375.png",
+        "path": "docs/screenshots/phase21/comparison-table-375.png",
+        "width": 375,
+        "height": 900,
+        "geometry": { "viewport": 375, "documentWidth": 375 },
+        "sha256": "079007b82e93a3eb6cc7fcc0a5e85c19d258111720d0732ccb91aa973cfbffd9",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "comparison-table-320.png",
+        "path": "docs/screenshots/phase21/comparison-table-320.png",
+        "width": 320,
+        "height": 900,
+        "geometry": { "viewport": 320, "documentWidth": 320 },
+        "sha256": "670ac25c1113013897b940e5f5c0d613a5b88df8b7b545dde1637defe79c4762",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "integration-selected-media.png",
+        "path": "docs/screenshots/phase21/integration-selected-media.png",
+        "width": 1280,
+        "height": 1000,
+        "geometry": { "viewport": 1280, "documentWidth": 1280 },
+        "sha256": "cbf25148c4d0e2735a399d50462e3d7bc9db3147c0a91c2d849842cca98e40be",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "integration-history-capacity.png",
+        "path": "docs/screenshots/phase21/integration-history-capacity.png",
+        "width": 1280,
+        "height": 1000,
+        "geometry": { "viewport": 1280, "documentWidth": 1280 },
+        "sha256": "cd8f27aa50ead25708b408b78fba177daad270c6a40cc88eca96352846136263",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "pairing-dialog-1280.png",
+        "path": "docs/screenshots/phase21/pairing-dialog-1280.png",
+        "width": 1280,
+        "height": 1000,
+        "geometry": { "viewport": 1280, "documentWidth": 1280 },
+        "sha256": "1a7916f23054dd1287a3056691cd37d36bd2e82e049de77ce364768d623ca0a3",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "pairing-dialog-768.png",
+        "path": "docs/screenshots/phase21/pairing-dialog-768.png",
+        "width": 768,
+        "height": 1000,
+        "geometry": { "viewport": 768, "documentWidth": 768 },
+        "sha256": "d9fe0bb3ff49ff9205fceea5edc7eb73024385fec8e0ed8541d8f8bc87902b9a",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "pairing-dialog-375.png",
+        "path": "docs/screenshots/phase21/pairing-dialog-375.png",
+        "width": 375,
+        "height": 1000,
+        "geometry": { "viewport": 375, "documentWidth": 375 },
+        "sha256": "0a0be32c5161fd9d802c1dc84f2f9c882667b06bfaae3a0f7f8c3fc3a37a2f28",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "pairing-dialog-320.png",
+        "path": "docs/screenshots/phase21/pairing-dialog-320.png",
+        "width": 320,
+        "height": 1000,
+        "geometry": { "viewport": 320, "documentWidth": 320 },
+        "sha256": "f63f75c5ab6638b1747dd1592e332c63ac92d30caf0b21a7374333f61583f05f",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "01-templates-desktop.png",
+        "path": "docs/screenshots/phase21/01-templates-desktop.png",
+        "width": 1440,
+        "height": 1000,
+        "geometry": { "viewport": 1440, "documentWidth": 1440 },
+        "sha256": "67818524d1a233d86e6c9301b8cb5667622501dd84cdc2679c120c1b1baf486c",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "02-template-editor-preview.png",
+        "path": "docs/screenshots/phase21/02-template-editor-preview.png",
+        "width": 1440,
+        "height": 1000,
+        "geometry": { "viewport": 1440, "documentWidth": 1440 },
+        "sha256": "3cdb36c5089ed268d51022b6221093b64bd035c3c8c9e0d2a8d3534b99773dd3",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "08-template-variable-preview.png",
+        "path": "docs/screenshots/phase21/08-template-variable-preview.png",
+        "width": 1440,
+        "height": 1000,
+        "geometry": { "viewport": 1440, "documentWidth": 1440 },
+        "sha256": "c074fa9eb468366e8fe126f4037ac6d4da1daf3edd4dfe8016828b4d681395a8",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "03-content-desktop.png",
+        "path": "docs/screenshots/phase21/03-content-desktop.png",
+        "width": 1440,
+        "height": 1000,
+        "geometry": { "viewport": 1440, "documentWidth": 1440 },
+        "sha256": "a8917d09dc8036bbdaff059b7f7653aac7f703a09ab03e589d0fc06e1ea835b1",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "04-content-edit.png",
+        "path": "docs/screenshots/phase21/04-content-edit.png",
+        "width": 1440,
+        "height": 1000,
+        "geometry": { "viewport": 1440, "documentWidth": 1440 },
+        "sha256": "f776360e7c9a7906bc294634ceb49bf78e49dac6b36b1fb3a9959bad2cb8e6dc",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "05-content-history.png",
+        "path": "docs/screenshots/phase21/05-content-history.png",
+        "width": 1440,
+        "height": 1000,
+        "geometry": { "viewport": 1440, "documentWidth": 1440 },
+        "sha256": "0c1c88b9a1a0eb9899e1ad79eb3cbafb7e9ffce8d5862c7be32bff4baacbfd52",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "06-content-mobile.png",
+        "path": "docs/screenshots/phase21/06-content-mobile.png",
+        "width": 375,
+        "height": 812,
+        "geometry": { "viewport": 375, "documentWidth": 375 },
+        "sha256": "bac8394d7d08d6d8f7e1bffa755519ed874e78e83eea7be41c4d1c1b0cfda7f2",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "07-templates-mobile.png",
+        "path": "docs/screenshots/phase21/07-templates-mobile.png",
+        "width": 375,
+        "height": 812,
+        "geometry": { "viewport": 375, "documentWidth": 375 },
+        "sha256": "f6cce52cca3914ae11bb4e4e7a9d603d835e5bf7587ecce8c7d5aa51a958941d",
+        "realRenderedInterface": true
+      },
+      {
+        "file": "popup-first-use-400.png",
+        "path": "docs/screenshots/phase21/popup-first-use-400.png",
+        "width": 400,
+        "height": 700,
+        "sha256": "b0792d1c10a9721b2e48c6b76b8e5fdc80077e19e5f71a7633cde12ebec7ec25",
+        "realRenderedInterface": true,
+        "extensionState": "actual packaged MV3 first-use consent; no Amazon capture attempted"
+      },
+      {
+        "file": "integration-deleted-source-snapshot.png",
+        "path": "docs/screenshots/phase21/integration-deleted-source-snapshot.png",
+        "width": 1280,
+        "height": 1000,
+        "geometry": { "viewport": 1280, "documentWidth": 1280 },
+        "sha256": "dd1b0f9a958dff1880b3ad95ceaaee6b23ae98891d2826c7a56ab6864e4e1d2c",
+        "realRenderedInterface": true
+      }
+    ]
+  },
+  "manual": {
+    "total": 53,
+    "pending": 53,
+    "passed": 0,
+    "evidence": "docs/phase21/manual-results.csv",
+    "sha256": "0cd82f61208bd408d65a2ec4230c29841ad34e711b5a2311ee88377ae12f6780",
+    "formalWindowsGuiPassed": false,
+    "stableChromePassed": false,
+    "evidenceRequirements": "docs/phase21/evidence-requirements.md",
+    "pendingSteps": "docs/phase21/manual-acceptance.md"
+  },
+  "realAi": {
+    "authorized": false,
+    "paidRequests": 0,
+    "realModelQualityVerified": false,
+    "preparedCategories": 6,
+    "plannedFunctionEvaluations": 18,
+    "executedEvaluations": 0,
+    "pendingEvaluations": 18,
+    "scores": null,
+    "actualCost": null,
+    "scorecard": {
+      "evidence": "docs/phase21/ai-scorecard.csv",
+      "sha256": "dd7768dbeaa703b23bb1dfdd53d4da2f986e891c12e6d1ae6c481fe96e83961e"
+    },
+    "preparation": "docs/phase21/ai-preparation.md"
+  },
+  "realAmazon": {
+    "evidence": "docs/phase21/amazon-results.json",
+    "sha256": "b759361a41aa02ceb39304cad5063979816da8db07b63cb48a38f47718c0c039",
+    "denominator": {
+      "initialPrimaryPages": 10,
+      "captured": 8,
+      "distinctCategories": ["electronics", "home", "beauty", "clothing", "kitchen", "books"],
+      "countryHosts": ["www.amazon.com", "www.amazon.de", "www.amazon.co.uk", "www.amazon.co.jp"],
+      "uniqueAsinsIncludingVariant": 8,
+      "additionalRepeatPagesAreNotNewProducts": true,
+      "initialFieldCounts": {
+        "asin": {
+          "pass": 8,
+          "fail": 0,
+          "unverified": 0,
+          "not-available": 0,
+          "requires-content-review": 0
+        },
+        "title": {
+          "pass": 8,
+          "fail": 0,
+          "unverified": 0,
+          "not-available": 0,
+          "requires-content-review": 0
+        },
+        "price": {
+          "pass": 6,
+          "fail": 0,
+          "unverified": 0,
+          "not-available": 2,
+          "requires-content-review": 0
+        },
+        "currency": {
+          "pass": 6,
+          "fail": 0,
+          "unverified": 0,
+          "not-available": 2,
+          "requires-content-review": 0
+        },
+        "brand": {
+          "pass": 7,
+          "fail": 0,
+          "unverified": 0,
+          "not-available": 1,
+          "requires-content-review": 0
+        },
+        "mainImage": {
+          "pass": 8,
+          "fail": 0,
+          "unverified": 0,
+          "not-available": 0,
+          "requires-content-review": 0
+        },
+        "gallery": {
+          "pass": 8,
+          "fail": 0,
+          "unverified": 0,
+          "not-available": 0,
+          "requires-content-review": 0
+        },
+        "highResolution": {
+          "pass": 8,
+          "fail": 0,
+          "unverified": 0,
+          "not-available": 0,
+          "requires-content-review": 0
+        },
+        "bulletPoints": {
+          "pass": 7,
+          "fail": 0,
+          "unverified": 0,
+          "not-available": 1,
+          "requires-content-review": 0
+        },
+        "rating": {
+          "pass": 8,
+          "fail": 0,
+          "unverified": 0,
+          "not-available": 0,
+          "requires-content-review": 0
+        },
+        "reviewCount": {
+          "pass": 8,
+          "fail": 0,
+          "unverified": 0,
+          "not-available": 0,
+          "requires-content-review": 0
+        },
+        "videos": {
+          "pass": 1,
+          "fail": 2,
+          "unverified": 0,
+          "not-available": 5,
+          "requires-content-review": 0
+        },
+        "mainImageHttp": {
+          "pass": 8,
+          "fail": 0,
+          "unverified": 0,
+          "not-available": 0,
+          "requires-content-review": 0
+        },
+        "description": {
+          "pass": 0,
+          "fail": 0,
+          "unverified": 0,
+          "not-available": 1,
+          "requires-content-review": 7
+        }
+      }
+    },
+    "batches": [
+      {
+        "phase": 21,
+        "extensionVersion": "1.0.0",
+        "releaseVersion": "1.0.0-rc.1",
+        "browser": {
+          "distribution": "Chrome for Testing (Playwright chromium channel)",
+          "version": "156.0.8078.4",
+          "headless": true,
+          "stableChromeManualAcceptance": false
+        },
+        "startedAt": "2026-10-14T06:57:31.491Z",
+        "completedAt": "2026-10-14T07:01:59.858Z",
+        "evidenceDirectory": ".test-data/phase21-amazon/2026-10-14T06-57-29Z",
+        "reportSha256": "90378305268b9b26f3b3691f7a31316240c68cbc9846d0747e80d821641ce8a8",
+        "auditSha256": "f430d8dee6355f4c9a4462e6d2213b79bb6d9f9913ef100caf7234c127e844c4",
+        "primaryAttempted": 10,
+        "primaryCaptured": 8,
+        "variantsCaptured": 2
+      }
+    ],
+    "stableChromeManualAcceptance": false,
+    "videoPlaybackVerified": false,
+    "unresolvedVideoSnapshotDifferences": 2,
+    "videoProbe": {
+      "evidence": "docs/phase21/video-timing-probe.json",
+      "sha256": "20ad2bbd6b8ac244453e63c22e41f02ae8342d9011931e27c4111cf8bf124716"
+    },
+    "interpretation": "Two live captures lacked videos present in later HTML. Frozen and current extractors both parse the retained HTML correctly. Capture-time state was not frozen; asynchronous timing remains unconfirmed, not a proven parser fix."
+  },
+  "supplementalMediaPreview": {
+    "evidence": "docs/phase21/media-preview-check.json",
+    "sha256": "fb38899753b9d0c28d3b3ef3c4baf4a0722a66e557f6091b2554a85c59ecf276",
+    "version": "1.0.0-rc.1",
+    "browser": "156.0.8078.4",
+    "startedAt": "2026-10-14T07:28:42.055Z",
+    "finishedAt": "2026-10-14T07:28:45.600Z",
+    "screenshots": [
+      {
+        "path": "docs/screenshots/phase21-media/library-1280.png",
+        "sha256": "ef221947d92f5bd30cce734c1f530983beb486db2e50e2a60faa4b278feb0842"
+      },
+      {
+        "path": "docs/screenshots/phase21-media/media-1280.png",
+        "sha256": "8fdc37edf713426269adc21532b3b9552369319ecf1b58c164b574b354e4969f"
+      }
+    ],
+    "visibleImageDecodeVerified": true,
+    "stableChromeManualAcceptance": false,
+    "originalBlankPreviewScreenshotsRetained": true
+  },
+  "initialFailures": [
+    {
+      "stage": "lint",
+      "command": "pnpm lint",
+      "exitCode": 1,
+      "startedAt": "2026-10-14T06:55:16.924Z",
+      "finishedAt": "2026-10-14T06:55:21.128Z",
+      "originalAttempt": {
+        "evidence": ".test-data/phase21/attempt-1/checks.json",
+        "sha256": "e321834970a829d43100f2d7c133a71089979a3d0a58adba229f6f1f6cd1b1e6"
+      },
+      "log": {
+        "evidence": ".test-data/phase21/attempt-1/lint.log",
+        "sha256": "ef5a5e9bcef8e143c05de4e80a79f47b0675dd2cbd7e11a56918b240d5b36f6c"
+      },
+      "classification": "Actual failed command retained; failure cause and any product impact must be assessed from evidence, not inferred as a user defect.",
+      "rerunEvidence": ".test-data/phase21/lint.log",
+      "rerunLogSha256": "dc55de83696687991d2a4553be741a7a037c0333e191a5030b32f516531e89b2",
+      "rerunPassed": true
+    },
+    {
+      "stage": "e2e-and-screenshots",
+      "command": "node scripts/phase21-portable-workflow.mjs",
+      "exitCode": 1,
+      "startedAt": "2026-10-14T06:58:25.166Z",
+      "finishedAt": "2026-10-14T07:01:30.763Z",
+      "originalAttempt": {
+        "evidence": ".test-data/phase21/attempt-2/checks.json",
+        "sha256": "5051ca8ebc7053cb0104734df0a1e627c5a6b2563bdcdf0806f6407d58b58705"
+      },
+      "log": {
+        "evidence": ".test-data/phase21/attempt-2/e2e-and-screenshots.log",
+        "sha256": "c7bf9b82955b6617c78f39deed59fedb18daa156728ea9070879a853d488b867"
+      },
+      "classification": "Actual failed command retained; failure cause and any product impact must be assessed from evidence, not inferred as a user defect.",
+      "rerunEvidence": ".test-data/phase21/e2e-and-screenshots.log",
+      "rerunLogSha256": "e0baa58ee792f92449bae7818b530ee9faad1c7f2becf28395727f008a38e713",
+      "rerunPassed": true
+    },
+    {
+      "stage": "format",
+      "command": "pnpm format:check",
+      "exitCode": 1,
+      "startedAt": "2026-10-14T07:08:38.235Z",
+      "finishedAt": "2026-10-14T07:08:45.270Z",
+      "originalAttempt": {
+        "evidence": ".test-data/phase21/attempt-3/checks.json",
+        "sha256": "ce8e716352e4f49a0155584bf3b9ce5f68f6dbeda52e2b03cff4236d0349fdef"
+      },
+      "log": {
+        "evidence": ".test-data/phase21/attempt-3/format.log",
+        "sha256": "dd127c97a52da806e2e2481459284a26057d0f44cfb552e3da13b03f86a07a68"
+      },
+      "classification": "Actual failed command retained; failure cause and any product impact must be assessed from evidence, not inferred as a user defect.",
+      "rerunEvidence": ".test-data/phase21/format.log",
+      "rerunLogSha256": "defe600d1c948ef3979f779a914e22910f484bccddd5a9c6c9097eb4503e261c",
+      "rerunPassed": true
+    }
+  ],
+  "finalSourceChecks": {
+    "startedAt": "2026-10-14T07:30:40.990Z",
+    "passed": true,
+    "checks": [
+      {
+        "name": "typecheck",
+        "command": "pnpm typecheck",
+        "startedAt": "2026-10-14T07:30:40.990Z",
+        "finishedAt": "2026-10-14T07:30:46.690Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/final-typecheck.log",
+        "logSha256": "aec22f396c01fb6baa65ba859a0b95232bafc4c4ed2d7e8664c7a9b825f5548f"
+      },
+      {
+        "name": "lint",
+        "command": "pnpm lint",
+        "startedAt": "2026-10-14T07:30:46.691Z",
+        "finishedAt": "2026-10-14T07:30:51.014Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/final-lint.log",
+        "logSha256": "dc55de83696687991d2a4553be741a7a037c0333e191a5030b32f516531e89b2"
+      },
+      {
+        "name": "format",
+        "command": "pnpm format:check",
+        "startedAt": "2026-10-14T07:30:51.014Z",
+        "finishedAt": "2026-10-14T07:30:57.589Z",
+        "exitCode": 0,
+        "passed": true,
+        "evidence": ".test-data/phase21/final-format.log",
+        "logSha256": "defe600d1c948ef3979f779a914e22910f484bccddd5a9c6c9097eb4503e261c"
+      }
+    ],
+    "finishedAt": "2026-10-14T07:30:57.590Z"
+  },
+  "acceptance": {
+    "featureDevelopmentComplete": true,
+    "engineeringAutomationPassed": true,
+    "fullRealEnvironmentAcceptancePassed": false,
+    "realModelQualityVerified": false,
+    "publicRelease": false,
+    "recommendV100PublicRelease": false,
+    "releaseBlockedByMissingEvidence": true
+  },
+  "limits": [
+    "Stable Chrome toolbar/manual installation, original small pairing window and Windows native GUI remain pending; CFT and headless portable do not replace them.",
+    "Phase 21 real Amazon evidence uses CFT; two primary navigation timeouts and two video snapshot differences remain recorded. Video playback is unverified. UI screenshot products are explicitly historical public captures.",
+    "125/150/200 percent Windows display scaling, SmartScreen, native directory selection and controlled permission denial still need actual desktop evidence.",
+    "Physical power loss and disk failure were not performed; actual-file fault injection and upgrade tests have a narrower scope.",
+    "Real AI requires explicit model, Key, request limit and budget authorization; no paid calls or model quality scores were produced."
+  ]
+}

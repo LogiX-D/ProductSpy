@@ -1,0 +1,473 @@
+{
+  "format": "productspy-phase21-ai-reference-catalog",
+  "schemaVersion": 1,
+  "preparedForVersion": "1.0.0-rc.1",
+  "preparedOn": "2026-10-14",
+  "timezone": "Asia/Shanghai",
+  "notAProductImportOrBusinessBackup": true,
+  "authorization": {
+    "approved": false,
+    "keyPresenceChecked": false,
+    "keyLocation": "Windows 启动器本机安全设置；此文件不接受 Key",
+    "model": null,
+    "maxRequests": null,
+    "totalBudget": null,
+    "budgetCurrency": null,
+    "deadline": null
+  },
+  "execution": {
+    "externalPaidRequests": 0,
+    "realModelQualityVerified": false,
+    "scores": null,
+    "actualCost": null,
+    "manualEditingSeconds": null,
+    "mediaUploaded": false,
+    "reviewTextCollected": false
+  },
+  "functionalScopes": [
+    {
+      "id": "product",
+      "route": "/api/analyze-product",
+      "readiness": "pending-current-frozen-input-and-authorization"
+    },
+    {
+      "id": "comparison",
+      "route": "/api/analyze-comparison",
+      "readiness": "pending-same-category-peer-frozen-inputs-and-authorization"
+    },
+    {
+      "id": "content",
+      "route": "/api/generate-content",
+      "readiness": "pending-current-product-template-options-and-authorization"
+    }
+  ],
+  "samples": [
+    {
+      "id": "AI21-01",
+      "category": "electronics",
+      "categoryLabel": "电子产品",
+      "label": "Logitech C920",
+      "asin": "B006JH8T3S",
+      "url": "https://www.amazon.com/dp/B006JH8T3S",
+      "capturedAt": "2026-10-13T20:35:59.999Z",
+      "status": "historical-real-page-reference-current-input-and-ai-quality-pending",
+      "provenance": {
+        "phase": 20,
+        "report": "docs/phase20/amazon-results.json",
+        "reportSha256": "51963522f1554e258e114f7306c2b61f00381245f5adc8e0a21ea57605f69ae4",
+        "pointer": "rows[0]",
+        "htmlSha256": "97f0146313d89e8b333f4fd2b50715607bec5a8d09d502cf4f572f2c14a12970",
+        "screenshotSha256": "2e94cef7d135946981b0d0f19af9f54a8f011ede04438c52f757d94a56b356ab",
+        "retainedCapture": ".test-data/phase20-amazon/acceptance/01-www.amazon.com-B006JH8T3S.json",
+        "retainedCaptureSha256": "e153aa8839b5b3631838a99e9771df6abc9a3e935b73ff18289dc17ac21119eb",
+        "browserDistribution": "Chrome for Testing (Playwright chromium channel)",
+        "stableChromeManualAcceptance": false,
+        "refreshedInPhase21": false,
+        "historicalEvidenceFilesRechecked": true
+      },
+      "pageFacts": {
+        "source": "amazon",
+        "sourceId": "B006JH8T3S",
+        "url": "https://www.amazon.com/dp/B006JH8T3S",
+        "title": "Logitech 罗技 HD Pro 网络摄像头 C920 宽屏视频通话和录制,1080p 摄像头,台式机或笔记本电脑网络摄像头",
+        "brand": "Logitech",
+        "price": "TWD2,162.76",
+        "currency": "TWD",
+        "rating": 4.6,
+        "reviewCount": 32793,
+        "imageCount": 10,
+        "videoUrlCount": 2,
+        "bulletPointCount": 1,
+        "specificationCount": 10,
+        "descriptionCharacters": 859,
+        "classification": "dated-page-observation-not-independent-product-verification"
+      },
+      "merchantClaims": [
+        {
+          "fields": ["title", "bulletPoints[0]"],
+          "text": "页面以全高清 1080p 描述摄像头。",
+          "verified": false,
+          "classification": "merchant-page-claim"
+        }
+      ],
+      "unknowns": [
+        "不增加页面未提供的帧率、追踪或认证。",
+        "页面技术表和兼容性声明未实测，不将它们写成独立验证结论。",
+        "没有采集真实评论正文；评分与评论数量不是评论内容。",
+        "描述完整性和宣称真实有效性待人工核实。",
+        "视频 URL 结构及历史 HEAD 不代表已播放或观看；AI 不会默认收到媒体文件。"
+      ],
+      "inferencePolicy": "未生成 AI 推断；未来用户画像、需求、营销机会必须明确标记为待验证假设。",
+      "comparisonReadiness": {
+        "status": "pending-peer",
+        "minimumDistinctAsins": 2,
+        "maximumProducts": 5,
+        "currentPrimaryAsins": ["B006JH8T3S"],
+        "peerProduct": null,
+        "note": "须另行正常采集同品类、不同 ASIN 的可比商品并冻结来源，不能用跨品类或同 ASIN 多站点冒充商业竞品。"
+      },
+      "aiEvaluation": null
+    },
+    {
+      "id": "AI21-02",
+      "category": "home",
+      "categoryLabel": "家居用品",
+      "label": "upsimples frame",
+      "asin": "B0BQR2BQYZ",
+      "url": "https://www.amazon.com/dp/B0BQR2BQYZ",
+      "capturedAt": "2026-10-13T20:36:11.463Z",
+      "status": "historical-real-page-reference-current-input-and-ai-quality-pending",
+      "provenance": {
+        "phase": 20,
+        "report": "docs/phase20/amazon-results.json",
+        "reportSha256": "51963522f1554e258e114f7306c2b61f00381245f5adc8e0a21ea57605f69ae4",
+        "pointer": "rows[1]",
+        "htmlSha256": "e513eab12cdfc25030f5f8a5e80922447a64fd0fd5644e17a1482e2f986ca081",
+        "screenshotSha256": "dee321eb36fff4fa39632b4bdf72627640f76f9793c8a47654821376e13f9c51",
+        "retainedCapture": ".test-data/phase20-amazon/acceptance/02-www.amazon.com-B0BQR2BQYZ.json",
+        "retainedCaptureSha256": "1a64cdcc8bf895e9680dbf7ede9b0f47893ab5a63643c2e1d59e390ad5622f93",
+        "browserDistribution": "Chrome for Testing (Playwright chromium channel)",
+        "stableChromeManualAcceptance": false,
+        "refreshedInPhase21": false,
+        "historicalEvidenceFilesRechecked": true
+      },
+      "pageFacts": {
+        "source": "amazon",
+        "sourceId": "B0BQR2BQYZ",
+        "url": "https://www.amazon.com/dp/B0BQR2BQYZ",
+        "title": "upsimples 27.94 x 35.56 厘米相框,墙壁装饰相框,黑色 1 件装",
+        "brand": "upsimples",
+        "price": "TWD202.29",
+        "currency": "TWD",
+        "rating": 4.4,
+        "reviewCount": 44260,
+        "imageCount": 8,
+        "videoUrlCount": 2,
+        "bulletPointCount": 5,
+        "specificationCount": 10,
+        "descriptionCharacters": 294,
+        "classification": "dated-page-observation-not-independent-product-verification"
+      },
+      "merchantClaims": [
+        {
+          "fields": ["bulletPoints[0]", "bulletPoints[4]"],
+          "text": "商家描述框架耐用和保护性包装。",
+          "verified": false,
+          "classification": "merchant-page-claim"
+        },
+        {
+          "fields": ["bulletPoints[2]"],
+          "text": "商家称可拆背板并横向或纵向悬挂。",
+          "verified": false,
+          "classification": "merchant-page-claim"
+        }
+      ],
+      "unknowns": [
+        "标题、卖点及技术表的尺寸表达不同，保留矛盾并要求人工核对。",
+        "保护性包装不是零破损保证，不编造买家反馈。",
+        "没有采集真实评论正文；评分与评论数量不是评论内容。",
+        "描述完整性和宣称真实有效性待人工核实。",
+        "视频 URL 结构及历史 HEAD 不代表已播放或观看；AI 不会默认收到媒体文件。"
+      ],
+      "inferencePolicy": "未生成 AI 推断；未来用户画像、需求、营销机会必须明确标记为待验证假设。",
+      "comparisonReadiness": {
+        "status": "pending-peer",
+        "minimumDistinctAsins": 2,
+        "maximumProducts": 5,
+        "currentPrimaryAsins": ["B0BQR2BQYZ"],
+        "peerProduct": null,
+        "note": "须另行正常采集同品类、不同 ASIN 的可比商品并冻结来源，不能用跨品类或同 ASIN 多站点冒充商业竞品。"
+      },
+      "aiEvaluation": null
+    },
+    {
+      "id": "AI21-03",
+      "category": "beauty",
+      "categoryLabel": "美妆产品",
+      "label": "CeraVe moisturizer",
+      "asin": "B00TTD9BRC",
+      "url": "https://www.amazon.com/dp/B00TTD9BRC",
+      "capturedAt": "2026-10-13T20:36:37.678Z",
+      "status": "historical-real-page-reference-current-input-and-ai-quality-pending",
+      "provenance": {
+        "phase": 20,
+        "report": "docs/phase20/amazon-results.json",
+        "reportSha256": "51963522f1554e258e114f7306c2b61f00381245f5adc8e0a21ea57605f69ae4",
+        "pointer": "rows[2]",
+        "htmlSha256": "8463a9205dccce8c0d0194738de3e620b6d0300b938828dc5ff8a19604f9c998",
+        "screenshotSha256": "ad2240cebd4cbe646a6dfb8dd799a3c7ce153fe93c36a132ce3b66e9458f45b7",
+        "retainedCapture": ".test-data/phase20-amazon/acceptance/03-www.amazon.com-B00TTD9BRC.json",
+        "retainedCaptureSha256": "57124c47890e7883c34e7d20b33b63367e2c0b7ae45c143f16f44e512a36c85e",
+        "browserDistribution": "Chrome for Testing (Playwright chromium channel)",
+        "stableChromeManualAcceptance": false,
+        "refreshedInPhase21": false,
+        "historicalEvidenceFilesRechecked": true
+      },
+      "pageFacts": {
+        "source": "amazon",
+        "sourceId": "B00TTD9BRC",
+        "url": "https://www.amazon.com/dp/B00TTD9BRC",
+        "title": "CeraVe 保湿霜 16 盎司（约 453.59 克）日常面部和身体保湿霜，适用于干性肌肤, 19 盎司",
+        "brand": "CeraVe",
+        "price": "TWD609.75",
+        "currency": "TWD",
+        "rating": 4.7,
+        "reviewCount": 148939,
+        "imageCount": 12,
+        "videoUrlCount": 2,
+        "bulletPointCount": 5,
+        "specificationCount": 0,
+        "descriptionCharacters": 293,
+        "classification": "dated-page-observation-not-independent-product-verification"
+      },
+      "merchantClaims": [
+        {
+          "fields": ["bulletPoints[0]", "bulletPoints[1]", "description"],
+          "text": "商家称含透明质酸、神经酰胺并具有保湿效果。",
+          "verified": false,
+          "classification": "merchant-page-claim"
+        },
+        {
+          "fields": ["bulletPoints[2]"],
+          "text": "商家文案提及面部和身体适用性以及认可印章。",
+          "verified": false,
+          "classification": "merchant-page-claim"
+        }
+      ],
+      "unknowns": [
+        "标题同时包含 16 与 19 盎司，当前规格需人工核对。",
+        "保湿时长、认证或认可标志和功效没有独立验证；不能升级为治疗承诺。",
+        "没有采集真实评论正文；评分与评论数量不是评论内容。",
+        "描述完整性和宣称真实有效性待人工核实。",
+        "视频 URL 结构及历史 HEAD 不代表已播放或观看；AI 不会默认收到媒体文件。"
+      ],
+      "inferencePolicy": "未生成 AI 推断；未来用户画像、需求、营销机会必须明确标记为待验证假设。",
+      "comparisonReadiness": {
+        "status": "pending-peer",
+        "minimumDistinctAsins": 2,
+        "maximumProducts": 5,
+        "currentPrimaryAsins": ["B00TTD9BRC"],
+        "peerProduct": null,
+        "note": "须另行正常采集同品类、不同 ASIN 的可比商品并冻结来源，不能用跨品类或同 ASIN 多站点冒充商业竞品。"
+      },
+      "aiEvaluation": null
+    },
+    {
+      "id": "AI21-04",
+      "category": "clothing",
+      "categoryLabel": "服装",
+      "label": "Hanes hoodie",
+      "asin": "B00JUM2V4W",
+      "url": "https://www.amazon.com/dp/B00JUM2V4W",
+      "capturedAt": "2026-10-13T20:37:04.752Z",
+      "status": "historical-real-page-reference-current-input-and-ai-quality-pending",
+      "provenance": {
+        "phase": 20,
+        "report": "docs/phase20/amazon-results.json",
+        "reportSha256": "51963522f1554e258e114f7306c2b61f00381245f5adc8e0a21ea57605f69ae4",
+        "pointer": "rows[3]",
+        "htmlSha256": "ba585a4d84e4a8338ad92f4533c08935609ee13018188bf6f8b7dd6512a3e028",
+        "screenshotSha256": "b145d1a83a57e209cca639e6debc64e058eeea5dee10ab2a1ed880b6532a3700",
+        "retainedCapture": ".test-data/phase20-amazon/acceptance/04-www.amazon.com-B00JUM2V4W.json",
+        "retainedCaptureSha256": "b035ed39dad59e339d64a80cb94c38caac44f14630c825d9b3031489cdf87e07",
+        "browserDistribution": "Chrome for Testing (Playwright chromium channel)",
+        "stableChromeManualAcceptance": false,
+        "refreshedInPhase21": false,
+        "historicalEvidenceFilesRechecked": true
+      },
+      "pageFacts": {
+        "source": "amazon",
+        "sourceId": "B00JUM2V4W",
+        "url": "https://www.amazon.com/dp/B00JUM2V4W",
+        "title": "Hanes P170 - EcoSmart 连帽运动衫",
+        "brand": "Hanes",
+        "price": "TWD620.04",
+        "currency": "TWD",
+        "rating": 4.5,
+        "reviewCount": 172233,
+        "imageCount": 8,
+        "videoUrlCount": 0,
+        "bulletPointCount": 5,
+        "specificationCount": 0,
+        "descriptionCharacters": 183,
+        "classification": "dated-page-observation-not-independent-product-verification"
+      },
+      "merchantClaims": [
+        {
+          "fields": ["bulletPoints[0]", "bulletPoints[2]"],
+          "text": "商家以柔软抓绒、棉质混纺、保暖和舒适描述商品。",
+          "verified": false,
+          "classification": "merchant-page-claim"
+        },
+        {
+          "fields": ["bulletPoints[1]", "bulletPoints[3]"],
+          "text": "商家描述兜帽、抽绳及袋鼠口袋。",
+          "verified": false,
+          "classification": "merchant-page-claim"
+        }
+      ],
+      "unknowns": [
+        "没有采集明确材料比例或尺码试穿结果，不擅自补充。",
+        "本次可见变体点击超时，不把目标 B0C34WVJVT 的资料用于 B00JUM2V4W。",
+        "未提取视频不证明该商品没有视频。",
+        "没有采集真实评论正文；评分与评论数量不是评论内容。",
+        "描述完整性和宣称真实有效性待人工核实。"
+      ],
+      "inferencePolicy": "未生成 AI 推断；未来用户画像、需求、营销机会必须明确标记为待验证假设。",
+      "comparisonReadiness": {
+        "status": "pending-peer",
+        "minimumDistinctAsins": 2,
+        "maximumProducts": 5,
+        "currentPrimaryAsins": ["B00JUM2V4W"],
+        "peerProduct": null,
+        "note": "须另行正常采集同品类、不同 ASIN 的可比商品并冻结来源，不能用跨品类或同 ASIN 多站点冒充商业竞品。"
+      },
+      "aiEvaluation": null
+    },
+    {
+      "id": "AI21-05",
+      "category": "kitchen",
+      "categoryLabel": "厨房用品",
+      "label": "OXO cookie scoop",
+      "asin": "B0000CCY1E",
+      "url": "https://www.amazon.com/dp/B0000CCY1E",
+      "capturedAt": "2026-10-13T20:37:48.970Z",
+      "status": "historical-real-page-reference-current-input-and-ai-quality-pending",
+      "provenance": {
+        "phase": 20,
+        "report": "docs/phase20/amazon-results.json",
+        "reportSha256": "51963522f1554e258e114f7306c2b61f00381245f5adc8e0a21ea57605f69ae4",
+        "pointer": "rows[4]",
+        "htmlSha256": "a08cea2e4a0a817f2a194466621b51304353d24924ed8f3aad49c9bbb9d1017f",
+        "screenshotSha256": "592ba1ddb4011023dff780b16a72435f8908e9c3a12d45a1e54fffd41a904380",
+        "retainedCapture": ".test-data/phase20-amazon/acceptance/05-www.amazon.com-B0000CCY1E.json",
+        "retainedCaptureSha256": "707c4336937fa78d5ac39c263f5683f566748b9b042b16f3b9430de0c5327476",
+        "browserDistribution": "Chrome for Testing (Playwright chromium channel)",
+        "stableChromeManualAcceptance": false,
+        "refreshedInPhase21": false,
+        "historicalEvidenceFilesRechecked": true
+      },
+      "pageFacts": {
+        "source": "amazon",
+        "sourceId": "B0000CCY1E",
+        "url": "https://www.amazon.com/dp/B0000CCY1E",
+        "title": "OXO Good Grips 小号不锈钢饼干勺 - 1 汤匙",
+        "brand": "OXO",
+        "price": "TWD577.27",
+        "currency": "TWD",
+        "rating": 4.4,
+        "reviewCount": 3518,
+        "imageCount": 9,
+        "videoUrlCount": 1,
+        "bulletPointCount": 5,
+        "specificationCount": 5,
+        "descriptionCharacters": 221,
+        "classification": "dated-page-observation-not-independent-product-verification"
+      },
+      "merchantClaims": [
+        {
+          "fields": ["title", "bulletPoints[1]", "description"],
+          "text": "商家以小号一汤匙面团份量描述饼干勺。",
+          "verified": false,
+          "classification": "merchant-page-claim"
+        },
+        {
+          "fields": ["bulletPoints[3]", "bulletPoints[4]", "description"],
+          "text": "商家描述弹簧手柄、脱模结构，并在描述中称可洗碗机清洗。",
+          "verified": false,
+          "classification": "merchant-page-claim"
+        }
+      ],
+      "unknowns": [
+        "不把页面重量、尺寸或成品饼干直径视为独立测量值。",
+        "清洗与材质安全仅属页面宣称，不补食品认证或烤箱适用性。",
+        "没有采集真实评论正文；评分与评论数量不是评论内容。",
+        "描述完整性和宣称真实有效性待人工核实。",
+        "视频 URL 结构及历史 HEAD 不代表已播放或观看；AI 不会默认收到媒体文件。"
+      ],
+      "inferencePolicy": "未生成 AI 推断；未来用户画像、需求、营销机会必须明确标记为待验证假设。",
+      "comparisonReadiness": {
+        "status": "pending-peer",
+        "minimumDistinctAsins": 2,
+        "maximumProducts": 5,
+        "currentPrimaryAsins": ["B0000CCY1E"],
+        "peerProduct": null,
+        "note": "须另行正常采集同品类、不同 ASIN 的可比商品并冻结来源，不能用跨品类或同 ASIN 多站点冒充商业竞品。"
+      },
+      "aiEvaluation": null
+    },
+    {
+      "id": "AI21-06",
+      "category": "books",
+      "categoryLabel": "书籍",
+      "label": "Atomic Habits",
+      "asin": "0735211299",
+      "url": "https://www.amazon.com/dp/0735211299",
+      "capturedAt": "2026-10-13T16:27:33.029Z",
+      "status": "historical-real-page-reference-current-input-and-ai-quality-pending",
+      "provenance": {
+        "phase": 19,
+        "report": "docs/phase19/amazon-results.json",
+        "reportSha256": "05c6ed012e661331475831e937dc6572959d4c624450e3bd1fd2291b8f6380ee",
+        "pointer": "rows[5]",
+        "htmlSha256": "4d8f89e43392379f4129ab00f0c63782abe2dc3668d3d0ae92db0d75d937d995",
+        "screenshotSha256": "cae9c9cb65997b876191895ff4dfea41a4ec51e15984db531cc8367497eb106f",
+        "retainedCapture": ".test-data/phase19-amazon/acceptance/06-www.amazon.com-0735211299.json",
+        "retainedCaptureSha256": "72e3fb0dde4f9cb3ea83258b2509fc27795e44e43e33d6e73e889a6d23f04612",
+        "browserDistribution": "Chrome for Testing (Playwright chromium channel)",
+        "stableChromeManualAcceptance": false,
+        "refreshedInPhase21": false,
+        "historicalEvidenceFilesRechecked": true
+      },
+      "pageFacts": {
+        "source": "amazon",
+        "sourceId": "0735211299",
+        "url": "https://www.amazon.com/dp/0735211299",
+        "title": "Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones",
+        "brand": null,
+        "price": "TWD 607.18",
+        "currency": "TWD",
+        "rating": 4.8,
+        "reviewCount": 150146,
+        "imageCount": 1,
+        "videoUrlCount": 2,
+        "bulletPointCount": 0,
+        "specificationCount": 0,
+        "descriptionCharacters": 2002,
+        "classification": "dated-page-observation-not-independent-product-verification"
+      },
+      "merchantClaims": [
+        {
+          "fields": ["title", "description"],
+          "text": "书名和商家描述以建立习惯、改变习惯为主题。",
+          "verified": false,
+          "classification": "merchant-page-claim"
+        },
+        {
+          "fields": ["description"],
+          "text": "描述含畅销、销量及读者效果宣称，未独立核实。",
+          "verified": false,
+          "classification": "merchant-page-claim"
+        }
+      ],
+      "unknowns": [
+        "品牌、Bullet Points 和结构化规格未提取，保留未知，不把作者当品牌。",
+        "不得把页面销量、畅销宣传或效果承诺改写成已证实结论。",
+        "Phase 20 同 URL 35 秒导航超时，此处使用 Phase 19 成功历史记录，不能计为 Phase 21 当前访问通过。",
+        "没有采集真实评论正文；评分与评论数量不是评论内容。",
+        "描述完整性和宣称真实有效性待人工核实。",
+        "视频 URL 结构及历史 HEAD 不代表已播放或观看；AI 不会默认收到媒体文件。"
+      ],
+      "inferencePolicy": "未生成 AI 推断；未来用户画像、需求、营销机会必须明确标记为待验证假设。",
+      "comparisonReadiness": {
+        "status": "pending-peer",
+        "minimumDistinctAsins": 2,
+        "maximumProducts": 5,
+        "currentPrimaryAsins": ["0735211299"],
+        "peerProduct": null,
+        "note": "须另行正常采集同品类、不同 ASIN 的可比商品并冻结来源，不能用跨品类或同 ASIN 多站点冒充商业竞品。"
+      },
+      "aiEvaluation": null
+    }
+  ]
+}
