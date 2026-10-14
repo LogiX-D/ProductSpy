@@ -48,7 +48,7 @@ async function eventually(check, message, timeout = 20_000, failFast = false) {
   throw new Error(`${message}${lastError ? `: ${lastError.message}` : ''}`);
 }
 
-function launcher(directory, action = 'Start') {
+function launcher(directory, action = 'Start', roots = {}) {
   const child = spawn(
     join(process.env.SystemRoot, 'System32/WindowsPowerShell/v1.0/powershell.exe'),
     [
@@ -62,9 +62,9 @@ function launcher(directory, action = 'Start') {
       '-Action',
       action,
       '-DataRoot',
-      dataRoot,
+      roots.dataRoot ?? dataRoot,
       '-RuntimeRoot',
-      runtimeRoot,
+      roots.runtimeRoot ?? runtimeRoot,
     ],
     {
       windowsHide: true,
@@ -86,6 +86,112 @@ function launcher(directory, action = 'Start') {
       .filter((line) => line.startsWith('{'))
       .map((line) => JSON.parse(line));
   return { child, completion, events };
+}
+
+async function deniedWriteDirectory(directory, action) {
+  assert(
+    resolve(directory).startsWith(`${evidenceRoot}\\`),
+    'Only owned portable-test directories may receive temporary ACL changes.',
+  );
+  const aclFile = join(evidenceRoot, `acl-${Date.now()}.txt`);
+  const saveAndDeny = `
+$ErrorActionPreference = 'Stop'
+$path = $env:PRODUCTSPY_TEST_DENIED_DIRECTORY
+$acl = [IO.Directory]::GetAccessControl($path)
+[IO.File]::WriteAllText($env:PRODUCTSPY_TEST_ORIGINAL_ACL, $acl.GetSecurityDescriptorSddlForm([Security.AccessControl.AccessControlSections]::Access))
+$sid = [Security.Principal.WindowsIdentity]::GetCurrent().User
+$rule = New-Object Security.AccessControl.FileSystemAccessRule($sid, [Security.AccessControl.FileSystemRights]::CreateFiles, [Security.AccessControl.AccessControlType]::Deny)
+$acl.AddAccessRule($rule)
+[IO.Directory]::SetAccessControl($path, $acl)
+`;
+  const restore = `
+$ErrorActionPreference = 'Stop'
+$path = $env:PRODUCTSPY_TEST_DENIED_DIRECTORY
+$sddl = [IO.File]::ReadAllText($env:PRODUCTSPY_TEST_ORIGINAL_ACL)
+# .NET restores auto-inherited DACLs exactly. For an original D: descriptor,
+# SetAccessControl would add AI, so use the non-propagating DACL-only native API.
+$descriptor = New-Object Security.AccessControl.RawSecurityDescriptor($sddl)
+if (($descriptor.ControlFlags -band [Security.AccessControl.ControlFlags]::DiscretionaryAclAutoInherited) -ne 0) {
+  $acl = [IO.Directory]::GetAccessControl($path)
+  $acl.SetSecurityDescriptorSddlForm($sddl, [Security.AccessControl.AccessControlSections]::Access)
+  [IO.Directory]::SetAccessControl($path, $acl)
+} else {
+  Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public static class ProductSpyPortableFixtureDacl { [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)] public static extern bool SetFileSecurity(string path, uint information, byte[] descriptor); }'
+  $binary = New-Object byte[] $descriptor.BinaryLength
+  $descriptor.GetBinaryForm($binary, 0)
+  if (-not [ProductSpyPortableFixtureDacl]::SetFileSecurity($path, 4, $binary)) { throw (New-Object ComponentModel.Win32Exception([Runtime.InteropServices.Marshal]::GetLastWin32Error())) }
+}
+$restoredSddl = [IO.Directory]::GetAccessControl($path).GetSecurityDescriptorSddlForm([Security.AccessControl.AccessControlSections]::Access)
+if ($restoredSddl -ne $sddl) { throw 'Original access control was not restored' }
+`;
+  async function aclCommand(source, stage) {
+    const child = spawn(
+      join(process.env.SystemRoot, 'System32/WindowsPowerShell/v1.0/powershell.exe'),
+      ['-NoProfile', '-NonInteractive', '-Command', source],
+      {
+        windowsHide: true,
+        stdio: ['ignore', 'pipe', 'pipe'],
+        env: {
+          ...process.env,
+          PRODUCTSPY_TEST_DENIED_DIRECTORY: directory,
+          PRODUCTSPY_TEST_ORIGINAL_ACL: aclFile,
+        },
+      },
+    );
+    let output = '';
+    child.stdout.setEncoding('utf8').on('data', (chunk) => (output += chunk));
+    child.stderr.setEncoding('utf8').on('data', (chunk) => (output += chunk));
+    const [code] = await once(child, 'close');
+    await writeFile(`${aclFile}.${stage}.log`, output);
+    assert.equal(code, 0, `Owned fixture ACL ${stage} failed. ${output}`);
+  }
+  try {
+    await aclCommand(saveAndDeny, 'setup');
+    await action();
+  } finally {
+    // Only an owned fixture receives a temporary deny ACE, with original DACL restored.
+    await aclCommand(restore, 'restore');
+  }
+}
+
+async function expectRejectedLaunch(directory, roots, messagePattern, description) {
+  const rejected = launcher(directory, 'Start', roots);
+  activeLaunchers.add(rejected);
+  let timeout;
+  let result;
+  try {
+    result = await Promise.race([
+      rejected.completion,
+      new Promise((_, reject) => {
+        timeout = setTimeout(
+          () => reject(new Error('Invalid launch failed to exit promptly.')),
+          10000,
+        );
+      }),
+    ]);
+  } finally {
+    clearTimeout(timeout);
+    if (rejected.child.exitCode === null) {
+      rejected.child.kill();
+      await rejected.completion;
+      await eventually(
+        async () => !(await workspaceAvailable()),
+        'Rejected owned service cleanup failed',
+      );
+    }
+    activeLaunchers.delete(rejected);
+  }
+  assert.equal(result.code, 1, result.output || result.errorOutput);
+  const error = rejected.events().find((event) => event.event === 'error');
+  assert(error, 'A rejected launch must provide a structured error.');
+  assert.match(error.message, messagePattern);
+  assert(!rejected.events().some((event) => event.event === 'ready'));
+  assert.equal(
+    await workspaceAvailable(),
+    false,
+    'A rejected launch cannot leave a service running.',
+  );
+  report.checks.push({ name: description, passed: true });
 }
 
 async function start(directory = packageRoot) {
@@ -249,6 +355,53 @@ try {
     await workspaceAvailable(),
     false,
     'Stop the existing workspace before portable tests; tests never kill an unknown server.',
+  );
+  const incompletePackage = join(evidenceRoot, 'incomplete-package');
+  await mkdir(join(incompletePackage, 'launcher'), { recursive: true });
+  await cp(
+    join(packageRoot, 'launcher/ProductSpy.ps1'),
+    join(incompletePackage, 'launcher/ProductSpy.ps1'),
+  );
+  await expectRejectedLaunch(
+    incompletePackage,
+    {
+      dataRoot: join(evidenceRoot, 'incomplete-user'),
+      runtimeRoot: join(evidenceRoot, 'incomplete-control'),
+    },
+    /安装包不完整.*完整解压/,
+    'incomplete package explains full extraction and launches no service',
+  );
+
+  const occupiedDirectory = join(evidenceRoot, 'data-directory-is-file');
+  await writeFile(occupiedDirectory, 'private fixture must remain unchanged');
+  await expectRejectedLaunch(
+    packageRoot,
+    { dataRoot: occupiedDirectory, runtimeRoot: join(evidenceRoot, 'occupied-control') },
+    /用户数据.*无法写入/,
+    'file occupying user-data directory produces clear error without overwriting the file',
+  );
+  assert.equal(await readFile(occupiedDirectory, 'utf8'), 'private fixture must remain unchanged');
+
+  const deniedRoot = join(evidenceRoot, 'denied-user');
+  const deniedData = join(deniedRoot, 'data');
+  await mkdir(deniedData, { recursive: true });
+  const protectedSentinel = join(deniedData, 'existing-data.txt');
+  await writeFile(protectedSentinel, 'existing data must remain byte-identical');
+  await deniedWriteDirectory(deniedData, async () => {
+    await expectRejectedLaunch(
+      packageRoot,
+      { dataRoot: deniedRoot, runtimeRoot: join(evidenceRoot, 'denied-control') },
+      /商品资料.*无法写入.*不会自动提权/,
+      'actual denied data-directory ACL is detected before service launch without elevation or data loss',
+    );
+    assert.equal(
+      await readFile(protectedSentinel, 'utf8'),
+      'existing data must remain byte-identical',
+    );
+  });
+  assert(
+    !(await readdir(deniedData)).some((entry) => entry.startsWith('.productspy-write-')),
+    'Writable-directory probes must leave no temporary residue.',
   );
   conflictServer = createServer();
   await new Promise((complete, reject) => {
@@ -446,6 +599,7 @@ try {
   });
 
   const orphan = await start();
+  await writeFile(join(runtimeRoot, 'stop-request.json'), '{damaged-owned-control-file');
   orphan.process.child.kill();
   await orphan.process.completion;
   activeLaunchers.delete(orphan.process);
@@ -460,7 +614,7 @@ try {
   await stop();
   await recovered.process.completion;
   report.checks.push({
-    name: 'launcher crash cleanup and abandoned mutex recovery preserve data',
+    name: 'launcher crash cleanup with corrupt stop-request JSON and abandoned mutex recovery preserve data',
     passed: true,
   });
   report.passed = true;

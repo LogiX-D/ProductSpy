@@ -15,6 +15,8 @@ import {
 import { packageExtension } from './package-extension.mjs';
 import { materializeModules } from './packaging/standalone.mjs';
 import { writeThirdPartyNotices } from './packaging/notices.mjs';
+import { releaseVersion } from './packaging/release-version.mjs';
+import { PORTABLE_GUIDES, portableGuide } from './packaging/guides.mjs';
 
 const run = promisify(execFile);
 const runtime = {
@@ -27,6 +29,7 @@ const runtime = {
 if (process.platform !== 'win32' || process.arch !== 'x64')
   throw new Error('Build the Windows x64 package on Windows x64 so native dependencies match');
 const { version } = JSON.parse(await readFile(resolve(workspace, 'package.json'), 'utf8'));
+releaseVersion(version);
 const name = `ProductSpy-${version}-windows-x64`;
 const directory = artifactPath(name);
 const archive = artifactPath(`${name}.zip`);
@@ -105,21 +108,21 @@ for (const file of ['node.exe', 'LICENSE'])
     resolve(directory, 'runtime', file),
   );
 await cp(resolve(workspace, 'PRIVACY.md'), resolve(directory, 'PRIVACY.md'));
-for (const file of [
-  'ai-provider-guide.md',
-  'phase12-ai-quality.md',
-  'library-guide.md',
-  'media-comparison-guide.md',
-  'content-creation-guide.md',
-])
-  await cp(resolve(workspace, 'docs', file), resolve(directory, file));
-const firstRun = (await readFile(resolve(workspace, 'docs/windows-guide.md'), 'utf8'))
-  .replace('(../PRIVACY.md)', '(PRIVACY.md)')
-  .replace(
-    /\((phase\d+-validation\.md)\)/g,
-    '(https://github.com/LogiX-D/ProductSpy/blob/main/docs/$1)',
+for (const file of PORTABLE_GUIDES)
+  await writeFile(
+    resolve(directory, file),
+    portableGuide(await readFile(resolve(workspace, 'docs', file), 'utf8')),
   );
+const firstRun = portableGuide(await readFile(resolve(workspace, 'docs/windows-guide.md'), 'utf8'));
 await writeFile(resolve(directory, 'FIRST-RUN.md'), firstRun);
+// An ordinary user must not discover that a shipped local help link is missing.
+for (const match of firstRun.matchAll(/\]\(([^)#]+)(?:#[^)]*)?\)/g)) {
+  if (/^(?:https?:|mailto:)/i.test(match[1])) continue;
+  const target = resolve(directory, match[1]);
+  if (!target.startsWith(`${directory}\\`) && !target.startsWith(`${directory}/`))
+    throw new Error(`First-run help link escapes the portable package: ${match[1]}`);
+  await access(target);
+}
 await writeThirdPartyNotices(directory);
 const files = await inventory(directory);
 const metadata = {

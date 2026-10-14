@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0-rc.1",
+  "method": "Computer Use @oai/sky app inventory plus common Chrome executable and App Paths checks. No private app inventory published.",
+  "stableChromeFound": false,
+  "nativeGuiStart": "automatic-approval-rejected",
+  "reason": "blocked by policy; tool supplied no detailed reason",
+  "nativeWindowsGuiValidated": false,
+  "workaroundAttempted": false,
+  "headlessPortableIsSeparate": true,
+  "pending": [
+    "Native WinForms buttons and double-click lifecycle",
+    "Stable Chrome toolbar extension/manual install",
+    "High DPI, SmartScreen, native folder selection",
+    "Original 55x58 pairing window"
+  ],
+  "checkedOn": "2026-10-14",
+  "recordedAt": "2026-10-14T06:26:08.542132+00:00"
+}

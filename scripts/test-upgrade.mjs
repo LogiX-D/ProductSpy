@@ -15,18 +15,21 @@ const fixture = {
   source: 'amazon',
   sourceId: 'B0UPGRADE1',
   url: 'https://www.amazon.com/dp/B0UPGRADE1',
-  title: 'Phase 12 → 13 upgrade fixture / 升级兼容回归，非真实 Amazon 商品',
+  title: 'Release candidate upgrade fixture / 升级兼容回归，非真实 Amazon 商品',
   price: '$19.95',
   currency: 'USD',
   brand: 'UpgradeFixture',
   rating: 4.4,
   reviewCount: 1234,
-  mainImage: 'https://example.com/upgrade/main.jpg',
-  images: ['https://example.com/upgrade/main.jpg', 'https://example.com/upgrade/detail.jpg'],
+  mainImage: 'https://m.media-amazon.com/images/I/upgrade-fixture-main.jpg',
+  images: [
+    'https://m.media-amazon.com/images/I/upgrade-fixture-main.jpg',
+    'https://m.media-amazon.com/images/I/upgrade-fixture-detail.jpg',
+  ],
   videos: [
     {
-      url: 'https://example.com/upgrade/demo.mp4',
-      thumbnail: 'https://example.com/upgrade/video.jpg',
+      url: 'https://m.media-amazon.com/images/S/upgrade-fixture-demo.mp4',
+      thumbnail: 'https://m.media-amazon.com/images/I/upgrade-fixture-video.jpg',
     },
   ],
   bulletPoints: [
@@ -54,8 +57,8 @@ const placeholderKey = 'phase16-upgrade-placeholder-no-real-key';
 
 if (values.help) {
   console.log(
-    'node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.7.0-windows-x64 --to artifacts/ProductSpy-0.8.0-windows-x64\n' +
-      'Requires Windows and a free port 3000. Accepts frozen 0.4.0, 0.5.0, 0.5.1, 0.5.2, 0.6.0 or 0.7.0 source packages. Uses only fresh .test-data upgrade fixtures and isolated browser preferences. Existing services are never stopped.',
+    'node scripts/test-upgrade.mjs --from artifacts/ProductSpy-0.8.0-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.1-windows-x64\n' +
+      'Requires Windows and a free port 3000. Accepts frozen 0.4.0–0.8.0 source packages. Uses only fresh .test-data upgrade fixtures and isolated browser preferences. Existing services are never stopped.',
   );
 } else {
   await main();
@@ -64,14 +67,14 @@ if (values.help) {
 async function main() {
   assert.equal(process.platform, 'win32', 'Portable upgrade regression requires Windows.');
   const { version } = JSON.parse(await readFile(resolve('package.json'), 'utf8'));
-  const oldPackage = resolve(values.from ?? 'artifacts/ProductSpy-0.7.0-windows-x64');
+  const oldPackage = resolve(values.from ?? 'artifacts/ProductSpy-0.8.0-windows-x64');
   const newPackage = resolve(values.to ?? `artifacts/ProductSpy-${version}-windows-x64`);
   assert.notEqual(
     oldPackage.toLowerCase(),
     newPackage.toLowerCase(),
     'Upgrade requires two distinct package directories.',
   );
-  const evidenceParent = resolve('.test-data/phase19-upgrade');
+  const evidenceParent = resolve('.test-data/phase20-upgrade');
   await mkdir(evidenceParent, { recursive: true });
   const evidenceRoot = await mkdtemp(
     join(evidenceParent, `${new Date().toISOString().replace(/[:.]/g, '-')}-`),
@@ -368,8 +371,10 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
     const oldInventory = await inspectPackage(oldPackage);
     const newInventory = await inspectPackage(newPackage);
     assert(
-      ['0.4.0', '0.5.0', '0.5.1', '0.5.2', '0.6.0', '0.7.0'].includes(oldInventory.version),
-      'Upgrade fixture must run an actual frozen 0.4.0–0.7.0 portable package.',
+      ['0.4.0', '0.5.0', '0.5.1', '0.5.2', '0.6.0', '0.7.0', '0.8.0'].includes(
+        oldInventory.version,
+      ),
+      'Upgrade fixture must run an actual frozen 0.4.0–0.8.0 portable package.',
     );
     assert.equal(
       newInventory.version,
@@ -400,7 +405,25 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
       [],
       'The upgrade test must start with an empty, fresh repository.',
     );
-    const saved = await request('/api/products', 'POST', fixture);
+    const saved = await request('/api/products', 'POST', {
+      ...fixture,
+      ...(oldInventory.version === '0.8.0'
+        ? {
+            specifications: [
+              { name: 'Material', value: 'Synthetic merchant-declared fixture', source: 'page' },
+            ],
+            mediaMetadata: fixture.images.map((url) => ({
+              url,
+              kind: 'image',
+              productSourceId: fixture.sourceId,
+              sourceUrl: fixture.url,
+              extractedAt: new Date().toISOString(),
+              width: 1800,
+              height: 1800,
+            })),
+          }
+        : {}),
+    });
     assert.deepEqual(asDraft(saved), fixture, 'Old package must save every fixture field.');
     const oldGenerated = await request('/api/analyze-product', 'POST', saved);
     const oldGeneratedProduct = await onlyProduct(saved.id);
@@ -414,7 +437,7 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
     });
     assertCompleteAnalysis(oldAnalysis);
     const baselineLibrary = { groups: [], tags: [] };
-    if (['0.5.0', '0.5.1', '0.5.2', '0.6.0', '0.7.0'].includes(oldInventory.version)) {
+    if (['0.5.0', '0.5.1', '0.5.2', '0.6.0', '0.7.0', '0.8.0'].includes(oldInventory.version)) {
       const grouped = await request('/api/library', 'POST', {
         kind: 'group',
         action: 'create',
@@ -444,7 +467,7 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
     }
     let oldComparison;
     let oldComparisonBytes;
-    if (['0.6.0', '0.7.0'].includes(oldInventory.version)) {
+    if (['0.6.0', '0.7.0', '0.8.0'].includes(oldInventory.version)) {
       const peer = await request('/api/products', 'POST', {
         ...fixture,
         sourceId: 'B0OLDPEER1',
@@ -483,11 +506,35 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
     }
     let oldCreative;
     let oldBusinessBytes;
-    if (oldInventory.version === '0.7.0') {
-      oldCreative = await seedContentFixture(saved.id, oldComparison?.id, '旧 v0.7.0 保存');
+    let oldFullBackup;
+    if (['0.7.0', '0.8.0'].includes(oldInventory.version)) {
+      oldCreative = await seedContentFixture(
+        saved.id,
+        oldComparison?.id,
+        `旧 v${oldInventory.version} 保存`,
+      );
+      if (oldInventory.version === '0.8.0') {
+        oldCreative.content = await seedIntegrationFixture(oldCreative.content, evidenceRoot);
+        oldFullBackup = await request('/api/workspace-backup');
+        await snapshot('01-old-full-business-backup', oldFullBackup);
+        const { preview } = await request('/api/workspace-backup', 'POST', {
+          backup: oldFullBackup,
+        });
+        assert(
+          preview.conflicts.length >= 4,
+          'Old integrated backup must preview actual preserved entities.',
+        );
+        assert.equal(oldFullBackup.contentPlans[0].id, oldCreative.content.id);
+        assert.deepEqual(oldFullBackup.contentPlans[0], oldCreative.content);
+        assert.equal(oldFullBackup.templates[0].id, oldCreative.template.id);
+        report.checks.push({
+          name: 'actual v0.8.0 stores explicit safe media selection, generated source/analysis references, signed manual history archive and preserved archived-parent lineage; complete business export and conflict preview validated before upgrade',
+          passed: true,
+        });
+      }
       await snapshot('01-old-template-content', oldCreative);
       report.checks.push({
-        name: 'actual frozen v0.7.0 saves custom template created/edited/restored history and Japanese 45-second Mock/manual/candidate/replayed/restored content with comparison snapshot before upgrade',
+        name: `actual frozen v${oldInventory.version} saves custom template created/edited/restored history and Japanese 45-second Mock/manual/candidate/replayed/restored content with comparison snapshot before upgrade`,
         passed: true,
       });
     }
@@ -504,7 +551,7 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
         evidenceRoot,
       );
       report.checks.push({
-        name: 'old v0.7.0 actual UI saves nondefault content parameters/pricing and built-in template favorite in an isolated browser',
+        name: `old v${oldInventory.version} actual UI saves nondefault content parameters/pricing and built-in template favorite in an isolated browser`,
         passed: true,
       });
     }
@@ -580,7 +627,7 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
       assert.equal(status.counts.comparisons, 1);
       await assertBusinessFileSnapshot(dataRoot, oldBusinessBytes);
       report.checks.push({
-        name: 'actual v0.7.0 → target first launch preserves products/comparisons/templates/content-plans/analysis-usage exact bytes, custom IDs, all histories/current selections and snapshot references without a read migration rewrite',
+        name: `actual v${oldInventory.version} → target first launch preserves products/comparisons/templates/content-plans/analysis-usage exact bytes, custom IDs, all histories/current selections and snapshot references without a read migration rewrite`,
         passed: true,
       });
     }
@@ -643,6 +690,44 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
       name: `${oldInventory.version} → current package preserves entire Product, ID, timestamps, group/tag definitions, analysis metadata and history`,
       passed: true,
     });
+
+    // Finish every read-only upgrade/byte check before this explicit write transaction.
+    // A confirmed restore may canonicalize JSON property order without changing data;
+    // it must not be mistaken for a migration rewrite by the assertions above.
+    if (oldFullBackup) {
+      const upgradedBackup = await request('/api/workspace-backup');
+      const { exportedAt: oldTime, ...oldBusiness } = oldFullBackup;
+      const { exportedAt: newTime, ...newBusiness } = upgradedBackup;
+      assert(oldTime && newTime);
+      assert.deepEqual(
+        newBusiness,
+        oldBusiness,
+        'Upgrade full business export must retain every original entity, source reference, media selection, archived lineage and usage record.',
+      );
+      const beforeRestore = await businessFileSnapshot(dataRoot);
+      const { preview } = await request('/api/workspace-backup', 'POST', { backup: oldFullBackup });
+      assert(preview.conflicts.some((conflict) => conflict.id === oldCreative.content.id));
+      const restored = await request('/api/workspace-backup', 'POST', {
+        backup: oldFullBackup,
+        commit: true,
+        confirmed: true,
+        expectedRevision: preview.revision,
+        policy: 'preserve',
+      });
+      assert.equal(restored.imported, 0);
+      for (const [name, bytes] of beforeRestore)
+        assert.deepEqual(
+          JSON.parse(await readFile(join(dataRoot, 'data', name), 'utf8')),
+          JSON.parse(bytes.toString('utf8')),
+          `Explicit preserve-conflict restore must retain every original field in ${name}`,
+        );
+      assert.deepEqual(await readFile(settingsFile), originalSettings);
+      assert.deepEqual(await readFile(credentialFile), originalCredentials);
+      report.checks.push({
+        name: 'v0.8.0 complete backup remains identical after upgrade (except export timestamp); explicit preserve-conflict restore retains all original data, private settings and pairing',
+        passed: true,
+      });
+    }
 
     const editedDraft = {
       ...fixture,
@@ -833,7 +918,7 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
         oldBusinessBytes.get('comparisons.json'),
       );
       report.checks.push({
-        name: 'old v0.7.0 saved content/template/comparison snapshots and complete history remain byte-identical after source product recapture, new analysis/group/tag mutations and real new-package restart',
+        name: `old v${oldInventory.version} saved content/template/comparison snapshots and complete history remain byte-identical after source product recapture, new analysis/group/tag mutations and real new-package restart`,
         passed: true,
       });
     }
@@ -861,7 +946,7 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
       name: 'new package restart preserves complete edited Product and analysis, then releases owned processes',
       passed: true,
     });
-    if (['0.6.0', '0.7.0', '0.8.0'].includes(newInventory.version)) {
+    if (['0.6.0', '0.7.0', '0.8.0', '1.0.0-rc.1'].includes(newInventory.version)) {
       const comparisonLaunch = await start(newPackage, newInventory.version);
       const beforeComparison = await request(`/api/products/${encodeURIComponent(saved.id)}`);
       const extra = await request('/api/products', 'POST', {
@@ -946,7 +1031,7 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
         passed: true,
       });
     }
-    if (['0.7.0', '0.8.0'].includes(newInventory.version)) {
+    if (['0.7.0', '0.8.0', '1.0.0-rc.1'].includes(newInventory.version)) {
       const contentLaunch = await start(newPackage, newInventory.version);
       const protectedProduct = await request(`/api/products/${saved.id}`);
       const { template, content } = await seedContentFixture(
@@ -1172,6 +1257,86 @@ async function seedContentFixture(productId, comparisonId, label) {
   assert.equal(content.templateSnapshot.id, template.id);
   if (comparisonId) assert.equal(content.comparisonSource.id, comparisonId);
   return { template, content };
+}
+
+/** Old v0.8.0 itself persists the Phase 19 optional fields before the new binary reads them. */
+async function seedIntegrationFixture(original, evidenceRoot) {
+  let content = await request(`/api/content-plans/${original.id}`, 'PATCH', {
+    expectedUpdatedAt: original.updatedAt,
+    selectedMedia: [{ kind: 'image', url: fixture.images[1] }],
+  });
+  const current = content.versions.find((version) => version.id === content.currentVersionId);
+  assert(current, 'Integrated old package must retain its current result.');
+  const baselineManual = content.versions.find((version) => version.kind === 'edited');
+  assert(baselineManual, 'Original manual edit must remain in the old library.');
+  content = await request(`/api/content-plans/${content.id}`, 'PATCH', {
+    expectedUpdatedAt: content.updatedAt,
+    output: { ...current.output, sellingCopy: ['明确归档的合成中间人工版本'] },
+  });
+  const archivedId = content.currentVersionId;
+  content = await request(`/api/content-plans/${content.id}`, 'PATCH', {
+    expectedUpdatedAt: content.updatedAt,
+    output: { ...current.output, sellingCopy: ['v0.8.0 当前人工内容，升级和备份必须完整保留'] },
+  });
+  const selection = {
+    kind: 'content',
+    id: content.id,
+    expectedUpdatedAt: content.updatedAt,
+    versionIds: [archivedId],
+  };
+  const archive = await request('/api/history/archive', 'POST', selection);
+  assert.equal(archive.archive.selectedVersions[0].id, archivedId);
+  assert.equal(
+    archive.sha256,
+    createHash('sha256').update(JSON.stringify(archive.archive)).digest('hex'),
+  );
+  await writeFile(
+    join(evidenceRoot, '01-old-history-archive.json'),
+    JSON.stringify(archive.archive, null, 2),
+  );
+  const cleanup = await request('/api/history', 'POST', {
+    ...selection,
+    confirmed: true,
+    archiveReceipt: archive.archiveReceipt,
+  });
+  assert.equal(cleanup.removed, 1);
+  content = await request(`/api/content-plans/${content.id}`);
+  const manualId = content.currentVersionId;
+  const manual = content.versions.find((version) => version.id === manualId);
+  assert.equal(manual.archivedParentVersionId, archivedId);
+  assert.equal(manual.archivedParentSha256, archive.sha256);
+  assert(
+    content.versions.some((version) => version.id === baselineManual.id),
+    'Explicitly archiving a selected middle version must preserve every other original manual version.',
+  );
+  const generated = await request('/api/generate-content', 'POST', {
+    planId: content.id,
+    expectedUpdatedAt: content.updatedAt,
+    options: content.options,
+    selectedFields: ['imagePrompts'],
+    requestId: randomUUID(),
+  });
+  content = generated.plan;
+  assert.equal(
+    content.currentVersionId,
+    manualId,
+    'Generation must keep the current manual result.',
+  );
+  assert.deepEqual(generated.version.metadata.selectedMedia, content.selectedMedia);
+  assert.equal(generated.version.metadata.productAnalysisReference.productId, content.productId);
+  assert.equal(
+    generated.version.metadata.productAnalysisReference.asin,
+    content.productSnapshot.sourceId,
+  );
+  assert.equal(
+    generated.version.metadata.productAnalysisReference.classification,
+    'saved-analysis-unverified',
+  );
+  assert.equal(generated.version.metadata.evidence.reviewTextAnalyzed, false);
+  const references = await request(`/api/content-plans/${content.id}/references`);
+  assert.equal(references.product.status, 'unchanged');
+  assert.equal(references.template.status, 'unchanged');
+  return content;
 }
 
 async function request(path, method = 'GET', body) {

@@ -14,6 +14,7 @@ import {
 import { DEFAULT_ANALYSIS_OPTIONS } from '../packages/shared/src/schema';
 import { parseWorkspaceBackupText } from '../packages/shared/src/business-backup';
 import type { Product } from '../packages/shared/src/types';
+import { PRODUCTSPY_VERSION } from '../packages/shared/src/version';
 const origin = 'http://127.0.0.1:3000';
 const headers = {
   Origin: origin,
@@ -91,7 +92,9 @@ test('complete business backup UI exports real local state and restores with exp
     const downloaded = page.waitForEvent('download');
     await page.getByRole('button', { name: '导出完整业务备份', exact: true }).click();
     const download = await downloaded;
-    expect(download.suggestedFilename()).toMatch(/^ProductSpy-0\.8\.0-workspace-.*\.json$/);
+    expect(download.suggestedFilename()).toMatch(
+      new RegExp(`^ProductSpy-${PRODUCTSPY_VERSION.replaceAll('.', '\\.')}\\-workspace-.*\\.json$`),
+    );
     const path = await download.path();
     expect(path).not.toBeNull();
     const text = await readFile(path!, 'utf8');

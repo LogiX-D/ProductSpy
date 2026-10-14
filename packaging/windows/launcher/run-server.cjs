@@ -28,10 +28,14 @@ const control = setInterval(() => {
       const request = JSON.parse(fs.readFileSync(stopFile, 'utf8').replace(/^\uFEFF/, ''));
       if (request.launchId === launchId) stop();
     }
+  } catch {
+    // A partially written stop request is retried on the next iteration.
+  }
+  // A damaged control file must never suppress ownership/liveness checks.
+  try {
     if (parentPid > 0) process.kill(parentPid, 0);
   } catch (error) {
     if (error.code === 'ESRCH') stop();
-    // A partially written stop request is retried on the next iteration.
   }
 }, 250);
 control.unref();

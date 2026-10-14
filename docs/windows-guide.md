@@ -1,10 +1,10 @@
 # Windows 普通用户首次使用指南
 
-适用于 ProductSpy 0.8.0 Windows x64 便携版。无需自行安装 Node.js、pnpm、数据库或 AI Key。需要 Windows 10 或更新版本的 x64 系统、系统 PowerShell 5.1，以及已安装的 Google Chrome；当前未发布 Chrome Web Store 版本，插件仍需按下面步骤手动加载。工作台网页不限定 Chrome，其他浏览器的扩展兼容性未完成验收。内置 Node.js 24.14.0 的 Windows 平台要求见 [官方平台表](https://github.com/nodejs/node/blob/v24.14.0/BUILDING.md#platform-list)，具体实际验收系统以本次报告为准。
+适用于 ProductSpy 1.0.0-rc.1 Windows x64 便携版。无需自行安装 Node.js、pnpm、数据库或 AI Key。需要 Windows 10 或更新版本的 x64 系统、系统 PowerShell 5.1，以及已安装的 Google Chrome；当前未发布 Chrome Web Store 版本，插件仍需按下面步骤手动加载。工作台网页不限定 Chrome，其他浏览器的扩展兼容性未完成验收。内置 Node.js 24.14.0 的 Windows 平台要求见 [官方平台表](https://github.com/nodejs/node/blob/v24.14.0/BUILDING.md#platform-list)，具体实际验收系统以本次报告为准。
 
 ## 1. 解压并启动工作台
 
-1. 获取 `ProductSpy-0.8.0-windows-x64.zip`。本地构建产物位于项目的 `artifacts` 目录；当前 Release 保持草稿，下载需相应权限或维护者私下提供原包。
+1. 获取 `ProductSpy-1.0.0-rc.1-windows-x64.zip`。本地构建产物位于项目的 `artifacts` 目录；当前 Release 保持草稿，下载需相应权限或维护者私下提供原包。
 2. 右键 ZIP，选择「全部解压缩」，放到你准备保留的目录。**先完整解压，再运行；不要在 ZIP 压缩窗口里双击。**
 3. 打开解压后的 ProductSpy 文件夹，双击 **ProductSpy.cmd**。
 4. 启动窗口出现后，会自动启动本机工作台并打开浏览器。如果默认浏览器不是 Chrome，在 Chrome 地址栏输入 **http://127.0.0.1:3000**。
@@ -24,7 +24,7 @@
 5. 选择便携包中的 **extension** 文件夹，而不是外层 ProductSpy 文件夹，也不是 ZIP 文件。
 6. 从 Chrome 工具栏的拼图按钮中找到 ProductSpy，将其固定到工具栏。
 
-如果只下载了 `ProductSpy-0.8.0-extension.zip`，先把它完整解压到长期保留的文件夹，再加载包含 `manifest.json` 的那个文件夹。不要在加载后删除或移动文件夹，否则 Chrome 将无法继续读取扩展。商店正式发布后可改用商店安装，但这个版本没有可用的正式商店安装链接。
+如果只下载了 `ProductSpy-1.0.0-rc.1-extension.zip`，先把它完整解压到长期保留的文件夹，再加载包含 `manifest.json` 的那个文件夹。不要在加载后删除或移动文件夹，否则 Chrome 将无法继续读取扩展。商店正式发布后可改用商店安装，但这个版本没有可用的正式商店安装链接。
 
 源码开发者加载的是 `apps/extension/dist`，普通便携用户加载的是 **extension**。开发者命令见项目 README 的「源码开发」部分。
 
@@ -92,11 +92,13 @@
 
 启动窗口的「打开用户数据」可直接打开这个位置。普通版不会将商品保存到解压后的程序目录；更新或更换程序目录不会复制空商品库覆盖已有文件。
 
-备份商品时，先「停止并退出」，再复制 **data** 文件夹到自己的安全备份目录。这个目录含配对信息，也属于私有资料。AI 设置绑定当前 Windows 用户，直接复制加密设置到另一用户或电脑未必能解密，换电脑时应重新填写自己的 Key；扩展也需要重新配对。
+普通业务备份优先使用工作台「设置与备份」→「导出完整业务备份」，包含五类业务资料及历史，可选择附带浏览器偏好；排除 Key、Cookie、配对与私人 Windows 设置，下载的媒体需另行保存。恢复先预览冲突和引用再确认，不覆盖已有人工内容。
+
+为了精确本机回退，再「停止并退出」，复制整个 **%LOCALAPPDATA%\ProductSpy** 到自己的安全备份目录。该副本含配对信息和受保护设置，不能公开上传。AI 设置绑定当前 Windows 用户，直接复制加密设置到另一用户或电脑未必能解密，换电脑时应重新填写自己的 Key；扩展也需要重新配对。
 
 更新步骤：
 
-1. 在旧版本停止并退出，备份 data 文件夹。
+1. 在旧版本导出完整业务备份，再停止并退出，保存私人用户目录回退副本。
 2. 将新版完整解压到新目录，不需要删除 `%LOCALAPPDATA%\ProductSpy`。
 3. 双击新版 ProductSpy.cmd，确认商品仍在。
 4. 在 Chrome 扩展管理页更新加载目录或加载新版 extension，再按提示重新配对。
@@ -122,3 +124,5 @@
 | 更新后商品不见               | 在「打开用户数据」检查 data 目录和备份，不要先删除目录；确认使用的是同一个 Windows 用户。                      |
 
 创作功能见 [内容创作指南](content-creation-guide.md)。隐私详情见 [PRIVACY.md](../PRIVACY.md)。当前质量结果与人工待办见 [Phase 18 报告](phase18-validation.md)；[Phase 17 报告](phase17-validation.md)、[Phase 11 报告](phase11-validation.md)保留历史证据。不能把 Chrome for Testing 自动化结果当作正式 Chrome 人工验收。
+
+候选版完整功能流程、安装包哈希与验收状态见 [候选版使用指南](release-candidate-guide.md)和 [Phase 20](phase20-validation.md)。

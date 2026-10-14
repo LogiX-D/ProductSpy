@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
+import { releaseVersion, validateExtensionRelease } from './packaging/release-version.mjs';
 
 const workspace = resolve(import.meta.dirname, '..');
 const fromWeb = createRequire(resolve(workspace, 'apps/web/package.json'));
@@ -216,14 +217,13 @@ async function inspectArchive(kind, metadata, version) {
 }
 
 function validateExtensionManifest(manifest, version, label) {
+  validateExtensionRelease(manifest, version);
   const sameSet = (actual, expected) =>
     Array.isArray(actual) &&
     actual.length === expected.length &&
     [...actual].sort().every((item, index) => item === [...expected].sort()[index]);
   check(
-    manifest.manifest_version === 3 &&
-      manifest.version === version &&
-      manifest.name === 'ProductSpy',
+    manifest.manifest_version === 3 && manifest.name === 'ProductSpy',
     `${label}: MV3/name/version mismatch`,
   );
   check(
@@ -256,10 +256,7 @@ function validateExtensionManifest(manifest, version, label) {
 
 try {
   const project = JSON.parse(await readFile(resolve(workspace, 'package.json'), 'utf8'));
-  check(
-    /^\d+\.\d+\.\d+$/.test(project.version),
-    'Project release must have a valid numeric version',
-  );
+  releaseVersion(project.version);
   const releaseBytes = await readFile(resolve(workspace, 'artifacts/release-manifest.json'));
   const release = JSON.parse(releaseBytes.toString('utf8'));
   check(release.version === project.version, 'Release manifest version does not match the project');
@@ -272,9 +269,15 @@ try {
     await readFile(resolve(workspace, 'artifacts/extension-manifest.json'), 'utf8'),
   );
   check(
-    ['file', 'version', 'sha256', 'files'].every(
-      (field) => extensionMetadata[field] === release.extension[field],
-    ),
+    [
+      'file',
+      'version',
+      'extensionVersion',
+      'extensionVersionName',
+      'sha256',
+      'bytes',
+      'files',
+    ].every((field) => extensionMetadata[field] === release.extension[field]),
     'Extension and release manifests disagree',
   );
 
@@ -357,12 +360,19 @@ try {
   );
   validateExtensionManifest(portableExtensionManifest, release.version, 'portable extension');
   extension.result.manifestVersion = extensionManifest.manifest_version;
+  extension.result.extensionVersion = extensionManifest.version;
+  extension.result.extensionVersionName = extensionManifest.version_name;
+  check(
+    extensionMetadata.extensionVersion === extensionManifest.version &&
+      extensionMetadata.extensionVersionName === extensionManifest.version_name,
+    'Extension archive numeric/display version does not match metadata',
+  );
   extension.result.permissions = extensionManifest.permissions;
   extension.result.hostPermissions = extensionManifest.host_permissions;
   extension.result.sourceMapsAbsent = true;
   portable.result.embeddedExtensionFilesVerified = portableExtension.length;
   report.checks.push({
-    name: `extension: root MV3 ${release.version}, original permission/host allowlist, CSP, no source maps; embedded extension matches ZIP`,
+    name: `extension: root MV3 ${extensionManifest.version} (${release.version}), original permission/host allowlist, CSP, no source maps; embedded extension matches ZIP`,
     passed: true,
     embeddedFiles: portableExtension.length,
   });

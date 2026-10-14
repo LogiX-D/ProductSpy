@@ -10,7 +10,7 @@ export default defineConfig({
   reporter: [
     ['list'],
     ['html', { open: 'never' }],
-    ['json', { outputFile: '.test-data/phase19/e2e-report.json' }],
+    ['json', { outputFile: '.test-data/phase20/e2e-report.json' }],
   ],
   webServer: {
     command: 'pnpm start',

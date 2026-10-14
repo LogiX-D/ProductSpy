@@ -35,6 +35,26 @@ function Write-JsonFile([string]$Path, [object]$Value) {
     Move-Item -LiteralPath $temporary -Destination $Path -Force
 }
 
+function Assert-WritableDirectory([string]$Path, [string]$Label) {
+    $probePath = $null
+    $probe = $null
+    $probeCreated = $false
+    try {
+        New-Item -ItemType Directory -Path $Path -Force | Out-Null
+        if (-not (Test-Path -LiteralPath $Path -PathType Container)) { throw 'Directory path is occupied by a file.' }
+        $probePath = Join-Path $Path ('.productspy-write-' + [Guid]::NewGuid().ToString('N') + '.tmp')
+        $probe = New-Object IO.FileStream($probePath, [IO.FileMode]::CreateNew, [IO.FileAccess]::Write, [IO.FileShare]::None)
+        $probeCreated = $true
+        $probe.WriteByte(0)
+        $probe.Flush($true)
+    } catch {
+        throw "$Label 目录无法写入：$Path。请确认当前 Windows 用户有写入权限、磁盘有可用空间，或选择可写的本机目录后重试。程序不会自动提权或修改目录权限，已有资料会保留。"
+    } finally {
+        if ($probe) { $probe.Dispose() }
+        if ($probeCreated -and (Test-Path -LiteralPath $probePath -PathType Leaf)) { Remove-Item -LiteralPath $probePath -Force -ErrorAction SilentlyContinue }
+    }
+}
+
 function Read-State {
     if (-not (Test-Path -LiteralPath $stateFile)) { return $null }
     try { return Get-Content -LiteralPath $stateFile -Raw | ConvertFrom-Json } catch { return $null }
@@ -64,8 +84,14 @@ function Stop-OwnedService {
     if ($null -eq $nodeProcess) { return }
     $nodeProcess.Refresh()
     if (-not $nodeProcess.HasExited) {
-        Write-JsonFile $stopFile @{ launchId = $launchId }
-        if (-not $nodeProcess.WaitForExit(12000)) {
+        $requested = $false
+        try {
+            Write-JsonFile $stopFile @{ launchId = $launchId }
+            $requested = $true
+        } catch {
+            Write-Result 'stop-warning' @{ message = '运行控制目录不可写，无法发送正常退出请求。启动器会停止本次启动的服务；用户资料不会被删除。' }
+        }
+        if (-not $requested -or -not $nodeProcess.WaitForExit(12000)) {
             # Only this process object, created by this launch, can be terminated.
             $nodeProcess.Kill()
             $nodeProcess.WaitForExit(3000) | Out-Null
@@ -191,7 +217,7 @@ function Show-AiSettings {
 
 try {
     if (-not $Headless) { Add-Type -AssemblyName System.Windows.Forms; Add-Type -AssemblyName System.Drawing }
-    New-Item -ItemType Directory -Path $RuntimeRoot -Force | Out-Null
+    Assert-WritableDirectory $RuntimeRoot '运行控制'
     $identity = [Security.Principal.WindowsIdentity]::GetCurrent().User.Value
     $mutex = New-Object Threading.Mutex($false, ('Local\ProductSpy.Workspace.' + $identity))
 
@@ -217,10 +243,11 @@ try {
             $serverPath = Join-Path $packageRoot 'app\apps\web\server.js'
             $wrapperPath = Join-Path $PSScriptRoot 'run-server.cjs'
             foreach ($file in @($nodePath, $serverPath, $wrapperPath)) { if (-not (Test-Path -LiteralPath $file -PathType Leaf)) { throw '安装包不完整。请完整解压 ZIP 后运行 ProductSpy.cmd。' } }
-            New-Item -ItemType Directory -Path (Join-Path $DataRoot 'data') -Force | Out-Null
-            New-Item -ItemType Directory -Path $settingsDirectory -Force | Out-Null
+            Assert-WritableDirectory $DataRoot '用户数据'
+            Assert-WritableDirectory (Join-Path $DataRoot 'data') '商品资料'
+            Assert-WritableDirectory $settingsDirectory 'AI 设置'
             $logs = Join-Path $DataRoot 'logs'
-            New-Item -ItemType Directory -Path $logs -Force | Out-Null
+            Assert-WritableDirectory $logs '服务日志'
             $settings = Read-AiSettings
             $environment = @{ NODE_ENV = 'production'; PORT = '3000'; HOSTNAME = '127.0.0.1'; NEXT_TELEMETRY_DISABLED = '1'; PRODUCTSPY_DATA_DIR = (Join-Path $DataRoot 'data'); PRODUCTSPY_STOP_FILE = $stopFile; PRODUCTSPY_LAUNCH_ID = $launchId; PRODUCTSPY_LAUNCHER_PID = [string]$PID }
             foreach ($name in $settings.Keys) { $environment[$name] = $settings[$name] }

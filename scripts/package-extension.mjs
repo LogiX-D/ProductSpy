@@ -1,4 +1,4 @@
-import { access, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { access, mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import {
   artifactRoot,
@@ -10,13 +10,14 @@ import {
   zipDirectory,
 } from './packaging/files.mjs';
 import { writeThirdPartyNotices } from './packaging/notices.mjs';
+import { validateExtensionRelease } from './packaging/release-version.mjs';
 
 export async function packageExtension() {
   const source = resolve(workspace, 'apps/extension/dist');
   const manifest = JSON.parse(await readFile(resolve(source, 'manifest.json'), 'utf8'));
-  if (manifest.manifest_version !== 3)
-    throw new Error('Expected a Manifest V3 production extension');
-  const directory = artifactPath(`ProductSpy-${manifest.version}-extension`);
+  const project = JSON.parse(await readFile(resolve(workspace, 'package.json'), 'utf8'));
+  const release = validateExtensionRelease(manifest, project.version);
+  const directory = artifactPath(`ProductSpy-${release.version}-extension`);
   try {
     await access(directory);
     const previous = JSON.parse(await readFile(resolve(directory, 'manifest.json'), 'utf8'));
@@ -36,13 +37,14 @@ export async function packageExtension() {
   )
     throw new Error('Extension must contain the root manifest and no development source maps');
   await mkdir(artifactRoot, { recursive: true });
-  const output = artifactPath(`ProductSpy-${manifest.version}-extension.zip`);
+  const output = artifactPath(`ProductSpy-${release.version}-extension.zip`);
   await rm(output, { force: true });
   await zipDirectory(directory, output);
   const result = {
     file: output.split(/[\\/]/).at(-1),
-    version: manifest.version,
+    ...release,
     sha256: await digest(output),
+    bytes: (await stat(output)).size,
     files: files.length,
   };
   await writeFile(artifactPath('extension-manifest.json'), `${JSON.stringify(result, null, 2)}\n`);

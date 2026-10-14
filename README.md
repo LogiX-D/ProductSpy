@@ -1,12 +1,12 @@
 # ProductSpy
 
-本地优先的 Amazon 竞品素材采集与 AI 分析工具。当前版本 **0.8.0** 连接商品、素材、竞品对比、AI 模板与内容方案：保留来源快照，提示资料更新或删除，选择创作参考素材，明确引用保存的商品分析与竞品推断。新增完整业务备份及历史容量管理，保留原 Next.js、Manifest V3、安全配对、Windows 便携启动器和全部旧资料。操作见 [完整工作流与备份指南](docs/workflow-backup-guide.md)、[内容创作指南](docs/content-creation-guide.md)、[素材与对比指南](docs/media-comparison-guide.md)，验收见 [Phase 19 报告](docs/phase19-validation.md)；[Phase 18](docs/phase18-validation.md)、[Phase 17](docs/phase17-validation.md)、[Phase 16](docs/phase16-validation.md)及 Phase 9–14 报告保留原始历史结果。所有 Release 保持草稿，不公开发布。
+本地优先的 Amazon 竞品素材采集与 AI 营销工作台。当前为 **1.0.0-rc.1 正式发布候选版**，沿用 v0.8.0 商品、素材、竞品对比、AI 分析、模板与内容方案、安全配对和 Windows 便携架构。普通用户先读 [候选版安装与完整使用指南](docs/release-candidate-guide.md)，工程与真实环境状态分别见 [Phase 20 验收](docs/phase20-validation.md)。Release 保持草稿；候选版不代表可以直接公开发布。历史 [Phase 19](docs/phase19-validation.md)、[Phase 18](docs/phase18-validation.md)、[Phase 17](docs/phase17-validation.md)、[Phase 16](docs/phase16-validation.md)与 Phase 9–14 记录保留原始结果，更新记录见 [CHANGELOG](CHANGELOG.md)。
 
 仅支持 Amazon。此版本没有用户账号、支付、自动发布、价格监控、其他平台或多人协作。
 
 ## Windows 普通用户：不用安装开发工具
 
-1. 获取 `ProductSpy-0.8.0-windows-x64.zip`，**全部解压**，双击 **ProductSpy.cmd**。
+1. 获取 `ProductSpy-1.0.0-rc.1-windows-x64.zip`，**全部解压**，双击 **ProductSpy.cmd**。
 2. 启动器使用内置 Node.js，启动本机工作台并打开 **http://127.0.0.1:3000**；不用安装 Node.js、pnpm 或数据库。
 3. 在启动窗口点击「打开插件文件夹」，按 Chrome `chrome://extensions` →「开发者模式」→「加载已解压的扩展程序」加载便携包的 **extension** 目录。
 4. 在工作台「安装与配对」中生成一次性配对码，填入插件并「连接工作台」。身份校验保留，配对码 2 分钟有效。
@@ -14,7 +14,7 @@
 
 启动窗口可打开工作台、插件与用户目录，配置 AI，或「停止并退出」。关闭窗口也会停止服务；重复双击不会新增服务。端口冲突会明确提示，不强制结束其他程序，也不改用插件无法连接的端口。
 
-数据保存在 **`%LOCALAPPDATA%\ProductSpy\data`**，和程序目录分离。AI 设置使用当前 Windows 用户的 DPAPI 保护，日志与运行状态分别位于 `logs`、`runtime`；包中没有 Key 或预置用户商品。更新时停止旧版，将新版解压到另一目录即可沿用数据，建议先备份 `data`。
+数据保存在 **`%LOCALAPPDATA%\ProductSpy\data`**，和程序目录分离。AI 设置使用当前 Windows 用户的 DPAPI 保护，日志与运行状态分别位于 `logs`、`runtime`；包中没有 Key 或预置用户商品。更新时停止旧版，将新版解压到另一目录即可沿用数据，先在「设置与备份」导出完整业务备份，再停止服务保存私人用户目录回退副本。
 
 完整安装、首次配对、AI 设置、异常恢复、备份与更新步骤见 [Windows 首次使用指南](docs/windows-guide.md)。当前没有已发布的 Chrome Web Store 安装入口；Extension ZIP 需要解压加载，不能双击安装，也不会自动修改 Chrome 安全设置。便携包以本地 `artifacts` 产物或发布者实际上传的 GitHub Release 资产为准；不把仓库源代码 ZIP 当成可运行安装包。
 
@@ -127,7 +127,7 @@ Amazon 当前页面
    → AIProvider（Mock / OpenAI-compatible，服务端）
 ```
 
-Chrome 扩展与普通网页不能直接共享同一个 IndexedDB，因此采用 localhost bridge。权威数据文件：源码开发默认在 **`apps/web/.data/products.json`**；Windows 便携版固定使用独立的 **`%LOCALAPPDATA%\ProductSpy\data\products.json`**，不需要数据库服务器。Web 的 IndexedDB 用于缓存与网络故障时回显。需要备份时停止服务并复制对应数据目录；不要清空该目录或将其提交到 Git。便携版不自动迁移源码 `.data`，迁移步骤见 Windows 指南。
+Chrome 扩展与普通网页不能直接共享同一个 IndexedDB，因此采用 localhost bridge。权威数据文件：源码开发默认在 **`apps/web/.data/products.json`**；Windows 便携版固定使用独立的 **`%LOCALAPPDATA%\ProductSpy\data\products.json`**，不需要数据库服务器。Web 的 IndexedDB 用于缓存与网络故障时回显。完整业务备份使用「设置与备份」；精确本机回退副本需先停止服务再复制对应用户目录，内含私人配对/设置，不能提交 Git。便携版不自动迁移源码 `.data`，迁移步骤见 Windows 指南。
 
 可在 `apps/web/.env.local` 设置 `PRODUCTSPY_DATA_DIR` 指定其他数据目录。文件读写按目录共享事务队列，临时文件写入后原子替换；损坏 JSON 会报错并保留原文件，不会静默清空。此适配器用于单个 Next.js 服务进程，不支持多个进程同时写一个目录。
 
