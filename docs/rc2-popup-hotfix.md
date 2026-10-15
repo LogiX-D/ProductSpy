@@ -2,7 +2,17 @@
 
 日期：2026-10-15（Asia/Shanghai）。本次只修复插件入口尺寸和相关初始化兜底，不增加业务模块。rc.1 包与远程附件保持不变，rc.2 使用新的版本、文件和校验值。
 
-**PAIRING-SMALL-WINDOW：正式 Chrome 用户已真实复现，P1。修复后状态为 `fixed, pending native Chrome verification`，不能写成 `fixed + manually verified`。** 维护者明确报告点击工具栏 ProductSpy 后出现深色小框；这是 Chrome action Popup，不再按工作台网页配对弹层的未定位截图处理。维护者尚未提交本次修复后的同条件通过记录。
+**PAIRING-SMALL-WINDOW：P1，`fixed + manually verified`。** 维护者于 2026-10-16 明确提交同机、正式 Google Chrome、rc.2 修复后通过声明。2026-10-15 工程交付时的状态为 `fixed, pending native Chrome verification`；本次仅追加这项人工确认，不改写下方原始工程数据、旧包、Release 附件或其他人工用例。
+
+## 维护者同条件人工确认（2026-10-16）
+
+证据来源：维护者在当前项目会话中的直接文字声明。ProductSpy 版本为 **v1.0.0-rc.2**；在之前出现小黑框的**同一台电脑、正式 Google Chrome** 中，点击工具栏 ProductSpy 后，Popup 正常显示，不再出现小黑框或极小窗口，可正常查看和操作，维护者明确确认问题修复。
+
+本项更新为 **fixed + manually verified**；[人工结果表](phase21/manual-results.csv)仅 C07 从 pending 更新为 pass，53 项中现为 **1 pass、52 pending**。C02 还包括滚动验收，未因基本显示通过而自动关闭。首次同意、Amazon 识别/保存、在线/离线、配对、重启、内部滚动及逐档 Windows DPI 等其他场景保持原状态。
+
+未提供的细节：Chrome 完整版本、Windows build、系统显示缩放、Chrome 页面缩放、Popup 实测外框宽高、滚动/闪烁的专项结果及新增截图。不推算或补造这些信息，也不把 CFT 截图改称维护者截图。本次会话声明足以关闭已报告的小黑框缺陷，但不代表所有 Chrome/Windows 人工测试或真实 AI 质量通过。
+
+维护者同时授权以 rc.2 为基础制作 **v1.0.0 的独立包和 GitHub Release 草稿**；这不授权公开 Release 或提交 Chrome Web Store，不改变仍未执行人工项目的 pending 状态。正式包工程回归结果应另行记录，不能预先沿用 rc.2 成绩作为新版通过记录。
 
 ## 根因与受控证据
 
@@ -67,9 +77,9 @@ Chrome storage.set 不能取消底层写入：超时后仍可能落盘，但当�
 
 ## 正式 Chrome 修复后人工复测
 
-用户已授权桌面操控；本次 Computer Use 在选择 Chrome 窗口时因无法可靠确定当前浏览器 URL 被自动安全检查终止，尚未点击正式 Chrome 工具栏，也没有绕过该限制。CFT 的真实 action target 证据只能证明工程复现/回归，不能替代正式 Chrome 修复后人工通过。
+2026-10-15 工程定位时，用户已授权桌面操控；Computer Use 在选择 Chrome 窗口时因无法可靠确定当前浏览器 URL 被自动安全检查终止，未点击正式 Chrome 工具栏，也没有绕过该限制。CFT 的真实 action target 证据只证明工程复现/回归。2026-10-16 的正式 Chrome 通过证据来自上方维护者直接声明，不能归到先前自动化运行。
 
-使用 rc.2 unpacked 扩展并固定到工具栏，记录以下各项。尚未执行的状态保持 pending，不能从 CFT 填成 pass。
+以下为细分专项清单，各项含有维护者本次未明确确认的条件，仍保持 pending。仅 C07 的缺陷同条件复测记 pass，不把这项声明扩张为整份清单完成；无需为关闭已确认缺陷重复原操作。
 
 | 编号 | 场景                                           | 正式 Chrome 状态 |
 | ---- | ---------------------------------------------- | ---------------- |
@@ -87,7 +97,7 @@ Chrome storage.set 不能取消底层写入：超时后仍可能落盘，但当�
 
 在实际 Windows **100%、125%、150%、200%** 下分别复查 T02/T03/T04/T10；只在设备所有者正常设置的环境中测试，本轮没有自动更改系统设置。每次填写：测试日期、Chrome 完整版本、Windows build、物理分辨率/系统缩放、Chrome 页面缩放、扩展来源目录/版本、Popup 外框宽高、滚动/闪烁情况和截图或连续录像文件名。截图保留完整边界并遮挡配对码、用户名等，不提交 Key、Cookie、令牌或整个浏览器 profile。
 
-维护者同条件通过后才能改成 `fixed + manually verified`；否则维持 `fixed, pending native Chrome verification`。本报告不关闭其余 53 项历史人工待验收或声称真实 AI 质量达标。
+维护者已在同条件确认小黑框缺陷修复，状态现为 `fixed + manually verified`；其余 **52 项**历史人工用例及上方未覆盖的专项清单仍待验收，真实 AI 质量仍未验证。详细环境参数缺失不补造，也不将本项通过扩张为全部工具栏场景通过。
 
 ## 安装 rc.2 与资料保护
 

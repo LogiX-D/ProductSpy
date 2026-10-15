@@ -7,17 +7,23 @@ import { join, relative, resolve } from 'node:path';
 
 assert.equal(process.platform, 'win32', 'Run the actual Windows portable package.');
 const workspace = resolve(import.meta.dirname, '..');
-const output = resolve('.test-data/rc2-hotfix');
+const version = JSON.parse(await readFile(join(workspace, 'package.json'), 'utf8')).version;
+const output = resolve(process.env.PRODUCTSPY_RELEASE_EVIDENCE_DIR ?? '.test-data/rc2-hotfix');
+assert(
+  relative(resolve('.test-data'), output) &&
+    !relative(resolve('.test-data'), output).startsWith('..'),
+  'Evidence must remain within .test-data.',
+);
 const root = join(output, 'workflow', new Date().toISOString().replace(/[:.]/g, '-'));
 const dataRoot = join(root, 'user');
 const runtimeRoot = join(root, 'runtime');
-const packageRoot = resolve('artifacts/ProductSpy-1.0.0-rc.2-windows-x64');
+const packageRoot = resolve(`artifacts/ProductSpy-${version}-windows-x64`);
 const launcherPath = join(packageRoot, 'launcher/ProductSpy.ps1');
 const report = {
-  purpose: 'rc2-popup-hotfix full portable regression',
+  purpose: 'Full release portable regression, including rc2 popup protection',
   startedAt: new Date().toISOString(),
   passed: false,
-  version: '1.0.0-rc.2',
+  version,
   runtime: 'frozen portable package; isolated data; headless launcher; not native GUI acceptance',
   ai: 'mock',
   paidRequests: 0,
@@ -54,7 +60,7 @@ async function verifyExtension(directory = '') {
     assert.deepEqual(
       b,
       a,
-      `Built extension differs from packaged rc2: ${file}; do not mix versions.`,
+      `Built extension differs from packaged ${version}: ${file}; do not mix versions.`,
     );
     report.extensionFiles.push({ file: file.replaceAll('\\', '/'), sha256: sha(a) });
   }
@@ -99,7 +105,8 @@ function launch(action, userRoot) {
   return { child, done };
 }
 async function runE2E(extraEnv = {}) {
-  const command = "pnpm test:e2e --output=.test-data/rc2-hotfix/e2e '--reporter=list,json'";
+  const escapedOutput = join(output, 'e2e').replaceAll("'", "''");
+  const command = `pnpm test:e2e --output='${escapedOutput}' '--reporter=list,json'`;
   const child = spawn('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', command], {
     cwd: workspace,
     env: { ...env, ...extraEnv },

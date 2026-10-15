@@ -57,8 +57,8 @@ const placeholderKey = 'phase16-upgrade-placeholder-no-real-key';
 
 if (values.help) {
   console.log(
-    'node scripts/test-upgrade.mjs --from artifacts/ProductSpy-1.0.0-rc.1-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.2-windows-x64\n' +
-      'Requires Windows and a free port 3000. Accepts actual frozen 0.4.0–0.8.0 and 1.0.0-rc.1 source packages. Uses only fresh .test-data upgrade fixtures and isolated browser preferences. Existing services are never stopped.',
+    'node scripts/test-upgrade.mjs --from artifacts/ProductSpy-1.0.0-rc.2-windows-x64 --to artifacts/ProductSpy-1.0.0-windows-x64\n' +
+      'Requires Windows and a free port 3000. Accepts actual frozen 0.4.0–0.8.0 and 1.0.0-rc.1/rc.2 source packages. Uses only fresh .test-data upgrade fixtures and isolated browser preferences. Existing services are never stopped.',
   );
 } else {
   await main();
@@ -67,7 +67,7 @@ if (values.help) {
 async function main() {
   assert.equal(process.platform, 'win32', 'Portable upgrade regression requires Windows.');
   const { version } = JSON.parse(await readFile(resolve('package.json'), 'utf8'));
-  const oldPackage = resolve(values.from ?? 'artifacts/ProductSpy-1.0.0-rc.1-windows-x64');
+  const oldPackage = resolve(values.from ?? 'artifacts/ProductSpy-1.0.0-rc.2-windows-x64');
   const newPackage = resolve(values.to ?? `artifacts/ProductSpy-${version}-windows-x64`);
   assert.notEqual(
     oldPackage.toLowerCase(),
@@ -371,10 +371,18 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
     const oldInventory = await inspectPackage(oldPackage);
     const newInventory = await inspectPackage(newPackage);
     assert(
-      ['0.4.0', '0.5.0', '0.5.1', '0.5.2', '0.6.0', '0.7.0', '0.8.0', '1.0.0-rc.1'].includes(
-        oldInventory.version,
-      ),
-      'Upgrade fixture must run an actual frozen 0.4.0–0.8.0 or 1.0.0-rc.1 portable package.',
+      [
+        '0.4.0',
+        '0.5.0',
+        '0.5.1',
+        '0.5.2',
+        '0.6.0',
+        '0.7.0',
+        '0.8.0',
+        '1.0.0-rc.1',
+        '1.0.0-rc.2',
+      ].includes(oldInventory.version),
+      'Upgrade fixture must run an actual frozen 0.4.0–0.8.0 or 1.0.0-rc.1/rc.2 portable package.',
     );
     assert.equal(
       newInventory.version,
@@ -407,7 +415,7 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
     );
     const saved = await request('/api/products', 'POST', {
       ...fixture,
-      ...(['0.8.0', '1.0.0-rc.1'].includes(oldInventory.version)
+      ...(['0.8.0', '1.0.0-rc.1', '1.0.0-rc.2'].includes(oldInventory.version)
         ? {
             specifications: [
               { name: 'Material', value: 'Synthetic merchant-declared fixture', source: 'page' },
@@ -438,7 +446,7 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
     assertCompleteAnalysis(oldAnalysis);
     const baselineLibrary = { groups: [], tags: [] };
     if (
-      ['0.5.0', '0.5.1', '0.5.2', '0.6.0', '0.7.0', '0.8.0', '1.0.0-rc.1'].includes(
+      ['0.5.0', '0.5.1', '0.5.2', '0.6.0', '0.7.0', '0.8.0', '1.0.0-rc.1', '1.0.0-rc.2'].includes(
         oldInventory.version,
       )
     ) {
@@ -471,7 +479,7 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
     }
     let oldComparison;
     let oldComparisonBytes;
-    if (['0.6.0', '0.7.0', '0.8.0', '1.0.0-rc.1'].includes(oldInventory.version)) {
+    if (['0.6.0', '0.7.0', '0.8.0', '1.0.0-rc.1', '1.0.0-rc.2'].includes(oldInventory.version)) {
       const peer = await request('/api/products', 'POST', {
         ...fixture,
         sourceId: 'B0OLDPEER1',
@@ -511,13 +519,13 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
     let oldCreative;
     let oldBusinessBytes;
     let oldFullBackup;
-    if (['0.7.0', '0.8.0', '1.0.0-rc.1'].includes(oldInventory.version)) {
+    if (['0.7.0', '0.8.0', '1.0.0-rc.1', '1.0.0-rc.2'].includes(oldInventory.version)) {
       oldCreative = await seedContentFixture(
         saved.id,
         oldComparison?.id,
         `旧 v${oldInventory.version} 保存`,
       );
-      if (['0.8.0', '1.0.0-rc.1'].includes(oldInventory.version)) {
+      if (['0.8.0', '1.0.0-rc.1', '1.0.0-rc.2'].includes(oldInventory.version)) {
         oldCreative.content = await seedIntegrationFixture(oldCreative.content, evidenceRoot);
         oldFullBackup = await request('/api/workspace-backup');
         await snapshot('01-old-full-business-backup', oldFullBackup);
@@ -950,7 +958,11 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
       name: 'new package restart preserves complete edited Product and analysis, then releases owned processes',
       passed: true,
     });
-    if (['0.6.0', '0.7.0', '0.8.0', '1.0.0-rc.1', '1.0.0-rc.2'].includes(newInventory.version)) {
+    if (
+      ['0.6.0', '0.7.0', '0.8.0', '1.0.0-rc.1', '1.0.0-rc.2', '1.0.0'].includes(
+        newInventory.version,
+      )
+    ) {
       const comparisonLaunch = await start(newPackage, newInventory.version);
       const beforeComparison = await request(`/api/products/${encodeURIComponent(saved.id)}`);
       const extra = await request('/api/products', 'POST', {
@@ -1035,7 +1047,7 @@ $stored = @{version=2;protected=[Convert]::ToBase64String($protected)} | Convert
         passed: true,
       });
     }
-    if (['0.7.0', '0.8.0', '1.0.0-rc.1', '1.0.0-rc.2'].includes(newInventory.version)) {
+    if (['0.7.0', '0.8.0', '1.0.0-rc.1', '1.0.0-rc.2', '1.0.0'].includes(newInventory.version)) {
       const contentLaunch = await start(newPackage, newInventory.version);
       const protectedProduct = await request(`/api/products/${saved.id}`);
       const { template, content } = await seedContentFixture(

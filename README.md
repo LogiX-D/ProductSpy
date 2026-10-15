@@ -1,14 +1,14 @@
 # ProductSpy
 
-本地优先的 Amazon 竞品素材采集与 AI 营销工作台。当前为 **1.0.0-rc.2 正式发布候选版（Popup P1 Hotfix）**，沿用 v0.8.0 商品、素材、竞品对比、AI 分析、模板与内容方案、安全配对和 Windows 便携架构。普通用户先读 [候选版安装与完整使用指南](docs/release-candidate-guide.md)。最新冻结与回归见 [Phase 21 验收](docs/phase21-validation.md)，维护者可直接使用 [Windows／正式 Chrome 人工操作单](docs/phase21/manual-acceptance.md)及[结果表](docs/phase21/manual-results.csv)。Release 保持草稿；候选版不代表可以直接公开发布。历史 [Phase 20](docs/phase20-validation.md)、[Phase 19](docs/phase19-validation.md)、[Phase 18](docs/phase18-validation.md)、[Phase 17](docs/phase17-validation.md)、[Phase 16](docs/phase16-validation.md)与 Phase 9–14 记录保留原始结果，更新记录见 [CHANGELOG](CHANGELOG.md)。
+本地优先的 Amazon 竞品素材采集与 AI 营销工作台。当前版本 **1.0.0**，基于 rc.2 保留现有商品、素材、竞品对比、AI 分析、模板与内容方案、安全配对和 Windows 便携架构，没有新增业务功能。普通用户先读 [安装与完整使用指南](docs/release-candidate-guide.md)。正式版工程结果见 [交付报告](docs/stable-release-validation.md)；[人工结果表](docs/phase21/manual-results.csv)只记录有直接证据的项，其余保持待验收。Release 仅准备草稿，不公开、不提交 Chrome Web Store。历史 [Phase 21](docs/phase21-validation.md)、[Phase 20](docs/phase20-validation.md)、[Phase 19](docs/phase19-validation.md)、[Phase 18](docs/phase18-validation.md)、[Phase 17](docs/phase17-validation.md)、[Phase 16](docs/phase16-validation.md)与 Phase 9–14 记录保留原始结果，更新记录见 [CHANGELOG](CHANGELOG.md)。
 
 仅支持 Amazon。此版本没有用户账号、支付、自动发布、价格监控、其他平台或多人协作。
 
-**rc.2 Hotfix（2026-10-15）：** 正式 Chrome 用户已复现工具栏小窗口；在隔离 CFT 的真实 action Popup 中定位到根尺寸 viewport 自引用。rc.2 修正尺寸与同意设置超时，保留安全配对和原资料；rc.1 原包、哈希与 Release 不变。定位、回归和正式工具栏待复测条件见 [Hotfix 报告](docs/rc2-popup-hotfix.md)。Release 仍为草稿，不等于已通过正式 Chrome 的修复后人工验收。
+**维护者人工确认（2026-10-16）：** rc.2 在原故障电脑的正式 Google Chrome 工具栏中正常显示，已不再出现小黑框，能够查看和操作；`PAIRING-SMALL-WINDOW` 为 `fixed + manually verified`。这只覆盖维护者明确确认的本项，其他原生窗口、DPI、配对场景及真实 AI 质量未自动通过。根因和边界见 [Hotfix 报告](docs/rc2-popup-hotfix.md)。rc.1/rc.2 原包、哈希和 Release 均保留。
 
 ## Windows 普通用户：不用安装开发工具
 
-1. 获取 `ProductSpy-1.0.0-rc.2-windows-x64.zip`，**全部解压**，双击 **ProductSpy.cmd**。
+1. 获取 `ProductSpy-1.0.0-windows-x64.zip`，**全部解压**，双击 **ProductSpy.cmd**。
 2. 启动器使用内置 Node.js，启动本机工作台并打开 **http://127.0.0.1:3000**；不用安装 Node.js、pnpm 或数据库。
 3. 在启动窗口点击「打开插件文件夹」，按 Chrome `chrome://extensions` →「开发者模式」→「加载已解压的扩展程序」加载便携包的 **extension** 目录。
 4. 在工作台「安装与配对」中生成一次性配对码，填入插件并「连接工作台」。身份校验保留，配对码 2 分钟有效。
@@ -263,7 +263,7 @@ pnpm test:portable
 Phase 11 新增分析编辑、草稿恢复、复制权限失败、版本冲突与 375 / 768 / 1280 宽度回归。E2E 每次使用独立 `.test-data/e2e/<时间>`，避免失败重跑被旧验收商品污染。跨版本升级、最终 ZIP 完整性与真实界面截图可单独复现（都先停止 3000 服务）：
 
 ```powershell
-pnpm test:upgrade --from artifacts/ProductSpy-0.6.0-windows-x64 --to artifacts/ProductSpy-0.7.0-windows-x64
+pnpm test:upgrade --from artifacts/ProductSpy-1.0.0-rc.2-windows-x64 --to artifacts/ProductSpy-1.0.0-windows-x64
 node scripts/validate-release.mjs
 pnpm test:library-performance
 pnpm capture:experience

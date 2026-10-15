@@ -1,21 +1,24 @@
 {
   "format": "productspy-final-release-readiness",
-  "schemaVersion": 1,
-  "generatedAt": "2026-10-14T08:02:48.142Z",
-  "candidateVersion": "1.0.0-rc.1",
-  "baselineAtStart": "f7de970305867b5387f8700c1ad94335c5409687",
-  "runtimeSource": "bcf049d45e65ea6da798b53aa6b57b20508927f9",
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-15T18:50:59.811Z",
+  "candidateVersion": "1.0.0-rc.2",
+  "baselineAtStart": "65cd1f6413553423b048bdf6b95f9ebaa91e0ab2",
+  "runtimeSource": "4ffe5400eada244c03179d89ab90e1be3310a7e7",
   "assessment": {
     "featureDevelopmentComplete": true,
     "engineeringAutomationPassed": true,
+    "engineeringAutomationScope": "New 1.0.0 archives: full build/unit/E2E/portable/nine upgrade paths/ZIP checks completed; manual and paid-model acceptance remain separate.",
     "criticalManualAcceptancePassed": false,
     "confirmedUnresolvedP0P1": [],
     "absenceOfUntestedDefectsProven": false,
     "realAiQualityVerified": false,
-    "readyToBuildV100": false,
-    "keepCandidate": "1.0.0-rc.1",
-    "runtimeChanges": false,
-    "rebuild": false,
+    "readyToBuildV100": true,
+    "buildAuthority": "Explicit maintainer instruction on 2026-10-16 to prepare 1.0.0 packages and a draft Release from rc.2; not a declaration that all manual acceptance passed.",
+    "stableEngineeringAcceptancePassed": true,
+    "stableDraftCreated": false,
+    "stableArtifactsGenerated": true,
+    "keepCandidate": "1.0.0-rc.2",
     "releasePublished": false,
     "storeSubmitted": false,
     "paidAiCalls": 0
@@ -310,10 +313,13 @@
   ],
   "manual": {
     "total": 53,
-    "pending": 53,
-    "pass": 0,
-    "newMaintainerResultsReceived": 0,
-    "existingResultsUnchanged": true,
+    "pending": 52,
+    "pass": 1,
+    "newMaintainerResultsReceived": 1,
+    "unchangedCaseCount": 52,
+    "changedCases": ["C07"],
+    "evidence": "docs/phase21/manual-results.csv",
+    "evidenceScope": "Only historical toolbar tiny-window defect retest confirmed by direct maintainer statement. No Chrome version/DPI/geometry/new screenshot was supplied; no other scenario is passed.",
     "partialNativeObservationIsNotManualPass": true
   },
   "videoFollowUp": {
@@ -361,15 +367,41 @@
     "ownedCliServiceStopVerified": true
   },
   "pairing": {
-    "historical55x58SymptomReproduced": false,
-    "rootCauseIdentified": false,
-    "productionFixClaimed": false,
-    "windowTypesDistinguished": [
-      "workspace-page-dialog",
-      "extension-action-popup",
-      "browser-tab-or-window",
-      "native-windows-form"
+    "bugId": "PAIRING-SMALL-WINDOW",
+    "priority": "P1",
+    "status": "fixed + manually verified",
+    "userReproductionReceivedOn": "2026-10-15",
+    "maintainerRetestReceivedOn": "2026-10-16",
+    "testedVersion": "1.0.0-rc.2",
+    "sameComputerAsOriginalDefect": true,
+    "browserDistribution": "Google Chrome formal environment (maintainer statement); exact version/channel not provided",
+    "evidenceType": "Direct written maintainer confirmation in this project conversation",
+    "confirmed": [
+      "Clicking ProductSpy in Chrome toolbar displays Popup normally",
+      "Previous small black or tiny window no longer appears",
+      "Popup can be viewed and operated normally",
+      "Maintainer explicitly confirms this defect is fixed"
     ],
+    "notProvided": [
+      "Chrome full version",
+      "Windows build",
+      "Windows display scaling",
+      "Chrome page zoom",
+      "Measured Popup dimensions",
+      "New screenshot"
+    ],
+    "notCovered": [
+      "Scrolling-specific checks",
+      "First consent flow",
+      "Pairing/re-pairing",
+      "Amazon capture/save",
+      "Online/offline/reconnect",
+      "Chrome restart",
+      "100/125/150/200 percent Windows DPI matrix",
+      "Real AI quality"
+    ],
+    "otherCasesUnchanged": true,
+    "evidence": "docs/rc2-popup-hotfix.md#维护者同条件人工确认2026-10-16",
     "focusedManualInstructions": "docs/phase21/manual-acceptance.md",
     "focusedManualCase": "C07"
   },
@@ -408,5 +440,71 @@
       }
     ]
   },
-  "releaseDecision": "Retain rc.1 until critical native Windows/Stable Chrome evidence and real AI quality authorization/verification are addressed. No new phase, runtime rewrite or public release."
+  "releaseDecision": "Maintainer authorizes preparing separate 1.0.0 packages and a draft Release based on rc.2 after new engineering regression. The specific toolbar tiny-window defect is manually verified; 52 other cases remain pending. No public Release or Chrome Web Store submission is authorized.",
+  "historicalAssessment": {
+    "assessedAt": "2026-10-14T08:02:48.142Z",
+    "candidateVersion": "1.0.0-rc.1",
+    "baselineAtStart": "f7de970305867b5387f8700c1ad94335c5409687",
+    "runtimeSource": "bcf049d45e65ea6da798b53aa6b57b20508927f9",
+    "assessment": {
+      "featureDevelopmentComplete": true,
+      "engineeringAutomationPassed": true,
+      "criticalManualAcceptancePassed": false,
+      "confirmedUnresolvedP0P1": [],
+      "absenceOfUntestedDefectsProven": false,
+      "realAiQualityVerified": false,
+      "readyToBuildV100": false,
+      "keepCandidate": "1.0.0-rc.1",
+      "runtimeChanges": false,
+      "rebuild": false,
+      "releasePublished": false,
+      "storeSubmitted": false,
+      "paidAiCalls": 0
+    },
+    "manual": {
+      "total": 53,
+      "pending": 53,
+      "pass": 0,
+      "newMaintainerResultsReceived": 0,
+      "existingResultsUnchanged": true,
+      "partialNativeObservationIsNotManualPass": true
+    },
+    "pairing": {
+      "historical55x58SymptomReproduced": false,
+      "rootCauseIdentified": false,
+      "productionFixClaimed": false,
+      "windowTypesDistinguished": [
+        "workspace-page-dialog",
+        "extension-action-popup",
+        "browser-tab-or-window",
+        "native-windows-form"
+      ],
+      "focusedManualInstructions": "docs/phase21/manual-acceptance.md",
+      "focusedManualCase": "C07"
+    },
+    "releaseDecision": "Retain rc.1 until critical native Windows/Stable Chrome evidence and real AI quality authorization/verification are addressed. No new phase, runtime rewrite or public release.",
+    "note": "Historical 2026-10-14 rc.1 assessment retained; evidence hashes and all dated original checks below remain historical."
+  },
+  "updatedOn": "2026-10-16",
+  "updatedDateTimezone": "Asia/Shanghai",
+  "targetVersion": "1.0.0",
+  "rc2Baseline": {
+    "runtimeSource": "4ffe5400eada244c03179d89ab90e1be3310a7e7",
+    "deliveryReceiptCommit": "65cd1f6413553423b048bdf6b95f9ebaa91e0ab2",
+    "engineeringEvidence": "docs/rc2-hotfix-results.json",
+    "releaseReceipt": "docs/rc2-release.json",
+    "originalHistoricalChecksRetained": true
+  },
+  "currentChecksScope": "Original dated rc.1 checks retained as historical evidence, not a new v1.0.0 run. Current completed rc.2 checks are referenced by rc2Baseline.engineeringEvidence.",
+  "stableEvidence": {
+    "version": "1.0.0",
+    "report": "docs/stable-release-validation.json",
+    "sha256": "cb620d1dffbbb75892fd388921095f4dcebfffaa47adae81daf934d46e102e80",
+    "unit": 736,
+    "e2e": 34,
+    "portable": 13,
+    "upgradePaths": 9,
+    "upgradeChecks": 216,
+    "zipChecks": 4
+  }
 }

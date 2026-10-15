@@ -2,6 +2,14 @@
  * Keep archives and service versions on the application SemVer, including RC labels.
  * https://developer.chrome.com/docs/extensions/reference/manifest/version
  */
+// These versions have already been distributed (or are the stable successor).
+// Keep their Chrome update numbers explicit: 1.0.0 must update rc.2's 1.0.0.2.
+const distributedExtensionVersions = {
+  '1.0.0-rc.1': '1.0.0',
+  '1.0.0-rc.2': '1.0.0.2',
+  '1.0.0': '1.0.0.3',
+};
+
 export function releaseVersion(release) {
   const match =
     typeof release === 'string' &&
@@ -14,12 +22,13 @@ export function releaseVersion(release) {
     throw new Error(
       'Release version must be a Chrome-compatible nonzero SemVer or -rc.N candidate',
     );
+  const extensionVersion =
+    distributedExtensionVersions[release] ??
+    [...match.slice(1, 4), ...(Number(match[4]) > 1 ? [match[4]] : [])].join('.');
   return {
     version: release,
-    // rc.1 was already distributed as a three-part Chrome version. Preserve that
-    // frozen mapping, then use the fourth numeric part for candidate updates.
-    extensionVersion: [...match.slice(1, 4), ...(Number(match[4]) > 1 ? [match[4]] : [])].join('.'),
-    ...(match[4] ? { extensionVersionName: release } : {}),
+    extensionVersion,
+    ...(match[4] || extensionVersion !== release ? { extensionVersionName: release } : {}),
   };
 }
 

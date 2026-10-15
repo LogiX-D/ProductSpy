@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "state": "prepared-not-created",
+  "draftCreated": false,
+  "public": false,
+  "storeSubmitted": false,
+  "preparedAt": "2026-10-15T18:50:59.876Z",
+  "delivery": {
+    "version": "1.0.0",
+    "portable": {
+      "file": "ProductSpy-1.0.0-windows-x64.zip",
+      "sha256": "b0f3bdf2a2ccdd2b9e10d0970434b6e6c10e77171c4eefd6f9ccb56bfc4e3fa0",
+      "bytes": 42506037,
+      "files": 2335
+    },
+    "extension": {
+      "file": "ProductSpy-1.0.0-extension.zip",
+      "version": "1.0.0",
+      "extensionVersion": "1.0.0.3",
+      "extensionVersionName": "1.0.0",
+      "sha256": "e6e1a24e76f6b3d3d1608901582aff3ce66c549f4a0edb79bf9c09aa370a2e70",
+      "bytes": 408886,
+      "files": 226
+    }
+  },
+  "oldReleasesUnchanged": true
+}

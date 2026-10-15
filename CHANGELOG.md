@@ -1,8 +1,12 @@
 # 版本更新记录
 
+## 1.0.0 — 正式交付草稿
+
+基于 rc.2，无新增业务模块。2026-10-16 维护者在原故障电脑、正式 Google Chrome 中确认工具栏 Popup 正常，`PAIRING-SMALL-WINDOW` 记为 fixed + manually verified；仅 C07 通过，其余 52 项人工验收保留 pending。应用版本 1.0.0，Chrome 数字版本 1.0.0.3 高于 rc.2，显示名 1.0.0。重新执行工程回归、旧包升级和独立打包，保留所有候选包及草稿。实际结果见 [正式交付报告](docs/stable-release-validation.md)。Release 不公开、不提交 Chrome Web Store，真实付费 AI 质量仍待授权验收。
+
 ## 1.0.0-rc.2 — Chrome action Popup P1 Hotfix
 
-维护者已在正式 Chrome 工具栏复现小空白窗口。独立 CFT 的实际 action Popup 与逐项 CSS 干预确认：`max-width: 100vw` 和 `100dvh` 令根尺寸反馈到 Popup 自动尺寸计算，普通标签页测试掩盖了问题。改用内容确定的固定根尺寸、内部纵向滚动；同意设置读写增加有界等待和卸载清理，失败时保持禁止采集。Chrome 数字版本递增为 `1.0.0.2`。保留 rc.1 原包、用户资料与安全权限；回归及实际尺寸见 [Hotfix 报告](docs/rc2-popup-hotfix.md)。状态为 fixed, pending native Chrome verification，未经同条件正式 Chrome 复测不关闭人工跟踪。
+维护者已在正式 Chrome 工具栏复现小空白窗口。独立 CFT 的实际 action Popup 与逐项 CSS 干预确认：`max-width: 100vw` 和 `100dvh` 令根尺寸反馈到 Popup 自动尺寸计算，普通标签页测试掩盖了问题。改用内容确定的固定根尺寸、内部纵向滚动；同意设置读写增加有界等待和卸载清理，失败时保持禁止采集。Chrome 数字版本递增为 `1.0.0.2`。保留 rc.1 原包、用户资料与安全权限；回归及实际尺寸见 [Hotfix 报告](docs/rc2-popup-hotfix.md)。10-15 交付时为 fixed, pending native Chrome verification；10-16 收到维护者同条件人工确认后仅本项更新为 fixed + manually verified，未改写旧包及原工程证据。
 
 ## 1.0.0-rc.1 — Phase 21 冻结验收（原二进制不变）
 

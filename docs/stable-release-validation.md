@@ -1,0 +1,59 @@
+# ProductSpy 1.0.0 正式版交付验收
+
+日期：2026-10-16（Asia/Shanghai）。基线 main：`65cd1f6413553423b048bdf6b95f9ebaa91e0ab2`。本次基于 rc.2 制作独立正式版包，只更新应用/Manifest 版本映射、交付文档及回归脚本，不新增功能，不改业务存储、安全配对、权限、Popup 根尺寸或 AI 请求授权。
+
+## 维护者确认与边界
+
+维护者在本次会话明确确认：原故障同一台电脑、正式 Google Chrome、v1.0.0-rc.2 工具栏 Popup 正常显示、无小黑框、可查看和操作。PAIRING-SMALL-WINDOW 为 **fixed + manually verified**，仅 [人工结果表](phase21/manual-results.csv) C07 改为 pass；其余 **52 项 pending**，未补造 Chrome 版本、DPI、尺寸、截图或滚动/重启/配对结果。详细声明见 [Hotfix 记录](rc2-popup-hotfix.md)。本次授权为准备 1.0.0 正式包和 Release 草稿，不是公开发布授权，也不是全量原生/真实 AI 验收通过。
+
+## 实际工程结果
+
+以下全部针对本次 1.0.0 构建执行，完整时间、命令、退出码与原始日志 SHA 见 [机器报告](stable-release-validation.json)。
+
+| 检查                                           | 结果                                                        |
+| ---------------------------------------------- | ----------------------------------------------------------- |
+| pnpm install --frozen-lockfile                 | 通过，无依赖变更                                            |
+| pnpm typecheck / pnpm lint / pnpm format:check | 通过                                                        |
+| pnpm test                                      | 72 文件，736/736，无失败/跳过                               |
+| pnpm build                                     | Extension / Next.js 生产构建通过                            |
+| pnpm test:e2e                                  | 34/34，无失败/跳过/flaky                                    |
+| pnpm test:portable                             | 13/13                                                       |
+| pnpm test:upgrade                              | 9 条实际旧包路径，共 216 项通过                             |
+| node scripts/validate-release.mjs              | 4 项通过，CRC/路径/敏感文件/文件哈希/内嵌扩展/权限/CSP/版本 |
+
+E2E 使用新便携包中内置 Node.js 和隔离资料，执行采集 Fixture→安全配对→保存→商品/素材/竞品→Mock AI→模板/内容创作→编辑/历史/导出→完整备份恢复与异常保护，并包含 CFT 实际 action Popup target 的尺寸/滚动回归。Fixture、Stub、Mock 与 CFT 自动化不冒充新一轮真实 Amazon、正式 Chrome 人工、Windows GUI/高 DPI 或真实付费模型质量验收。收费 AI 请求 **0**。
+
+## 升级兼容
+
+| 旧版 → 新版        | 检查数 | 结果 |
+| ------------------ | ------ | ---- |
+| 1.0.0-rc.2 → 1.0.0 | 28     | 通过 |
+| 1.0.0-rc.1 → 1.0.0 | 28     | 通过 |
+| 0.8.0 → 1.0.0      | 28     | 通过 |
+| 0.7.0 → 1.0.0      | 26     | 通过 |
+| 0.6.0 → 1.0.0      | 22     | 通过 |
+| 0.5.2 → 1.0.0      | 21     | 通过 |
+| 0.5.1 → 1.0.0      | 21     | 通过 |
+| 0.5.0 → 1.0.0      | 21     | 通过 |
+| 0.4.0 → 1.0.0      | 21     | 通过 |
+
+全部使用冻结旧程序、同一最终新包及独立合成资料，检查各版本适用的商品 ID/ASIN、分组标签、分析与完整历史、竞品快照、模板/创作版本、设置、DPAPI 合成 Key、配对凭据及浏览器偏好。未对用户生产库执行删除或恢复，不放宽旧断言和超时。原始失败尝试数：0，以机器报告保留记录为准。
+
+## 正式包与校验
+
+应用版本 **1.0.0**；Chrome Manifest 数字版本 **1.0.0.3**，显示名 **1.0.0**，高于 rc.2 的 1.0.0.2。
+
+| 文件                             | 字节数   | SHA-256                                                            |
+| -------------------------------- | -------- | ------------------------------------------------------------------ |
+| ProductSpy-1.0.0-windows-x64.zip | 42506037 | `b0f3bdf2a2ccdd2b9e10d0970434b6e6c10e77171c4eefd6f9ccb56bfc4e3fa0` |
+| ProductSpy-1.0.0-extension.zip   | 408886   | `e6e1a24e76f6b3d3d1608901582aff3ce66c549f4a0edb79bf9c09aa370a2e70` |
+
+本地位于 artifacts/，Windows 包全解压后双击 ProductSpy.cmd，无需自行安装 Node.js/pnpm。插件 ZIP 全解压后加载包含 manifest.json 的目录；保留原 unpacked 路径/ID，未同步队列前不要卸载。先完整业务备份，再停止旧版、使用新程序目录，用户目录继续独立持久化。见 [安装指南](release-candidate-guide.md)。
+
+11 个旧 Release 的目标/草稿状态/附件元数据与摘要、22 个旧 Windows/扩展 ZIP 已核对保持不变，含 rc.1、rc.2。正式版使用新文件、新 SHA，不覆盖候选附件。打包产物不含 API Key、Cookie、配对凭据、私人商品库或浏览器 profile。
+
+## 发布状态与剩余验收
+
+只创建 v1.0.0 GitHub Release 草稿，不公开、不提交 Chrome Web Store。实际 Commit、草稿 URL 和上传摘要回执见 [交付回执](stable-release.json)。旧 rc.2 截图仍保留原来源和版本，不当成新正式版截图。
+
+本项 P1 已由维护者确认关闭；其他 52 项人工测试以及真实 AI 质量/费用仍待执行，不能从工程结果自动转 pass。正式版包工程验收通过与可以正式公开发布分开判断；本次仅完成用户明确授权的交付草稿。

@@ -71,6 +71,34 @@ describe('candidate application and Chrome version mapping', () => {
       ),
     ).toThrow();
   });
+  it('allows the stable successor to update both frozen candidates without a numeric downgrade', () => {
+    expect(releaseVersion('1.0.0')).toEqual({
+      version: '1.0.0',
+      extensionVersion: '1.0.0.3',
+      extensionVersionName: '1.0.0',
+    });
+    const numericParts = (version) => [...version.split('.').map(Number), 0, 0, 0, 0].slice(0, 4);
+    const stable = numericParts(releaseVersion('1.0.0').extensionVersion);
+    for (const candidate of ['1.0.0-rc.1', '1.0.0-rc.2']) {
+      const frozen = numericParts(releaseVersion(candidate).extensionVersion);
+      const firstDifferent = stable.findIndex((part, index) => part !== frozen[index]);
+      expect(firstDifferent).toBeGreaterThanOrEqual(0);
+      expect(stable[firstDifferent]).toBeGreaterThan(frozen[firstDifferent]);
+    }
+    expect(
+      validateExtensionRelease(
+        { manifest_version: 3, version: '1.0.0.3', version_name: '1.0.0' },
+        '1.0.0',
+      ).extensionVersion,
+    ).toBe('1.0.0.3');
+    for (const manifest of [
+      { manifest_version: 3, version: '1.0.0', version_name: '1.0.0' },
+      { manifest_version: 3, version: '1.0.0.2', version_name: '1.0.0' },
+      { manifest_version: 3, version: '1.0.0.3' },
+      { manifest_version: 3, version: '1.0.0.3', version_name: '1.0.0-rc.2' },
+    ])
+      expect(() => validateExtensionRelease(manifest, '1.0.0')).toThrow();
+  });
   it('keeps every workspace package and the distributed manifest on the same release', async () => {
     const project = JSON.parse(await readFile(resolve(workspace, 'package.json'), 'utf8'));
     for (const relative of [
