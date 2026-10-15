@@ -1,5 +1,9 @@
 # 版本更新记录
 
+## 1.0.0-rc.2 — Chrome action Popup P1 Hotfix
+
+维护者已在正式 Chrome 工具栏复现小空白窗口。独立 CFT 的实际 action Popup 与逐项 CSS 干预确认：`max-width: 100vw` 和 `100dvh` 令根尺寸反馈到 Popup 自动尺寸计算，普通标签页测试掩盖了问题。改用内容确定的固定根尺寸、内部纵向滚动；同意设置读写增加有界等待和卸载清理，失败时保持禁止采集。Chrome 数字版本递增为 `1.0.0.2`。保留 rc.1 原包、用户资料与安全权限；回归及实际尺寸见 [Hotfix 报告](docs/rc2-popup-hotfix.md)。状态为 fixed, pending native Chrome verification，未经同条件正式 Chrome 复测不关闭人工跟踪。
+
 ## 1.0.0-rc.1 — Phase 21 冻结验收（原二进制不变）
 
 新增候选包与远程草稿的重复核对、隔离便携包回归和实际界面证据、53 项人工操作单、六品类真实 AI 授权与评分准备。新增 Amazon 实页结果保留访问超时、视频快照差异和人工待验收状态；没有用 Mock 代替真实模型质量。详见 [Phase 21](docs/phase21-validation.md)。没有新增业务模块、重打同版本包或公开 Release。

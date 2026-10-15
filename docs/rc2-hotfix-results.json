@@ -1,0 +1,844 @@
+{
+  "format": "productspy-rc2-popup-hotfix-validation",
+  "schemaVersion": 1,
+  "clientDate": "2026-10-15",
+  "generatedAt": "2026-10-15T08:36:18.172Z",
+  "version": "1.0.0-rc.2",
+  "passed": true,
+  "meaningOfPassed": "Engineering hotfix regression and frozen-package checks; not Stable Chrome or Windows DPI manual verification.",
+  "source": {
+    "beforeHotfix": "e61dbecb6753ab4d5c281ea5d64ab016363c825a",
+    "workingTreeProductionFiles": [
+      {
+        "path": "apps/extension/src/popup/styles.css",
+        "sha256": "1c5d6565ba84df571e1c0cb6ce3a7fc85f6bf399f9bb4e10fcf1acade7b5b580"
+      },
+      {
+        "path": "apps/extension/src/popup/App.tsx",
+        "sha256": "8e6e8b4c6c5e9dc4cfd0c7a23d2d3c592a6191a40a849d4dedcda666931b99a9"
+      },
+      {
+        "path": "apps/extension/src/popup/capture-consent.ts",
+        "sha256": "327ad1922a4e17ec3d1a9dbda136982b393a68361ca235957589a9800a23fdf9"
+      },
+      {
+        "path": "apps/extension/src/popup/copy.ts",
+        "sha256": "50e1d47ff82ab3a23cb59f33f840bd992dececb766db2959fdc459511f63deb4"
+      },
+      {
+        "path": "apps/extension/manifest.json",
+        "sha256": "fcc077b2116faed9be692d86b7a73c3d7e8e554aa3a4a935d7374f6aa63452b4"
+      },
+      {
+        "path": "packages/shared/src/version.ts",
+        "sha256": "96714b0945355c135c471804fb898bb87c7b938aea0b103749663024395199a1"
+      }
+    ]
+  },
+  "issue": {
+    "id": "PAIRING-SMALL-WINDOW",
+    "priority": "P1",
+    "reproducedInStableChrome": "maintainer report",
+    "independentlyReproducedInCftActualActionPopup": true,
+    "status": "fixed, pending native Chrome verification",
+    "closed": false
+  },
+  "checks": {
+    "build": {
+      "version": "1.0.0-rc.2",
+      "stage": "build",
+      "startedAt": "2026-10-15T08:13:42.898Z",
+      "paidAiCalls": 0,
+      "passed": true,
+      "checks": [
+        {
+          "name": "install",
+          "command": "pnpm install --frozen-lockfile",
+          "startedAt": "2026-10-15T08:13:42.898Z",
+          "finishedAt": "2026-10-15T08:13:46.925Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/build-2026-10-15T08-13-42-886Z/install.log",
+          "sha256": "17756295ad59d97b9ff763731eb52d40e3702df1725f29a85d303320ace5cf46"
+        },
+        {
+          "name": "typecheck",
+          "command": "pnpm typecheck",
+          "startedAt": "2026-10-15T08:13:46.925Z",
+          "finishedAt": "2026-10-15T08:14:26.849Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/build-2026-10-15T08-13-42-886Z/typecheck.log",
+          "sha256": "9c4090030292cbe5b28ac8e7b360760964eb764236773b8586d0452e7ad682da"
+        },
+        {
+          "name": "lint",
+          "command": "pnpm lint",
+          "startedAt": "2026-10-15T08:14:26.850Z",
+          "finishedAt": "2026-10-15T08:14:31.101Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/build-2026-10-15T08-13-42-886Z/lint.log",
+          "sha256": "2ed3b3068348f4d43467f9567772d921b7f48a85c23232083d46312b3a901eec"
+        },
+        {
+          "name": "format",
+          "command": "pnpm format:check",
+          "startedAt": "2026-10-15T08:14:31.102Z",
+          "finishedAt": "2026-10-15T08:14:47.373Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/build-2026-10-15T08-13-42-886Z/format.log",
+          "sha256": "e14e592a72a918ce5e8352ddd17cb4057e2828c7a06fba2e2a6c79f54296b6e6"
+        },
+        {
+          "name": "unit",
+          "command": "pnpm test --reporter=default --reporter=json --outputFile=.test-data/rc2-hotfix/unit.json",
+          "startedAt": "2026-10-15T08:14:47.373Z",
+          "finishedAt": "2026-10-15T08:14:59.031Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/build-2026-10-15T08-13-42-886Z/unit.log",
+          "sha256": "526d77fd68c78996d2af710ab5f8dbe3bb552bddd2cef309d2733181b40f807a"
+        },
+        {
+          "name": "build",
+          "command": "pnpm build",
+          "startedAt": "2026-10-15T08:14:59.031Z",
+          "finishedAt": "2026-10-15T08:16:13.440Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/build-2026-10-15T08-13-42-886Z/build.log",
+          "sha256": "10fa97594dd8b11ea5410ff94981049c25003018383be2791244fa0393d0807a"
+        },
+        {
+          "name": "package",
+          "command": "node scripts/package-windows.mjs",
+          "startedAt": "2026-10-15T08:16:13.441Z",
+          "finishedAt": "2026-10-15T08:17:46.253Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/build-2026-10-15T08-13-42-886Z/package.log",
+          "sha256": "58203f19d9878163e1b3e31528f734eb6383a8971e95aece869aafcb34ecfc10"
+        }
+      ],
+      "finishedAt": "2026-10-15T08:17:46.253Z"
+    },
+    "regression": {
+      "version": "1.0.0-rc.2",
+      "stage": "regression",
+      "startedAt": "2026-10-15T08:22:10.178Z",
+      "resumedAt": "2026-10-15T08:34:54.666Z",
+      "resumedFrom": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/checks.json",
+      "resumedFromSha256": "a65a58b48f14b6cf64a47c9a873a91643dbedd12ca060c6ca831bff4beb14374",
+      "frozenArtifactsVerified": [
+        {
+          "file": "ProductSpy-1.0.0-rc.2-windows-x64.zip",
+          "bytes": 42529449,
+          "sha256": "3165c457d58e8925f027f7dabf678efd37925a80c8e605885e3c51f600af913a"
+        },
+        {
+          "file": "ProductSpy-1.0.0-rc.2-extension.zip",
+          "bytes": 408888,
+          "sha256": "f422d4a653499ca9b45e7527128d2ad78c89053993f0a2a58d8d9ee656e9b6d8"
+        }
+      ],
+      "paidAiCalls": 0,
+      "passed": true,
+      "checks": [
+        {
+          "name": "e2e",
+          "command": "node scripts/rc2-portable-workflow.mjs",
+          "startedAt": "2026-10-15T08:22:10.179Z",
+          "finishedAt": "2026-10-15T08:23:37.739Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/e2e.log",
+          "sha256": "717204098d1195531bcef2826924b4c4dd34db8752970f6da675eef69419ad10",
+          "reusedFrom": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/checks.json"
+        },
+        {
+          "name": "portable",
+          "command": "pnpm test:portable",
+          "startedAt": "2026-10-15T08:23:37.740Z",
+          "finishedAt": "2026-10-15T08:24:29.632Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/portable.log",
+          "sha256": "54d36ac2558790677e84697c66e75db5114ada8613938f248695d4d68d17412e",
+          "reusedFrom": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/checks.json"
+        },
+        {
+          "name": "upgrade-1.0.0-rc.1",
+          "command": "pnpm test:upgrade --from artifacts/ProductSpy-1.0.0-rc.1-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.2-windows-x64",
+          "startedAt": "2026-10-15T08:24:29.633Z",
+          "finishedAt": "2026-10-15T08:25:30.370Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/upgrade-1.0.0-rc.1.log",
+          "sha256": "1f6ece0f66eaed8ffa59cc705e7865138610652d5a360cc9ad4e13deb6054f9b",
+          "reusedFrom": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/checks.json"
+        },
+        {
+          "name": "upgrade-0.8.0",
+          "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.8.0-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.2-windows-x64",
+          "startedAt": "2026-10-15T08:25:30.371Z",
+          "finishedAt": "2026-10-15T08:26:40.051Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/upgrade-0.8.0.log",
+          "sha256": "ad584e80ec98faaaf60c36606f13ed9bff622327b715b0fce92eb43ffaf4bd19",
+          "reusedFrom": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/checks.json"
+        },
+        {
+          "name": "upgrade-0.7.0",
+          "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.7.0-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.2-windows-x64",
+          "startedAt": "2026-10-15T08:26:40.051Z",
+          "finishedAt": "2026-10-15T08:27:44.903Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/upgrade-0.7.0.log",
+          "sha256": "386e88f0538161717e0aa33296af85c0acd12028ad37a945b527635afcc9c141",
+          "reusedFrom": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/checks.json"
+        },
+        {
+          "name": "upgrade-0.6.0",
+          "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.6.0-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.2-windows-x64",
+          "startedAt": "2026-10-15T08:27:44.903Z",
+          "finishedAt": "2026-10-15T08:28:36.557Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/upgrade-0.6.0.log",
+          "sha256": "2178442408dc5524baa69620e684e90681bf4565fdbc31fb709fac476a02adda",
+          "reusedFrom": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/checks.json"
+        },
+        {
+          "name": "upgrade-0.5.2",
+          "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.5.2-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.2-windows-x64",
+          "startedAt": "2026-10-15T08:28:36.557Z",
+          "finishedAt": "2026-10-15T08:29:27.826Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/upgrade-0.5.2.log",
+          "sha256": "d27def7c78fb0f768b6d05cccfa7aa2c5f0f43ebe43aa35ba952ae37c86a3f71",
+          "reusedFrom": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/checks.json"
+        },
+        {
+          "name": "upgrade-0.5.1",
+          "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.5.1-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.2-windows-x64",
+          "startedAt": "2026-10-15T08:29:27.827Z",
+          "finishedAt": "2026-10-15T08:30:24.944Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/upgrade-0.5.1.log",
+          "sha256": "a2b737715129a415037b969d57f43c5c5463a849c2521a8e19b2bdda848460ce",
+          "reusedFrom": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/checks.json"
+        },
+        {
+          "name": "upgrade-0.5.0",
+          "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.5.0-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.2-windows-x64",
+          "startedAt": "2026-10-15T08:30:24.945Z",
+          "finishedAt": "2026-10-15T08:31:18.347Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/upgrade-0.5.0.log",
+          "sha256": "1a30c21f4b8436dd3f28aaf573d06768104892b2984c75ab22e164cca5d7e592",
+          "reusedFrom": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/checks.json"
+        },
+        {
+          "name": "upgrade-0.4.0",
+          "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.4.0-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.2-windows-x64",
+          "startedAt": "2026-10-15T08:34:54.674Z",
+          "finishedAt": "2026-10-15T08:35:40.105Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-34-54-665Z/upgrade-0.4.0.log",
+          "sha256": "9ac64dcb208203a34f0a30bdc83a4cc0ce89aafe5e75cdb6b1cba0f9dce2178f"
+        },
+        {
+          "name": "zip-validation",
+          "command": "node scripts/validate-release.mjs",
+          "startedAt": "2026-10-15T08:35:40.106Z",
+          "finishedAt": "2026-10-15T08:35:43.008Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-34-54-665Z/zip-validation.log",
+          "sha256": "e7b83ddfb24db09bee69799dcc61c5eb0b168cfc524067ae60a249318ff721a2"
+        }
+      ],
+      "finishedAt": "2026-10-15T08:35:43.009Z"
+    }
+  },
+  "unit": {
+    "files": 72,
+    "passed": 735,
+    "failed": 0,
+    "pending": 0,
+    "path": ".test-data/rc2-hotfix/unit.json",
+    "sha256": "b69f4a8e162fcf4d42476e1fb2cbe15d510ea5eeab9222775ac86ab513bfd254"
+  },
+  "e2e": {
+    "startTime": "2026-10-15T08:22:15.148Z",
+    "duration": 80625.406,
+    "expected": 34,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "path": ".test-data/rc2-hotfix/e2e-report.json",
+    "sha256": "47c7cb36699588296f0cd79568292c1a82143023b96b3ff18d44fa37c1bdb535",
+    "fixtureAndMock": true,
+    "browser": "Chrome for Testing",
+    "actualActionPopupRegressionIncluded": true
+  },
+  "portable": {
+    "passed": true,
+    "checks": 13,
+    "path": ".test-data/phase10-portable/2026-10-15T08-23-39-157Z/report.json",
+    "sha256": "183f9aaf24d40c07e6d27e778d137835d46e8f8c98c9895af3f11355f88abd99",
+    "nativeGuiAcceptance": false
+  },
+  "upgrades": [
+    {
+      "from": "ProductSpy-1.0.0-rc.1-windows-x64",
+      "to": "ProductSpy-1.0.0-rc.2-windows-x64",
+      "checks": 28,
+      "passed": true,
+      "fixtureOnly": true,
+      "path": ".test-data/phase20-upgrade/2026-10-15T08-24-31-149Z-faljYV/report.json",
+      "sha256": "9c822cc10d97142401055414d8bbc2d4326c1d4f0c2f151970d468cf55ae0835"
+    },
+    {
+      "from": "ProductSpy-0.8.0-windows-x64",
+      "to": "ProductSpy-1.0.0-rc.2-windows-x64",
+      "checks": 28,
+      "passed": true,
+      "fixtureOnly": true,
+      "path": ".test-data/phase20-upgrade/2026-10-15T08-25-31-874Z-HGjl2n/report.json",
+      "sha256": "8ab120281fa7afb9b45d28c7492428f93eeab8f2a0326643cd28099680bba657"
+    },
+    {
+      "from": "ProductSpy-0.7.0-windows-x64",
+      "to": "ProductSpy-1.0.0-rc.2-windows-x64",
+      "checks": 26,
+      "passed": true,
+      "fixtureOnly": true,
+      "path": ".test-data/phase20-upgrade/2026-10-15T08-26-41-560Z-pmvATa/report.json",
+      "sha256": "1519a7389dcffb7447e8a9fa5a4399dfe603a6911ae8b7b4cc1fd923c65ec707"
+    },
+    {
+      "from": "ProductSpy-0.6.0-windows-x64",
+      "to": "ProductSpy-1.0.0-rc.2-windows-x64",
+      "checks": 22,
+      "passed": true,
+      "fixtureOnly": true,
+      "path": ".test-data/phase20-upgrade/2026-10-15T08-27-46-403Z-kB2VfJ/report.json",
+      "sha256": "0193da321f872da5b336b83e3c1648a24624e303f97762ecc09c74bfd772d6cd"
+    },
+    {
+      "from": "ProductSpy-0.5.2-windows-x64",
+      "to": "ProductSpy-1.0.0-rc.2-windows-x64",
+      "checks": 21,
+      "passed": true,
+      "fixtureOnly": true,
+      "path": ".test-data/phase20-upgrade/2026-10-15T08-28-38-030Z-LxOfJh/report.json",
+      "sha256": "bfd6ded00ec9458b23cd7fee1e73159fe79abeb6f606afcad8b67338866a9f7b"
+    },
+    {
+      "from": "ProductSpy-0.5.1-windows-x64",
+      "to": "ProductSpy-1.0.0-rc.2-windows-x64",
+      "checks": 21,
+      "passed": true,
+      "fixtureOnly": true,
+      "path": ".test-data/phase20-upgrade/2026-10-15T08-29-29-343Z-fs21I9/report.json",
+      "sha256": "e96f93666b2667ae3b038ab1f9fb5f636b4e2fde7600f09e398a8066163a2acb"
+    },
+    {
+      "from": "ProductSpy-0.5.0-windows-x64",
+      "to": "ProductSpy-1.0.0-rc.2-windows-x64",
+      "checks": 21,
+      "passed": true,
+      "fixtureOnly": true,
+      "path": ".test-data/phase20-upgrade/2026-10-15T08-30-26-463Z-JoD4Pz/report.json",
+      "sha256": "6735bf840034101e0f391413357cf71982073b60c93907bfb2371421b29ed6b4"
+    },
+    {
+      "from": "ProductSpy-0.4.0-windows-x64",
+      "to": "ProductSpy-1.0.0-rc.2-windows-x64",
+      "checks": 21,
+      "passed": true,
+      "fixtureOnly": true,
+      "path": ".test-data/phase20-upgrade/2026-10-15T08-34-56-258Z-dmudpY/report.json",
+      "sha256": "f75800c6037bb9c337ba6389d0f9f2f1b4ffe73025a901c1d6f1b0dd914c8990"
+    }
+  ],
+  "zip": {
+    "schemaVersion": 1,
+    "checkedAt": "2026-10-15T08:35:41.047Z",
+    "passed": true,
+    "checks": [
+      {
+        "name": "portable: archive hash, bytes, count, CRC32, raw paths, private paths and credential scan",
+        "passed": true
+      },
+      {
+        "name": "portable: every bundle record matches actual ZIP bytes/SHA256; no missing or unlisted files",
+        "passed": true,
+        "records": 2334
+      },
+      {
+        "name": "extension: archive hash, bytes, count, CRC32, raw paths, private paths and credential scan",
+        "passed": true
+      },
+      {
+        "name": "extension: root MV3 1.0.0.2 (1.0.0-rc.2), original permission/host allowlist, CSP, no source maps; embedded extension matches ZIP",
+        "passed": true,
+        "embeddedFiles": 11
+      }
+    ],
+    "failures": [],
+    "version": "1.0.0-rc.2",
+    "releaseManifest": {
+      "path": "artifacts/release-manifest.json",
+      "sha256": "58203f19d9878163e1b3e31528f734eb6383a8971e95aece869aafcb34ecfc10"
+    },
+    "portable": {
+      "file": "ProductSpy-1.0.0-rc.2-windows-x64.zip",
+      "bytes": 42529449,
+      "sha256": "3165c457d58e8925f027f7dabf678efd37925a80c8e605885e3c51f600af913a",
+      "entries": 2335,
+      "files": 2335,
+      "scannedTextFiles": 2159,
+      "crc32Verified": true,
+      "rawPathsVerified": true,
+      "privatePathsVerified": true,
+      "credentialPatternScanPassed": true,
+      "configuredApiKeysChecked": 0,
+      "bundleRecordsVerified": 2334,
+      "embeddedExtensionFilesVerified": 11
+    },
+    "extension": {
+      "file": "ProductSpy-1.0.0-rc.2-extension.zip",
+      "bytes": 408888,
+      "sha256": "f422d4a653499ca9b45e7527128d2ad78c89053993f0a2a58d8d9ee656e9b6d8",
+      "entries": 226,
+      "files": 226,
+      "scannedTextFiles": 222,
+      "crc32Verified": true,
+      "rawPathsVerified": true,
+      "privatePathsVerified": true,
+      "credentialPatternScanPassed": true,
+      "configuredApiKeysChecked": 0,
+      "manifestVersion": 3,
+      "extensionVersion": "1.0.0.2",
+      "extensionVersionName": "1.0.0-rc.2",
+      "permissions": ["activeTab", "scripting", "storage"],
+      "hostPermissions": ["http://localhost/*", "http://127.0.0.1/*"],
+      "sourceMapsAbsent": true
+    },
+    "path": ".test-data/release-validation/2026-10-15T08-35-41-046Z/zip-validation.json",
+    "sha256": "9c6b183972594467313438a2f9335db34c6895d2cf10b65907a5519319d365a3"
+  },
+  "delivery": {
+    "version": "1.0.0-rc.2",
+    "portable": {
+      "file": "ProductSpy-1.0.0-rc.2-windows-x64.zip",
+      "sha256": "3165c457d58e8925f027f7dabf678efd37925a80c8e605885e3c51f600af913a",
+      "bytes": 42529449,
+      "files": 2335
+    },
+    "extension": {
+      "file": "ProductSpy-1.0.0-rc.2-extension.zip",
+      "version": "1.0.0-rc.2",
+      "extensionVersion": "1.0.0.2",
+      "extensionVersionName": "1.0.0-rc.2",
+      "sha256": "f422d4a653499ca9b45e7527128d2ad78c89053993f0a2a58d8d9ee656e9b6d8",
+      "bytes": 408888,
+      "files": 226
+    }
+  },
+  "preservation": {
+    "oldPackagesByteIdentical": [
+      {
+        "name": "ProductSpy-0.2.0-extension.zip",
+        "bytes": 391275,
+        "sha256": "c2edcf4e81b63e74ad3f5b0a8026d8c00baff27fd3415532aa78883a61c15f79"
+      },
+      {
+        "name": "ProductSpy-0.2.0-windows-x64.zip",
+        "bytes": 40317756,
+        "sha256": "423108b1446ce5f457d1bfa63e68bb7fe074bc6a0eb897446d2958898439c530"
+      },
+      {
+        "name": "ProductSpy-0.3.0-extension.zip",
+        "bytes": 392371,
+        "sha256": "03f659fc83c297d1f6326f2884292367a06217eaebb50b802f1b663bde0fb3ca"
+      },
+      {
+        "name": "ProductSpy-0.3.0-windows-x64.zip",
+        "bytes": 40367396,
+        "sha256": "c67112a546ded37e49a12ecfdd546cc80278f7bcf86c2cac54491539ec48faa5"
+      },
+      {
+        "name": "ProductSpy-0.4.0-extension.zip",
+        "bytes": 393729,
+        "sha256": "2e3949146f78442c843a5e5b44cc5f5b208c121f16b044df8ce5babb0b086e97"
+      },
+      {
+        "name": "ProductSpy-0.4.0-windows-x64.zip",
+        "bytes": 40572620,
+        "sha256": "f5afb902764db9ddc960d98289ba56e4b77f90b5683c2e1e9fe80c5c5621dbb8"
+      },
+      {
+        "name": "ProductSpy-0.5.0-extension.zip",
+        "bytes": 395516,
+        "sha256": "1b352d96f5008778753d6ebd237e707f94e31f58103cfbaf66d92e789b4caf1c"
+      },
+      {
+        "name": "ProductSpy-0.5.0-windows-x64.zip",
+        "bytes": 40683526,
+        "sha256": "e0d36ffb201f2b0ac2452d4e8bceffce5b8c71dd83ed4fcc001a2e31544a3c35"
+      },
+      {
+        "name": "ProductSpy-0.5.1-extension.zip",
+        "bytes": 395519,
+        "sha256": "5404465164ce8f4349999bf9d00c432840e0a66f0890a2a308033146eeb3d1c2"
+      },
+      {
+        "name": "ProductSpy-0.5.1-windows-x64.zip",
+        "bytes": 40683947,
+        "sha256": "241cb6e43bca958927a0804a8c77b0b0ca3a02e620b5c1d5db6d4357a4d7373e"
+      },
+      {
+        "name": "ProductSpy-0.5.2-extension.zip",
+        "bytes": 395638,
+        "sha256": "30a7cef68d1910327bb3528722c3dd5930b369ac2a163fb46987801df2a86d9a"
+      },
+      {
+        "name": "ProductSpy-0.5.2-windows-x64.zip",
+        "bytes": 40684135,
+        "sha256": "3fcc3c79ad1962529b7a7ead96101ca2cb280537ddd38bb61b6482afe00deaed"
+      },
+      {
+        "name": "ProductSpy-0.6.0-extension.zip",
+        "bytes": 397481,
+        "sha256": "12af684bdd9d7aee2f98622a68e745bac56097e4aa1deaa7a2964d5b57f7d841"
+      },
+      {
+        "name": "ProductSpy-0.6.0-windows-x64.zip",
+        "bytes": 41281684,
+        "sha256": "3ddbb37bfb0b222d709a002dc5f201983b38389d1703ec93355e8ffe505cfa78"
+      },
+      {
+        "name": "ProductSpy-0.7.0-extension.zip",
+        "bytes": 403918,
+        "sha256": "22026c734b06d46f5f29bd922b028914326995173ff5c5d01ec67bb5ddbc59ee"
+      },
+      {
+        "name": "ProductSpy-0.7.0-windows-x64.zip",
+        "bytes": 41929877,
+        "sha256": "ca6b3932664dc826522db00c7d5c6a8abca8a6cf26299a02191be60e048c0416"
+      },
+      {
+        "name": "ProductSpy-0.8.0-extension.zip",
+        "bytes": 408521,
+        "sha256": "c3700ecc74b59159bfaae54b69a81205cf4ad8db4bb4417369c64cd24cc40518"
+      },
+      {
+        "name": "ProductSpy-0.8.0-windows-x64.zip",
+        "bytes": 42496774,
+        "sha256": "df3ff9852e975d9eae80b458675f6b25bc2de8f635c6f3f846868b24b946a73a"
+      },
+      {
+        "name": "ProductSpy-1.0.0-rc.1-extension.zip",
+        "bytes": 408531,
+        "sha256": "a498b531b634e8b89fe52082f6283cc9d3d8813c4cd7b85e81e9f4d6c214d63f"
+      },
+      {
+        "name": "ProductSpy-1.0.0-rc.1-windows-x64.zip",
+        "bytes": 42529040,
+        "sha256": "27c49c6d17e6688d7708158302d5921f3415147ebfae91be63156eac849856c5"
+      }
+    ],
+    "oldReleaseCount": 10,
+    "oldReleasesAndAssetsUnchanged": true,
+    "rc1OriginalReleaseId": 412410841
+  },
+  "diagnostics": {
+    "path": "docs/rc2-popup-diagnostics.json",
+    "sha256": "184bebb3ce6097235f6a8ce0a74b616d0bf13f4dda36bacf9044d2fa7159e0d4"
+  },
+  "originalFailedRunsRetained": [
+    {
+      "path": ".test-data/rc2-hotfix/regression-2026-10-15T08-18-12-351Z/checks.json",
+      "sha256": "3f276f7a2c5cb39d0dfb00742bab4d84759e67f2bc14d376eeafeabc17584265",
+      "checks": [
+        {
+          "name": "e2e",
+          "command": "node scripts/rc2-portable-workflow.mjs",
+          "startedAt": "2026-10-15T08:18:12.352Z",
+          "finishedAt": "2026-10-15T08:18:58.401Z",
+          "exitCode": 1,
+          "passed": false,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-18-12-351Z/e2e.log",
+          "sha256": "966cd7b20e24cde8d3059f71d3923fea7eb7888138da751030aee49456e98345"
+        }
+      ]
+    },
+    {
+      "path": ".test-data/rc2-hotfix/regression-2026-10-15T08-21-54-915Z/checks.json",
+      "sha256": "2e7aba703a1cb13a6f36264392f42ddb4cb4ac42ab07863583706d27b62d5cd9",
+      "checks": [
+        {
+          "name": "e2e",
+          "command": "node scripts/rc2-portable-workflow.mjs",
+          "startedAt": "2026-10-15T08:21:54.916Z",
+          "finishedAt": "2026-10-15T08:22:01.657Z",
+          "exitCode": 1,
+          "passed": false,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-21-54-915Z/e2e.log",
+          "sha256": "ca9500ff271e5f3943c8eb15093473f2ee77664bdf054fd3e84460dda3467700"
+        }
+      ]
+    },
+    {
+      "path": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/checks.json",
+      "sha256": "a65a58b48f14b6cf64a47c9a873a91643dbedd12ca060c6ca831bff4beb14374",
+      "checks": [
+        {
+          "name": "e2e",
+          "command": "node scripts/rc2-portable-workflow.mjs",
+          "startedAt": "2026-10-15T08:22:10.179Z",
+          "finishedAt": "2026-10-15T08:23:37.739Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/e2e.log",
+          "sha256": "717204098d1195531bcef2826924b4c4dd34db8752970f6da675eef69419ad10"
+        },
+        {
+          "name": "portable",
+          "command": "pnpm test:portable",
+          "startedAt": "2026-10-15T08:23:37.740Z",
+          "finishedAt": "2026-10-15T08:24:29.632Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/portable.log",
+          "sha256": "54d36ac2558790677e84697c66e75db5114ada8613938f248695d4d68d17412e"
+        },
+        {
+          "name": "upgrade-1.0.0-rc.1",
+          "command": "pnpm test:upgrade --from artifacts/ProductSpy-1.0.0-rc.1-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.2-windows-x64",
+          "startedAt": "2026-10-15T08:24:29.633Z",
+          "finishedAt": "2026-10-15T08:25:30.370Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/upgrade-1.0.0-rc.1.log",
+          "sha256": "1f6ece0f66eaed8ffa59cc705e7865138610652d5a360cc9ad4e13deb6054f9b"
+        },
+        {
+          "name": "upgrade-0.8.0",
+          "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.8.0-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.2-windows-x64",
+          "startedAt": "2026-10-15T08:25:30.371Z",
+          "finishedAt": "2026-10-15T08:26:40.051Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/upgrade-0.8.0.log",
+          "sha256": "ad584e80ec98faaaf60c36606f13ed9bff622327b715b0fce92eb43ffaf4bd19"
+        },
+        {
+          "name": "upgrade-0.7.0",
+          "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.7.0-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.2-windows-x64",
+          "startedAt": "2026-10-15T08:26:40.051Z",
+          "finishedAt": "2026-10-15T08:27:44.903Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/upgrade-0.7.0.log",
+          "sha256": "386e88f0538161717e0aa33296af85c0acd12028ad37a945b527635afcc9c141"
+        },
+        {
+          "name": "upgrade-0.6.0",
+          "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.6.0-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.2-windows-x64",
+          "startedAt": "2026-10-15T08:27:44.903Z",
+          "finishedAt": "2026-10-15T08:28:36.557Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/upgrade-0.6.0.log",
+          "sha256": "2178442408dc5524baa69620e684e90681bf4565fdbc31fb709fac476a02adda"
+        },
+        {
+          "name": "upgrade-0.5.2",
+          "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.5.2-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.2-windows-x64",
+          "startedAt": "2026-10-15T08:28:36.557Z",
+          "finishedAt": "2026-10-15T08:29:27.826Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/upgrade-0.5.2.log",
+          "sha256": "d27def7c78fb0f768b6d05cccfa7aa2c5f0f43ebe43aa35ba952ae37c86a3f71"
+        },
+        {
+          "name": "upgrade-0.5.1",
+          "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.5.1-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.2-windows-x64",
+          "startedAt": "2026-10-15T08:29:27.827Z",
+          "finishedAt": "2026-10-15T08:30:24.944Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/upgrade-0.5.1.log",
+          "sha256": "a2b737715129a415037b969d57f43c5c5463a849c2521a8e19b2bdda848460ce"
+        },
+        {
+          "name": "upgrade-0.5.0",
+          "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.5.0-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.2-windows-x64",
+          "startedAt": "2026-10-15T08:30:24.945Z",
+          "finishedAt": "2026-10-15T08:31:18.347Z",
+          "exitCode": 0,
+          "passed": true,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/upgrade-0.5.0.log",
+          "sha256": "1a30c21f4b8436dd3f28aaf573d06768104892b2984c75ab22e164cca5d7e592"
+        },
+        {
+          "name": "upgrade-0.4.0",
+          "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.4.0-windows-x64 --to artifacts/ProductSpy-1.0.0-rc.2-windows-x64",
+          "startedAt": "2026-10-15T08:31:18.348Z",
+          "finishedAt": "2026-10-15T08:32:13.141Z",
+          "exitCode": 1,
+          "passed": false,
+          "log": ".test-data/rc2-hotfix/regression-2026-10-15T08-22-10-177Z/upgrade-0.4.0.log",
+          "sha256": "f34527095d6ea155a4edb1b5b2fdf6ff53e2c91a7091f8ddbc3b34b7b2129b70"
+        }
+      ]
+    }
+  ],
+  "upgradeAttempts": [
+    {
+      "from": "ProductSpy-1.0.0-rc.1-windows-x64",
+      "to": "ProductSpy-1.0.0-rc.2-windows-x64",
+      "checks": 28,
+      "passed": true,
+      "error": null,
+      "path": ".test-data/phase20-upgrade/2026-10-15T08-24-31-149Z-faljYV/report.json",
+      "sha256": "9c822cc10d97142401055414d8bbc2d4326c1d4f0c2f151970d468cf55ae0835"
+    },
+    {
+      "from": "ProductSpy-0.8.0-windows-x64",
+      "to": "ProductSpy-1.0.0-rc.2-windows-x64",
+      "checks": 28,
+      "passed": true,
+      "error": null,
+      "path": ".test-data/phase20-upgrade/2026-10-15T08-25-31-874Z-HGjl2n/report.json",
+      "sha256": "8ab120281fa7afb9b45d28c7492428f93eeab8f2a0326643cd28099680bba657"
+    },
+    {
+      "from": "ProductSpy-0.7.0-windows-x64",
+      "to": "ProductSpy-1.0.0-rc.2-windows-x64",
+      "checks": 26,
+      "passed": true,
+      "error": null,
+      "path": ".test-data/phase20-upgrade/2026-10-15T08-26-41-560Z-pmvATa/report.json",
+      "sha256": "1519a7389dcffb7447e8a9fa5a4399dfe603a6911ae8b7b4cc1fd923c65ec707"
+    },
+    {
+      "from": "ProductSpy-0.6.0-windows-x64",
+      "to": "ProductSpy-1.0.0-rc.2-windows-x64",
+      "checks": 22,
+      "passed": true,
+      "error": null,
+      "path": ".test-data/phase20-upgrade/2026-10-15T08-27-46-403Z-kB2VfJ/report.json",
+      "sha256": "0193da321f872da5b336b83e3c1648a24624e303f97762ecc09c74bfd772d6cd"
+    },
+    {
+      "from": "ProductSpy-0.5.2-windows-x64",
+      "to": "ProductSpy-1.0.0-rc.2-windows-x64",
+      "checks": 21,
+      "passed": true,
+      "error": null,
+      "path": ".test-data/phase20-upgrade/2026-10-15T08-28-38-030Z-LxOfJh/report.json",
+      "sha256": "bfd6ded00ec9458b23cd7fee1e73159fe79abeb6f606afcad8b67338866a9f7b"
+    },
+    {
+      "from": "ProductSpy-0.5.1-windows-x64",
+      "to": "ProductSpy-1.0.0-rc.2-windows-x64",
+      "checks": 21,
+      "passed": true,
+      "error": null,
+      "path": ".test-data/phase20-upgrade/2026-10-15T08-29-29-343Z-fs21I9/report.json",
+      "sha256": "e96f93666b2667ae3b038ab1f9fb5f636b4e2fde7600f09e398a8066163a2acb"
+    },
+    {
+      "from": "ProductSpy-0.5.0-windows-x64",
+      "to": "ProductSpy-1.0.0-rc.2-windows-x64",
+      "checks": 21,
+      "passed": true,
+      "error": null,
+      "path": ".test-data/phase20-upgrade/2026-10-15T08-30-26-463Z-JoD4Pz/report.json",
+      "sha256": "6735bf840034101e0f391413357cf71982073b60c93907bfb2371421b29ed6b4"
+    },
+    {
+      "from": "ProductSpy-0.4.0-windows-x64",
+      "to": "ProductSpy-1.0.0-rc.2-windows-x64",
+      "checks": 11,
+      "passed": false,
+      "error": "Stop controller timed out",
+      "path": ".test-data/phase20-upgrade/2026-10-15T08-31-19-956Z-Ior0OT/report.json",
+      "sha256": "6ab54466c3b497e14d11659524d3ca4d32379aa0233f6f7ce8f9766ae6e91394"
+    },
+    {
+      "from": "ProductSpy-0.4.0-windows-x64",
+      "to": "ProductSpy-1.0.0-rc.2-windows-x64",
+      "checks": 21,
+      "passed": true,
+      "error": null,
+      "path": ".test-data/phase20-upgrade/2026-10-15T08-34-56-258Z-dmudpY/report.json",
+      "sha256": "f75800c6037bb9c337ba6389d0f9f2f1b4ffe73025a901c1d6f1b0dd914c8990"
+    }
+  ],
+  "failuresExplanation": [
+    "Original rc.1 action collapsed while the ordinary tab did not; controlled width/height fixes isolate the viewport-root feedback.",
+    "600/480/440 CSS-pixel height candidates exposed actual host clipping; final production 420 and stricter footer-visible assertions pass. Failed measurements retained.",
+    "Initial CSS guard counter counted grouped declarations once instead of per root node; corrected coverage counting without lowering assertions.",
+    "First workflow attempt was blocked by a still-open rc.1 launcher mutex after CLI service stop; no user process was killed, maintainer then closed it.",
+    "Second workflow attempt passed the PowerShell reporter comma unquoted, producing list json; quoted the argument, retaining failed logs. No business assertion removed.",
+    "One 0.4.0 upgrade attempt reached 11 passing data-preservation checks then timed out waiting 8000ms for its Stop controller; cleanup released the port. Exact cause of the controller delay is unconfirmed. Same frozen packages and original deadline were rerun serially, with previous successful cases retained by hash-verified resume and this failed report preserved."
+  ],
+  "nativeChrome": {
+    "toolStopped": true,
+    "reason": "Computer Use could not determine current browser URL with enough confidence to enforce policy; no toolbar action performed and no bypass attempted.",
+    "fixedToolbarManuallyVerified": false,
+    "fullChromeVersion": null,
+    "windowsDisplayScalingPassed": false
+  },
+  "realAi": {
+    "calls": 0,
+    "authorizedPaidTests": false,
+    "qualityVerified": false,
+    "providerAndBudgetNotProvided": true
+  },
+  "remaining": [
+    "Maintainer Stable Chrome toolbar first/reopened/Amazon/unsupported/online/offline/restart validation and original screenshots.",
+    "Actual Windows display scales 100/125/150/200 percent; simulated CFT DPR is not an OS setting test.",
+    "Real AI quality remains unverified and no paid requests authorized.",
+    "Future stable Chrome numeric version must be greater than rc.2 1.0.0.2; releaseVersion stable mapping must be reviewed before formal packaging."
+  ],
+  "release": { "intendedDraftOnly": true, "public": false, "storeSubmitted": false },
+  "finalStaticChecks": [
+    {
+      "command": "pnpm typecheck",
+      "passed": true,
+      "completedAt": "2026-10-15T08:39:03.544Z",
+      "path": ".test-data/rc2-hotfix/release-final-typecheck.log",
+      "sha256": "670b5cd6d407c3e589685cee002e1ee845f87d13e1ebaa56e200ff31bf7679f8"
+    },
+    {
+      "command": "pnpm lint",
+      "passed": true,
+      "completedAt": "2026-10-15T08:38:58.493Z",
+      "path": ".test-data/rc2-hotfix/release-final-lint.log",
+      "sha256": "8bf1d963906f0744f64e54e79c79eb2e8996b28560c76e917f5db35ae2dae370"
+    },
+    {
+      "command": "pnpm format:check",
+      "passed": true,
+      "completedAt": "2026-10-15T08:39:05.534Z",
+      "path": ".test-data/rc2-hotfix/release-final-format.log",
+      "sha256": "c2690a895deaee7edaf288212ca767fa798e64c241db70c3bd73d304b9fac8e2"
+    }
+  ]
+}

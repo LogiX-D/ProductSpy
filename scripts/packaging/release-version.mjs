@@ -8,7 +8,7 @@ export function releaseVersion(release) {
     /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-rc\.([1-9]\d*))?$/.exec(release);
   if (
     !match ||
-    match.slice(1, 4).some((part) => Number(part) > 65535) ||
+    match.slice(1).some((part) => part !== undefined && Number(part) > 65535) ||
     match.slice(1, 4).every((part) => Number(part) === 0)
   )
     throw new Error(
@@ -16,7 +16,9 @@ export function releaseVersion(release) {
     );
   return {
     version: release,
-    extensionVersion: match.slice(1, 4).join('.'),
+    // rc.1 was already distributed as a three-part Chrome version. Preserve that
+    // frozen mapping, then use the fourth numeric part for candidate updates.
+    extensionVersion: [...match.slice(1, 4), ...(Number(match[4]) > 1 ? [match[4]] : [])].join('.'),
     ...(match[4] ? { extensionVersionName: release } : {}),
   };
 }

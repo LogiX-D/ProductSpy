@@ -28,11 +28,33 @@ describe('candidate application and Chrome version mapping', () => {
       '65536.0.0',
       '1.0.0-rc.0',
       '1.0.0-rc.01',
+      '1.0.0-rc.65536',
       '1.0.0-beta.1',
       '../1.0.0',
       '1.0.0/rc.1',
     ])
       expect(() => releaseVersion(version)).toThrow();
+  });
+  it('increments rc.2 without changing the frozen rc.1 numeric mapping', () => {
+    expect(releaseVersion('1.0.0-rc.2')).toEqual({
+      version: '1.0.0-rc.2',
+      extensionVersion: '1.0.0.2',
+      extensionVersionName: '1.0.0-rc.2',
+    });
+    expect(releaseVersion('1.0.0-rc.3').extensionVersion).toBe('1.0.0.3');
+    expect(releaseVersion('1.0.0-rc.65535').extensionVersion).toBe('1.0.0.65535');
+    expect(
+      validateExtensionRelease(
+        { manifest_version: 3, version: '1.0.0.2', version_name: '1.0.0-rc.2' },
+        '1.0.0-rc.2',
+      ).extensionVersion,
+    ).toBe('1.0.0.2');
+    expect(() =>
+      validateExtensionRelease(
+        { manifest_version: 3, version: '1.0.0', version_name: '1.0.0-rc.2' },
+        '1.0.0-rc.2',
+      ),
+    ).toThrow();
   });
   it('refuses mismatched builds and candidates without a clear display label', () => {
     for (const manifest of [

@@ -1,0 +1,1794 @@
+{
+  "schemaVersion": 1,
+  "candidate": "1.0.0-rc.2",
+  "generatedAt": "2026-10-15T08:24:18.296Z",
+  "scope": "Release-candidate action-popup sizing hotfix evidence only; no new business module.",
+  "browser": {
+    "distribution": "Chrome for Testing",
+    "version": "156.0.8078.4",
+    "formalStableChromeManualAcceptance": false
+  },
+  "formalChrome": {
+    "status": "blocked-pending-retest",
+    "reason": "The user Stable Chrome session could not be operated after automatic safety review could not confirm its current URL. No alternative control method was used to bypass that block."
+  },
+  "windowsDpi": {
+    "status": "pending-manual",
+    "note": "Browser force-device-scale-factor 1/1.25/1.5/2 is simulated DPR, not actual Windows 100/125/150/200 percent display-settings acceptance."
+  },
+  "historicalScreenshot": {
+    "imagePixelSize": {
+      "width": 55,
+      "height": 58
+    },
+    "originalWindowTypeAndDpr": "unconfirmed",
+    "note": "Do not equate the historical 55x58 image pixels with the reproduced 25x25 CSS-pixel action viewport. Maintainer Stable Chrome retest is still required."
+  },
+  "method": {
+    "action": "Extensions.triggerAction creates a fresh popup.html target; chrome.extension.getViews({type:popup}).includes(window) confirms the popup view. Flat CDP session measures DOM/computed styles and captures actual target screenshots.",
+    "ordinaryTab": "Separate 1280x800 tab; explicitly classified as tab=true/popup=false. It is not used as the action-popup acceptance result.",
+    "noActionViewportOverride": true,
+    "noExpandedHeadlessScreen": true,
+    "syntheticContent": "Long unbroken text and 30 paragraphs appended only to self-owned isolated extension documents for layout QA; no product or user data.",
+    "runtimeErrorScope": "Runtime.exceptionThrown observed after CDP attaches to the action target, plus ordinary-tab pageerror events. Successful CSS loading and React mounting are measured independently.",
+    "prohibitedOperationsPerformed": []
+  },
+  "artifacts": [
+    {
+      "file": "ProductSpy-1.0.0-rc.1-windows-x64.zip",
+      "bytes": 42529040,
+      "sha256": "27c49c6d17e6688d7708158302d5921f3415147ebfae91be63156eac849856c5"
+    },
+    {
+      "file": "ProductSpy-1.0.0-rc.1-extension.zip",
+      "bytes": 408531,
+      "sha256": "a498b531b634e8b89fe52082f6283cc9d3d8813c4cd7b85e81e9f4d6c214d63f"
+    },
+    {
+      "file": "ProductSpy-1.0.0-rc.2-windows-x64.zip",
+      "bytes": 42529449,
+      "sha256": "3165c457d58e8925f027f7dabf678efd37925a80c8e605885e3c51f600af913a"
+    },
+    {
+      "file": "ProductSpy-1.0.0-rc.2-extension.zip",
+      "bytes": 408888,
+      "sha256": "f422d4a653499ca9b45e7527128d2ad78c89053993f0a2a58d8d9ee656e9b6d8"
+    }
+  ],
+  "frozenRc1": {
+    "binariesUnchanged": true,
+    "reportSha256": "d654657c5563beed5468d5b66f9a3628b33bcbaa66dacf8450554efb8df17492",
+    "ordinaryTab": {
+      "kind": "ordinary-popup-tab",
+      "uiStateAtCapture": "first-use-consent",
+      "targetType": "page",
+      "view": {
+        "popup": false,
+        "tab": true
+      },
+      "viewportCssPixels": {
+        "width": 1280,
+        "height": 800
+      },
+      "outerWindowCssPixels": {
+        "width": 1296,
+        "height": 934
+      },
+      "dpr": 1,
+      "screen": {
+        "screenWidth": 1280,
+        "screenHeight": 800
+      },
+      "roots": {
+        "html": {
+          "rectCssPixels": [0, 0, 1280, 600],
+          "clientCssPixels": [1280, 800],
+          "scrollCssPixels": [1280, 800]
+        },
+        "body": {
+          "rectCssPixels": [0, 0, 400, 600],
+          "clientCssPixels": [400, 600],
+          "scrollCssPixels": [400, 600]
+        },
+        "#root": {
+          "rectCssPixels": [0, 0, 400, 600],
+          "clientCssPixels": [400, 600],
+          "scrollCssPixels": [400, 600]
+        },
+        ".popup-shell": {
+          "rectCssPixels": [0, 0, 400, 600],
+          "clientCssPixels": [400, 600],
+          "scrollCssPixels": [400, 600]
+        },
+        ".popup-header": {
+          "rectCssPixels": [0, 0, 400, 71.5],
+          "clientCssPixels": [400, 72],
+          "scrollCssPixels": [400, 72]
+        },
+        ".popup-content": {
+          "rectCssPixels": [0, 71.5, 400, 469.5],
+          "clientCssPixels": [385, 470],
+          "scrollCssPixels": [385, 470]
+        },
+        ".popup-footer": {
+          "rectCssPixels": [0, 541, 400, 59],
+          "clientCssPixels": [400, 58],
+          "scrollCssPixels": [400, 58]
+        }
+      },
+      "bodyComputedSizing": {
+        "width": "400px",
+        "height": "600px",
+        "minWidth": "0px",
+        "maxWidth": "1280px",
+        "minHeight": "0px",
+        "maxHeight": "none"
+      },
+      "cssLoaded": true,
+      "reactMounted": true,
+      "headerVisuallyContained": true
+    },
+    "actualAction": {
+      "kind": "actual-action-popup",
+      "uiStateAtCapture": "first-use-consent",
+      "targetType": "page",
+      "view": {
+        "popup": true,
+        "tab": false
+      },
+      "viewportCssPixels": {
+        "width": 25,
+        "height": 25
+      },
+      "outerWindowCssPixels": {
+        "width": 39,
+        "height": 39
+      },
+      "dpr": 1,
+      "screen": {
+        "screenWidth": 1920,
+        "screenHeight": 1080
+      },
+      "roots": {
+        "html": {
+          "rectCssPixels": [0, 0, 25, 25],
+          "clientCssPixels": [25, 25],
+          "scrollCssPixels": [25, 25]
+        },
+        "body": {
+          "rectCssPixels": [0, 0, 25, 25],
+          "clientCssPixels": [25, 25],
+          "scrollCssPixels": [25, 25]
+        },
+        "#root": {
+          "rectCssPixels": [0, 0, 25, 25],
+          "clientCssPixels": [25, 25],
+          "scrollCssPixels": [25, 25]
+        },
+        ".popup-shell": {
+          "rectCssPixels": [0, 0, 25, 25],
+          "clientCssPixels": [25, 25],
+          "scrollCssPixels": [155, 248]
+        },
+        ".popup-header": {
+          "rectCssPixels": [0, 0, 32, 91],
+          "clientCssPixels": [32, 91],
+          "scrollCssPixels": [155, 91]
+        },
+        ".popup-content": {
+          "rectCssPixels": [0, 91, 32, 28],
+          "clientCssPixels": [32, 13],
+          "scrollCssPixels": [99, 3917]
+        },
+        ".popup-footer": {
+          "rectCssPixels": [0, 119, 32, 128.5],
+          "clientCssPixels": [32, 128],
+          "scrollCssPixels": [69, 128]
+        }
+      },
+      "bodyComputedSizing": {
+        "width": "25px",
+        "height": "25px",
+        "minWidth": "0px",
+        "maxWidth": "25px",
+        "minHeight": "0px",
+        "maxHeight": "none"
+      },
+      "cssLoaded": true,
+      "reactMounted": true,
+      "headerVisuallyContained": true
+    }
+  },
+  "causalMatrix": [
+    {
+      "variant": "baseline",
+      "injectedCss": "",
+      "separateNewActionTarget": true,
+      "frozenFilesModified": false,
+      "before": {
+        "kind": "matrix-baseline-before",
+        "uiStateAtCapture": "first-use-consent",
+        "targetType": "page",
+        "view": {
+          "popup": true,
+          "tab": false
+        },
+        "viewportCssPixels": {
+          "width": 25,
+          "height": 25
+        },
+        "outerWindowCssPixels": {
+          "width": 39,
+          "height": 39
+        },
+        "dpr": 1,
+        "screen": {
+          "screenWidth": 1920,
+          "screenHeight": 1080
+        },
+        "roots": {
+          "html": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [25, 25]
+          },
+          "body": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [25, 25]
+          },
+          "#root": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [25, 25]
+          },
+          ".popup-shell": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [155, 248]
+          },
+          ".popup-header": {
+            "rectCssPixels": [0, 0, 32, 91],
+            "clientCssPixels": [32, 91],
+            "scrollCssPixels": [155, 91]
+          },
+          ".popup-content": {
+            "rectCssPixels": [0, 91, 32, 28],
+            "clientCssPixels": [32, 13],
+            "scrollCssPixels": [99, 3917]
+          },
+          ".popup-footer": {
+            "rectCssPixels": [0, 119, 32, 128.5],
+            "clientCssPixels": [32, 128],
+            "scrollCssPixels": [69, 128]
+          }
+        },
+        "bodyComputedSizing": {
+          "width": "25px",
+          "height": "25px",
+          "minWidth": "0px",
+          "maxWidth": "25px",
+          "minHeight": "0px",
+          "maxHeight": "none"
+        },
+        "cssLoaded": true,
+        "reactMounted": true,
+        "headerVisuallyContained": true
+      },
+      "after": {
+        "kind": "matrix-baseline-after",
+        "uiStateAtCapture": "first-use-consent",
+        "targetType": "page",
+        "view": {
+          "popup": true,
+          "tab": false
+        },
+        "viewportCssPixels": {
+          "width": 25,
+          "height": 25
+        },
+        "outerWindowCssPixels": {
+          "width": 39,
+          "height": 39
+        },
+        "dpr": 1,
+        "screen": {
+          "screenWidth": 1920,
+          "screenHeight": 1080
+        },
+        "roots": {
+          "html": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [25, 25]
+          },
+          "body": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [25, 25]
+          },
+          "#root": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [25, 25]
+          },
+          ".popup-shell": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [155, 248]
+          },
+          ".popup-header": {
+            "rectCssPixels": [0, 0, 32, 91],
+            "clientCssPixels": [32, 91],
+            "scrollCssPixels": [155, 91]
+          },
+          ".popup-content": {
+            "rectCssPixels": [0, 91, 32, 28],
+            "clientCssPixels": [32, 13],
+            "scrollCssPixels": [99, 3917]
+          },
+          ".popup-footer": {
+            "rectCssPixels": [0, 119, 32, 128.5],
+            "clientCssPixels": [32, 128],
+            "scrollCssPixels": [69, 128]
+          }
+        },
+        "bodyComputedSizing": {
+          "width": "25px",
+          "height": "25px",
+          "minWidth": "0px",
+          "maxWidth": "25px",
+          "minHeight": "0px",
+          "maxHeight": "none"
+        },
+        "cssLoaded": true,
+        "reactMounted": true,
+        "headerVisuallyContained": true
+      },
+      "observedRuntimeExceptions": 0
+    },
+    {
+      "variant": "width-only",
+      "injectedCss": "body { max-width: none !important; }",
+      "separateNewActionTarget": true,
+      "frozenFilesModified": false,
+      "before": {
+        "kind": "matrix-width-only-before",
+        "uiStateAtCapture": "first-use-consent",
+        "targetType": "page",
+        "view": {
+          "popup": true,
+          "tab": false
+        },
+        "viewportCssPixels": {
+          "width": 25,
+          "height": 25
+        },
+        "outerWindowCssPixels": {
+          "width": 39,
+          "height": 39
+        },
+        "dpr": 1,
+        "screen": {
+          "screenWidth": 1920,
+          "screenHeight": 1080
+        },
+        "roots": {
+          "html": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [25, 25]
+          },
+          "body": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [25, 25]
+          },
+          "#root": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [25, 25]
+          },
+          ".popup-shell": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [155, 248]
+          },
+          ".popup-header": {
+            "rectCssPixels": [0, 0, 32, 91],
+            "clientCssPixels": [32, 91],
+            "scrollCssPixels": [155, 91]
+          },
+          ".popup-content": {
+            "rectCssPixels": [0, 91, 32, 28],
+            "clientCssPixels": [32, 13],
+            "scrollCssPixels": [99, 3917]
+          },
+          ".popup-footer": {
+            "rectCssPixels": [0, 119, 32, 128.5],
+            "clientCssPixels": [32, 128],
+            "scrollCssPixels": [69, 128]
+          }
+        },
+        "bodyComputedSizing": {
+          "width": "25px",
+          "height": "25px",
+          "minWidth": "0px",
+          "maxWidth": "25px",
+          "minHeight": "0px",
+          "maxHeight": "none"
+        },
+        "cssLoaded": true,
+        "reactMounted": true,
+        "headerVisuallyContained": true
+      },
+      "after": {
+        "kind": "matrix-width-only-after",
+        "uiStateAtCapture": "first-use-consent",
+        "targetType": "page",
+        "view": {
+          "popup": true,
+          "tab": false
+        },
+        "viewportCssPixels": {
+          "width": 400,
+          "height": 25
+        },
+        "outerWindowCssPixels": {
+          "width": 414,
+          "height": 39
+        },
+        "dpr": 1,
+        "screen": {
+          "screenWidth": 1920,
+          "screenHeight": 1080
+        },
+        "roots": {
+          "html": {
+            "rectCssPixels": [0, 0, 400, 25],
+            "clientCssPixels": [400, 25],
+            "scrollCssPixels": [400, 25]
+          },
+          "body": {
+            "rectCssPixels": [0, 0, 400, 25],
+            "clientCssPixels": [400, 25],
+            "scrollCssPixels": [400, 25]
+          },
+          "#root": {
+            "rectCssPixels": [0, 0, 400, 25],
+            "clientCssPixels": [400, 25],
+            "scrollCssPixels": [400, 25]
+          },
+          ".popup-shell": {
+            "rectCssPixels": [0, 0, 400, 25],
+            "clientCssPixels": [400, 25],
+            "scrollCssPixels": [400, 159]
+          },
+          ".popup-header": {
+            "rectCssPixels": [0, 0, 400, 71.5],
+            "clientCssPixels": [400, 72],
+            "scrollCssPixels": [400, 72]
+          },
+          ".popup-content": {
+            "rectCssPixels": [0, 71.5, 400, 28],
+            "clientCssPixels": [385, 28],
+            "scrollCssPixels": [385, 420]
+          },
+          ".popup-footer": {
+            "rectCssPixels": [0, 99.5, 400, 59],
+            "clientCssPixels": [400, 58],
+            "scrollCssPixels": [400, 58]
+          }
+        },
+        "bodyComputedSizing": {
+          "width": "400px",
+          "height": "25px",
+          "minWidth": "0px",
+          "maxWidth": "none",
+          "minHeight": "0px",
+          "maxHeight": "none"
+        },
+        "cssLoaded": true,
+        "reactMounted": true,
+        "headerVisuallyContained": true
+      },
+      "observedRuntimeExceptions": 0
+    },
+    {
+      "variant": "height-only",
+      "injectedCss": "body { height: 600px !important; }",
+      "separateNewActionTarget": true,
+      "frozenFilesModified": false,
+      "before": {
+        "kind": "matrix-height-only-before",
+        "uiStateAtCapture": "first-use-consent",
+        "targetType": "page",
+        "view": {
+          "popup": true,
+          "tab": false
+        },
+        "viewportCssPixels": {
+          "width": 25,
+          "height": 25
+        },
+        "outerWindowCssPixels": {
+          "width": 39,
+          "height": 39
+        },
+        "dpr": 1,
+        "screen": {
+          "screenWidth": 1920,
+          "screenHeight": 1080
+        },
+        "roots": {
+          "html": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [25, 25]
+          },
+          "body": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [25, 25]
+          },
+          "#root": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [25, 25]
+          },
+          ".popup-shell": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [155, 248]
+          },
+          ".popup-header": {
+            "rectCssPixels": [0, 0, 32, 91],
+            "clientCssPixels": [32, 91],
+            "scrollCssPixels": [155, 91]
+          },
+          ".popup-content": {
+            "rectCssPixels": [0, 91, 32, 28],
+            "clientCssPixels": [32, 13],
+            "scrollCssPixels": [99, 3917]
+          },
+          ".popup-footer": {
+            "rectCssPixels": [0, 119, 32, 128.5],
+            "clientCssPixels": [32, 128],
+            "scrollCssPixels": [69, 128]
+          }
+        },
+        "bodyComputedSizing": {
+          "width": "25px",
+          "height": "25px",
+          "minWidth": "0px",
+          "maxWidth": "25px",
+          "minHeight": "0px",
+          "maxHeight": "none"
+        },
+        "cssLoaded": true,
+        "reactMounted": true,
+        "headerVisuallyContained": true
+      },
+      "after": {
+        "kind": "matrix-height-only-after",
+        "uiStateAtCapture": "first-use-consent",
+        "targetType": "page",
+        "view": {
+          "popup": true,
+          "tab": false
+        },
+        "viewportCssPixels": {
+          "width": 25,
+          "height": 600
+        },
+        "outerWindowCssPixels": {
+          "width": 39,
+          "height": 614
+        },
+        "dpr": 1,
+        "screen": {
+          "screenWidth": 1920,
+          "screenHeight": 1080
+        },
+        "roots": {
+          "html": {
+            "rectCssPixels": [0, 0, 25, 600],
+            "clientCssPixels": [25, 600],
+            "scrollCssPixels": [25, 600]
+          },
+          "body": {
+            "rectCssPixels": [0, 0, 25, 600],
+            "clientCssPixels": [25, 600],
+            "scrollCssPixels": [25, 600]
+          },
+          "#root": {
+            "rectCssPixels": [0, 0, 25, 600],
+            "clientCssPixels": [25, 600],
+            "scrollCssPixels": [25, 600]
+          },
+          ".popup-shell": {
+            "rectCssPixels": [0, 0, 25, 600],
+            "clientCssPixels": [25, 600],
+            "scrollCssPixels": [155, 600]
+          },
+          ".popup-header": {
+            "rectCssPixels": [0, 0, 32, 91],
+            "clientCssPixels": [32, 91],
+            "scrollCssPixels": [155, 91]
+          },
+          ".popup-content": {
+            "rectCssPixels": [0, 91, 32, 380.5],
+            "clientCssPixels": [32, 366],
+            "scrollCssPixels": [99, 3921]
+          },
+          ".popup-footer": {
+            "rectCssPixels": [0, 471.5, 32, 128.5],
+            "clientCssPixels": [32, 128],
+            "scrollCssPixels": [69, 128]
+          }
+        },
+        "bodyComputedSizing": {
+          "width": "25px",
+          "height": "600px",
+          "minWidth": "0px",
+          "maxWidth": "25px",
+          "minHeight": "0px",
+          "maxHeight": "none"
+        },
+        "cssLoaded": true,
+        "reactMounted": true,
+        "headerVisuallyContained": true
+      },
+      "observedRuntimeExceptions": 0
+    },
+    {
+      "variant": "both-with-explicit-roots",
+      "injectedCss": "html, body, #root, .popup-shell { width: 400px !important; min-width: 400px !important; } body { max-width: none !important; height: 600px !important; }",
+      "separateNewActionTarget": true,
+      "frozenFilesModified": false,
+      "before": {
+        "kind": "matrix-both-with-explicit-roots-before",
+        "uiStateAtCapture": "first-use-consent",
+        "targetType": "page",
+        "view": {
+          "popup": true,
+          "tab": false
+        },
+        "viewportCssPixels": {
+          "width": 25,
+          "height": 25
+        },
+        "outerWindowCssPixels": {
+          "width": 39,
+          "height": 39
+        },
+        "dpr": 1,
+        "screen": {
+          "screenWidth": 1920,
+          "screenHeight": 1080
+        },
+        "roots": {
+          "html": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [25, 25]
+          },
+          "body": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [25, 25]
+          },
+          "#root": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [25, 25]
+          },
+          ".popup-shell": {
+            "rectCssPixels": [0, 0, 25, 25],
+            "clientCssPixels": [25, 25],
+            "scrollCssPixels": [155, 248]
+          },
+          ".popup-header": {
+            "rectCssPixels": [0, 0, 32, 91],
+            "clientCssPixels": [32, 91],
+            "scrollCssPixels": [155, 91]
+          },
+          ".popup-content": {
+            "rectCssPixels": [0, 91, 32, 28],
+            "clientCssPixels": [32, 13],
+            "scrollCssPixels": [99, 3917]
+          },
+          ".popup-footer": {
+            "rectCssPixels": [0, 119, 32, 128.5],
+            "clientCssPixels": [32, 128],
+            "scrollCssPixels": [69, 128]
+          }
+        },
+        "bodyComputedSizing": {
+          "width": "25px",
+          "height": "25px",
+          "minWidth": "0px",
+          "maxWidth": "25px",
+          "minHeight": "0px",
+          "maxHeight": "none"
+        },
+        "cssLoaded": true,
+        "reactMounted": true,
+        "headerVisuallyContained": true
+      },
+      "after": {
+        "kind": "matrix-both-with-explicit-roots-after",
+        "uiStateAtCapture": "first-use-consent",
+        "targetType": "page",
+        "view": {
+          "popup": true,
+          "tab": false
+        },
+        "viewportCssPixels": {
+          "width": 400,
+          "height": 600
+        },
+        "outerWindowCssPixels": {
+          "width": 414,
+          "height": 614
+        },
+        "dpr": 1,
+        "screen": {
+          "screenWidth": 1920,
+          "screenHeight": 1080
+        },
+        "roots": {
+          "html": {
+            "rectCssPixels": [0, 0, 400, 600],
+            "clientCssPixels": [400, 600],
+            "scrollCssPixels": [400, 600]
+          },
+          "body": {
+            "rectCssPixels": [0, 0, 400, 600],
+            "clientCssPixels": [400, 600],
+            "scrollCssPixels": [400, 600]
+          },
+          "#root": {
+            "rectCssPixels": [0, 0, 400, 600],
+            "clientCssPixels": [400, 600],
+            "scrollCssPixels": [400, 600]
+          },
+          ".popup-shell": {
+            "rectCssPixels": [0, 0, 400, 600],
+            "clientCssPixels": [400, 600],
+            "scrollCssPixels": [400, 600]
+          },
+          ".popup-header": {
+            "rectCssPixels": [0, 0, 400, 71.5],
+            "clientCssPixels": [400, 72],
+            "scrollCssPixels": [400, 72]
+          },
+          ".popup-content": {
+            "rectCssPixels": [0, 71.5, 400, 469.5],
+            "clientCssPixels": [385, 470],
+            "scrollCssPixels": [385, 470]
+          },
+          ".popup-footer": {
+            "rectCssPixels": [0, 541, 400, 59],
+            "clientCssPixels": [400, 58],
+            "scrollCssPixels": [400, 58]
+          }
+        },
+        "bodyComputedSizing": {
+          "width": "400px",
+          "height": "600px",
+          "minWidth": "400px",
+          "maxWidth": "none",
+          "minHeight": "0px",
+          "maxHeight": "none"
+        },
+        "cssLoaded": true,
+        "reactMounted": true,
+        "headerVisuallyContained": true
+      },
+      "observedRuntimeExceptions": 0
+    }
+  ],
+  "cause": {
+    "confirmedInCft": true,
+    "description": "max-width:100vw constrains width to the auto-sized popup viewport; height:min(600px,100dvh) constrains height to the same initial viewport. Removing only one dependency repairs only that dimension. Explicit intrinsic root sizing removes both feedback constraints.",
+    "stableChromeHistoricalRootCauseConfirmed": false
+  },
+  "heightDecision": {
+    "selectedCssPixels": 420,
+    "reason": "A 600px root clips in the default native headless screen; 480px and 440px still clip under simulated headed DPR2. The measured 420px roots keep the footer visible while main content scrolls internally.",
+    "retainedFailed600DefaultHeadless": {
+      "kind": "actual-action-popup",
+      "uiStateAtCapture": "first-use-consent",
+      "targetType": "page",
+      "view": {
+        "popup": true,
+        "tab": false
+      },
+      "viewportCssPixels": {
+        "width": 415,
+        "height": 510
+      },
+      "outerWindowCssPixels": {
+        "width": 429,
+        "height": 524
+      },
+      "dpr": 1,
+      "screen": {
+        "screenWidth": 800,
+        "screenHeight": 600
+      },
+      "roots": {
+        "html": {
+          "rectCssPixels": [0, 0, 400, 600],
+          "clientCssPixels": [415, 510],
+          "scrollCssPixels": [415, 600]
+        },
+        "body": {
+          "rectCssPixels": [0, 0, 400, 600],
+          "clientCssPixels": [400, 600],
+          "scrollCssPixels": [400, 600]
+        },
+        "#root": {
+          "rectCssPixels": [0, 0, 400, 600],
+          "clientCssPixels": [400, 600],
+          "scrollCssPixels": [400, 600]
+        },
+        ".popup-shell": {
+          "rectCssPixels": [0, 0, 400, 600],
+          "clientCssPixels": [400, 600],
+          "scrollCssPixels": [400, 600]
+        },
+        ".popup-header": {
+          "rectCssPixels": [0, 0, 400, 71.5],
+          "clientCssPixels": [400, 72],
+          "scrollCssPixels": [400, 72]
+        },
+        ".popup-content": {
+          "rectCssPixels": [0, 71.5, 400, 469.5],
+          "clientCssPixels": [385, 470],
+          "scrollCssPixels": [385, 470]
+        },
+        ".popup-footer": {
+          "rectCssPixels": [0, 541, 400, 59],
+          "clientCssPixels": [400, 58],
+          "scrollCssPixels": [400, 58]
+        }
+      },
+      "bodyComputedSizing": {
+        "width": "400px",
+        "height": "600px",
+        "minWidth": "400px",
+        "maxWidth": "none",
+        "minHeight": "0px",
+        "maxHeight": "none"
+      },
+      "cssLoaded": true,
+      "reactMounted": true,
+      "headerVisuallyContained": true
+    },
+    "simulatedDpr2Candidates": [
+      {
+        "height": 480,
+        "window": {
+          "innerWidth": 415,
+          "innerHeight": 426,
+          "outerWidth": 429,
+          "outerHeight": 440,
+          "devicePixelRatio": 2,
+          "screenWidth": 480,
+          "screenHeight": 270,
+          "screenAvailableWidth": 960,
+          "screenAvailableHeight": 516,
+          "screenAvailableLeft": 0,
+          "screenAvailableTop": 0,
+          "visualViewportWidth": 400,
+          "visualViewportHeight": 426,
+          "visualViewportScale": 1
+        },
+        "footer": {
+          "x": 0,
+          "y": 421,
+          "width": 400,
+          "height": 59
+        },
+        "checks": {
+          "actualPopup": true,
+          "viewportMatchesCandidate": false,
+          "footerInsideActualViewport": false,
+          "internalVerticalScroll": true,
+          "noHorizontalOverflow": true,
+          "unchangedOuterFrame": true,
+          "unchangedFooter": true
+        },
+        "scroll": {
+          "scrollTop": 200,
+          "clientHeight": 350,
+          "scrollHeight": 3404
+        },
+        "observedRuntimeExceptions": 0
+      },
+      {
+        "height": 440,
+        "window": {
+          "innerWidth": 415,
+          "innerHeight": 426,
+          "outerWidth": 429,
+          "outerHeight": 440,
+          "devicePixelRatio": 2,
+          "screenWidth": 480,
+          "screenHeight": 270,
+          "screenAvailableWidth": 960,
+          "screenAvailableHeight": 516,
+          "screenAvailableLeft": 0,
+          "screenAvailableTop": 0,
+          "visualViewportWidth": 400,
+          "visualViewportHeight": 426,
+          "visualViewportScale": 1
+        },
+        "footer": {
+          "x": 0,
+          "y": 381,
+          "width": 400,
+          "height": 59
+        },
+        "checks": {
+          "actualPopup": true,
+          "viewportMatchesCandidate": false,
+          "footerInsideActualViewport": false,
+          "internalVerticalScroll": true,
+          "noHorizontalOverflow": true,
+          "unchangedOuterFrame": true,
+          "unchangedFooter": true
+        },
+        "scroll": {
+          "scrollTop": 200,
+          "clientHeight": 310,
+          "scrollHeight": 3404
+        },
+        "observedRuntimeExceptions": 0
+      },
+      {
+        "height": 420,
+        "window": {
+          "innerWidth": 400,
+          "innerHeight": 420,
+          "outerWidth": 414,
+          "outerHeight": 434,
+          "devicePixelRatio": 2,
+          "screenWidth": 480,
+          "screenHeight": 270,
+          "screenAvailableWidth": 960,
+          "screenAvailableHeight": 516,
+          "screenAvailableLeft": 0,
+          "screenAvailableTop": 0,
+          "visualViewportWidth": 400,
+          "visualViewportHeight": 420,
+          "visualViewportScale": 1
+        },
+        "footer": {
+          "x": 0,
+          "y": 361,
+          "width": 400,
+          "height": 59
+        },
+        "checks": {
+          "actualPopup": true,
+          "viewportMatchesCandidate": true,
+          "footerInsideActualViewport": true,
+          "internalVerticalScroll": true,
+          "noHorizontalOverflow": true,
+          "unchangedOuterFrame": true,
+          "unchangedFooter": true
+        },
+        "scroll": {
+          "scrollTop": 200,
+          "clientHeight": 290,
+          "scrollHeight": 3404
+        },
+        "observedRuntimeExceptions": 0
+      }
+    ],
+    "defaultHeadless440Comparison": [
+      {
+        "height": 440,
+        "window": {
+          "innerWidth": 400,
+          "innerHeight": 440,
+          "outerWidth": 414,
+          "outerHeight": 454,
+          "devicePixelRatio": 1,
+          "screenWidth": 800,
+          "screenHeight": 600,
+          "screenAvailableWidth": 800,
+          "screenAvailableHeight": 600,
+          "screenAvailableLeft": 0,
+          "screenAvailableTop": 0,
+          "visualViewportWidth": 400,
+          "visualViewportHeight": 440,
+          "visualViewportScale": 1
+        },
+        "checks": {
+          "actualPopup": true,
+          "viewportMatchesCandidate": true,
+          "footerInsideActualViewport": true,
+          "internalVerticalScroll": true,
+          "noHorizontalOverflow": true,
+          "unchangedOuterFrame": true,
+          "unchangedFooter": true
+        }
+      }
+    ]
+  },
+  "finalArtifact": {
+    "source": "artifacts/ProductSpy-1.0.0-rc.2-windows-x64/extension",
+    "extensionRuntimeFileCount": 11,
+    "extensionTreeSha256": "ef83a6f14be2b954d3980fa8d82d8bf9116f66fc0e1c05071573027ffeb92d3b",
+    "equalsFourDprInput": true,
+    "capturedAt": "2026-10-15T08:19:02.628Z",
+    "reportSha256": "7a2730ae39f9a640624f218f844e175c32b729fa8f3ffa411e7618f8c5241179",
+    "actualAction": {
+      "kind": "actual-action-popup",
+      "uiStateAtCapture": "first-use-consent",
+      "targetType": "page",
+      "view": {
+        "popup": true,
+        "tab": false
+      },
+      "viewportCssPixels": {
+        "width": 400,
+        "height": 420
+      },
+      "outerWindowCssPixels": {
+        "width": 414,
+        "height": 434
+      },
+      "dpr": 1,
+      "screen": {
+        "screenWidth": 1920,
+        "screenHeight": 1080,
+        "screenAvailableWidth": 1920,
+        "screenAvailableHeight": 1032,
+        "screenAvailableLeft": 0,
+        "screenAvailableTop": 0
+      },
+      "roots": {
+        "html": {
+          "rectCssPixels": [0, 0, 400, 420],
+          "clientCssPixels": [400, 420],
+          "scrollCssPixels": [400, 420]
+        },
+        "body": {
+          "rectCssPixels": [0, 0, 400, 420],
+          "clientCssPixels": [400, 420],
+          "scrollCssPixels": [400, 420]
+        },
+        "#root": {
+          "rectCssPixels": [0, 0, 400, 420],
+          "clientCssPixels": [400, 420],
+          "scrollCssPixels": [400, 420]
+        },
+        ".popup-shell": {
+          "rectCssPixels": [0, 0, 400, 420],
+          "clientCssPixels": [400, 420],
+          "scrollCssPixels": [400, 420]
+        },
+        ".popup-header": {
+          "rectCssPixels": [0, 0, 400, 71.5],
+          "clientCssPixels": [400, 72],
+          "scrollCssPixels": [400, 72]
+        },
+        ".popup-content": {
+          "rectCssPixels": [0, 71.5, 400, 289.5],
+          "clientCssPixels": [385, 290],
+          "scrollCssPixels": [385, 420]
+        },
+        ".popup-footer": {
+          "rectCssPixels": [0, 361, 400, 59],
+          "clientCssPixels": [400, 58],
+          "scrollCssPixels": [400, 58]
+        }
+      },
+      "bodyComputedSizing": {
+        "width": "400px",
+        "height": "420px",
+        "minWidth": "400px",
+        "maxWidth": "none",
+        "minHeight": "0px",
+        "maxHeight": "none"
+      },
+      "cssLoaded": true,
+      "reactMounted": true,
+      "headerVisuallyContained": true
+    },
+    "syntheticScroll": {
+      "before": 0,
+      "after": 200,
+      "scrollHeight": 3989,
+      "clientHeight": 290
+    },
+    "assertions": {
+      "total": 41,
+      "passed": 41,
+      "failed": []
+    },
+    "observedRuntimeExceptions": 0
+  },
+  "simulatedDprRuns": [
+    {
+      "requested": 1,
+      "headed": true,
+      "actualAction": {
+        "kind": "actual-action-popup",
+        "uiStateAtCapture": "initializing-consent",
+        "targetType": "page",
+        "view": {
+          "popup": true,
+          "tab": false
+        },
+        "viewportCssPixels": {
+          "width": 400,
+          "height": 420
+        },
+        "outerWindowCssPixels": {
+          "width": 414,
+          "height": 434
+        },
+        "dpr": 1,
+        "screen": {
+          "screenWidth": 1920,
+          "screenHeight": 1080,
+          "screenAvailableWidth": 1920,
+          "screenAvailableHeight": 1032,
+          "screenAvailableLeft": 0,
+          "screenAvailableTop": 0
+        },
+        "roots": {
+          "html": {
+            "rectCssPixels": [0, 0, 400, 420],
+            "clientCssPixels": [400, 420],
+            "scrollCssPixels": [400, 420]
+          },
+          "body": {
+            "rectCssPixels": [0, 0, 400, 420],
+            "clientCssPixels": [400, 420],
+            "scrollCssPixels": [400, 420]
+          },
+          "#root": {
+            "rectCssPixels": [0, 0, 400, 420],
+            "clientCssPixels": [400, 420],
+            "scrollCssPixels": [400, 420]
+          },
+          ".popup-shell": {
+            "rectCssPixels": [0, 0, 400, 420],
+            "clientCssPixels": [400, 420],
+            "scrollCssPixels": [400, 420]
+          },
+          ".popup-header": {
+            "rectCssPixels": [0, 0, 400, 71.5],
+            "clientCssPixels": [400, 72],
+            "scrollCssPixels": [400, 72]
+          },
+          ".popup-content": {
+            "rectCssPixels": [0, 71.5, 400, 289.5],
+            "clientCssPixels": [385, 290],
+            "scrollCssPixels": [385, 290]
+          },
+          ".popup-footer": {
+            "rectCssPixels": [0, 361, 400, 59],
+            "clientCssPixels": [400, 58],
+            "scrollCssPixels": [400, 58]
+          }
+        },
+        "bodyComputedSizing": {
+          "width": "400px",
+          "height": "420px",
+          "minWidth": "400px",
+          "maxWidth": "none",
+          "minHeight": "0px",
+          "maxHeight": "none"
+        },
+        "cssLoaded": true,
+        "reactMounted": true,
+        "headerVisuallyContained": true
+      },
+      "totalAssertions": 41,
+      "failedAssertions": [],
+      "syntheticScroll": {
+        "before": 0,
+        "after": 200,
+        "scrollHeight": 3989,
+        "clientHeight": 290
+      },
+      "reportSha256": "06bc04aa617399ffe344984ff973be909a5c2b70fe8a67246e82085317be872d"
+    },
+    {
+      "requested": 1.25,
+      "headed": true,
+      "actualAction": {
+        "kind": "actual-action-popup",
+        "uiStateAtCapture": "first-use-consent",
+        "targetType": "page",
+        "view": {
+          "popup": true,
+          "tab": false
+        },
+        "viewportCssPixels": {
+          "width": 400,
+          "height": 420
+        },
+        "outerWindowCssPixels": {
+          "width": 416,
+          "height": 435
+        },
+        "dpr": 1.25,
+        "screen": {
+          "screenWidth": 1228,
+          "screenHeight": 691,
+          "screenAvailableWidth": 1536,
+          "screenAvailableHeight": 826,
+          "screenAvailableLeft": 0,
+          "screenAvailableTop": 0
+        },
+        "roots": {
+          "html": {
+            "rectCssPixels": [0, 0, 400, 420],
+            "clientCssPixels": [400, 420],
+            "scrollCssPixels": [400, 420]
+          },
+          "body": {
+            "rectCssPixels": [0, 0, 400, 420],
+            "clientCssPixels": [400, 420],
+            "scrollCssPixels": [400, 420]
+          },
+          "#root": {
+            "rectCssPixels": [0, 0, 400, 420],
+            "clientCssPixels": [400, 420],
+            "scrollCssPixels": [400, 420]
+          },
+          ".popup-shell": {
+            "rectCssPixels": [0, 0, 400, 420],
+            "clientCssPixels": [400, 420],
+            "scrollCssPixels": [400, 420]
+          },
+          ".popup-header": {
+            "rectCssPixels": [0, 0, 400, 71.5],
+            "clientCssPixels": [400, 72],
+            "scrollCssPixels": [400, 72]
+          },
+          ".popup-content": {
+            "rectCssPixels": [0, 71.5, 400, 289.70001220703125],
+            "clientCssPixels": [385, 290],
+            "scrollCssPixels": [385, 420]
+          },
+          ".popup-footer": {
+            "rectCssPixels": [0, 361.20001220703125, 400, 58.79999923706055],
+            "clientCssPixels": [400, 58],
+            "scrollCssPixels": [400, 58]
+          }
+        },
+        "bodyComputedSizing": {
+          "width": "400px",
+          "height": "420px",
+          "minWidth": "400px",
+          "maxWidth": "none",
+          "minHeight": "0px",
+          "maxHeight": "none"
+        },
+        "cssLoaded": true,
+        "reactMounted": true,
+        "headerVisuallyContained": true
+      },
+      "totalAssertions": 41,
+      "failedAssertions": [],
+      "syntheticScroll": {
+        "before": 0,
+        "after": 200,
+        "scrollHeight": 3988,
+        "clientHeight": 290
+      },
+      "reportSha256": "7d8166ff322d7063ce7e31c7f1d27d9ea871d616b70702dea7a133dc2296ccb5"
+    },
+    {
+      "requested": 1.5,
+      "headed": true,
+      "actualAction": {
+        "kind": "actual-action-popup",
+        "uiStateAtCapture": "first-use-consent",
+        "targetType": "page",
+        "view": {
+          "popup": true,
+          "tab": false
+        },
+        "viewportCssPixels": {
+          "width": 400,
+          "height": 420
+        },
+        "outerWindowCssPixels": {
+          "width": 414,
+          "height": 434
+        },
+        "dpr": 1.5,
+        "screen": {
+          "screenWidth": 853,
+          "screenHeight": 480,
+          "screenAvailableWidth": 1280,
+          "screenAvailableHeight": 688,
+          "screenAvailableLeft": 0,
+          "screenAvailableTop": 0
+        },
+        "roots": {
+          "html": {
+            "rectCssPixels": [0, 0, 400, 420],
+            "clientCssPixels": [400, 420],
+            "scrollCssPixels": [400, 420]
+          },
+          "body": {
+            "rectCssPixels": [0, 0, 400, 420],
+            "clientCssPixels": [400, 420],
+            "scrollCssPixels": [400, 420]
+          },
+          "#root": {
+            "rectCssPixels": [0, 0, 400, 420],
+            "clientCssPixels": [400, 420],
+            "scrollCssPixels": [400, 420]
+          },
+          ".popup-shell": {
+            "rectCssPixels": [0, 0, 400, 420],
+            "clientCssPixels": [400, 420],
+            "scrollCssPixels": [400, 420]
+          },
+          ".popup-header": {
+            "rectCssPixels": [0, 0, 400, 71.5],
+            "clientCssPixels": [400, 72],
+            "scrollCssPixels": [400, 72]
+          },
+          ".popup-content": {
+            "rectCssPixels": [0, 71.5, 400, 289.8333435058594],
+            "clientCssPixels": [385, 290],
+            "scrollCssPixels": [385, 419]
+          },
+          ".popup-footer": {
+            "rectCssPixels": [0, 361.3333435058594, 400, 58.66666793823242],
+            "clientCssPixels": [400, 58],
+            "scrollCssPixels": [400, 58]
+          }
+        },
+        "bodyComputedSizing": {
+          "width": "400px",
+          "height": "420px",
+          "minWidth": "400px",
+          "maxWidth": "none",
+          "minHeight": "0px",
+          "maxHeight": "none"
+        },
+        "cssLoaded": true,
+        "reactMounted": true,
+        "headerVisuallyContained": true
+      },
+      "totalAssertions": 41,
+      "failedAssertions": [],
+      "syntheticScroll": {
+        "before": 0,
+        "after": 200,
+        "scrollHeight": 3988,
+        "clientHeight": 290
+      },
+      "reportSha256": "46d3ef2bec5bd2416f597da523d6f1735f04a8b7932354cba404d6f7b9ef08c2"
+    },
+    {
+      "requested": 2,
+      "headed": true,
+      "actualAction": {
+        "kind": "actual-action-popup",
+        "uiStateAtCapture": "first-use-consent",
+        "targetType": "page",
+        "view": {
+          "popup": true,
+          "tab": false
+        },
+        "viewportCssPixels": {
+          "width": 400,
+          "height": 420
+        },
+        "outerWindowCssPixels": {
+          "width": 414,
+          "height": 434
+        },
+        "dpr": 2,
+        "screen": {
+          "screenWidth": 480,
+          "screenHeight": 270,
+          "screenAvailableWidth": 960,
+          "screenAvailableHeight": 516,
+          "screenAvailableLeft": 0,
+          "screenAvailableTop": 0
+        },
+        "roots": {
+          "html": {
+            "rectCssPixels": [0, 0, 400, 420],
+            "clientCssPixels": [400, 420],
+            "scrollCssPixels": [400, 420]
+          },
+          "body": {
+            "rectCssPixels": [0, 0, 400, 420],
+            "clientCssPixels": [400, 420],
+            "scrollCssPixels": [400, 420]
+          },
+          "#root": {
+            "rectCssPixels": [0, 0, 400, 420],
+            "clientCssPixels": [400, 420],
+            "scrollCssPixels": [400, 420]
+          },
+          ".popup-shell": {
+            "rectCssPixels": [0, 0, 400, 420],
+            "clientCssPixels": [400, 420],
+            "scrollCssPixels": [400, 420]
+          },
+          ".popup-header": {
+            "rectCssPixels": [0, 0, 400, 71.5],
+            "clientCssPixels": [400, 72],
+            "scrollCssPixels": [400, 72]
+          },
+          ".popup-content": {
+            "rectCssPixels": [0, 71.5, 400, 289.5],
+            "clientCssPixels": [385, 290],
+            "scrollCssPixels": [385, 420]
+          },
+          ".popup-footer": {
+            "rectCssPixels": [0, 361, 400, 59],
+            "clientCssPixels": [400, 58],
+            "scrollCssPixels": [400, 58]
+          }
+        },
+        "bodyComputedSizing": {
+          "width": "400px",
+          "height": "420px",
+          "minWidth": "400px",
+          "maxWidth": "none",
+          "minHeight": "0px",
+          "maxHeight": "none"
+        },
+        "cssLoaded": true,
+        "reactMounted": true,
+        "headerVisuallyContained": true
+      },
+      "totalAssertions": 41,
+      "failedAssertions": [],
+      "syntheticScroll": {
+        "before": 0,
+        "after": 200,
+        "scrollHeight": 3989,
+        "clientHeight": 290
+      },
+      "reportSha256": "934196994eda27480f6ecf9b7f2cdf040043b7502055197eed4e2a9d293a7277"
+    }
+  ],
+  "narrowE2e": {
+    "tests": 1,
+    "passed": 1,
+    "failed": 0,
+    "file": "e2e/rc2-popup.spec.ts",
+    "method": "Isolated configuration without webServer or port 3000. Actual action target, native default headless screen.",
+    "evidenceReportSha256": "6bf73da8aaf37e7d86a42e223d398bdc449a10c6bb535ac1a2c12d111f42e0b6"
+  },
+  "privacy": {
+    "screenshots": "Only isolated first-use extension UI and labelled synthetic layout text. No user browser session, pairing code/token, Key, private product, or original Amazon page is included.",
+    "rawProfilesAndLogs": "Remain under Git-ignored .test-data/rc2-hotfix; not copied into public docs.",
+    "paidAiCalls": 0,
+    "libraryWrites": 0,
+    "amazonNavigations": 0
+  },
+  "screenshots": [
+    {
+      "file": "docs/screenshots/rc2-popup/rc1-ordinary-tab.png",
+      "bytes": 37488,
+      "sha256": "e0ff3ca0c99b68e94c7218b4f2928244a31cae960da64076e6cbaf9fbb91b991",
+      "pixelWidth": 1280,
+      "pixelHeight": 800,
+      "capturedAt": "2026-10-15T08:03:12.489Z",
+      "browserDistribution": "Chrome for Testing",
+      "browserVersion": "156.0.8078.4",
+      "headless": false,
+      "simulatedDpr": 1,
+      "actualWindowsDpiAcceptance": false,
+      "actualActionPopup": false,
+      "uiStateAtCapture": "first-use-consent",
+      "sourceReportSha256": "d654657c5563beed5468d5b66f9a3628b33bcbaa66dacf8450554efb8df17492",
+      "sourceMeasurement": "ordinary-popup-tab",
+      "extensionTreeSha256": null,
+      "note": "Ordinary extension document tab, not the Chrome action popup."
+    },
+    {
+      "file": "docs/screenshots/rc2-popup/rc1-action-collapsed.png",
+      "bytes": 118,
+      "sha256": "457f3d027bb521e7d50620d99b114b96c8b93d4a0dfe1ae54df6957453e87206",
+      "pixelWidth": 25,
+      "pixelHeight": 25,
+      "capturedAt": "2026-10-15T08:03:13.541Z",
+      "browserDistribution": "Chrome for Testing",
+      "browserVersion": "156.0.8078.4",
+      "headless": false,
+      "simulatedDpr": 1,
+      "actualWindowsDpiAcceptance": false,
+      "actualActionPopup": true,
+      "uiStateAtCapture": "first-use-consent",
+      "sourceReportSha256": "d654657c5563beed5468d5b66f9a3628b33bcbaa66dacf8450554efb8df17492",
+      "sourceMeasurement": "actual-action-popup",
+      "extensionTreeSha256": null,
+      "note": "Frozen rc.1 actual action popup; 25x25 CSS-pixel viewport."
+    },
+    {
+      "file": "docs/screenshots/rc2-popup/cause-baseline.png",
+      "bytes": 118,
+      "sha256": "457f3d027bb521e7d50620d99b114b96c8b93d4a0dfe1ae54df6957453e87206",
+      "pixelWidth": 25,
+      "pixelHeight": 25,
+      "capturedAt": "2026-10-15T08:03:14.696Z",
+      "browserDistribution": "Chrome for Testing",
+      "browserVersion": "156.0.8078.4",
+      "headless": false,
+      "simulatedDpr": 1,
+      "actualWindowsDpiAcceptance": false,
+      "actualActionPopup": true,
+      "uiStateAtCapture": "first-use-consent",
+      "sourceReportSha256": "d654657c5563beed5468d5b66f9a3628b33bcbaa66dacf8450554efb8df17492",
+      "sourceMeasurement": "matrix-baseline-after",
+      "extensionTreeSha256": null,
+      "note": "Controlled CSS intervention in an independent rc.1 action document: unchanged baseline"
+    },
+    {
+      "file": "docs/screenshots/rc2-popup/cause-width-only.png",
+      "bytes": 627,
+      "sha256": "42096bcdc82ba5be45b34728ad9cebe0256807cc4f15c457cd6b684eb97fc94b",
+      "pixelWidth": 400,
+      "pixelHeight": 25,
+      "capturedAt": "2026-10-15T08:03:15.662Z",
+      "browserDistribution": "Chrome for Testing",
+      "browserVersion": "156.0.8078.4",
+      "headless": false,
+      "simulatedDpr": 1,
+      "actualWindowsDpiAcceptance": false,
+      "actualActionPopup": true,
+      "uiStateAtCapture": "first-use-consent",
+      "sourceReportSha256": "d654657c5563beed5468d5b66f9a3628b33bcbaa66dacf8450554efb8df17492",
+      "sourceMeasurement": "matrix-width-only-after",
+      "extensionTreeSha256": null,
+      "note": "Controlled CSS intervention in an independent rc.1 action document: body { max-width: none !important; }"
+    },
+    {
+      "file": "docs/screenshots/rc2-popup/cause-height-only.png",
+      "bytes": 1370,
+      "sha256": "b09b42bb15cd5c0b3183e334dc3fd87e697da615916668c9c96c967505bd8dbf",
+      "pixelWidth": 25,
+      "pixelHeight": 600,
+      "capturedAt": "2026-10-15T08:03:16.618Z",
+      "browserDistribution": "Chrome for Testing",
+      "browserVersion": "156.0.8078.4",
+      "headless": false,
+      "simulatedDpr": 1,
+      "actualWindowsDpiAcceptance": false,
+      "actualActionPopup": true,
+      "uiStateAtCapture": "first-use-consent",
+      "sourceReportSha256": "d654657c5563beed5468d5b66f9a3628b33bcbaa66dacf8450554efb8df17492",
+      "sourceMeasurement": "matrix-height-only-after",
+      "extensionTreeSha256": null,
+      "note": "Controlled CSS intervention in an independent rc.1 action document: body { height: 600px !important; }"
+    },
+    {
+      "file": "docs/screenshots/rc2-popup/cause-both-with-explicit-roots.png",
+      "bytes": 30340,
+      "sha256": "0bcf3166b447525ebf3db30d50addf61e09bf598170ccf6671fa54f6a4919df4",
+      "pixelWidth": 400,
+      "pixelHeight": 600,
+      "capturedAt": "2026-10-15T08:03:17.573Z",
+      "browserDistribution": "Chrome for Testing",
+      "browserVersion": "156.0.8078.4",
+      "headless": false,
+      "simulatedDpr": 1,
+      "actualWindowsDpiAcceptance": false,
+      "actualActionPopup": true,
+      "uiStateAtCapture": "first-use-consent",
+      "sourceReportSha256": "d654657c5563beed5468d5b66f9a3628b33bcbaa66dacf8450554efb8df17492",
+      "sourceMeasurement": "matrix-both-with-explicit-roots-after",
+      "extensionTreeSha256": null,
+      "note": "Controlled CSS intervention in an independent rc.1 action document: html, body, #root, .popup-shell { width: 400px !important; min-width: 400px !important; } body { max-width: none !important; height: 600px !important; }"
+    },
+    {
+      "file": "docs/screenshots/rc2-popup/trial-600-headless-clipped.png",
+      "bytes": 28344,
+      "sha256": "dd9488bd0b00553d533bacfd25e1677a9f30571967f28ee2fe327feed01d4ed2",
+      "pixelWidth": 415,
+      "pixelHeight": 510,
+      "capturedAt": "2026-10-15T08:06:55.924Z",
+      "browserDistribution": "Chrome for Testing",
+      "browserVersion": "156.0.8078.4",
+      "headless": true,
+      "simulatedDpr": 1,
+      "actualWindowsDpiAcceptance": false,
+      "actualActionPopup": true,
+      "uiStateAtCapture": "first-use-consent",
+      "sourceReportSha256": "c36ed622fb71051cd660d7577af00a90307a60fd469a610952bf191d027327f4",
+      "sourceMeasurement": "actual-action-popup",
+      "extensionTreeSha256": null,
+      "note": "Failed 600-pixel design trial: native headless screen clips the actual popup viewport; retained failure."
+    },
+    {
+      "file": "docs/screenshots/rc2-popup/trial-480-dpr2.png",
+      "bytes": 109711,
+      "sha256": "5321c5735cf58bb7b5bdb9c5b294baab8e936425da26aef668d2d484edcea02a",
+      "pixelWidth": 830,
+      "pixelHeight": 852,
+      "capturedAt": "2026-10-15T08:10:25.996Z",
+      "browserDistribution": "Chrome for Testing",
+      "browserVersion": "156.0.8078.4",
+      "headless": false,
+      "simulatedDpr": 2,
+      "actualWindowsDpiAcceptance": false,
+      "actualActionPopup": true,
+      "uiStateAtCapture": "first-use-consent",
+      "sourceReportSha256": "ea82238e5da900863be55350dc5ec7afef479592f0587164c7aace0dc76ee362",
+      "sourceMeasurement": "height-480-resized",
+      "extensionTreeSha256": null,
+      "note": "Explicit height 480 CSS-pixel intervention under simulated DPR 2; 480 and 440 remain clipped, 420 fits."
+    },
+    {
+      "file": "docs/screenshots/rc2-popup/trial-440-dpr2.png",
+      "bytes": 113978,
+      "sha256": "aeb4c65f869bd00caf0c3c5b7809df47fa61c483d1af035ecdf5e6e85ec28752",
+      "pixelWidth": 830,
+      "pixelHeight": 852,
+      "capturedAt": "2026-10-15T08:10:27.409Z",
+      "browserDistribution": "Chrome for Testing",
+      "browserVersion": "156.0.8078.4",
+      "headless": false,
+      "simulatedDpr": 2,
+      "actualWindowsDpiAcceptance": false,
+      "actualActionPopup": true,
+      "uiStateAtCapture": "first-use-consent",
+      "sourceReportSha256": "ea82238e5da900863be55350dc5ec7afef479592f0587164c7aace0dc76ee362",
+      "sourceMeasurement": "height-440-resized",
+      "extensionTreeSha256": null,
+      "note": "Explicit height 440 CSS-pixel intervention under simulated DPR 2; 480 and 440 remain clipped, 420 fits."
+    },
+    {
+      "file": "docs/screenshots/rc2-popup/trial-420-dpr2.png",
+      "bytes": 102528,
+      "sha256": "4605174ccf38e8a2c1648f2698604ac85e270181aaaa92943d27cf8c136dbd0a",
+      "pixelWidth": 800,
+      "pixelHeight": 840,
+      "capturedAt": "2026-10-15T08:10:28.644Z",
+      "browserDistribution": "Chrome for Testing",
+      "browserVersion": "156.0.8078.4",
+      "headless": false,
+      "simulatedDpr": 2,
+      "actualWindowsDpiAcceptance": false,
+      "actualActionPopup": true,
+      "uiStateAtCapture": "first-use-consent",
+      "sourceReportSha256": "ea82238e5da900863be55350dc5ec7afef479592f0587164c7aace0dc76ee362",
+      "sourceMeasurement": "height-420-resized",
+      "extensionTreeSha256": null,
+      "note": "Explicit height 420 CSS-pixel intervention under simulated DPR 2; 480 and 440 remain clipped, 420 fits."
+    },
+    {
+      "file": "docs/screenshots/rc2-popup/rc2-final-artifact-action.png",
+      "bytes": 26027,
+      "sha256": "18a1386f4f7a0fd02c5ec3d652951ca852a0c322424a2463066e932a86f30026",
+      "pixelWidth": 400,
+      "pixelHeight": 420,
+      "capturedAt": "2026-10-15T08:19:08.652Z",
+      "browserDistribution": "Chrome for Testing",
+      "browserVersion": "156.0.8078.4",
+      "headless": false,
+      "simulatedDpr": 1,
+      "actualWindowsDpiAcceptance": false,
+      "actualActionPopup": true,
+      "uiStateAtCapture": "first-use-consent",
+      "sourceReportSha256": "7a2730ae39f9a640624f218f844e175c32b729fa8f3ffa411e7618f8c5241179",
+      "sourceMeasurement": "actual-action-popup",
+      "extensionTreeSha256": "ef83a6f14be2b954d3980fa8d82d8bf9116f66fc0e1c05071573027ffeb92d3b",
+      "note": "Actual action popup from the final rc.2 portable extension, with no synthetic content."
+    },
+    {
+      "file": "docs/screenshots/rc2-popup/rc2-final-artifact-synthetic-scrolled.png",
+      "bytes": 24354,
+      "sha256": "b59c090a3bb79289f312e49667c50652545f3c0d454d8d47bf98e573de661031",
+      "pixelWidth": 400,
+      "pixelHeight": 420,
+      "capturedAt": "2026-10-15T08:21:26.056Z",
+      "browserDistribution": "Chrome for Testing",
+      "browserVersion": "156.0.8078.4",
+      "headless": false,
+      "simulatedDpr": 1,
+      "actualWindowsDpiAcceptance": false,
+      "actualActionPopup": true,
+      "uiStateAtCapture": "first-use-consent",
+      "sourceReportSha256": "d8c9f4cc53a669712baa0aa9f3eec6522ff06659ac0072cad4265a86944f54c9",
+      "sourceMeasurement": "actual-action-popup-synthetic-scrolled",
+      "extensionTreeSha256": "ef83a6f14be2b954d3980fa8d82d8bf9116f66fc0e1c05071573027ffeb92d3b",
+      "note": "Explicitly synthetic long text and paragraphs appended for layout QA; screenshot after the existing internal scrollTop=200 action. A temporary ignored QA collector adds only this read-only post-scroll screenshot."
+    },
+    {
+      "file": "docs/screenshots/rc2-popup/rc2-simulated-dpr-1.png",
+      "bytes": 8095,
+      "sha256": "86b4df909bc0f8cdabfe84c83825ac15c64d6b47e1d92089273f88a9cf4c9a68",
+      "pixelWidth": 400,
+      "pixelHeight": 420,
+      "capturedAt": "2026-10-15T08:13:46.358Z",
+      "browserDistribution": "Chrome for Testing",
+      "browserVersion": "156.0.8078.4",
+      "headless": false,
+      "simulatedDpr": 1,
+      "actualWindowsDpiAcceptance": false,
+      "actualActionPopup": true,
+      "uiStateAtCapture": "initializing-consent",
+      "sourceReportSha256": "06bc04aa617399ffe344984ff973be909a5c2b70fe8a67246e82085317be872d",
+      "sourceMeasurement": "actual-action-popup",
+      "extensionTreeSha256": "ef83a6f14be2b954d3980fa8d82d8bf9116f66fc0e1c05071573027ffeb92d3b",
+      "note": "Actual action popup at a simulated browser scale factor, not a Windows display-settings acceptance test."
+    },
+    {
+      "file": "docs/screenshots/rc2-popup/rc2-simulated-dpr-1.25.png",
+      "bytes": 36107,
+      "sha256": "9a213f1faaa42a9e6fde50d10ddfff0277d032c5e960a4ee426d51230ac6c7b1",
+      "pixelWidth": 500,
+      "pixelHeight": 525,
+      "capturedAt": "2026-10-15T08:13:58.381Z",
+      "browserDistribution": "Chrome for Testing",
+      "browserVersion": "156.0.8078.4",
+      "headless": false,
+      "simulatedDpr": 1.25,
+      "actualWindowsDpiAcceptance": false,
+      "actualActionPopup": true,
+      "uiStateAtCapture": "first-use-consent",
+      "sourceReportSha256": "7d8166ff322d7063ce7e31c7f1d27d9ea871d616b70702dea7a133dc2296ccb5",
+      "sourceMeasurement": "actual-action-popup",
+      "extensionTreeSha256": "ef83a6f14be2b954d3980fa8d82d8bf9116f66fc0e1c05071573027ffeb92d3b",
+      "note": "Actual action popup at a simulated browser scale factor, not a Windows display-settings acceptance test."
+    },
+    {
+      "file": "docs/screenshots/rc2-popup/rc2-simulated-dpr-1.5.png",
+      "bytes": 48668,
+      "sha256": "8ecf41c27d9548fa1d3567b121287117f1e52255d3801950746329f1b059c9eb",
+      "pixelWidth": 600,
+      "pixelHeight": 630,
+      "capturedAt": "2026-10-15T08:14:10.884Z",
+      "browserDistribution": "Chrome for Testing",
+      "browserVersion": "156.0.8078.4",
+      "headless": false,
+      "simulatedDpr": 1.5,
+      "actualWindowsDpiAcceptance": false,
+      "actualActionPopup": true,
+      "uiStateAtCapture": "first-use-consent",
+      "sourceReportSha256": "46d3ef2bec5bd2416f597da523d6f1735f04a8b7932354cba404d6f7b9ef08c2",
+      "sourceMeasurement": "actual-action-popup",
+      "extensionTreeSha256": "ef83a6f14be2b954d3980fa8d82d8bf9116f66fc0e1c05071573027ffeb92d3b",
+      "note": "Actual action popup at a simulated browser scale factor, not a Windows display-settings acceptance test."
+    },
+    {
+      "file": "docs/screenshots/rc2-popup/rc2-simulated-dpr-2.png",
+      "bytes": 102528,
+      "sha256": "4605174ccf38e8a2c1648f2698604ac85e270181aaaa92943d27cf8c136dbd0a",
+      "pixelWidth": 800,
+      "pixelHeight": 840,
+      "capturedAt": "2026-10-15T08:14:23.803Z",
+      "browserDistribution": "Chrome for Testing",
+      "browserVersion": "156.0.8078.4",
+      "headless": false,
+      "simulatedDpr": 2,
+      "actualWindowsDpiAcceptance": false,
+      "actualActionPopup": true,
+      "uiStateAtCapture": "first-use-consent",
+      "sourceReportSha256": "934196994eda27480f6ecf9b7f2cdf040043b7502055197eed4e2a9d293a7277",
+      "sourceMeasurement": "actual-action-popup",
+      "extensionTreeSha256": "ef83a6f14be2b954d3980fa8d82d8bf9116f66fc0e1c05071573027ffeb92d3b",
+      "note": "Actual action popup at a simulated browser scale factor, not a Windows display-settings acceptance test."
+    }
+  ],
+  "conclusion": {
+    "cftActionLayoutHotfix": "passed",
+    "formalStableChromeAndActualWindowsDpi": "pending",
+    "historical55x58ExactContext": "pending",
+    "thisReportDoesNotAuthorizePublicRelease": true
+  }
+}

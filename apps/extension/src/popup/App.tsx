@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   AlertCircle,
   ArrowUpRight,
@@ -23,6 +23,7 @@ type CaptureState = 'loading' | 'captured' | 'unsupported' | 'error';
 type Action = 'consent' | 'save' | 'analysis' | 'sync' | 'pair';
 
 export function App() {
+  const lifecycle = useRef<AbortController | undefined>(undefined);
   const [state, setState] = useState<CaptureState>('loading');
   const [draft, setDraft] = useState<ProductDraft>();
   const [savedProduct, setSavedProduct] = useState<Product>();
@@ -42,12 +43,15 @@ export function App() {
   const busy = action !== undefined;
 
   const checkWorkspace = useCallback(async () => {
+    const signal = lifecycle.current?.signal;
+    if (!signal || signal.aborted) return;
     try {
       const response = await fetch(`${WORKSPACE_URL}/api/status`, {
         cache: 'no-store',
         signal: AbortSignal.timeout(3000),
       });
       const data: unknown = await response.json();
+      if (signal.aborted) return;
       if (
         !response.ok ||
         !data ||
@@ -64,6 +68,7 @@ export function App() {
       setWorkspace('online');
       setAiMode(data.data.mode === 'mock' ? 'mock' : 'real');
     } catch (failure: unknown) {
+      if (signal.aborted) return;
       console.warn('[ProductSpy] Workspace unavailable', failure);
       setWorkspace('offline');
       setAiMode(undefined);
@@ -71,17 +76,24 @@ export function App() {
   }, []);
 
   const refreshPending = useCallback(async () => {
+    const signal = lifecycle.current?.signal;
+    if (!signal || signal.aborted) return;
     try {
       const result = await extensionRequest({ type: 'PRODUCTSPY_PENDING_COUNT' });
+      if (signal.aborted) return;
       if (result.status === 'pending-count') setPendingCount(result.count);
       const bridge = await extensionRequest({ type: 'PRODUCTSPY_BRIDGE_STATE' });
+      if (signal.aborted) return;
       if (bridge.status === 'bridge-state') setPaired(bridge.paired);
     } catch (failure: unknown) {
+      if (signal.aborted) return;
       console.warn('[ProductSpy] Pending count unavailable', failure);
     }
   }, []);
 
   const capture = useCallback(async () => {
+    const signal = lifecycle.current?.signal;
+    if (!signal || signal.aborted) return;
     setState('loading');
     setError('');
     setCaptureError('');
@@ -91,6 +103,7 @@ export function App() {
     setImageFailed(false);
     try {
       const result = await extensionRequest({ type: 'PRODUCTSPY_CAPTURE' });
+      if (signal.aborted) return;
       if (result.status === 'captured') {
         setDraft(result.draft);
         setState('captured');
@@ -102,29 +115,30 @@ export function App() {
         setState('error');
       }
     } catch (failure: unknown) {
+      if (signal.aborted) return;
       setCaptureError(errorMessage(failure, popupCopy.capture.connectionError));
       setState('error');
     }
   }, []);
 
   useEffect(() => {
-    let active = true;
-    void hasCaptureConsent()
+    const controller = new AbortController();
+    lifecycle.current = controller;
+    void hasCaptureConsent(controller.signal)
       .then((accepted) => {
-        if (active) setConsent(accepted ? 'accepted' : 'required');
+        if (!controller.signal.aborted) setConsent(accepted ? 'accepted' : 'required');
       })
       .catch((failure: unknown) => {
+        if (controller.signal.aborted) return;
         console.error('[ProductSpy] Consent settings unavailable', failure);
-        if (active) {
-          setConsent('required');
-          setConsentError(popupCopy.consent.readError);
-        }
+        setConsent('required');
+        setConsentError(popupCopy.consent.readError);
       });
     void refreshPending();
     void checkWorkspace();
     const timer = window.setInterval(() => void checkWorkspace(), 8000);
     return () => {
-      active = false;
+      controller.abort();
       window.clearInterval(timer);
     };
   }, [refreshPending, checkWorkspace]);
@@ -134,16 +148,20 @@ export function App() {
   }, [consent, capture]);
 
   async function acceptCapture() {
+    const signal = lifecycle.current?.signal;
+    if (!signal || signal.aborted) return;
     setAction('consent');
     setConsentError('');
     try {
-      await rememberCaptureConsent();
+      await rememberCaptureConsent(signal);
+      if (signal.aborted) return;
       setConsent('accepted');
     } catch (failure: unknown) {
+      if (signal.aborted) return;
       console.error('[ProductSpy] Consent could not be saved', failure);
       setConsentError(popupCopy.consent.saveError);
     } finally {
-      setAction(undefined);
+      if (!signal.aborted) setAction(undefined);
     }
   }
 
