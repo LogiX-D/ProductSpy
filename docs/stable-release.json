@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "state": "prepared-not-created",
-  "draftCreated": false,
+  "state": "draft-created-assets-verified",
+  "draftCreated": true,
   "public": false,
   "storeSubmitted": false,
   "preparedAt": "2026-10-15T18:50:59.876Z",
@@ -23,5 +23,88 @@
       "files": 226
     }
   },
-  "oldReleasesUnchanged": true
+  "oldReleasesUnchanged": true,
+  "verifiedAt": "2026-10-15T18:53:56.512Z",
+  "sourceCommit": "43d786fc8bc3e3ce495eaed84b8ab4588e111034",
+  "release": {
+    "id": 414159626,
+    "url": "https://github.com/LogiX-D/ProductSpy/releases/tag/untagged-38aded484f912e7367a9",
+    "tag": "v1.0.0",
+    "target": "43d786fc8bc3e3ce495eaed84b8ab4588e111034",
+    "draft": true,
+    "prerelease": false,
+    "publishedAt": null
+  },
+  "assets": [
+    {
+      "name": "ProductSpy-1.0.0-windows-x64.zip",
+      "bytes": 42506037,
+      "sha256": "b0f3bdf2a2ccdd2b9e10d0970434b6e6c10e77171c4eefd6f9ccb56bfc4e3fa0",
+      "id": 644837664,
+      "state": "uploaded",
+      "remoteDigest": "sha256:b0f3bdf2a2ccdd2b9e10d0970434b6e6c10e77171c4eefd6f9ccb56bfc4e3fa0",
+      "remoteDigestMatches": true
+    },
+    {
+      "name": "ProductSpy-1.0.0-extension.zip",
+      "bytes": 408886,
+      "sha256": "e6e1a24e76f6b3d3d1608901582aff3ce66c549f4a0edb79bf9c09aa370a2e70",
+      "id": 644837642,
+      "state": "uploaded",
+      "remoteDigest": "sha256:e6e1a24e76f6b3d3d1608901582aff3ce66c549f4a0edb79bf9c09aa370a2e70",
+      "remoteDigestMatches": true
+    },
+    {
+      "name": "release-manifest.json",
+      "bytes": 501,
+      "sha256": "30f2479c71e1eb4336043969976a42e76be7d1e2bbe59d960ed585abccd472a6",
+      "id": 644837645,
+      "state": "uploaded",
+      "remoteDigest": "sha256:30f2479c71e1eb4336043969976a42e76be7d1e2bbe59d960ed585abccd472a6",
+      "remoteDigestMatches": true
+    },
+    {
+      "name": "ProductSpy-1.0.0-validation.md",
+      "bytes": 5549,
+      "sha256": "6269f658647e4bfe6afc72ac99fae42290e31d19b6bc8de9dba20113a8d06f86",
+      "id": 644837655,
+      "state": "uploaded",
+      "remoteDigest": "sha256:6269f658647e4bfe6afc72ac99fae42290e31d19b6bc8de9dba20113a8d06f86",
+      "remoteDigestMatches": true
+    },
+    {
+      "name": "ProductSpy-1.0.0-validation.json",
+      "bytes": 29668,
+      "sha256": "cb620d1dffbbb75892fd388921095f4dcebfffaa47adae81daf934d46e102e80",
+      "id": 644837643,
+      "state": "uploaded",
+      "remoteDigest": "sha256:cb620d1dffbbb75892fd388921095f4dcebfffaa47adae81daf934d46e102e80",
+      "remoteDigestMatches": true
+    },
+    {
+      "name": "ProductSpy-1.0.0-user-guide.md",
+      "bytes": 8933,
+      "sha256": "b5311648d8298b838977ee42451f4b12e1e44e64d17b14f7cb8428f9fdb94080",
+      "id": 644837739,
+      "state": "uploaded",
+      "remoteDigest": "sha256:b5311648d8298b838977ee42451f4b12e1e44e64d17b14f7cb8428f9fdb94080",
+      "remoteDigestMatches": true
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "bytes": 577,
+      "sha256": "4f49b3e1582f1efeb03463d69af2026e04912316b407c30aa13c1d4f6c0e0717",
+      "id": 644837746,
+      "state": "uploaded",
+      "remoteDigest": "sha256:4f49b3e1582f1efeb03463d69af2026e04912316b407c30aa13c1d4f6c0e0717",
+      "remoteDigestMatches": true
+    }
+  ],
+  "preservedOldReleaseCount": 11,
+  "preservedOldPackageCount": 22,
+  "nativeChrome": {
+    "issueStatus": "fixed + manually verified",
+    "issueVerificationVersion": "1.0.0-rc.2",
+    "fullStableManualAcceptance": false
+  }
 }

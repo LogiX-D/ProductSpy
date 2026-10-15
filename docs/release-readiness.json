@@ -1,7 +1,7 @@
 {
   "format": "productspy-final-release-readiness",
   "schemaVersion": 2,
-  "generatedAt": "2026-10-15T18:50:59.811Z",
+  "generatedAt": "2026-10-15T18:54:21.756Z",
   "candidateVersion": "1.0.0-rc.2",
   "baselineAtStart": "65cd1f6413553423b048bdf6b95f9ebaa91e0ab2",
   "runtimeSource": "4ffe5400eada244c03179d89ab90e1be3310a7e7",
@@ -16,7 +16,7 @@
     "readyToBuildV100": true,
     "buildAuthority": "Explicit maintainer instruction on 2026-10-16 to prepare 1.0.0 packages and a draft Release from rc.2; not a declaration that all manual acceptance passed.",
     "stableEngineeringAcceptancePassed": true,
-    "stableDraftCreated": false,
+    "stableDraftCreated": true,
     "stableArtifactsGenerated": true,
     "keepCandidate": "1.0.0-rc.2",
     "releasePublished": false,
@@ -506,5 +506,21 @@
     "upgradePaths": 9,
     "upgradeChecks": 216,
     "zipChecks": 4
+  },
+  "stableSourceCommit": "43d786fc8bc3e3ce495eaed84b8ab4588e111034",
+  "stableRelease": {
+    "receipt": "docs/stable-release.json",
+    "id": 414159626,
+    "url": "https://github.com/LogiX-D/ProductSpy/releases/tag/untagged-38aded484f912e7367a9",
+    "tag": "v1.0.0",
+    "target": "43d786fc8bc3e3ce495eaed84b8ab4588e111034",
+    "draft": true,
+    "prerelease": false,
+    "publishedAt": null,
+    "verifiedAssets": 7,
+    "localAndRemoteDigestsMatch": true,
+    "oldReleasesUnchanged": true,
+    "public": false,
+    "storeSubmitted": false
   }
 }
