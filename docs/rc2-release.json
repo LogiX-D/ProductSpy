@@ -1,7 +1,7 @@
 {
   "version": "1.0.0-rc.2",
-  "state": "prepared-not-created",
-  "draftCreated": false,
+  "state": "draft-created-assets-verified",
+  "draftCreated": true,
   "public": false,
   "storeSubmitted": false,
   "preparedAt": "2026-10-15T08:39:48.625Z",
@@ -23,5 +23,105 @@
       "files": 226
     }
   },
-  "oldReleasesUnchanged": true
+  "oldReleasesUnchanged": true,
+  "verifiedAt": "2026-10-15T08:46:12.033Z",
+  "sourceCommit": "4ffe5400eada244c03179d89ab90e1be3310a7e7",
+  "release": {
+    "id": 413590131,
+    "url": "https://github.com/LogiX-D/ProductSpy/releases/tag/untagged-186503f651a947a44cd2",
+    "tag": "v1.0.0-rc.2",
+    "target": "4ffe5400eada244c03179d89ab90e1be3310a7e7",
+    "draft": true,
+    "prerelease": true,
+    "publishedAt": null
+  },
+  "assets": [
+    {
+      "name": "ProductSpy-1.0.0-rc.2-windows-x64.zip",
+      "bytes": 42529449,
+      "sha256": "3165c457d58e8925f027f7dabf678efd37925a80c8e605885e3c51f600af913a",
+      "id": 643263891,
+      "state": "uploaded",
+      "remoteDigest": "sha256:3165c457d58e8925f027f7dabf678efd37925a80c8e605885e3c51f600af913a",
+      "remoteDigestMatches": true
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.2-extension.zip",
+      "bytes": 408888,
+      "sha256": "f422d4a653499ca9b45e7527128d2ad78c89053993f0a2a58d8d9ee656e9b6d8",
+      "id": 643263893,
+      "state": "uploaded",
+      "remoteDigest": "sha256:f422d4a653499ca9b45e7527128d2ad78c89053993f0a2a58d8d9ee656e9b6d8",
+      "remoteDigestMatches": true
+    },
+    {
+      "name": "release-manifest.json",
+      "bytes": 526,
+      "sha256": "58203f19d9878163e1b3e31528f734eb6383a8971e95aece869aafcb34ecfc10",
+      "id": 643263896,
+      "state": "uploaded",
+      "remoteDigest": "sha256:58203f19d9878163e1b3e31528f734eb6383a8971e95aece869aafcb34ecfc10",
+      "remoteDigestMatches": true
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.2-popup-screenshots.zip",
+      "bytes": 642334,
+      "sha256": "94c98aba6b95157877c2dd690d2e7852666744189265ba6fc520ebbdae17db34",
+      "id": 643263889,
+      "state": "uploaded",
+      "remoteDigest": "sha256:94c98aba6b95157877c2dd690d2e7852666744189265ba6fc520ebbdae17db34",
+      "remoteDigestMatches": true
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.2-validation.md",
+      "bytes": 12628,
+      "sha256": "cd312a354529e68146f0adacda98c4d820fbe94200eff2889702c95acb935134",
+      "id": 643263895,
+      "state": "uploaded",
+      "remoteDigest": "sha256:cd312a354529e68146f0adacda98c4d820fbe94200eff2889702c95acb935134",
+      "remoteDigestMatches": true
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.2-validation.json",
+      "bytes": 35741,
+      "sha256": "020e6af8af8c409f973a4e46da5f21f8003cbedf060304e1e5d5b15af7025c24",
+      "id": 643264036,
+      "state": "uploaded",
+      "remoteDigest": "sha256:020e6af8af8c409f973a4e46da5f21f8003cbedf060304e1e5d5b15af7025c24",
+      "remoteDigestMatches": true
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.2-popup-diagnostics.json",
+      "bytes": 59056,
+      "sha256": "184bebb3ce6097235f6a8ce0a74b616d0bf13f4dda36bacf9044d2fa7159e0d4",
+      "id": 643264032,
+      "state": "uploaded",
+      "remoteDigest": "sha256:184bebb3ce6097235f6a8ce0a74b616d0bf13f4dda36bacf9044d2fa7159e0d4",
+      "remoteDigestMatches": true
+    },
+    {
+      "name": "ProductSpy-1.0.0-rc.2-user-guide.md",
+      "bytes": 8805,
+      "sha256": "6b99fe80a421a3c9506172db03cb614c1c4fe80aeb0c85b86b1146d2c1d63ac0",
+      "id": 643264031,
+      "state": "uploaded",
+      "remoteDigest": "sha256:6b99fe80a421a3c9506172db03cb614c1c4fe80aeb0c85b86b1146d2c1d63ac0",
+      "remoteDigestMatches": true
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "bytes": 823,
+      "sha256": "f522e61aae6d4e4c05cd329da1990d26190bf3e739ec265857020e7af21c9f3a",
+      "id": 643264044,
+      "state": "uploaded",
+      "remoteDigest": "sha256:f522e61aae6d4e4c05cd329da1990d26190bf3e739ec265857020e7af21c9f3a",
+      "remoteDigestMatches": true
+    }
+  ],
+  "preservedOldReleaseCount": 10,
+  "preservedOldPackageCount": 20,
+  "nativeChrome": {
+    "status": "fixed, pending native Chrome verification",
+    "manuallyVerified": false
+  }
 }
