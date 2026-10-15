@@ -21,7 +21,9 @@
     "keepCandidate": "1.0.0-rc.2",
     "releasePublished": false,
     "storeSubmitted": false,
-    "paidAiCalls": 0
+    "paidAiCalls": 0,
+    "automatedBackupRestoreVerified": true,
+    "nativeManualBackupRestoreVerified": false
   },
   "currentChecks": {
     "startedAt": "2026-10-14T08:00:14.317Z",
@@ -332,7 +334,9 @@
     "statusChangesThisUpdate": [],
     "passedCountIncreaseThisUpdate": 0,
     "existingResultsPreserved": true,
-    "evidenceScope": "Only C07 is a fully passed detailed case. Six v1.0.0 maintainer smoke statements are tracked separately; ten wider detailed cases are partly covered and remain pending. Do not add the two denominators."
+    "evidenceScope": "Only C07 is a fully passed detailed case. Six v1.0.0 maintainer smoke statements are tracked separately; ten wider detailed cases are partly covered and remain pending. Do not add the two denominators.",
+    "backupRestoreAutomationEvidence": "docs/v1.0.0-backup-restore-validation.md",
+    "backupRestoreStatusChangesThisUpdate": []
   },
   "videoFollowUp": {
     "evidence": "docs/phase21/video-timing-final.json",
@@ -443,7 +447,7 @@
       }
     ]
   },
-  "releaseDecision": "Existing v1.0.0 engineering acceptance passed; maintainer reports six basic real-device smoke cases PASS, dates pending. Detailed checklist remains 1 pass / 52 pending; paid AI quality and backup-file restoration are not inferred. v1.0.0 remains a draft. This documentation update does not authorize public release or Chrome Web Store submission and does not replace archives, hashes or attachments.",
+  "releaseDecision": "Frozen v1.0.0 backup/restore focused automation PASS: 28 unit, 4 E2E, 42 scenario, 4 ZIP checks. Fresh restore deep equality, real file-lock rollback and restart preservation verified with isolated synthetic data. Native GUI restore remains PENDING (0/10), detailed manual cases remain 1 pass / 52 pending, and paid AI quality remains unverified. Existing maintainer smoke 6/6 PASS has unknown execution dates. No production changes, repackaging or Release asset replacement; v1.0.0 remains a draft, not authorized for publication or Chrome Web Store submission.",
   "historicalAssessment": {
     "assessedAt": "2026-10-14T08:02:48.142Z",
     "candidateVersion": "1.0.0-rc.1",
@@ -646,5 +650,41 @@
     "notEquivalentToFullManualAcceptance": true,
     "notAdditiveWithDetailedCaseCount": true
   },
-  "previousReleaseDecision": "Maintainer authorizes preparing separate 1.0.0 packages and a draft Release based on rc.2 after new engineering regression. The specific toolbar tiny-window defect is manually verified; 52 other cases remain pending. No public Release or Chrome Web Store submission is authorized."
+  "previousReleaseDecision": "Maintainer authorizes preparing separate 1.0.0 packages and a draft Release based on rc.2 after new engineering regression. The specific toolbar tiny-window defect is manually verified; 52 other cases remain pending. No public Release or Chrome Web Store submission is authorized.",
+  "backupRestoreValidation": {
+    "version": "1.0.0",
+    "executionDate": "2026-10-16",
+    "timezone": "Asia/Shanghai",
+    "automatedStatus": "PASS",
+    "unitPassed": 28,
+    "e2ePassed": 4,
+    "specializedPassed": 42,
+    "releaseChecksPassed": 4,
+    "manualStatus": "PENDING",
+    "manualPassed": 0,
+    "manualPending": 10,
+    "report": "docs/v1.0.0-backup-restore-validation.md",
+    "machineReport": "docs/v1.0.0-backup-restore-validation.json",
+    "manualGuide": "docs/v1.0.0-backup-restore-manual.md",
+    "sourceAndRestoredDeepEqual": true,
+    "failedRestoreAllFiveFilesRolledBack": true,
+    "restartDataPreserved": true,
+    "productionCodeChanged": false,
+    "archivesRebuilt": false,
+    "releaseAssetsUnchanged": true,
+    "paidAiRequests": 0,
+    "sourceBackupSha256": "c8a941439e6bd283ceb96dc54b1b935fe08742131367f17cb94d056316cbb6bd",
+    "publicSyntheticFixture": {
+      "file": "docs/fixtures/v1.0.0-workspace-backup.synthetic.json",
+      "bytes": 191612,
+      "sha256": "1fe3a77a77c784dfe2d5998ac2a38b0af0bc71efc4435afb6405be63fc43c679",
+      "jsonDeepEqualToActualExport": true,
+      "formattingMayDiffer": true
+    },
+    "doesNotChangeDetailedManualResults": true,
+    "doesNotReplacePriorFullEngineeringReport": true,
+    "noNewConfirmedProductionDefect": true,
+    "notProofAgainstAllUntestedDataLoss": true
+  },
+  "previousBackupRestoreDecision": "Existing v1.0.0 engineering acceptance passed; maintainer reports six basic real-device smoke cases PASS, dates pending. Detailed checklist remains 1 pass / 52 pending; paid AI quality and backup-file restoration are not inferred. v1.0.0 remains a draft. This documentation update does not authorize public release or Chrome Web Store submission and does not replace archives, hashes or attachments."
 }

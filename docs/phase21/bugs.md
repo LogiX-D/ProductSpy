@@ -1,5 +1,7 @@
 # Phase 21：缺陷与修复记录
 
+> 2026-10-16 备份恢复专项：在冻结 1.0.0 便携构建与隔离合成库上，28 定向单测、4 E2E、42 专项及 4 Release 校验通过。文件锁引发的 500 是预期故障注入，已验证阻断半状态、保留事务日志并安全回滚五文件，不登记为新生产 Bug；未发现新的已确认 P0/P1。生产代码、旧包和 Popup 已关闭状态不变。见 [实测范围与限制](../v1.0.0-backup-restore-validation.md)，人工恢复仍 PENDING。
+
 > v1.0.0 实机烟雾补充（实际执行日期待补充）：维护者再次确认 Chrome 工具栏 Popup 正常显示，小黑框未复现。PAIRING-SMALL-WINDOW 保持 **fixed + manually verified**；rc.2 的既有人工验证及原日期保留，v1.0.0 不套用此前日期。本次六项烟雾为 6/6 PASS，来源为维护者实际操作声明，不是 Codex 当前重测，无新增截图/日志附件。其余详细用例的未覆盖条件仍为 pending，见 [逐项声明与映射](../v1.0.0-manual-smoke-test.md)。
 
 > 2026-10-16 更新：维护者明确确认，在原故障同一台电脑、正式 Google Chrome、v1.0.0-rc.2 中，工具栏 Popup 正常显示，不再出现小黑框或极小窗口，且可正常查看和操作。PAIRING-SMALL-WINDOW 状态更新为 **fixed + manually verified**，对应结果表仅 C07 记为 pass，其余 52 项保持 pending。证据为本次会话文字声明，未补造 Chrome 完整版本、DPI、外框尺寸或新增截图；[限定验收范围](../rc2-popup-hotfix.md#维护者同条件人工确认2026-10-16)。下方既有 Phase 21 记录保留历史时间边界。

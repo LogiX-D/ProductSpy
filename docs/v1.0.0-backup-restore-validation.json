@@ -1,0 +1,1039 @@
+{
+  "format": "productspy-stable-backup-restore-validation",
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "generatedAt": "2026-10-15T19:35:20.754Z",
+  "executionDateLocal": "2026-10-16",
+  "timezone": "Asia/Shanghai",
+  "baselineAtStart": "4d4c67b6e32ef99fe8b5e1f17e9d89bd509efbdf",
+  "frozenRuntimeSource": "43d786fc8bc3e3ce495eaed84b8ab4588e111034",
+  "productionCodeChanged": false,
+  "versionsChanged": false,
+  "archivesRebuilt": false,
+  "fixtureOnly": true,
+  "userProductionDataTouched": false,
+  "paidAiRequests": 0,
+  "environment": {
+    "os": "Windows 11 Pro for Workstations",
+    "version": "10.0.26300",
+    "build": "26300",
+    "arch": "x64",
+    "portableNode": "24.14.0",
+    "service": "Frozen v1.0.0 portable Next.js production build bound to loopback port 3000",
+    "browser": "Playwright automated Chromium, headless; not native Chrome/Windows manual acceptance"
+  },
+  "status": {
+    "automation": "PASS",
+    "manual": "PENDING",
+    "manualChecks": 10,
+    "manualPass": 0,
+    "manualFail": 0,
+    "confirmedNewProductionDefects": [],
+    "dataLossObserved": false,
+    "dataLossRiskEliminatedForAllEnvironments": false,
+    "realAiQuality": "PENDING"
+  },
+  "automated": {
+    "unit": {
+      "passed": 28,
+      "failed": 0,
+      "files": 4
+    },
+    "e2e": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0
+    },
+    "specialized": {
+      "passed": 42,
+      "failed": 0,
+      "phases": [
+        {
+          "phase": "seed",
+          "passed": 12,
+          "failed": 0
+        },
+        {
+          "phase": "restore",
+          "passed": 19,
+          "failed": 0
+        },
+        {
+          "phase": "failure",
+          "passed": 7,
+          "failed": 0
+        },
+        {
+          "phase": "verify",
+          "passed": 4,
+          "failed": 0
+        }
+      ]
+    },
+    "releaseZip": {
+      "passed": 4,
+      "failed": 0
+    },
+    "orchestrationGuards": {
+      "regression": 4,
+      "workflow": 10,
+      "notIncludedIn42": true
+    }
+  },
+  "backup": {
+    "format": "productspy-workspace",
+    "schemaVersion": 1,
+    "sourceExport": {
+      "file": ".test-data/v100-backup-restore/2026-10-15T19-22-00-394Z/workflow-2026-10-15T19-25-51-467Z/backup.json",
+      "bytes": 192656,
+      "sha256": "c8a941439e6bd283ceb96dc54b1b935fe08742131367f17cb94d056316cbb6bd"
+    },
+    "shareableSyntheticFixture": {
+      "file": "docs/fixtures/v1.0.0-workspace-backup.synthetic.json",
+      "bytes": 191612,
+      "sha256": "1fe3a77a77c784dfe2d5998ac2a38b0af0bc71efc4435afb6405be63fc43c679",
+      "jsonDeepEqualToActualExport": true,
+      "formattingMayDiffer": true
+    },
+    "sourceAndFreshRestore": {
+      "products": 2,
+      "groups": 1,
+      "tags": 1,
+      "mediaMetadata": 6,
+      "comparisons": 1,
+      "templates": 1,
+      "contentPlans": 1,
+      "usage": 4,
+      "productHistory": 2,
+      "comparisonHistory": 2,
+      "templateHistory": 2,
+      "contentHistory": 3
+    },
+    "allBusinessFieldsDeepEqual": true,
+    "normalizationOnly": ["exportedAt"],
+    "imported": 11,
+    "skipped": 0,
+    "finalAfterDeliberateNewerEditAndExplicitRetry": {
+      "products": 3,
+      "groups": 1,
+      "tags": 1,
+      "mediaMetadata": 9,
+      "comparisons": 1,
+      "templates": 1,
+      "contentPlans": 1,
+      "usage": 4,
+      "productHistory": 2,
+      "comparisonHistory": 2,
+      "templateHistory": 2,
+      "contentHistory": 4
+    },
+    "finalDifferenceExplanation": "Content history intentionally increases from 3 to 4 after a new manual edit. A separately previewed retry imports exactly one new synthetic product with 3 media metadata records, increasing products 2 to 3 and media 6 to 9; this is not a restore mismatch.",
+    "syntheticProducts": [
+      {
+        "id": "amazon:B0BKP00001",
+        "source": "amazon",
+        "asin": "B0BKP00001"
+      },
+      {
+        "id": "amazon:B0BKP00002",
+        "source": "amazon",
+        "asin": "B0BKP00002"
+      }
+    ],
+    "files": [
+      "products.json",
+      "comparisons.json",
+      "templates.json",
+      "content-plans.json",
+      "analysis-usage.json"
+    ],
+    "finalAfterRetryAndRestartFileHashes": {
+      "products.json": {
+        "bytes": 30678,
+        "sha256": "5818dbd7490c48d225ede10c8f3c9a538cd21b560e9e16311aac4daf9b8db127"
+      },
+      "comparisons.json": {
+        "bytes": 48787,
+        "sha256": "4bd3a3419a806835e799905876523add2c0c824ee4e7344934adb4c641aa683b"
+      },
+      "templates.json": {
+        "bytes": 3893,
+        "sha256": "b69cf48898d884188ffdc6f24ca3c601bb88a466839de156128b497066c0cd54"
+      },
+      "content-plans.json": {
+        "bytes": 116001,
+        "sha256": "9078b775677ba10528f18f830f1a5e841bfea176ff118c930b4a6c9f7f309171"
+      },
+      "analysis-usage.json": {
+        "bytes": 3316,
+        "sha256": "9bce588373d2190c3b6c9bdf52de079cb5cbda70c0ac08c2ae59621bb19b2aa4"
+      }
+    },
+    "excluded": [
+      "AI Key and DPAPI settings",
+      "pairing credentials and session cookies",
+      "actual media binaries",
+      "download job state",
+      "unsaved browser drafts"
+    ],
+    "browserPreferences": "Optional allowlisted browser preferences are separately selected in UI; main API scenario does not claim full browser-preference manual verification."
+  },
+  "failureRecovery": {
+    "injection": "Bounded owned Windows read-sharing file lock on isolated templates.json",
+    "watchdogMs": 15000,
+    "restoreHttpStatus": 500,
+    "observedPublishedFiles": ["products.json"],
+    "journalPhase": "prepared",
+    "oldAndNewCopiesVerified": 5,
+    "whileLockedReadsHttpStatus": 500,
+    "partialDataExposed": false,
+    "journalRetained": true,
+    "afterUnlockAllFiveFilesByteIdentical": true,
+    "explicitFreshPreviewRetryImported": 1,
+    "automaticRetry": false,
+    "restartAllFiveFileHashesUnchanged": true,
+    "preparedCrashSupplement": {
+      "simulatedOfflineJournal": true,
+      "actualProcessKill": false,
+      "actualPowerLoss": false,
+      "filesPartiallyPublished": ["products.json"],
+      "recoveredOnNextRead": true
+    }
+  },
+  "phases": [
+    {
+      "phase": "seed",
+      "startedAt": "2026-10-15T19:25:54.623Z",
+      "completedAt": "2026-10-15T19:25:54.963Z",
+      "durationMs": 340,
+      "passed": 12,
+      "failed": 0,
+      "rawReport": ".test-data/v100-backup-restore/2026-10-15T19-22-00-394Z/workflow-2026-10-15T19-25-51-467Z/seed-2026-10-15T19-25-54-623Z.report.json",
+      "rawReportSha256": "6ef85193f32dd996e44b6574dd2a79f21ff8aefae83e7bc0708db9d2fd11cc85",
+      "checks": [
+        {
+          "name": "Frozen service reports v1.0.0 and Mock mode before any fixture write",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:54.625Z",
+          "completedAt": "2026-10-15T19:25:54.644Z",
+          "details": {
+            "mode": "mock",
+            "version": "1.0.0"
+          }
+        },
+        {
+          "name": "Authenticated local web session succeeds without logging its cookie",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:54.645Z",
+          "completedAt": "2026-10-15T19:25:54.651Z",
+          "details": {
+            "authenticated": true,
+            "cookieLogged": false
+          }
+        },
+        {
+          "name": "Fresh source contains no pre-existing business records",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:54.652Z",
+          "completedAt": "2026-10-15T19:25:54.657Z",
+          "details": {
+            "empty": true
+          }
+        },
+        {
+          "name": "Create an isolated synthetic extension pairing solely to verify credentials are excluded from backup",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:54.658Z",
+          "completedAt": "2026-10-15T19:25:54.667Z",
+          "details": {
+            "fixturePairingStored": true,
+            "secretValuesLogged": false
+          }
+        },
+        {
+          "name": "Create two synthetic Amazon products including specifications and associated image/video metadata",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:54.668Z",
+          "completedAt": "2026-10-15T19:25:54.678Z",
+          "details": {
+            "products": 2,
+            "mediaMetadata": 6,
+            "remoteMediaRequested": false
+          }
+        },
+        {
+          "name": "Create a group and colored tag and associate both original product IDs",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:54.678Z",
+          "completedAt": "2026-10-15T19:25:54.703Z",
+          "details": {
+            "groups": 1,
+            "tags": 1,
+            "associatedProducts": 2
+          }
+        },
+        {
+          "name": "Mock product analysis retains generated and manual edit history with original IDs",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:54.703Z",
+          "completedAt": "2026-10-15T19:25:54.720Z",
+          "details": {
+            "mode": "mock",
+            "history": 2,
+            "paidRequests": 0
+          }
+        },
+        {
+          "name": "Comparison retains snapshots, Mock analysis, provenance and manual edit history",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:54.751Z",
+          "completedAt": "2026-10-15T19:25:54.882Z",
+          "details": {
+            "snapshots": 2,
+            "history": 2,
+            "mode": "mock"
+          }
+        },
+        {
+          "name": "Custom template preserves creation and edited historical definitions",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:54.882Z",
+          "completedAt": "2026-10-15T19:25:54.891Z",
+          "details": {
+            "customTemplates": 1,
+            "versions": 2
+          }
+        },
+        {
+          "name": "Mock content preserves media/references, manual edits and independently regenerated candidate",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:54.891Z",
+          "completedAt": "2026-10-15T19:25:54.947Z",
+          "details": {
+            "versions": 3,
+            "manualCurrentProtected": true,
+            "selectedMedia": 2
+          }
+        },
+        {
+          "name": "Complete backup is generated with all expected business counts and independent histories",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:54.947Z",
+          "completedAt": "2026-10-15T19:25:54.959Z",
+          "details": {
+            "products": 2,
+            "groups": 1,
+            "tags": 1,
+            "mediaMetadata": 6,
+            "comparisons": 1,
+            "templates": 1,
+            "contentPlans": 1,
+            "usage": 4,
+            "productHistory": 2,
+            "comparisonHistory": 2,
+            "templateHistory": 2,
+            "contentHistory": 3,
+            "backupBytes": 192656,
+            "backupSha256": "c8a941439e6bd283ceb96dc54b1b935fe08742131367f17cb94d056316cbb6bd"
+          }
+        },
+        {
+          "name": "Shareable backup excludes session/pairing credentials and API/config secrets",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:54.959Z",
+          "completedAt": "2026-10-15T19:25:54.962Z",
+          "details": {
+            "cookieExcluded": true,
+            "forbiddenFields": 0,
+            "privateFilesPresent": 2,
+            "pairingSecretValuesExcluded": 3,
+            "privateContentsLogged": false
+          }
+        }
+      ]
+    },
+    {
+      "phase": "restore",
+      "startedAt": "2026-10-15T19:25:58.123Z",
+      "completedAt": "2026-10-15T19:25:58.904Z",
+      "durationMs": 781,
+      "passed": 19,
+      "failed": 0,
+      "rawReport": ".test-data/v100-backup-restore/2026-10-15T19-22-00-394Z/workflow-2026-10-15T19-25-51-467Z/restore-2026-10-15T19-25-58-122Z.report.json",
+      "rawReportSha256": "4119bc5edbeb81759f4678bb9268d81aaa111cf49e7189a6055f56c2d409249f",
+      "checks": [
+        {
+          "name": "Frozen service reports v1.0.0 and Mock mode before any fixture write",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.124Z",
+          "completedAt": "2026-10-15T19:25:58.143Z",
+          "details": {
+            "mode": "mock",
+            "version": "1.0.0"
+          }
+        },
+        {
+          "name": "Authenticated local web session succeeds without logging its cookie",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.144Z",
+          "completedAt": "2026-10-15T19:25:58.150Z",
+          "details": {
+            "authenticated": true,
+            "cookieLogged": false
+          }
+        },
+        {
+          "name": "Fresh restore target has no pre-existing business records",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.153Z",
+          "completedAt": "2026-10-15T19:25:58.159Z",
+          "details": {
+            "isolatedEmptyTarget": true
+          }
+        },
+        {
+          "name": "Preview followed by cancellation writes none of the five business files",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.159Z",
+          "completedAt": "2026-10-15T19:25:58.180Z",
+          "details": {
+            "cancelledBeforeCommit": true,
+            "products": 2,
+            "groups": 1,
+            "tags": 1,
+            "comparisons": 1,
+            "templates": 1,
+            "contentPlans": 1,
+            "usage": 4,
+            "histories": 9
+          }
+        },
+        {
+          "name": "Unconfirmed restore is rejected before any business write",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.181Z",
+          "completedAt": "2026-10-15T19:25:58.190Z",
+          "details": {
+            "status": 400,
+            "error": "请先查看恢复预览、选择保留已有资料并再次确认。"
+          }
+        },
+        {
+          "name": "Confirmed restore imports every original entity, ID and historical version",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.190Z",
+          "completedAt": "2026-10-15T19:25:58.355Z",
+          "details": {
+            "imported": 11,
+            "skipped": 0,
+            "completeDeepEquality": true,
+            "products": 2,
+            "groups": 1,
+            "tags": 1,
+            "mediaMetadata": 6,
+            "comparisons": 1,
+            "templates": 1,
+            "contentPlans": 1,
+            "usage": 4,
+            "productHistory": 2,
+            "comparisonHistory": 2,
+            "templateHistory": 2,
+            "contentHistory": 3
+          }
+        },
+        {
+          "name": "Restored product media, taxonomy, snapshots, AI/template/content histories and references equal source",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.356Z",
+          "completedAt": "2026-10-15T19:25:58.393Z",
+          "details": {
+            "allEntitiesDeepEqual": true,
+            "provenanceAndOriginalIdsPreserved": true
+          }
+        },
+        {
+          "name": "Full business restore does not import or modify local pairing credentials or protected AI settings",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.394Z",
+          "completedAt": "2026-10-15T19:25:58.397Z",
+          "details": {
+            "pairingImported": false,
+            "privateFilesUnchanged": true,
+            "sourcePairingRemainsOutsideShareableBackup": true
+          }
+        },
+        {
+          "name": "Invalid non-JSON file rejected with clear error and five files byte-identical",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.399Z",
+          "completedAt": "2026-10-15T19:25:58.411Z",
+          "details": {
+            "status": 400,
+            "error": "文件不是完整有效的 UTF-8 JSON"
+          }
+        },
+        {
+          "name": "Truncated backup JSON rejected with clear error and five files byte-identical",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.411Z",
+          "completedAt": "2026-10-15T19:25:58.424Z",
+          "details": {
+            "status": 400,
+            "error": "文件不是完整有效的 UTF-8 JSON"
+          }
+        },
+        {
+          "name": "Missing required contentPlans rejected with clear error and five files byte-identical",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.424Z",
+          "completedAt": "2026-10-15T19:25:58.438Z",
+          "details": {
+            "status": 400,
+            "error": "完整业务备份结构、版本或引用无效：Required"
+          }
+        },
+        {
+          "name": "Incompatible schemaVersion rejected with clear error and five files byte-identical",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.439Z",
+          "completedAt": "2026-10-15T19:25:58.452Z",
+          "details": {
+            "status": 400,
+            "error": "完整业务备份结构、版本或引用无效：Invalid literal value, expected 1"
+          }
+        },
+        {
+          "name": "Forbidden sensitive API Key field rejected with clear error and five files byte-identical",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.453Z",
+          "completedAt": "2026-10-15T19:25:58.468Z",
+          "details": {
+            "status": 400,
+            "error": "完整业务备份结构、版本或引用无效：Unrecognized key(s) in object: 'apiKey'"
+          }
+        },
+        {
+          "name": "Unsafe localhost URL in nested saved product snapshot rejected with clear error and five files byte-identical",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.469Z",
+          "completedAt": "2026-10-15T19:25:58.486Z",
+          "details": {
+            "status": 400,
+            "error": "完整业务备份结构、版本或引用无效：仅支持 Amazon 商品详情页 URL"
+          }
+        },
+        {
+          "name": "Broken product group reference rejected with clear error and five files byte-identical",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.487Z",
+          "completedAt": "2026-10-15T19:25:58.501Z",
+          "details": {
+            "status": 400,
+            "error": "商品引用了不存在的分组或标签"
+          }
+        },
+        {
+          "name": "Changed business data invalidates an old preview and cannot overwrite new manual content",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.501Z",
+          "completedAt": "2026-10-15T19:25:58.552Z",
+          "details": {
+            "status": 409,
+            "error": "业务资料在预览后已发生变化，请重新预览；没有覆盖任何文件。",
+            "newerManualVersionPreserved": true
+          }
+        },
+        {
+          "name": "Duplicate restore with preserve imports no duplicate entities or usage and keeps newer edits",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.553Z",
+          "completedAt": "2026-10-15T19:25:58.714Z",
+          "details": {
+            "imported": 0,
+            "skipped": 11,
+            "newerEditsAndHistoriesUnchanged": true
+          }
+        },
+        {
+          "name": "Duplicate restore with skip imports no duplicate entities or usage and keeps newer edits",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.714Z",
+          "completedAt": "2026-10-15T19:25:58.868Z",
+          "details": {
+            "imported": 0,
+            "skipped": 11,
+            "newerEditsAndHistoriesUnchanged": true
+          }
+        },
+        {
+          "name": "Restored idempotency usage replays the original Mock request without new generation or charge",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:58.868Z",
+          "completedAt": "2026-10-15T19:25:58.891Z",
+          "details": {
+            "replayed": true,
+            "usageRecords": 4,
+            "newRequests": 0,
+            "paidRequests": 0
+          }
+        }
+      ]
+    },
+    {
+      "phase": "failure",
+      "startedAt": "2026-10-15T19:25:59.173Z",
+      "completedAt": "2026-10-15T19:26:01.184Z",
+      "durationMs": 2011,
+      "passed": 7,
+      "failed": 0,
+      "rawReport": ".test-data/v100-backup-restore/2026-10-15T19-22-00-394Z/workflow-2026-10-15T19-25-51-467Z/failure-2026-10-15T19-25-59-173Z.report.json",
+      "rawReportSha256": "08ea38a32394ff905f4525e48b1af0cdd2bd3c773b42efb5d5fc5b992b55f3f0",
+      "checks": [
+        {
+          "name": "Frozen service reports v1.0.0 and Mock mode before any fixture write",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:59.174Z",
+          "completedAt": "2026-10-15T19:25:59.193Z",
+          "details": {
+            "mode": "mock",
+            "version": "1.0.0"
+          }
+        },
+        {
+          "name": "Authenticated local web session succeeds without logging its cookie",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:59.194Z",
+          "completedAt": "2026-10-15T19:25:59.197Z",
+          "details": {
+            "authenticated": true,
+            "cookieLogged": false
+          }
+        },
+        {
+          "name": "Bounded owned Windows helper permits reads but blocks replacement of isolated templates.json",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:59.231Z",
+          "completedAt": "2026-10-15T19:25:59.433Z",
+          "details": {
+            "windowsFileLock": true,
+            "onlyIsolatedFixture": true,
+            "watchdogMs": 15000
+          }
+        },
+        {
+          "name": "Real restore replacement failure returns 500 and retains a prepared recoverable transaction",
+          "passed": true,
+          "startedAt": "2026-10-15T19:25:59.433Z",
+          "completedAt": "2026-10-15T19:26:00.411Z",
+          "details": {
+            "status": 500,
+            "error": "恢复未能确认完成，原始资料或恢复日志已保留。请检查磁盘空间与权限，重新预览后再试；不会自动重复恢复。",
+            "journalPhase": "prepared",
+            "verifiedOldAndNewCopies": 5,
+            "observedPublishedFiles": ["products.json"],
+            "autoRetry": false
+          }
+        },
+        {
+          "name": "While the recovery target is locked ordinary business reads are blocked without exposing partial state",
+          "passed": true,
+          "startedAt": "2026-10-15T19:26:00.412Z",
+          "completedAt": "2026-10-15T19:26:00.833Z",
+          "details": {
+            "status": 500,
+            "error": "业务恢复尚未完成或日志损坏。请保留 .workspace-restore 与原资料并检查日志；为保护数据，暂不继续读写。",
+            "halfRestoredDataExposed": false,
+            "recoveryJournalRetained": true
+          }
+        },
+        {
+          "name": "After releasing the file lock the next business read safely rolls back all five original files",
+          "passed": true,
+          "startedAt": "2026-10-15T19:26:00.851Z",
+          "completedAt": "2026-10-15T19:26:01.026Z",
+          "details": {
+            "completeRollback": true,
+            "fiveFilesByteIdentical": true,
+            "stageRemovedAfterVerifiedRecovery": true
+          }
+        },
+        {
+          "name": "Explicit fresh preview and manual-equivalent retry succeeds once after recovery without lost records",
+          "passed": true,
+          "startedAt": "2026-10-15T19:26:01.028Z",
+          "completedAt": "2026-10-15T19:26:01.184Z",
+          "details": {
+            "imported": 1,
+            "preservedExistingProducts": 2,
+            "paidAiRequests": 0,
+            "products": 3,
+            "groups": 1,
+            "tags": 1,
+            "mediaMetadata": 9,
+            "comparisons": 1,
+            "templates": 1,
+            "contentPlans": 1,
+            "usage": 4,
+            "productHistory": 2,
+            "comparisonHistory": 2,
+            "templateHistory": 2,
+            "contentHistory": 4
+          }
+        }
+      ]
+    },
+    {
+      "phase": "verify",
+      "startedAt": "2026-10-15T19:26:04.565Z",
+      "completedAt": "2026-10-15T19:26:05.072Z",
+      "durationMs": 507,
+      "passed": 4,
+      "failed": 0,
+      "rawReport": ".test-data/v100-backup-restore/2026-10-15T19-22-00-394Z/workflow-2026-10-15T19-25-51-467Z/verify-2026-10-15T19-26-04-564Z.report.json",
+      "rawReportSha256": "f14c160d0412fe498fa679c65adf6ade1ca0bb73442dbf6b37011e7e5b465484",
+      "checks": [
+        {
+          "name": "Frozen service reports v1.0.0 and Mock mode before any fixture write",
+          "passed": true,
+          "startedAt": "2026-10-15T19:26:04.566Z",
+          "completedAt": "2026-10-15T19:26:04.586Z",
+          "details": {
+            "mode": "mock",
+            "version": "1.0.0"
+          }
+        },
+        {
+          "name": "Authenticated local web session succeeds without logging its cookie",
+          "passed": true,
+          "startedAt": "2026-10-15T19:26:04.586Z",
+          "completedAt": "2026-10-15T19:26:04.593Z",
+          "details": {
+            "authenticated": true,
+            "cookieLogged": false
+          }
+        },
+        {
+          "name": "After a real portable-service stop and restart every business record and complete history remains identical",
+          "passed": true,
+          "startedAt": "2026-10-15T19:26:04.594Z",
+          "completedAt": "2026-10-15T19:26:05.056Z",
+          "details": {
+            "completeDeepEquality": true,
+            "allFiveFileHashesUnchanged": true,
+            "products": 3,
+            "groups": 1,
+            "tags": 1,
+            "mediaMetadata": 9,
+            "comparisons": 1,
+            "templates": 1,
+            "contentPlans": 1,
+            "usage": 4,
+            "productHistory": 2,
+            "comparisonHistory": 2,
+            "templateHistory": 2,
+            "contentHistory": 4
+          }
+        },
+        {
+          "name": "Re-export after restart has original IDs, ASINs, references, human edits and no extra AI usage",
+          "passed": true,
+          "startedAt": "2026-10-15T19:26:05.057Z",
+          "completedAt": "2026-10-15T19:26:05.072Z",
+          "details": {
+            "reexported": true,
+            "usage": 4,
+            "actualPaidModelQuality": "PENDING"
+          }
+        }
+      ]
+    }
+  ],
+  "orchestrationChecks": {
+    "regression": [
+      {
+        "name": "all seven frozen release asset hashes unchanged",
+        "passed": true,
+        "assets": 7
+      },
+      {
+        "name": "actual installed portable tree matches frozen bundle manifest",
+        "passed": true,
+        "files": 2334,
+        "runtime": "24.14.0"
+      },
+      {
+        "name": "e2e: owned service stopped and port released",
+        "passed": true
+      },
+      {
+        "name": "validation scripts remained byte-identical throughout this attempt",
+        "passed": true
+      }
+    ],
+    "workflow": [
+      {
+        "name": "all seven frozen release asset hashes unchanged",
+        "passed": true,
+        "assets": 7
+      },
+      {
+        "name": "actual installed portable tree matches frozen bundle manifest",
+        "passed": true,
+        "files": 2334,
+        "runtime": "24.14.0"
+      },
+      {
+        "name": "synthetic encrypted Key exists only in isolated source settings; AI mode remains Mock",
+        "passed": true
+      },
+      {
+        "name": "source: owned service stopped and port released",
+        "passed": true
+      },
+      {
+        "name": "target: owned service stopped and port released",
+        "passed": true
+      },
+      {
+        "name": "synthetic offline prepared-crash state created only in stopped test target",
+        "passed": true,
+        "actualProcessKill": false,
+        "changedFiles": ["products.json"]
+      },
+      {
+        "name": "restart: owned service stopped and port released",
+        "passed": true
+      },
+      {
+        "name": "frozen restart and ordinary read recover prepared-crash state without exposing partial data",
+        "passed": true,
+        "allFiveBusinessFilesByteIdentical": true
+      },
+      {
+        "name": "source backup file remains immutable through restore, failure, retry and restart",
+        "passed": true
+      },
+      {
+        "name": "validation scripts remained byte-identical throughout this attempt",
+        "passed": true
+      }
+    ]
+  },
+  "commands": [
+    {
+      "name": "unit",
+      "command": "pnpm test packages/shared/src/business-backup.test.ts apps/web/src/lib/server/business-backup.test.ts apps/web/src/lib/server/history-backup-review.test.ts apps/web/src/lib/workspace-backup-api.test.ts --reporter=default --reporter=json --outputFile='<repo>\\.test-data\\v100-backup-restore\\2026-10-15T19-22-00-394Z\\regression-2026-10-15T19-25-30-388Z\\unit.json'",
+      "startedAt": "2026-10-15T19:25:30.746Z",
+      "finishedAt": "2026-10-15T19:25:32.586Z",
+      "exitCode": 0,
+      "log": ".test-data/v100-backup-restore/2026-10-15T19-22-00-394Z/regression-2026-10-15T19-25-30-388Z/unit.log",
+      "sha256": "0b726d8f7e90c3f9b9e6809149ffda74cde999890582044a0e68190e065781ee",
+      "passed": true
+    },
+    {
+      "name": "e2e",
+      "command": "pnpm test:e2e e2e/workspace-backup.spec.ts e2e/phase20.spec.ts --output='<repo>\\.test-data\\v100-backup-restore\\2026-10-15T19-22-00-394Z\\regression-2026-10-15T19-25-30-388Z\\e2e-results' '--reporter=list,json'",
+      "startedAt": "2026-10-15T19:25:38.295Z",
+      "finishedAt": "2026-10-15T19:25:48.455Z",
+      "exitCode": 0,
+      "log": ".test-data/v100-backup-restore/2026-10-15T19-22-00-394Z/regression-2026-10-15T19-25-30-388Z/e2e.log",
+      "sha256": "bd380b6b4c461f0a1b12700ad62180eff94af566f79dffce97923d49c7877029",
+      "passed": true
+    },
+    {
+      "name": "release",
+      "command": "node scripts/validate-release.mjs",
+      "startedAt": "2026-10-15T19:25:49.216Z",
+      "finishedAt": "2026-10-15T19:25:51.406Z",
+      "exitCode": 0,
+      "log": ".test-data/v100-backup-restore/2026-10-15T19-22-00-394Z/regression-2026-10-15T19-25-30-388Z/release.log",
+      "sha256": "48e67ba780d146b7e1836f1dc64f2ee7733dd7f72d2200dd836394f06fe1349e",
+      "passed": true
+    },
+    {
+      "name": "seed",
+      "command": "node scripts/validate-stable-backup.mjs --phase seed --data-root '<repo>\\.test-data\\v100-backup-restore\\2026-10-15T19-22-00-394Z\\workflow-2026-10-15T19-25-51-467Z\\source-user' --output '<repo>\\.test-data\\v100-backup-restore\\2026-10-15T19-22-00-394Z\\workflow-2026-10-15T19-25-51-467Z'",
+      "startedAt": "2026-10-15T19:25:54.361Z",
+      "finishedAt": "2026-10-15T19:25:54.982Z",
+      "exitCode": 0,
+      "log": ".test-data/v100-backup-restore/2026-10-15T19-22-00-394Z/workflow-2026-10-15T19-25-51-467Z/seed.log",
+      "sha256": "0f8d130432671543a34fd52e4a808d65ca0d70a4c8f3caeaa46625a4d52865b1",
+      "passed": true
+    },
+    {
+      "name": "restore",
+      "command": "node scripts/validate-stable-backup.mjs --phase restore --data-root '<repo>\\.test-data\\v100-backup-restore\\2026-10-15T19-22-00-394Z\\workflow-2026-10-15T19-25-51-467Z\\target-user' --output '<repo>\\.test-data\\v100-backup-restore\\2026-10-15T19-22-00-394Z\\workflow-2026-10-15T19-25-51-467Z'",
+      "startedAt": "2026-10-15T19:25:57.861Z",
+      "finishedAt": "2026-10-15T19:25:58.923Z",
+      "exitCode": 0,
+      "log": ".test-data/v100-backup-restore/2026-10-15T19-22-00-394Z/workflow-2026-10-15T19-25-51-467Z/restore.log",
+      "sha256": "489f1bfaca365fc27a889608a144002e5aaece4cd14565947b483afff3c8f092",
+      "passed": true
+    },
+    {
+      "name": "failure",
+      "command": "node scripts/validate-stable-backup.mjs --phase failure --data-root '<repo>\\.test-data\\v100-backup-restore\\2026-10-15T19-22-00-394Z\\workflow-2026-10-15T19-25-51-467Z\\target-user' --output '<repo>\\.test-data\\v100-backup-restore\\2026-10-15T19-22-00-394Z\\workflow-2026-10-15T19-25-51-467Z'",
+      "startedAt": "2026-10-15T19:25:58.924Z",
+      "finishedAt": "2026-10-15T19:26:01.203Z",
+      "exitCode": 0,
+      "log": ".test-data/v100-backup-restore/2026-10-15T19-22-00-394Z/workflow-2026-10-15T19-25-51-467Z/failure.log",
+      "sha256": "bf2c2299ddb0449163824b9c5318df301f37afd6e06a618341c8834704818fed",
+      "passed": true
+    },
+    {
+      "name": "verify",
+      "command": "node scripts/validate-stable-backup.mjs --phase verify --data-root '<repo>\\.test-data\\v100-backup-restore\\2026-10-15T19-22-00-394Z\\workflow-2026-10-15T19-25-51-467Z\\target-user' --output '<repo>\\.test-data\\v100-backup-restore\\2026-10-15T19-22-00-394Z\\workflow-2026-10-15T19-25-51-467Z'",
+      "startedAt": "2026-10-15T19:26:04.266Z",
+      "finishedAt": "2026-10-15T19:26:05.092Z",
+      "exitCode": 0,
+      "log": ".test-data/v100-backup-restore/2026-10-15T19-22-00-394Z/workflow-2026-10-15T19-25-51-467Z/verify.log",
+      "sha256": "79f145b3d6bb5e9d3a67c11620717bf9178789f0af83541056951556a04e2cf9",
+      "passed": true
+    }
+  ],
+  "scripts": [
+    {
+      "file": "scripts/run-stable-backup-validation.mjs",
+      "sha256": "cb7a68fa9cbacdd8a58232e0ee524e3ec0f4dfa9d945080c66293b646d89a294"
+    },
+    {
+      "file": "scripts/validate-stable-backup.mjs",
+      "sha256": "f2dcea5cfbf5e676b6c15a456a608de8af301f02dbd5fdddd6cd8872740064e0"
+    }
+  ],
+  "logs": {
+    "root": ".test-data/v100-backup-restore/2026-10-15T19-22-00-394Z",
+    "finalRegression": ".test-data/v100-backup-restore/2026-10-15T19-22-00-394Z/regression-2026-10-15T19-25-30-388Z",
+    "finalWorkflow": ".test-data/v100-backup-restore/2026-10-15T19-22-00-394Z/workflow-2026-10-15T19-25-51-467Z",
+    "privateRuntimeDataCommitted": false,
+    "earlierAttemptsRetained": [
+      "regression-2026-10-15T19-22-20-377Z: 28 unit/4 E2E/4 release checks passed; no script immutability guard yet",
+      "workflow-2026-10-15T19-23-30-072Z: 41/41 passed; final 42-check script frozen and whole scenario rerun on fresh roots"
+    ],
+    "earlierAttemptCountsNotAddedToFinal": true
+  },
+  "release": {
+    "localAssets": [
+      {
+        "name": "ProductSpy-1.0.0-windows-x64.zip",
+        "bytes": 42506037,
+        "sha256": "b0f3bdf2a2ccdd2b9e10d0970434b6e6c10e77171c4eefd6f9ccb56bfc4e3fa0",
+        "unchanged": true
+      },
+      {
+        "name": "ProductSpy-1.0.0-extension.zip",
+        "bytes": 408886,
+        "sha256": "e6e1a24e76f6b3d3d1608901582aff3ce66c549f4a0edb79bf9c09aa370a2e70",
+        "unchanged": true
+      },
+      {
+        "name": "release-manifest.json",
+        "bytes": 501,
+        "sha256": "30f2479c71e1eb4336043969976a42e76be7d1e2bbe59d960ed585abccd472a6",
+        "unchanged": true
+      },
+      {
+        "name": "ProductSpy-1.0.0-validation.md",
+        "bytes": 5549,
+        "sha256": "6269f658647e4bfe6afc72ac99fae42290e31d19b6bc8de9dba20113a8d06f86",
+        "unchanged": true
+      },
+      {
+        "name": "ProductSpy-1.0.0-validation.json",
+        "bytes": 29668,
+        "sha256": "cb620d1dffbbb75892fd388921095f4dcebfffaa47adae81daf934d46e102e80",
+        "unchanged": true
+      },
+      {
+        "name": "ProductSpy-1.0.0-user-guide.md",
+        "bytes": 8933,
+        "sha256": "b5311648d8298b838977ee42451f4b12e1e44e64d17b14f7cb8428f9fdb94080",
+        "unchanged": true
+      },
+      {
+        "name": "SHA256SUMS.txt",
+        "bytes": 577,
+        "sha256": "4f49b3e1582f1efeb03463d69af2026e04912316b407c30aa13c1d4f6c0e0717",
+        "unchanged": true
+      }
+    ],
+    "allLocalAssetsUnchanged": true,
+    "remoteReleasesCompared": 12,
+    "allRemoteReleaseMetadataAndAssetsUnchanged": true,
+    "releaseSnapshotSha256": "34a054f7c6263fe6ba88c9eea092f435d8ce401352d5159f1d5ac06d5f46f3ff",
+    "draft": {
+      "id": 414159626,
+      "tag": "v1.0.0",
+      "draft": true,
+      "prerelease": false,
+      "publishedAt": null,
+      "assetCount": 7,
+      "url": "https://github.com/LogiX-D/ProductSpy/releases/tag/untagged-38aded484f912e7367a9"
+    },
+    "zipValidation": {
+      "portable": {
+        "file": "ProductSpy-1.0.0-windows-x64.zip",
+        "bytes": 42506037,
+        "sha256": "b0f3bdf2a2ccdd2b9e10d0970434b6e6c10e77171c4eefd6f9ccb56bfc4e3fa0",
+        "entries": 2335,
+        "files": 2335,
+        "scannedTextFiles": 2159,
+        "crc32Verified": true,
+        "rawPathsVerified": true,
+        "privatePathsVerified": true,
+        "credentialPatternScanPassed": true,
+        "configuredApiKeysChecked": 0,
+        "bundleRecordsVerified": 2334,
+        "embeddedExtensionFilesVerified": 11
+      },
+      "extension": {
+        "file": "ProductSpy-1.0.0-extension.zip",
+        "bytes": 408886,
+        "sha256": "e6e1a24e76f6b3d3d1608901582aff3ce66c549f4a0edb79bf9c09aa370a2e70",
+        "entries": 226,
+        "files": 226,
+        "scannedTextFiles": 222,
+        "crc32Verified": true,
+        "rawPathsVerified": true,
+        "privatePathsVerified": true,
+        "credentialPatternScanPassed": true,
+        "configuredApiKeysChecked": 0,
+        "manifestVersion": 3,
+        "extensionVersion": "1.0.0.3",
+        "extensionVersionName": "1.0.0",
+        "permissions": ["activeTab", "scripting", "storage"],
+        "hostPermissions": ["http://localhost/*", "http://127.0.0.1/*"],
+        "sourceMapsAbsent": true
+      }
+    }
+  },
+  "manual": {
+    "guide": "docs/v1.0.0-backup-restore-manual.md",
+    "status": "PENDING",
+    "checks": 10,
+    "performedAt": null,
+    "tester": null,
+    "attachments": [],
+    "existingDetailedAcceptance": {
+      "total": 53,
+      "passed": 1,
+      "pending": 52,
+      "statusChanges": 0
+    },
+    "previousMaintainerSmoke": {
+      "passed": 6,
+      "total": 6,
+      "performedAt": null,
+      "notRepeatedHere": true
+    }
+  },
+  "limitations": [
+    "Synthetic business records and Mock AI only; no actual Amazon acquisition or paid AI quality validation in this task.",
+    "Native GUI backup->restore->restart is not manually executed; all ten checklist items remain PENDING.",
+    "No physical power-cut, disk-full, antivirus quarantine, network/removable filesystem or arbitrary journal corruption test on this portable build. Existing unit coverage is not physical failure proof.",
+    "A file lock persisting after failure intentionally blocks business reads/writes; keep original data and .workspace-restore, release the cause and preview again. Never delete the recovery journal to force access.",
+    "Business backup excludes media binaries, credentials and Windows settings by design; configure private settings and re-pair separately in a new environment.",
+    "The backup has no embedded authenticity signature; schema-valid content changes may not be detected. Keep and compare a separately stored SHA-256; parsing successfully does not prove authenticity."
+  ]
+}
