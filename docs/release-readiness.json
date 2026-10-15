@@ -315,12 +315,24 @@
     "total": 53,
     "pending": 52,
     "pass": 1,
-    "newMaintainerResultsReceived": 1,
-    "unchangedCaseCount": 52,
-    "changedCases": ["C07"],
     "evidence": "docs/phase21/manual-results.csv",
-    "evidenceScope": "Only historical toolbar tiny-window defect retest confirmed by direct maintainer statement. No Chrome version/DPI/geometry/new screenshot was supplied; no other scenario is passed.",
-    "partialNativeObservationIsNotManualPass": true
+    "fullyPassedCaseIds": ["C07"],
+    "partialCoverageCaseIds": [
+      "W02",
+      "W06",
+      "C01",
+      "C02",
+      "A01",
+      "F01",
+      "F05",
+      "F08",
+      "B01",
+      "B08"
+    ],
+    "statusChangesThisUpdate": [],
+    "passedCountIncreaseThisUpdate": 0,
+    "existingResultsPreserved": true,
+    "evidenceScope": "Only C07 is a fully passed detailed case. Six v1.0.0 maintainer smoke statements are tracked separately; ten wider detailed cases are partly covered and remain pending. Do not add the two denominators."
   },
   "videoFollowUp": {
     "evidence": "docs/phase21/video-timing-final.json",
@@ -370,44 +382,35 @@
     "bugId": "PAIRING-SMALL-WINDOW",
     "priority": "P1",
     "status": "fixed + manually verified",
-    "userReproductionReceivedOn": "2026-10-15",
-    "maintainerRetestReceivedOn": "2026-10-16",
-    "testedVersion": "1.0.0-rc.2",
-    "sameComputerAsOriginalDefect": true,
-    "browserDistribution": "Google Chrome formal environment (maintainer statement); exact version/channel not provided",
-    "evidenceType": "Direct written maintainer confirmation in this project conversation",
-    "confirmed": [
-      "Clicking ProductSpy in Chrome toolbar displays Popup normally",
-      "Previous small black or tiny window no longer appears",
-      "Popup can be viewed and operated normally",
-      "Maintainer explicitly confirms this defect is fixed"
-    ],
-    "notProvided": [
-      "Chrome full version",
-      "Windows build",
-      "Windows display scaling",
-      "Chrome page zoom",
-      "Measured Popup dimensions",
-      "New screenshot"
-    ],
-    "notCovered": [
-      "Scrolling-specific checks",
-      "First consent flow",
-      "Pairing/re-pairing",
-      "Amazon capture/save",
-      "Online/offline/reconnect",
-      "Chrome restart",
-      "100/125/150/200 percent Windows DPI matrix",
-      "Real AI quality"
-    ],
-    "otherCasesUnchanged": true,
-    "evidence": "docs/rc2-popup-hotfix.md#维护者同条件人工确认2026-10-16",
-    "focusedManualInstructions": "docs/phase21/manual-acceptance.md",
-    "focusedManualCase": "C07"
+    "closed": true,
+    "verifiedVersions": ["1.0.0-rc.2", "1.0.0"],
+    "previousRc2Record": "previousRc2PairingAssessment",
+    "stableConfirmation": {
+      "version": "1.0.0",
+      "performedAt": null,
+      "dateStatus": "日期待补充",
+      "source": "Maintainer actual-operation statement, smoke S03",
+      "confirmed": [
+        "Chrome toolbar Popup displays normally",
+        "Previous small black window did not recur"
+      ],
+      "notProvided": [
+        "Execution date",
+        "Chrome full version/channel",
+        "Windows build/DPI",
+        "Measured Popup bounds",
+        "Screenshot/log attachment"
+      ]
+    },
+    "otherDetailedCaseStatusesUnchanged": true,
+    "evidence": "docs/v1.0.0-manual-smoke-test.md"
   },
   "screenshots": {
     "capturedWith": "Frozen rc.1 popup.html in CFT 156.0.8078.4 headless browser tab",
-    "viewport": { "width": 1365, "height": 900 },
+    "viewport": {
+      "width": 1365,
+      "height": 900
+    },
     "stableChromeManualAcceptance": false,
     "nativeToolbarDimensionsVerified": false,
     "realPublicPages": true,
@@ -440,7 +443,7 @@
       }
     ]
   },
-  "releaseDecision": "Maintainer authorizes preparing separate 1.0.0 packages and a draft Release based on rc.2 after new engineering regression. The specific toolbar tiny-window defect is manually verified; 52 other cases remain pending. No public Release or Chrome Web Store submission is authorized.",
+  "releaseDecision": "Existing v1.0.0 engineering acceptance passed; maintainer reports six basic real-device smoke cases PASS, dates pending. Detailed checklist remains 1 pass / 52 pending; paid AI quality and backup-file restoration are not inferred. v1.0.0 remains a draft. This documentation update does not authorize public release or Chrome Web Store submission and does not replace archives, hashes or attachments.",
   "historicalAssessment": {
     "assessedAt": "2026-10-14T08:02:48.142Z",
     "candidateVersion": "1.0.0-rc.1",
@@ -522,5 +525,126 @@
     "oldReleasesUnchanged": true,
     "public": false,
     "storeSubmitted": false
-  }
+  },
+  "previousDetailedManualAssessment": {
+    "total": 53,
+    "pending": 52,
+    "pass": 1,
+    "newMaintainerResultsReceived": 1,
+    "unchangedCaseCount": 52,
+    "changedCases": ["C07"],
+    "evidence": "docs/phase21/manual-results.csv",
+    "evidenceScope": "Only historical toolbar tiny-window defect retest confirmed by direct maintainer statement. No Chrome version/DPI/geometry/new screenshot was supplied; no other scenario is passed.",
+    "partialNativeObservationIsNotManualPass": true
+  },
+  "previousRc2PairingAssessment": {
+    "bugId": "PAIRING-SMALL-WINDOW",
+    "priority": "P1",
+    "status": "fixed + manually verified",
+    "userReproductionReceivedOn": "2026-10-15",
+    "maintainerRetestReceivedOn": "2026-10-16",
+    "testedVersion": "1.0.0-rc.2",
+    "sameComputerAsOriginalDefect": true,
+    "browserDistribution": "Google Chrome formal environment (maintainer statement); exact version/channel not provided",
+    "evidenceType": "Direct written maintainer confirmation in this project conversation",
+    "confirmed": [
+      "Clicking ProductSpy in Chrome toolbar displays Popup normally",
+      "Previous small black or tiny window no longer appears",
+      "Popup can be viewed and operated normally",
+      "Maintainer explicitly confirms this defect is fixed"
+    ],
+    "notProvided": [
+      "Chrome full version",
+      "Windows build",
+      "Windows display scaling",
+      "Chrome page zoom",
+      "Measured Popup dimensions",
+      "New screenshot"
+    ],
+    "notCovered": [
+      "Scrolling-specific checks",
+      "First consent flow",
+      "Pairing/re-pairing",
+      "Amazon capture/save",
+      "Online/offline/reconnect",
+      "Chrome restart",
+      "100/125/150/200 percent Windows DPI matrix",
+      "Real AI quality"
+    ],
+    "otherCasesUnchanged": true,
+    "evidence": "docs/rc2-popup-hotfix.md#维护者同条件人工确认2026-10-16",
+    "focusedManualInstructions": "docs/phase21/manual-acceptance.md",
+    "focusedManualCase": "C07"
+  },
+  "manualSmoke": {
+    "version": "1.0.0",
+    "source": "Maintainer explicit statement of actual operation in this project conversation",
+    "codexReexecuted": false,
+    "performedAt": null,
+    "dateStatus": "日期待补充",
+    "attachmentsProvided": [],
+    "total": 6,
+    "passed": 6,
+    "failed": 0,
+    "evidence": "docs/v1.0.0-manual-smoke-test.md",
+    "cases": [
+      {
+        "id": "S01",
+        "scenario": "Windows 工作台正常启动",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": null,
+        "dateStatus": "日期待补充",
+        "relatedDetailedCases": ["W02"]
+      },
+      {
+        "id": "S02",
+        "scenario": "Chrome 扩展显示 v1.0.0",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": null,
+        "dateStatus": "日期待补充",
+        "relatedDetailedCases": ["C01"]
+      },
+      {
+        "id": "S03",
+        "scenario": "Chrome 工具栏 Popup 正常显示，没有小黑框",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": null,
+        "dateStatus": "日期待补充",
+        "relatedDetailedCases": ["C07", "C02"]
+      },
+      {
+        "id": "S04",
+        "scenario": "Amazon 商品采集、保存成功",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": null,
+        "dateStatus": "日期待补充",
+        "relatedDetailedCases": ["F01", "A01"]
+      },
+      {
+        "id": "S05",
+        "scenario": "Mock AI 分析和内容创作正常",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": null,
+        "dateStatus": "日期待补充",
+        "relatedDetailedCases": ["F05", "F08"]
+      },
+      {
+        "id": "S06",
+        "scenario": "完整业务备份成功，重启后数据保留",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": null,
+        "dateStatus": "日期待补充",
+        "relatedDetailedCases": ["B01", "B08", "W06"]
+      }
+    ],
+    "notEquivalentToFullManualAcceptance": true,
+    "notAdditiveWithDetailedCaseCount": true
+  },
+  "previousReleaseDecision": "Maintainer authorizes preparing separate 1.0.0 packages and a draft Release based on rc.2 after new engineering regression. The specific toolbar tiny-window defect is manually verified; 52 other cases remain pending. No public Release or Chrome Web Store submission is authorized."
 }
