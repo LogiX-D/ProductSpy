@@ -315,10 +315,10 @@
   ],
   "manual": {
     "total": 53,
-    "pending": 50,
-    "pass": 3,
+    "pending": 47,
+    "pass": 6,
     "evidence": "docs/phase21/manual-results.csv",
-    "fullyPassedCaseIds": ["C07", "B06", "B07"],
+    "fullyPassedCaseIds": ["C03", "C04", "C05", "C07", "B06", "B07"],
     "partialCoverageCaseIds": [
       "W02",
       "W05",
@@ -335,21 +335,27 @@
     ],
     "statusChangesThisUpdate": [
       {
-        "caseId": "B06",
+        "caseId": "C03",
         "from": "pending",
         "to": "pass",
-        "evidence": "docs/v1.0.0-backup-restore-manual-results.md"
+        "evidence": "docs/v1.0.0-pairing-manual-results.md"
       },
       {
-        "caseId": "B07",
+        "caseId": "C04",
         "from": "pending",
         "to": "pass",
-        "evidence": "docs/v1.0.0-backup-restore-manual-results.md"
+        "evidence": "docs/v1.0.0-pairing-manual-results.md"
+      },
+      {
+        "caseId": "C05",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-pairing-manual-results.md"
       }
     ],
-    "passedCountIncreaseThisUpdate": 2,
+    "passedCountIncreaseThisUpdate": 3,
     "existingResultsPreserved": true,
-    "evidenceScope": "53 detailed cases: C07 previously passed; only B06/B07 newly pass on maintainer 2026-10-16 normal restore and whole-business equality declarations. Partial cases stay pending. Six smoke and ten backup manual statements overlap detailed cases and are not added to its denominator.",
+    "evidenceScope": "53 detailed cases: only C03/C04/C05 newly pass on explicit maintainer original-case declarations, with execution dates unprovided. C07/B06/B07 records remain unchanged; all other case statuses remain unchanged. Smoke, backup and pairing summaries overlap these cases and are not added to its denominator.",
     "backupRestoreAutomationEvidence": "docs/v1.0.0-backup-restore-validation.md",
     "backupRestoreStatusChangesThisUpdate": [
       {
@@ -365,7 +371,9 @@
         "evidence": "docs/v1.0.0-backup-restore-manual-results.md"
       }
     ],
-    "backupRestoreManualEvidence": "docs/v1.0.0-backup-restore-manual-results.md"
+    "backupRestoreManualEvidence": "docs/v1.0.0-backup-restore-manual-results.md",
+    "fail": 0,
+    "pairingFlowEvidence": "docs/v1.0.0-pairing-manual-results.md"
   },
   "videoFollowUp": {
     "evidence": "docs/phase21/video-timing-final.json",
@@ -476,7 +484,7 @@
       }
     ]
   },
-  "releaseDecision": "Core features and prior engineering acceptance complete; maintainer reports six smoke PASS (dates unprovided) and normal Windows backup/restore 10/10 PASS on 2026-10-16. Prior backup automation 28 unit/4 E2E/42 scenario/4 ZIP remains unchanged, not rerun. Detailed checklist 3 pass / 50 pending: only B06/B07 newly pass, C07 preserved. No known confirmed unresolved P0/P1; real AI quality, pairing exceptions, native permissions/DPI/SmartScreen and other untested paths remain separate. v1.0.0 remains a draft; no production, version, ZIP, hash or Release changes and no authorization for public release or Chrome Web Store submission.",
+  "releaseDecision": "Core features and prior engineering acceptance complete. Maintainer smoke 6/6 PASS (dates unprovided), normal backup/restore 10/10 PASS on 2026-10-16, and pairing C03-C05 3/3 PASS (execution dates unprovided) are separate declarations, not new Codex automation. Detailed checklist is 6 pass / 47 pending / 0 fail; only C03/C04/C05 newly pass, C07/B06/B07 unchanged. Prior automation and frozen assets preserved, no app tests rerun. No known confirmed unresolved P0/P1; C08 offline retry, exits, other native/browser scenarios, permissions/DPI/SmartScreen, media timing and real AI quality remain unverified. v1.0.0 stays draft; no production, version, ZIP, SHA or Release changes, no public release or Chrome Web Store submission.",
   "historicalAssessment": {
     "assessedAt": "2026-10-14T08:02:48.142Z",
     "candidateVersion": "1.0.0-rc.1",
@@ -814,6 +822,174 @@
     "chromeFullVersion": null,
     "testDirectory": null,
     "applicationTestsReexecuted": false,
+    "notAdditiveWithDetailedCaseCount": true
+  },
+  "previousPairingFlowManualAssessment": {
+    "baselineCommit": "aeba7b1c008ba8ab1eefe519d57227d050324162",
+    "manual": {
+      "total": 53,
+      "pending": 50,
+      "pass": 3,
+      "evidence": "docs/phase21/manual-results.csv",
+      "fullyPassedCaseIds": ["C07", "B06", "B07"],
+      "partialCoverageCaseIds": [
+        "W02",
+        "W05",
+        "W06",
+        "C01",
+        "C02",
+        "A01",
+        "F01",
+        "F05",
+        "F08",
+        "B01",
+        "B02",
+        "B08"
+      ],
+      "statusChangesThisUpdate": [
+        {
+          "caseId": "B06",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-backup-restore-manual-results.md"
+        },
+        {
+          "caseId": "B07",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-backup-restore-manual-results.md"
+        }
+      ],
+      "passedCountIncreaseThisUpdate": 2,
+      "existingResultsPreserved": true,
+      "evidenceScope": "53 detailed cases: C07 previously passed; only B06/B07 newly pass on maintainer 2026-10-16 normal restore and whole-business equality declarations. Partial cases stay pending. Six smoke and ten backup manual statements overlap detailed cases and are not added to its denominator.",
+      "backupRestoreAutomationEvidence": "docs/v1.0.0-backup-restore-validation.md",
+      "backupRestoreStatusChangesThisUpdate": [
+        {
+          "caseId": "B06",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-backup-restore-manual-results.md"
+        },
+        {
+          "caseId": "B07",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-backup-restore-manual-results.md"
+        }
+      ],
+      "backupRestoreManualEvidence": "docs/v1.0.0-backup-restore-manual-results.md"
+    },
+    "releaseDecision": "Core features and prior engineering acceptance complete; maintainer reports six smoke PASS (dates unprovided) and normal Windows backup/restore 10/10 PASS on 2026-10-16. Prior backup automation 28 unit/4 E2E/42 scenario/4 ZIP remains unchanged, not rerun. Detailed checklist 3 pass / 50 pending: only B06/B07 newly pass, C07 preserved. No known confirmed unresolved P0/P1; real AI quality, pairing exceptions, native permissions/DPI/SmartScreen and other untested paths remain separate. v1.0.0 remains a draft; no production, version, ZIP, hash or Release changes and no authorization for public release or Chrome Web Store submission."
+  },
+  "pairingFlowManualArchive": {
+    "version": "1.0.0",
+    "status": "PASS",
+    "source": "维护者在本项目 ChatGPT 对话中提供的真实环境人工测试声明",
+    "codexReexecuted": false,
+    "performedAt": null,
+    "dateStatus": "日期待补充",
+    "record": "docs/v1.0.0-pairing-manual-results.md",
+    "total": 3,
+    "passed": 3,
+    "pending": 0,
+    "failed": 0,
+    "issuesDeclared": "无",
+    "screenshotsProvided": [],
+    "logsProvided": [],
+    "windowsFullVersion": null,
+    "chromeFullVersion": null,
+    "pairingCredentialsRecorded": false,
+    "cases": [
+      {
+        "id": "C03",
+        "maintainerStatement": "首次配对：PASS",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": null,
+        "dateStatus": "日期待补充"
+      },
+      {
+        "id": "C04",
+        "maintainerStatement": "过期码与重复使用：PASS",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": null,
+        "dateStatus": "日期待补充"
+      },
+      {
+        "id": "C05",
+        "maintainerStatement": "撤销配对与重新连接：PASS",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": null,
+        "dateStatus": "日期待补充"
+      }
+    ],
+    "previousRecords": [
+      {
+        "caseId": "C03",
+        "from": "pending",
+        "to": "pass",
+        "previousRecord": {
+          "phase": "21",
+          "candidate_version": "1.0.0-rc.1",
+          "case_id": "C03",
+          "scenario": "首次一次性安全配对",
+          "status": "pending",
+          "session_id": "",
+          "performed_at": "",
+          "tester_alias": "",
+          "evidence_files": "",
+          "actual_result": "",
+          "pending_or_blocked_reason": "尚无本轮人工执行证据",
+          "bug_id": "",
+          "retest_of": ""
+        }
+      },
+      {
+        "caseId": "C04",
+        "from": "pending",
+        "to": "pass",
+        "previousRecord": {
+          "phase": "21",
+          "candidate_version": "1.0.0-rc.1",
+          "case_id": "C04",
+          "scenario": "过期与已用配对码",
+          "status": "pending",
+          "session_id": "",
+          "performed_at": "",
+          "tester_alias": "",
+          "evidence_files": "",
+          "actual_result": "",
+          "pending_or_blocked_reason": "尚无本轮人工执行证据",
+          "bug_id": "",
+          "retest_of": ""
+        }
+      },
+      {
+        "caseId": "C05",
+        "from": "pending",
+        "to": "pass",
+        "previousRecord": {
+          "phase": "21",
+          "candidate_version": "1.0.0-rc.1",
+          "case_id": "C05",
+          "scenario": "撤销与重新配对",
+          "status": "pending",
+          "session_id": "",
+          "performed_at": "",
+          "tester_alias": "",
+          "evidence_files": "",
+          "actual_result": "",
+          "pending_or_blocked_reason": "尚无本轮人工执行证据",
+          "bug_id": "",
+          "retest_of": ""
+        }
+      }
+    ],
+    "C08RemainsPending": true,
+    "otherCaseStatusesPreserved": true,
     "notAdditiveWithDetailedCaseCount": true
   }
 }

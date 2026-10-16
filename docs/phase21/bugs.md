@@ -1,6 +1,8 @@
 # Phase 21：缺陷与修复记录
 
-> 最新人工归档：维护者声明于 **2026-10-16** 完成 v1.0.0 Windows 备份恢复 M01–M10，**10/10 PASS**，无新增缺陷声明；来源是 [ChatGPT 对话中的维护者结果](../v1.0.0-backup-restore-manual-results.md)，不是 Codex 本轮重测。详细结果仅 B06/B07 新增通过，现 **3 pass / 50 pending**。Popup P1 仍为 fixed + manually verified，没有其他已确认未解决 P0/P1；未覆盖的异常、权限、DPI、配对及真实 AI 场景不自动通过。下面各历史条目的数量和状态保留其当时边界。
+> 最新配对人工归档：维护者确认 v1.0.0 **C03/C04/C05 全部 PASS，问题说明无，实际日期待补充**。来源为 [ChatGPT 对话中的人工声明](../v1.0.0-pairing-manual-results.md)，不是 Codex 重测；未补造截图、日志、配对码或时间。详细表现为 **6 pass / 47 pending / 0 fail**，原 C07/B06/B07 保留。没有新增问题记录或其他已确认未解决 P0/P1；Popup P1 保持 fixed + manually verified。C08 等未覆盖场景继续 pending；以下备份及更早记录保留当时统计。
+
+> 此前备份人工归档：维护者声明于 **2026-10-16** 完成 v1.0.0 Windows 备份恢复 M01–M10，**10/10 PASS**，无新增缺陷声明；来源是 [ChatGPT 对话中的维护者结果](../v1.0.0-backup-restore-manual-results.md)，不是 Codex 重测。该次仅 B06/B07 新增通过，当时为 **3 pass / 50 pending**。Popup P1 保持 fixed + manually verified；未覆盖条件没有自动通过，各历史条目的数量和状态保留其当时边界。
 
 > 此前 2026-10-16 自动化备份恢复专项：在冻结 1.0.0 便携构建与隔离合成库上，28 定向单测、4 E2E、42 专项及 4 Release 校验通过。文件锁引发的 500 是预期故障注入，已验证阻断半状态、保留事务日志并安全回滚五文件，不登记为新生产 Bug；未发现新的已确认 P0/P1。生产代码、旧包和 Popup 已关闭状态不变。见 [实测范围与限制](../v1.0.0-backup-restore-validation.md)，人工恢复在该次记录时为 PENDING，现按上方新声明更新。
 
