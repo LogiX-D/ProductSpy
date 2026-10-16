@@ -315,10 +315,10 @@
   ],
   "manual": {
     "total": 53,
-    "pending": 47,
-    "pass": 6,
+    "pending": 46,
+    "pass": 7,
     "evidence": "docs/phase21/manual-results.csv",
-    "fullyPassedCaseIds": ["C03", "C04", "C05", "C07", "B06", "B07"],
+    "fullyPassedCaseIds": ["C03", "C04", "C05", "C07", "C08", "B06", "B07"],
     "partialCoverageCaseIds": [
       "W02",
       "W05",
@@ -335,27 +335,15 @@
     ],
     "statusChangesThisUpdate": [
       {
-        "caseId": "C03",
+        "caseId": "C08",
         "from": "pending",
         "to": "pass",
-        "evidence": "docs/v1.0.0-pairing-manual-results.md"
-      },
-      {
-        "caseId": "C04",
-        "from": "pending",
-        "to": "pass",
-        "evidence": "docs/v1.0.0-pairing-manual-results.md"
-      },
-      {
-        "caseId": "C05",
-        "from": "pending",
-        "to": "pass",
-        "evidence": "docs/v1.0.0-pairing-manual-results.md"
+        "evidence": "docs/v1.0.0-offline-sync-manual-results.md"
       }
     ],
-    "passedCountIncreaseThisUpdate": 3,
+    "passedCountIncreaseThisUpdate": 1,
     "existingResultsPreserved": true,
-    "evidenceScope": "53 detailed cases: only C03/C04/C05 newly pass on explicit maintainer original-case declarations, with execution dates unprovided. C07/B06/B07 records remain unchanged; all other case statuses remain unchanged. Smoke, backup and pairing summaries overlap these cases and are not added to its denominator.",
+    "evidenceScope": "Counts recomputed from every CSV row after changing only C08 on the maintainer five-point declaration. Original C03/C04/C05/C07/B06/B07 and all other rows are unchanged. Execution date of C08 is unprovided. Smoke and specialty summaries overlap detailed cases and are not added to its denominator.",
     "backupRestoreAutomationEvidence": "docs/v1.0.0-backup-restore-validation.md",
     "backupRestoreStatusChangesThisUpdate": [
       {
@@ -373,7 +361,8 @@
     ],
     "backupRestoreManualEvidence": "docs/v1.0.0-backup-restore-manual-results.md",
     "fail": 0,
-    "pairingFlowEvidence": "docs/v1.0.0-pairing-manual-results.md"
+    "pairingFlowEvidence": "docs/v1.0.0-pairing-manual-results.md",
+    "offlineSyncEvidence": "docs/v1.0.0-offline-sync-manual-results.md"
   },
   "videoFollowUp": {
     "evidence": "docs/phase21/video-timing-final.json",
@@ -484,7 +473,7 @@
       }
     ]
   },
-  "releaseDecision": "Core features and prior engineering acceptance complete. Maintainer smoke 6/6 PASS (dates unprovided), normal backup/restore 10/10 PASS on 2026-10-16, and pairing C03-C05 3/3 PASS (execution dates unprovided) are separate declarations, not new Codex automation. Detailed checklist is 6 pass / 47 pending / 0 fail; only C03/C04/C05 newly pass, C07/B06/B07 unchanged. Prior automation and frozen assets preserved, no app tests rerun. No known confirmed unresolved P0/P1; C08 offline retry, exits, other native/browser scenarios, permissions/DPI/SmartScreen, media timing and real AI quality remain unverified. v1.0.0 stays draft; no production, version, ZIP, SHA or Release changes, no public release or Chrome Web Store submission.",
+  "releaseDecision": "Core features and prior engineering acceptance remain complete. Maintainer C08 offline capture/restart/retry/deduplication/data preservation PASS is archived with no execution date provided, not new Codex automation. Detailed counts are recomputed from CSV: 7 pass / 46 pending / 0 fail, total 53; only C08 changed. Prior smoke 6/6, backup 10/10 and pairing 3/3 declarations and automation remain intact, not added to detailed totals. No confirmed unresolved P0/P1; next priority W05/W06 native exit paths, service stop and settings/pairing preservation. Permissions/DPI/SmartScreen, backup cancellation/conflicts and real AI quality remain separate pending risks. No production/version/dependency/build/archive/SHA/Release changes; v1.0.0 stays draft, not published or submitted to Chrome Web Store.",
   "historicalAssessment": {
     "assessedAt": "2026-10-14T08:02:48.142Z",
     "candidateVersion": "1.0.0-rc.1",
@@ -988,8 +977,76 @@
         }
       }
     ],
-    "C08RemainsPending": true,
     "otherCaseStatusesPreserved": true,
-    "notAdditiveWithDetailedCaseCount": true
+    "notAdditiveWithDetailedCaseCount": true,
+    "C08WasPendingAtPairingArchive": true,
+    "C08Scope": "Previous pairing-archive snapshot only; current C08 status is recorded separately in offlineSyncManualArchive."
+  },
+  "previousOfflineSyncManualAssessment": {
+    "baselineCommit": "d6a80b0c9941a028f99b08f5886e946f9622ed44",
+    "detailedCounts": {
+      "total": 53,
+      "pass": 6,
+      "pending": 47,
+      "fail": 0
+    },
+    "previousReleaseDecision": "Core features and prior engineering acceptance complete. Maintainer smoke 6/6 PASS (dates unprovided), normal backup/restore 10/10 PASS on 2026-10-16, and pairing C03-C05 3/3 PASS (execution dates unprovided) are separate declarations, not new Codex automation. Detailed checklist is 6 pass / 47 pending / 0 fail; only C03/C04/C05 newly pass, C07/B06/B07 unchanged. Prior automation and frozen assets preserved, no app tests rerun. No known confirmed unresolved P0/P1; C08 offline retry, exits, other native/browser scenarios, permissions/DPI/SmartScreen, media timing and real AI quality remain unverified. v1.0.0 stays draft; no production, version, ZIP, SHA or Release changes, no public release or Chrome Web Store submission."
+  },
+  "offlineSyncManualArchive": {
+    "version": "1.0.0",
+    "caseId": "C08",
+    "status": "PASS",
+    "source": "维护者在本项目 ChatGPT 对话中提供的人工测试声明",
+    "codexReexecuted": false,
+    "performedAt": null,
+    "dateStatus": "日期待补充",
+    "record": "docs/v1.0.0-offline-sync-manual-results.md",
+    "issuesDeclared": "无",
+    "confirmed": [
+      "工作台正常停止后，Chrome 扩展可以离线暂存采集商品。",
+      "重新启动工作台后，可以重新连接并重试同步。",
+      "离线暂存的商品成功进入工作台。",
+      "重复执行同步不会产生重复商品。",
+      "原有商品资料没有丢失。"
+    ],
+    "screenshotsProvided": [],
+    "logsProvided": [],
+    "chromeFullVersion": null,
+    "windowsEnvironment": null,
+    "actualTestDirectory": null,
+    "recordCountsProvided": null,
+    "previousCaseRecord": {
+      "phase": "21",
+      "candidate_version": "1.0.0-rc.1",
+      "case_id": "C08",
+      "scenario": "离线暂存重启与重试同步",
+      "status": "pending",
+      "session_id": "",
+      "performed_at": "",
+      "tester_alias": "",
+      "evidence_files": "",
+      "actual_result": "",
+      "pending_or_blocked_reason": "尚无本轮人工执行证据",
+      "bug_id": "",
+      "retest_of": ""
+    },
+    "otherDetailedRowsPreserved": true,
+    "doesNotPassW05W06": true
+  },
+  "nextManualPriority": {
+    "caseIds": ["W05", "W06"],
+    "status": "PENDING",
+    "scope": "Windows 退出与重启专项；不要求重复已确认的 C08 全链",
+    "remainingW05": [
+      "仅关闭网页时服务仍运行",
+      "通过启动器重新打开同一工作台",
+      "停止并退出后启动器和自己服务结束，刷新不能在线写入"
+    ],
+    "remainingW06": [
+      "右上角 × 独立退出路径",
+      "两种退出路径均停止自己服务",
+      "重启后数据、设置及配对状态逐项保持"
+    ],
+    "safety": "仅隔离测试资料；自定义 DataRoot 继续同一隔离入口，不能误开默认生产目录；不结束陌生进程或删除资料/队列"
   }
 }

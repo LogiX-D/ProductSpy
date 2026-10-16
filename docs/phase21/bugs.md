@@ -1,6 +1,8 @@
 # Phase 21：缺陷与修复记录
 
-> 最新配对人工归档：维护者确认 v1.0.0 **C03/C04/C05 全部 PASS，问题说明无，实际日期待补充**。来源为 [ChatGPT 对话中的人工声明](../v1.0.0-pairing-manual-results.md)，不是 Codex 重测；未补造截图、日志、配对码或时间。详细表现为 **6 pass / 47 pending / 0 fail**，原 C07/B06/B07 保留。没有新增问题记录或其他已确认未解决 P0/P1；Popup P1 保持 fixed + manually verified。C08 等未覆盖场景继续 pending；以下备份及更早记录保留当时统计。
+> 最新 C08 人工归档：维护者确认 v1.0.0 离线暂存、重启重连、重试入库、重复去重及原资料保留 PASS，问题说明无，实际日期待补充。来源为 [维护者人工声明](../v1.0.0-offline-sync-manual-results.md)，不是 Codex 本轮重测，无新截图/日志或完整环境信息。详细表实算 **7 pass / 46 pending / 0 fail**，仅 C08 变化；没有新确认未解决 P0/P1，Popup P1 状态不变。W05/W06 仍 pending，下一阶段优先其完整退出与重启条件；以下配对/备份旧统计保留当时边界。
+
+> 此前配对人工归档（保留当时状态）：维护者确认 v1.0.0 **C03/C04/C05 全部 PASS，问题说明无，实际日期待补充**。来源为 [ChatGPT 对话中的人工声明](../v1.0.0-pairing-manual-results.md)，不是 Codex 重测；未补造截图、日志、配对码或时间。详细表现为 **6 pass / 47 pending / 0 fail**，原 C07/B06/B07 保留。没有新增问题记录或其他已确认未解决 P0/P1；Popup P1 保持 fixed + manually verified。C08 等未覆盖场景继续 pending；以下备份及更早记录保留当时统计。
 
 > 此前备份人工归档：维护者声明于 **2026-10-16** 完成 v1.0.0 Windows 备份恢复 M01–M10，**10/10 PASS**，无新增缺陷声明；来源是 [ChatGPT 对话中的维护者结果](../v1.0.0-backup-restore-manual-results.md)，不是 Codex 重测。该次仅 B06/B07 新增通过，当时为 **3 pass / 50 pending**。Popup P1 保持 fixed + manually verified；未覆盖条件没有自动通过，各历史条目的数量和状态保留其当时边界。
 
