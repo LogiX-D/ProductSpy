@@ -1,5 +1,7 @@
 # Phase 21：缺陷与修复记录
 
+> 最新归档：维护者整批确认v1.0.0剩余44项PASS、无异常无失败，详细清单现为**53 PASS /0 PENDING /0 FAIL**。[最终归档](../v1.0.0-final-manual-acceptance-results.md)记录来源与限制，实际日期待补充，非Codex重测。没有新增或已登记未解决产品P0/P1/P2；Popup P1继续fixed + manually verified。历史视频时序原因仍未确认，不因整批PASS虚构修复。下方历史状态按原时点保留；最终发布判断为CONDITIONAL GO，不代表公开授权。
+
 > 最新 Windows 生命周期归档：维护者按原 W05/W06 标准确认 v1.0.0 整项 **2/2 PASS，问题说明无，实际日期待补充**，见 [正式记录](../v1.0.0-windows-lifecycle-manual-results.md)。仅收到整项声明，没有逐步骤日志或 PID；不是 Codex 本轮执行。CSV 实算 **9 pass / 44 pending / 0 fail**，只改这两行，其他行和 Popup P1 状态不变。没有新已确认未解决 P0/P1；下一批为 B03/B04/B08，再 C06 和支持环境兼容性。以下历史状态按各自归档时点保留。
 
 > 此前 C08 人工归档（当时状态）：维护者确认 v1.0.0 离线暂存、重启重连、重试入库、重复去重及原资料保留 PASS，问题说明无，实际日期待补充。来源为 [维护者人工声明](../v1.0.0-offline-sync-manual-results.md)，不是 Codex 本轮重测，无新截图/日志或完整环境信息。详细表实算 **7 pass / 46 pending / 0 fail**，仅 C08 变化；没有新确认未解决 P0/P1，Popup P1 状态不变。W05/W06 仍 pending，下一阶段优先其完整退出与重启条件；以下配对/备份旧统计保留当时边界。

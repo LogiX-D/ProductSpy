@@ -1,5 +1,7 @@
 # Chrome Web Store 提交准备
 
+> 当前适用范围：1.0.0（Manifest 数字版 1.0.0.3）；正式文件名为 `ProductSpy-1.0.0-windows-x64.zip`、`ProductSpy-1.0.0-extension.zip`，既有哈希及草稿附件未变。[商店材料目录](store/README.md)、[隐私披露](store/privacy-disclosures.md)和[最终人工归档](v1.0.0-final-manual-acceptance-results.md)提供当前文档入口。维护者已声明53/53 PASS，但没有提供完整逐步骤/真实AI附件；未提交商店、未复核未来提交时的全部政策。**下文保留0.2.0/Phase10原准备记录，包括当时未发现Chrome和旧包名，属于历史事实，不代表当前安装环境或待验收数量。** GitHub公开发布与商店提交分别需要维护者另行决定。
+
 ProductSpy 0.2.0 提供 Windows x64 便携工作台与 MV3 Extension ZIP，保留 Phase 9 的会话认证和一次性安全配对。本阶段准备可复用的商店材料，**未支付注册费用、未操作正式提交审核、未获得审核通过**。
 
 ## 提交材料

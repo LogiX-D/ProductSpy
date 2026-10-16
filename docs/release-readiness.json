@@ -9,7 +9,7 @@
     "featureDevelopmentComplete": true,
     "engineeringAutomationPassed": true,
     "engineeringAutomationScope": "New 1.0.0 archives: full build/unit/E2E/portable/nine upgrade paths/ZIP checks completed; manual and paid-model acceptance remain separate.",
-    "criticalManualAcceptancePassed": false,
+    "criticalManualAcceptancePassed": true,
     "confirmedUnresolvedP0P1": [],
     "absenceOfUntestedDefectsProven": false,
     "realAiQualityVerified": false,
@@ -23,7 +23,18 @@
     "storeSubmitted": false,
     "paidAiCalls": 0,
     "automatedBackupRestoreVerified": true,
-    "nativeManualBackupRestoreVerified": true
+    "nativeManualBackupRestoreVerified": true,
+    "criticalManualAcceptanceScope": "53/53 maintainer declarations, not independent step-evidence review",
+    "realAiQualityMaintainerDeclaredPass": true,
+    "realAiQualityEvidenceComplete": false,
+    "maintainerManualAcceptancePassed": true,
+    "confirmedUnresolvedP0P1P2": [],
+    "releaseVerdict": "CONDITIONAL GO",
+    "publicationAuthorized": false,
+    "paidAiCallsThisArchive": 0,
+    "paidAiCallsScope": "Codex executions only; maintainer real-model request count/cost are unprovided.",
+    "maintainerRealAiRequestCount": null,
+    "currentReviewedVersion": "1.0.0"
   },
   "currentChecks": {
     "startedAt": "2026-10-14T08:00:14.317Z",
@@ -315,39 +326,422 @@
   ],
   "manual": {
     "total": 53,
-    "pending": 44,
-    "pass": 9,
+    "pending": 0,
+    "pass": 53,
     "evidence": "docs/phase21/manual-results.csv",
-    "fullyPassedCaseIds": ["W05", "W06", "C03", "C04", "C05", "C07", "C08", "B06", "B07"],
-    "partialCoverageCaseIds": [
+    "fullyPassedCaseIds": [
+      "W01",
       "W02",
+      "W03",
+      "W04",
+      "W05",
+      "W06",
+      "W07",
+      "W08",
+      "W09",
+      "W10",
+      "W11",
+      "W12",
+      "W13",
+      "W14",
+      "W15",
       "C01",
       "C02",
+      "C03",
+      "C04",
+      "C05",
+      "C06",
+      "C07",
+      "C08",
       "A01",
+      "A02",
+      "A03",
       "F01",
+      "F02",
+      "F03",
+      "F04",
       "F05",
+      "F06",
+      "F07",
       "F08",
+      "F09",
+      "F10",
+      "F11",
+      "F12",
       "B01",
       "B02",
-      "B08"
+      "B03",
+      "B04",
+      "B05",
+      "B06",
+      "B07",
+      "B08",
+      "B09",
+      "U01",
+      "U02",
+      "AI01",
+      "AI02",
+      "AI03",
+      "G01"
     ],
+    "partialCoverageCaseIds": [],
     "statusChangesThisUpdate": [
       {
-        "caseId": "W05",
+        "caseId": "W01",
         "from": "pending",
         "to": "pass",
-        "evidence": "docs/v1.0.0-windows-lifecycle-manual-results.md"
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
       },
       {
-        "caseId": "W06",
+        "caseId": "W02",
         "from": "pending",
         "to": "pass",
-        "evidence": "docs/v1.0.0-windows-lifecycle-manual-results.md"
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "W03",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "W04",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "W07",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "W08",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "W09",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "W10",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "W11",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "W12",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "W13",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "W14",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "W15",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "C01",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "C02",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "C06",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "A01",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "A02",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "A03",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "F01",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "F02",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "F03",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "F04",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "F05",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "F06",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "F07",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "F08",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "F09",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "F10",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "F11",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "F12",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "B01",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "B02",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "B03",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "B04",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "B05",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "B08",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "B09",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "U01",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "U02",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "AI01",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "AI02",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "AI03",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
+      },
+      {
+        "caseId": "G01",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+        "sessionId": "maintainer-v100-final-batch-declaration-01",
+        "performedAt": null
       }
     ],
-    "passedCountIncreaseThisUpdate": 2,
+    "passedCountIncreaseThisUpdate": 44,
     "existingResultsPreserved": true,
-    "evidenceScope": "Counts recomputed from all CSV rows after changing only W05/W06 on maintainer whole-case PASS statements. Current execution dates are unprovided; earlier M09/M10 partial-coverage dates are preserved as history, not used for the whole-case PASS. No step logs or Codex observations are claimed. All other rows are unchanged; specialty summaries are not added to the denominator.",
+    "evidenceScope": "All 44 remaining whole-case PASS results are maintainer batch declarations in ChatGPT; no new Codex manual observations or automation. Actual dates/step attachments absent; original nine rows unchanged. AI details missing; G01 does not authorize publication.",
     "backupRestoreAutomationEvidence": "docs/v1.0.0-backup-restore-validation.md",
     "backupRestoreStatusChangesThisUpdate": [
       {
@@ -367,7 +761,9 @@
     "fail": 0,
     "pairingFlowEvidence": "docs/v1.0.0-pairing-manual-results.md",
     "offlineSyncEvidence": "docs/v1.0.0-offline-sync-manual-results.md",
-    "windowsLifecycleEvidence": "docs/v1.0.0-windows-lifecycle-manual-results.md"
+    "windowsLifecycleEvidence": "docs/v1.0.0-windows-lifecycle-manual-results.md",
+    "finalBatchEvidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+    "finalBatchMachineEvidence": "docs/v1.0.0-final-manual-acceptance-results.json"
   },
   "videoFollowUp": {
     "evidence": "docs/phase21/video-timing-final.json",
@@ -478,7 +874,7 @@
       }
     ]
   },
-  "releaseDecision": "Core features and prior full engineering acceptance remain complete. Maintainer whole-case W05/W06 PASS (2/2) is archived with no actual test date or step logs provided, not new Codex observations or automation. Counts recomputed from CSV: 9 pass / 44 pending / 0 fail, total 53; only W05/W06 changed. Earlier partial-coverage dates, prior smoke 6/6, backup 10/10, pairing 3/3 and C08 declarations and automation are preserved, not double-counted. No confirmed unresolved P0/P1. Next priority B03 then B04 then B08 data protection, followed by C06 reload and supported Windows permissions/DPI/SmartScreen; real AI quality remains unverified. No production/dependency/version/build/archive/SHA/Release changes, v1.0.0 remains draft and is not submitted to Chrome Web Store.",
+  "releaseDecision": "CONDITIONAL GO. All 53 cases are maintainer-declared PASS;44 newly archived in independent session with unknown actual dates;9 original records unchanged. Historical745 unit/34 E2E/13 portable/11 MV3/9 upgrade216/42 backup/4 ZIP evidence retained, not rerun. No registered unresolved product P0/P1/P2. True AI details and step attachments missing; historical video timing and external access limits remain. Separate maintainer acceptance of evidence limits, truthful Release notes and explicit publication authorization required. No Release/asset/publication/CWS/paid-AI action.",
   "historicalAssessment": {
     "assessedAt": "2026-10-14T08:02:48.142Z",
     "candidateVersion": "1.0.0-rc.1",
@@ -1039,32 +1435,9 @@
     "doesNotPassW05W06": true
   },
   "nextManualPriority": {
-    "caseIds": ["B03", "B04", "B08"],
-    "status": "PENDING",
-    "scope": "备份取消、较新人工内容冲突保护及重复恢复；不重复已通过正常备份/配对/C08/W05/W06。",
-    "orderedChecks": [
-      {
-        "id": "B03",
-        "reason": "低风险先校准预览取消不写入，已有自动化通过但人工取消路径未确认。"
-      },
-      {
-        "id": "B04",
-        "reason": "较新人工编辑保护的数据安全价值最高；在 B03 校准后的同一合成环境验证保留策略。"
-      },
-      {
-        "id": "B08",
-        "reason": "复用前两项资料验证重复预览、去重、重启及配对保持，不能单凭正常重启通过推定。"
-      },
-      {
-        "id": "C06",
-        "reason": "队列先同步后重新加载扩展，检查状态及已有资料，不卸载扩展。"
-      },
-      {
-        "id": "W11/W12/W13/W14/W15",
-        "reason": "按首发支持环境验证权限与125/150/200%缩放，正常启动遇到的SmartScreen/Defender提示如实记录；不改生产ACL或绕过保护。"
-      }
-    ],
-    "safety": "新隔离 DataRoot/RuntimeRoot 与专用 Chrome profile；不清空原库、不修改原备份或业务JSON、不删除恢复日志、不卸载扩展，不执行收费AI。"
+    "caseIds": [],
+    "status": "ALL_CASES_MAINTAINER_DECLARED_PASS",
+    "scope": "不安排重复人工验收；只补充可提供的现有元数据/附件、确认风险披露及另行公开授权。"
   },
   "previousWindowsLifecycleAssessment": {
     "baselineCommit": "cc4b6c8f9598b718db23f1efd92f853d69691261",
@@ -1197,6 +1570,754 @@
         "AI01–AI03 真实质量未授权；必须如实披露"
       ]
     },
-    "allPriorEvidencePreserved": true
+    "allPriorEvidencePreserved": true,
+    "historicalScope": "Snapshot of the earlier engineering run. Manual9/44 and real-AI pending in that snapshot are not current CSV counts; see latestReleaseReadinessReview and finalManualAcceptanceArchive."
+  },
+  "beforeFinalManualDeclaration": {
+    "assessment": {
+      "featureDevelopmentComplete": true,
+      "engineeringAutomationPassed": true,
+      "engineeringAutomationScope": "New 1.0.0 archives: full build/unit/E2E/portable/nine upgrade paths/ZIP checks completed; manual and paid-model acceptance remain separate.",
+      "criticalManualAcceptancePassed": true,
+      "confirmedUnresolvedP0P1": [],
+      "absenceOfUntestedDefectsProven": false,
+      "realAiQualityVerified": false,
+      "readyToBuildV100": true,
+      "buildAuthority": "Explicit maintainer instruction on 2026-10-16 to prepare 1.0.0 packages and a draft Release from rc.2; not a declaration that all manual acceptance passed.",
+      "stableEngineeringAcceptancePassed": true,
+      "stableDraftCreated": true,
+      "stableArtifactsGenerated": true,
+      "keepCandidate": "1.0.0-rc.2",
+      "releasePublished": false,
+      "storeSubmitted": false,
+      "paidAiCalls": 0,
+      "automatedBackupRestoreVerified": true,
+      "nativeManualBackupRestoreVerified": true,
+      "criticalManualAcceptanceScope": "53/53 maintainer declarations, not independent step-evidence review",
+      "realAiQualityMaintainerDeclaredPass": true,
+      "realAiQualityEvidenceComplete": false,
+      "maintainerManualAcceptancePassed": true,
+      "confirmedUnresolvedP0P1P2": [],
+      "releaseVerdict": "CONDITIONAL GO",
+      "publicationAuthorized": false,
+      "paidAiCallsThisArchive": 0
+    },
+    "manual": {
+      "total": 53,
+      "pending": 0,
+      "pass": 53,
+      "evidence": "docs/phase21/manual-results.csv",
+      "fullyPassedCaseIds": [
+        "W01",
+        "W02",
+        "W03",
+        "W04",
+        "W05",
+        "W06",
+        "W07",
+        "W08",
+        "W09",
+        "W10",
+        "W11",
+        "W12",
+        "W13",
+        "W14",
+        "W15",
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C05",
+        "C06",
+        "C07",
+        "C08",
+        "A01",
+        "A02",
+        "A03",
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B09",
+        "U01",
+        "U02",
+        "AI01",
+        "AI02",
+        "AI03",
+        "G01"
+      ],
+      "partialCoverageCaseIds": [],
+      "statusChangesThisUpdate": [
+        {
+          "caseId": "W01",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "W02",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "W03",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "W04",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "W07",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "W08",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "W09",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "W10",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "W11",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "W12",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "W13",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "W14",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "W15",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "C01",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "C02",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "C06",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "A01",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "A02",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "A03",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "F01",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "F02",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "F03",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "F04",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "F05",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "F06",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "F07",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "F08",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "F09",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "F10",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "F11",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "F12",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "B01",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "B02",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "B03",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "B04",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "B05",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "B08",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "B09",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "U01",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "U02",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "AI01",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "AI02",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "AI03",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        },
+        {
+          "caseId": "G01",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+          "sessionId": "maintainer-v100-final-batch-declaration-01",
+          "performedAt": null
+        }
+      ],
+      "passedCountIncreaseThisUpdate": 44,
+      "existingResultsPreserved": true,
+      "evidenceScope": "All 44 remaining whole-case PASS results are maintainer batch declarations in ChatGPT; no new Codex manual observations or automation. Actual dates/step attachments absent; original nine rows unchanged. AI details missing; G01 does not authorize publication.",
+      "backupRestoreAutomationEvidence": "docs/v1.0.0-backup-restore-validation.md",
+      "backupRestoreStatusChangesThisUpdate": [
+        {
+          "caseId": "B06",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-backup-restore-manual-results.md"
+        },
+        {
+          "caseId": "B07",
+          "from": "pending",
+          "to": "pass",
+          "evidence": "docs/v1.0.0-backup-restore-manual-results.md"
+        }
+      ],
+      "backupRestoreManualEvidence": "docs/v1.0.0-backup-restore-manual-results.md",
+      "fail": 0,
+      "pairingFlowEvidence": "docs/v1.0.0-pairing-manual-results.md",
+      "offlineSyncEvidence": "docs/v1.0.0-offline-sync-manual-results.md",
+      "windowsLifecycleEvidence": "docs/v1.0.0-windows-lifecycle-manual-results.md",
+      "finalBatchEvidence": "docs/v1.0.0-final-manual-acceptance-results.md",
+      "finalBatchMachineEvidence": "docs/v1.0.0-final-manual-acceptance-results.json"
+    },
+    "releaseDecision": "Core features and prior full engineering acceptance remain complete. Maintainer whole-case W05/W06 PASS (2/2) is archived with no actual test date or step logs provided, not new Codex observations or automation. Counts recomputed from CSV: 9 pass / 44 pending / 0 fail, total 53; only W05/W06 changed. Earlier partial-coverage dates, prior smoke 6/6, backup 10/10, pairing 3/3 and C08 declarations and automation are preserved, not double-counted. No confirmed unresolved P0/P1. Next priority B03 then B04 then B08 data protection, followed by C06 reload and supported Windows permissions/DPI/SmartScreen; real AI quality remains unverified. No production/dependency/version/build/archive/SHA/Release changes, v1.0.0 remains draft and is not submitted to Chrome Web Store.",
+    "nextManualPriority": {
+      "caseIds": ["B03", "B04", "B08"],
+      "status": "PENDING",
+      "scope": "备份取消、较新人工内容冲突保护及重复恢复；不重复已通过正常备份/配对/C08/W05/W06。",
+      "orderedChecks": [
+        {
+          "id": "B03",
+          "reason": "低风险先校准预览取消不写入，已有自动化通过但人工取消路径未确认。"
+        },
+        {
+          "id": "B04",
+          "reason": "较新人工编辑保护的数据安全价值最高；在 B03 校准后的同一合成环境验证保留策略。"
+        },
+        {
+          "id": "B08",
+          "reason": "复用前两项资料验证重复预览、去重、重启及配对保持，不能单凭正常重启通过推定。"
+        },
+        {
+          "id": "C06",
+          "reason": "队列先同步后重新加载扩展，检查状态及已有资料，不卸载扩展。"
+        },
+        {
+          "id": "W11/W12/W13/W14/W15",
+          "reason": "按首发支持环境验证权限与125/150/200%缩放，正常启动遇到的SmartScreen/Defender提示如实记录；不改生产ACL或绕过保护。"
+        }
+      ],
+      "safety": "新隔离 DataRoot/RuntimeRoot 与专用 Chrome profile；不清空原库、不修改原备份或业务JSON、不删除恢复日志、不卸载扩展，不执行收费AI。"
+    }
+  },
+  "finalManualAcceptanceArchive": {
+    "report": "docs/v1.0.0-final-manual-acceptance-results.md",
+    "machineReport": "docs/v1.0.0-final-manual-acceptance-results.json",
+    "recordedDate": "2026-10-17",
+    "performedAt": null,
+    "sessionId": "maintainer-v100-final-batch-declaration-01",
+    "newCaseIds": [
+      "W01",
+      "W02",
+      "W03",
+      "W04",
+      "W07",
+      "W08",
+      "W09",
+      "W10",
+      "W11",
+      "W12",
+      "W13",
+      "W14",
+      "W15",
+      "C01",
+      "C02",
+      "C06",
+      "A01",
+      "A02",
+      "A03",
+      "F01",
+      "F02",
+      "F03",
+      "F04",
+      "F05",
+      "F06",
+      "F07",
+      "F08",
+      "F09",
+      "F10",
+      "F11",
+      "F12",
+      "B01",
+      "B02",
+      "B03",
+      "B04",
+      "B05",
+      "B08",
+      "B09",
+      "U01",
+      "U02",
+      "AI01",
+      "AI02",
+      "AI03",
+      "G01"
+    ],
+    "historicalCaseIds": ["W05", "W06", "C03", "C04", "C05", "C07", "C08", "B06", "B07"],
+    "counts": {
+      "pass": 53,
+      "pending": 0,
+      "fail": 0
+    },
+    "releaseAssessment": {
+      "verdict": "CONDITIONAL GO",
+      "scope": "frozen ProductSpy v1.0.0 GitHub distribution; not Chrome Web Store approval",
+      "featureDevelopmentComplete": true,
+      "historicalEngineeringAutomationPassed": true,
+      "automationRerunThisTask": false,
+      "maintainerManualAcceptancePassed": true,
+      "maintainerDeclaredManualCounts": {
+        "pass": 53,
+        "pending": 0,
+        "fail": 0
+      },
+      "allDeclaredCaseIds": [
+        "W01",
+        "W02",
+        "W03",
+        "W04",
+        "W05",
+        "W06",
+        "W07",
+        "W08",
+        "W09",
+        "W10",
+        "W11",
+        "W12",
+        "W13",
+        "W14",
+        "W15",
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C05",
+        "C06",
+        "C07",
+        "C08",
+        "A01",
+        "A02",
+        "A03",
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B09",
+        "U01",
+        "U02",
+        "AI01",
+        "AI02",
+        "AI03",
+        "G01"
+      ],
+      "codexObservedAllManualSteps": false,
+      "manualEvidenceFullyReproducible": false,
+      "realAIQualityMaintainerDeclaredPass": true,
+      "realAIQualityIndependentlyReviewed": false,
+      "realAIProviderModelBudgetCostsOutputsSupplied": false,
+      "realAICallsByCodexThisTask": 0,
+      "confirmedUnresolvedProductP0P1P2": [],
+      "absenceOfUndiscoveredDefectsProven": false,
+      "historicalVideoTimingInvestigationClosed": false,
+      "blockingProductDefectsKnown": false,
+      "releaseAuthorized": false,
+      "releasePublished": false,
+      "storeSubmitted": false,
+      "conditionsBeforePublication": [
+        "维护者明确接受整项声明、未知日期、无逐步骤附件、真实AI细节缺口及历史视频时序风险，或补齐现有材料；不要求无意义重复已声明PASS的测试。",
+        "Release正文应引用本次归档与完整证据边界，不能宣传所有设备、所有站点或真实AI质量已被独立审计；既有7附件及哈希保持不变。",
+        "维护者另行明确批准公开指定v1.0.0 Release；G01 PASS和53/53记录不构成公开授权。"
+      ],
+      "nonBlockingEvidenceGaps": [
+        "本批实际测试日期未提供",
+        "正式Windows/Chrome完整环境及逐步骤截图/日志未提供",
+        "AI服务商/模型/请求次数/预算/费用/样本/输出缺失",
+        "历史视频时序原因未确认，UK/DE验证页等外部限制仍适用"
+      ]
+    }
+  },
+  "latestReleaseReadinessReview": {
+    "report": "docs/v1.0.0-final-manual-acceptance-results.md",
+    "assessment": {
+      "verdict": "CONDITIONAL GO",
+      "scope": "frozen ProductSpy v1.0.0 GitHub distribution; not Chrome Web Store approval",
+      "featureDevelopmentComplete": true,
+      "historicalEngineeringAutomationPassed": true,
+      "automationRerunThisTask": false,
+      "maintainerManualAcceptancePassed": true,
+      "maintainerDeclaredManualCounts": {
+        "pass": 53,
+        "pending": 0,
+        "fail": 0
+      },
+      "allDeclaredCaseIds": [
+        "W01",
+        "W02",
+        "W03",
+        "W04",
+        "W05",
+        "W06",
+        "W07",
+        "W08",
+        "W09",
+        "W10",
+        "W11",
+        "W12",
+        "W13",
+        "W14",
+        "W15",
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C05",
+        "C06",
+        "C07",
+        "C08",
+        "A01",
+        "A02",
+        "A03",
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B09",
+        "U01",
+        "U02",
+        "AI01",
+        "AI02",
+        "AI03",
+        "G01"
+      ],
+      "codexObservedAllManualSteps": false,
+      "manualEvidenceFullyReproducible": false,
+      "realAIQualityMaintainerDeclaredPass": true,
+      "realAIQualityIndependentlyReviewed": false,
+      "realAIProviderModelBudgetCostsOutputsSupplied": false,
+      "realAICallsByCodexThisTask": 0,
+      "confirmedUnresolvedProductP0P1P2": [],
+      "absenceOfUndiscoveredDefectsProven": false,
+      "historicalVideoTimingInvestigationClosed": false,
+      "blockingProductDefectsKnown": false,
+      "releaseAuthorized": false,
+      "releasePublished": false,
+      "storeSubmitted": false,
+      "conditionsBeforePublication": [
+        "维护者明确接受整项声明、未知日期、无逐步骤附件、真实AI细节缺口及历史视频时序风险，或补齐现有材料；不要求无意义重复已声明PASS的测试。",
+        "Release正文应引用本次归档与完整证据边界，不能宣传所有设备、所有站点或真实AI质量已被独立审计；既有7附件及哈希保持不变。",
+        "维护者另行明确批准公开指定v1.0.0 Release；G01 PASS和53/53记录不构成公开授权。"
+      ],
+      "nonBlockingEvidenceGaps": [
+        "本批实际测试日期未提供",
+        "正式Windows/Chrome完整环境及逐步骤截图/日志未提供",
+        "AI服务商/模型/请求次数/预算/费用/样本/输出缺失",
+        "历史视频时序原因未确认，UK/DE验证页等外部限制仍适用"
+      ]
+    },
+    "historicalEngineeringReport": "docs/v1.0.0-final-quality-validation.json"
   }
 }

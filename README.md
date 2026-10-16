@@ -1,10 +1,10 @@
 # ProductSpy
 
-本地优先的 Amazon 竞品素材采集与 AI 营销工作台。当前版本 **1.0.0**，基于 rc.2 保留现有商品、素材、竞品对比、AI 分析、模板与内容方案、安全配对和 Windows 便携架构，没有新增业务功能。普通用户先读 [安装与完整使用指南](docs/release-candidate-guide.md)。正式版工程结果见 [交付报告](docs/stable-release-validation.md)；[人工结果表](docs/phase21/manual-results.csv)只记录有直接证据的项，其余保持待验收。Release 仅准备草稿，不公开、不提交 Chrome Web Store。历史 [Phase 21](docs/phase21-validation.md)、[Phase 20](docs/phase20-validation.md)、[Phase 19](docs/phase19-validation.md)、[Phase 18](docs/phase18-validation.md)、[Phase 17](docs/phase17-validation.md)、[Phase 16](docs/phase16-validation.md)与 Phase 9–14 记录保留原始结果，更新记录见 [CHANGELOG](CHANGELOG.md)。
+本地优先的 Amazon 竞品素材采集与 AI 营销工作台。当前版本 **1.0.0**，基于 rc.2 保留现有商品、素材、竞品对比、AI 分析、模板与内容方案、安全配对和 Windows 便携架构，没有新增业务功能。普通用户先读 [安装与完整使用指南](docs/release-candidate-guide.md)。历史工程结果见[统一质量报告](docs/v1.0.0-final-quality-validation.md)；维护者已确认[详细人工结果表](docs/phase21/manual-results.csv) **53/53 PASS**，来源为人工声明，本批日期与逐步骤附件尚未提供。最终判断为 **CONDITIONAL GO**，真实 AI 细节缺口与公开前条件见[最终归档](docs/v1.0.0-final-manual-acceptance-results.md)。Release 仍为草稿，不自动公开、不提交 Chrome Web Store。历史 [Phase 21](docs/phase21-validation.md)、[Phase 20](docs/phase20-validation.md)、[Phase 19](docs/phase19-validation.md)、[Phase 18](docs/phase18-validation.md)、[Phase 17](docs/phase17-validation.md)、[Phase 16](docs/phase16-validation.md)与 Phase 9–14 记录保留原始结果，更新记录见 [CHANGELOG](CHANGELOG.md)。
 
 仅支持 Amazon。此版本没有用户账号、支付、自动发布、价格监控、其他平台或多人协作。
 
-**维护者人工确认（2026-10-16）：** rc.2 在原故障电脑的正式 Google Chrome 工具栏中正常显示，已不再出现小黑框，能够查看和操作；`PAIRING-SMALL-WINDOW` 为 `fixed + manually verified`。这只覆盖维护者明确确认的本项，其他原生窗口、DPI、配对场景及真实 AI 质量未自动通过。根因和边界见 [Hotfix 报告](docs/rc2-popup-hotfix.md)。rc.1/rc.2 原包、哈希和 Release 均保留。
+**维护者人工确认（2026-10-16）：** rc.2 在原故障电脑的正式 Google Chrome 工具栏中正常显示，已不再出现小黑框，能够查看和操作；`PAIRING-SMALL-WINDOW` 为 `fixed + manually verified`。该次声明仅覆盖本项；后续其他详细项的整批 PASS 及证据粒度另见[最终归档](docs/v1.0.0-final-manual-acceptance-results.md)，不把此次日期套用到后续测试。根因和边界见 [Hotfix 报告](docs/rc2-popup-hotfix.md)。rc.1/rc.2 原包、哈希和 Release 均保留。
 
 ## Windows 普通用户：不用安装开发工具
 
@@ -250,8 +250,8 @@ pnpm test:portable
 
 输出在 **`artifacts/`**：
 
-- `ProductSpy-0.5.1-windows-x64.zip`：Windows x64 便携工作台、内置 Node.js、Next.js standalone、启动器和已构建扩展。
-- `ProductSpy-0.5.1-extension.zip`：可供 Chrome Web Store 上传的 MV3 扩展，根目录包含 `manifest.json`。
+- `ProductSpy-1.0.0-windows-x64.zip`：Windows x64 便携工作台、内置 Node.js、Next.js standalone、启动器和已构建扩展。
+- `ProductSpy-1.0.0-extension.zip`：可解压手动加载的 MV3 扩展，根目录包含 `manifest.json`；未提交 Chrome Web Store。
 - 构建校验文件及商店图片：名称与哈希以构建实际输出为准。
 
 已取得真实运行截图及 `artifacts/store/asset-provenance.json` 后，可运行 `pnpm package:store` 生成商店材料 ZIP；脚本校验来源、截图尺寸与哈希，不会用模拟页面补齐截图。真实采集工具是 `scripts/capture-store.mjs`，验收时应先启动使用独立测试数据目录的便携工作台并保持 Mock 模式，避免写入自己的素材库。
@@ -273,8 +273,8 @@ pnpm capture:experience
 
 `test:library-performance` 使用生产工作台及独立测试目录中的 100 / 500 个合成商品，验证分页、组合筛选、500 项批量标签和完整备份恢复，并捕获九张实际界面截图。性能报告在 `.test-data/phase13-performance/`，截图在 `artifacts/ProductSpy-0.5.0-library-experience/`；这些样本不代表真实 Amazon 采集验收。
 
-## 下一阶段
+## 后续维护重点
 
 1. 建立更多国家站、变体和动态视频的实页回归样本，提高采集覆盖率。
 2. 对更大的商品库和历史记录开展压力测试，评估分批备份及增量存储。
-3. 使用授权测试 Key 和明确预算开展真实模型质量评估。
+3. 补充维护者已声明通过的真实模型测试参数、费用与脱敏输出材料；不擅自进行收费重测。

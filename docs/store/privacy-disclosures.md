@@ -1,6 +1,6 @@
 # 商店隐私与权限披露草案
 
-对应代码版本：0.2.0。用于填写 Chrome Web Store 的 Privacy practices。发布者应在 Dashboard 上核对实际字段，不能用「仅本地」作为不披露数据处理的理由。[官方隐私字段指南](https://developer.chrome.com/docs/webstore/cws-dashboard-privacy)、[用户数据 FAQ](https://developer.chrome.com/docs/webstore/program-policies/user-data-faq/)
+对应代码版本：1.0.0（Manifest 数字版 1.0.0.3）；2026-10-17 仅核对版本范围与既有权限，未新增数据用途。这是用于填写 Chrome Web Store Privacy practices 的草案，尚未提交或获审核；维护者人工声明及证据限制见[最终归档](../v1.0.0-final-manual-acceptance-results.md)。发布者应在将来实际提交时核对最新政策和 Dashboard 字段，不能用「仅本地」作为不披露数据处理的理由。[官方隐私字段指南](https://developer.chrome.com/docs/webstore/cws-dashboard-privacy)、[用户数据 FAQ](https://developer.chrome.com/docs/webstore/program-policies/user-data-faq/)
 
 ## 单一用途
 

@@ -1,6 +1,6 @@
 # ProductSpy 隐私说明
 
-更新日期：2026-10-14。适用于 ProductSpy 1.0.0-rc.1 本地优先的 Chrome Extension、Web 工作台与 Windows 便携启动器。
+版本适用范围核对日期：2026-10-17；数据处理规则沿用 2026-10-14 的说明，本次未新增数据用途。适用于 ProductSpy 1.0.0 本地优先的 Chrome Extension、Web 工作台与 Windows 便携启动器（扩展数字版 1.0.0.3）。冻结发行包内文档保留构建时快照；当前验收来源与限制见[最终人工归档](docs/v1.0.0-final-manual-acceptance-results.md)。
 
 ## 采集范围与用途
 

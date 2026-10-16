@@ -1,5 +1,11 @@
 # ProductSpy v1.0 发布就绪判断
 
+## 当前发布审查：53/53维护者声明PASS，CONDITIONAL GO
+
+维护者整批明确确认剩余44项全部PASS、无异常无失败；此前9项原记录保留。CSV实算**53 PASS /0 PENDING /0 FAIL**，独立session归档，实际测试日期待补充。见[最终人工验收与发布审查](v1.0.0-final-manual-acceptance-results.md)及[机器归档](v1.0.0-final-manual-acceptance-results.json)。这不是Codex新增实机操作或自动化重测；旧745单测/34E2E等原证据保留。
+
+**CONDITIONAL GO**：功能与历史工程通过，维护者人工53/53声明通过，无已登记未解决产品P0/P1/P2；原始证据仍不完整。AI01–AI03按声明PASS，但服务商/模型/次数/预算/费用/输出未提供，不等于独立质量验证。G01不授权公开。维护者接受证据限制及历史视频/外部访问风险，更新公开说明并另行明确批准后可考虑公开；本次7附件/ZIP/SHA/Release均不变，仍draft，不提交商店、不调用付费AI。以下旧判断保留为当时快照，后续状态以上述归档为准。
+
 ## 2026-10-17：统一全量质量重测
 
 本轮[统一报告](v1.0.0-final-quality-validation.md)及[机器结果](v1.0.0-final-quality-validation.json)记录实际命令、冻结便携包/升级/备份/真实Amazon/Mock及HTTP Stub边界。工程自动化PASS；生产代码和冻结包未改。人工CSV仍**9 PASS /44 PENDING /0 FAIL**，本轮新增人工PASS为0。6/6烟雾与10/10备份专项继续单独保留；真实付费模型未授权、0调用。新确认产品P0/P1/P2为0；Popup P1保持fixed + manually verified，历史视频时序原因仍未确认。

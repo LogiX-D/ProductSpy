@@ -123,6 +123,6 @@
 | AI 未配置                    | 使用 Mock 即可完整演示；真实模式要配置自己的服务并重启工作台。                                                 |
 | 更新后商品不见               | 在「打开用户数据」检查 data 目录和备份，不要先删除目录；确认使用的是同一个 Windows 用户。                      |
 
-创作功能见 [内容创作指南](content-creation-guide.md)。隐私详情见 [PRIVACY.md](../PRIVACY.md)。当前质量结果与人工待办见 [Phase 18 报告](phase18-validation.md)；[Phase 17 报告](phase17-validation.md)、[Phase 11 报告](phase11-validation.md)保留历史证据。不能把 Chrome for Testing 自动化结果当作正式 Chrome 人工验收。
+创作功能见 [内容创作指南](content-creation-guide.md)。隐私详情见 [PRIVACY.md](../PRIVACY.md)。历史全量工程结果见[统一质量报告](v1.0.0-final-quality-validation.md)，维护者 **53/53 人工声明 PASS** 及发布条件见[最终归档](v1.0.0-final-manual-acceptance-results.md)；实际测试日期和逐步骤附件待补充。[Phase 18](phase18-validation.md)、[Phase 17](phase17-validation.md)、[Phase 11](phase11-validation.md)保留历史证据。不能把 Chrome for Testing 自动化结果当作正式 Chrome 人工验收。
 
-完整功能流程、安装包哈希与验收状态见 [安装与使用指南](release-candidate-guide.md)和 [正式交付报告](stable-release-validation.md)。维护者已确认 rc.2 工具栏小窗口修复，其他未执行的人工场景仍待验收。
+完整功能流程、安装包哈希与验收状态见 [安装与使用指南](release-candidate-guide.md)和 [正式交付报告](stable-release-validation.md)。维护者已确认 rc.2 工具栏小窗口修复及全部详细用例通过；真实 AI 服务商、模型、调用数量、预算/实际费用和原始输出尚未提供，不能写成独立质量复核完成。公开 Release 仍需另行明确批准。

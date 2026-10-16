@@ -1,11 +1,11 @@
 # Chrome Web Store 审核复现说明
 
-对应版本：ProductSpy 0.2.0。扩展是 Amazon 商品采集工具，依赖用户自己运行的本机 Windows 工作台。没有审核账号、Amazon 账号要求、支付墙或 API Key 要求。默认 Mock 模式能完整展示分析流程。
+对应版本：ProductSpy 1.0.0（Manifest 数字版 1.0.0.3）。本文件仍为未提交的商店审核草案。扩展是 Amazon 商品采集工具，依赖用户自己运行的本机 Windows 工作台。没有审核账号、Amazon 账号要求、支付墙或 API Key 要求。默认 Mock 模式能完整展示分析流程；真实 Amazon 可能出现地区/验证码限制，遇到限制应停止并记录，不绕过。维护者声明及证据边界见[最终归档](../v1.0.0-final-manual-acceptance-results.md)。
 
 ## 发布者提交前应补全
 
-- 扩展包：`ProductSpy-0.2.0-extension.zip`，ZIP 根目录为 `manifest.json`。
-- Windows 工作台包：`ProductSpy-0.2.0-windows-x64.zip`。
+- 扩展包：`ProductSpy-1.0.0-extension.zip`，ZIP 根目录为 `manifest.json`。
+- Windows 工作台包：`ProductSpy-1.0.0-windows-x64.zip`。
 - **便携包精确公开下载地址：提交前填写。** 仓库源代码地址不能替代可直接运行的下载资产。
 - 发布版本、包 SHA-256、Windows / Chrome 稳定版验收记录：见本次发布的验收报告和校验文件。
 - 联系与支持：[ProductSpy Issues](https://github.com/LogiX-D/ProductSpy/issues)。
