@@ -315,14 +315,12 @@
   ],
   "manual": {
     "total": 53,
-    "pending": 46,
-    "pass": 7,
+    "pending": 44,
+    "pass": 9,
     "evidence": "docs/phase21/manual-results.csv",
-    "fullyPassedCaseIds": ["C03", "C04", "C05", "C07", "C08", "B06", "B07"],
+    "fullyPassedCaseIds": ["W05", "W06", "C03", "C04", "C05", "C07", "C08", "B06", "B07"],
     "partialCoverageCaseIds": [
       "W02",
-      "W05",
-      "W06",
       "C01",
       "C02",
       "A01",
@@ -335,15 +333,21 @@
     ],
     "statusChangesThisUpdate": [
       {
-        "caseId": "C08",
+        "caseId": "W05",
         "from": "pending",
         "to": "pass",
-        "evidence": "docs/v1.0.0-offline-sync-manual-results.md"
+        "evidence": "docs/v1.0.0-windows-lifecycle-manual-results.md"
+      },
+      {
+        "caseId": "W06",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-windows-lifecycle-manual-results.md"
       }
     ],
-    "passedCountIncreaseThisUpdate": 1,
+    "passedCountIncreaseThisUpdate": 2,
     "existingResultsPreserved": true,
-    "evidenceScope": "Counts recomputed from every CSV row after changing only C08 on the maintainer five-point declaration. Original C03/C04/C05/C07/B06/B07 and all other rows are unchanged. Execution date of C08 is unprovided. Smoke and specialty summaries overlap detailed cases and are not added to its denominator.",
+    "evidenceScope": "Counts recomputed from all CSV rows after changing only W05/W06 on maintainer whole-case PASS statements. Current execution dates are unprovided; earlier M09/M10 partial-coverage dates are preserved as history, not used for the whole-case PASS. No step logs or Codex observations are claimed. All other rows are unchanged; specialty summaries are not added to the denominator.",
     "backupRestoreAutomationEvidence": "docs/v1.0.0-backup-restore-validation.md",
     "backupRestoreStatusChangesThisUpdate": [
       {
@@ -362,7 +366,8 @@
     "backupRestoreManualEvidence": "docs/v1.0.0-backup-restore-manual-results.md",
     "fail": 0,
     "pairingFlowEvidence": "docs/v1.0.0-pairing-manual-results.md",
-    "offlineSyncEvidence": "docs/v1.0.0-offline-sync-manual-results.md"
+    "offlineSyncEvidence": "docs/v1.0.0-offline-sync-manual-results.md",
+    "windowsLifecycleEvidence": "docs/v1.0.0-windows-lifecycle-manual-results.md"
   },
   "videoFollowUp": {
     "evidence": "docs/phase21/video-timing-final.json",
@@ -473,7 +478,7 @@
       }
     ]
   },
-  "releaseDecision": "Core features and prior engineering acceptance remain complete. Maintainer C08 offline capture/restart/retry/deduplication/data preservation PASS is archived with no execution date provided, not new Codex automation. Detailed counts are recomputed from CSV: 7 pass / 46 pending / 0 fail, total 53; only C08 changed. Prior smoke 6/6, backup 10/10 and pairing 3/3 declarations and automation remain intact, not added to detailed totals. No confirmed unresolved P0/P1; next priority W05/W06 native exit paths, service stop and settings/pairing preservation. Permissions/DPI/SmartScreen, backup cancellation/conflicts and real AI quality remain separate pending risks. No production/version/dependency/build/archive/SHA/Release changes; v1.0.0 stays draft, not published or submitted to Chrome Web Store.",
+  "releaseDecision": "Core features and prior full engineering acceptance remain complete. Maintainer whole-case W05/W06 PASS (2/2) is archived with no actual test date or step logs provided, not new Codex observations or automation. Counts recomputed from CSV: 9 pass / 44 pending / 0 fail, total 53; only W05/W06 changed. Earlier partial-coverage dates, prior smoke 6/6, backup 10/10, pairing 3/3 and C08 declarations and automation are preserved, not double-counted. No confirmed unresolved P0/P1. Next priority B03 then B04 then B08 data protection, followed by C06 reload and supported Windows permissions/DPI/SmartScreen; real AI quality remains unverified. No production/dependency/version/build/archive/SHA/Release changes, v1.0.0 remains draft and is not submitted to Chrome Web Store.",
   "historicalAssessment": {
     "assessedAt": "2026-10-14T08:02:48.142Z",
     "candidateVersion": "1.0.0-rc.1",
@@ -1034,19 +1039,131 @@
     "doesNotPassW05W06": true
   },
   "nextManualPriority": {
-    "caseIds": ["W05", "W06"],
+    "caseIds": ["B03", "B04", "B08"],
     "status": "PENDING",
-    "scope": "Windows 退出与重启专项；不要求重复已确认的 C08 全链",
-    "remainingW05": [
-      "仅关闭网页时服务仍运行",
-      "通过启动器重新打开同一工作台",
-      "停止并退出后启动器和自己服务结束，刷新不能在线写入"
+    "scope": "备份取消、较新人工内容冲突保护及重复恢复；不重复已通过正常备份/配对/C08/W05/W06。",
+    "orderedChecks": [
+      {
+        "id": "B03",
+        "reason": "低风险先校准预览取消不写入，已有自动化通过但人工取消路径未确认。"
+      },
+      {
+        "id": "B04",
+        "reason": "较新人工编辑保护的数据安全价值最高；在 B03 校准后的同一合成环境验证保留策略。"
+      },
+      {
+        "id": "B08",
+        "reason": "复用前两项资料验证重复预览、去重、重启及配对保持，不能单凭正常重启通过推定。"
+      },
+      {
+        "id": "C06",
+        "reason": "队列先同步后重新加载扩展，检查状态及已有资料，不卸载扩展。"
+      },
+      {
+        "id": "W11/W12/W13/W14/W15",
+        "reason": "按首发支持环境验证权限与125/150/200%缩放，正常启动遇到的SmartScreen/Defender提示如实记录；不改生产ACL或绕过保护。"
+      }
     ],
-    "remainingW06": [
-      "右上角 × 独立退出路径",
-      "两种退出路径均停止自己服务",
-      "重启后数据、设置及配对状态逐项保持"
+    "safety": "新隔离 DataRoot/RuntimeRoot 与专用 Chrome profile；不清空原库、不修改原备份或业务JSON、不删除恢复日志、不卸载扩展，不执行收费AI。"
+  },
+  "previousWindowsLifecycleAssessment": {
+    "baselineCommit": "cc4b6c8f9598b718db23f1efd92f853d69691261",
+    "detailedCounts": {
+      "total": 53,
+      "pass": 7,
+      "pending": 46,
+      "fail": 0
+    },
+    "previousNextManualPriority": {
+      "caseIds": ["W05", "W06"],
+      "status": "PENDING",
+      "scope": "Windows 退出与重启专项；不要求重复已确认的 C08 全链",
+      "remainingW05": [
+        "仅关闭网页时服务仍运行",
+        "通过启动器重新打开同一工作台",
+        "停止并退出后启动器和自己服务结束，刷新不能在线写入"
+      ],
+      "remainingW06": [
+        "右上角 × 独立退出路径",
+        "两种退出路径均停止自己服务",
+        "重启后数据、设置及配对状态逐项保持"
+      ],
+      "safety": "仅隔离测试资料；自定义 DataRoot 继续同一隔离入口，不能误开默认生产目录；不结束陌生进程或删除资料/队列"
+    },
+    "previousReleaseDecision": "Core features and prior engineering acceptance remain complete. Maintainer C08 offline capture/restart/retry/deduplication/data preservation PASS is archived with no execution date provided, not new Codex automation. Detailed counts are recomputed from CSV: 7 pass / 46 pending / 0 fail, total 53; only C08 changed. Prior smoke 6/6, backup 10/10 and pairing 3/3 declarations and automation remain intact, not added to detailed totals. No confirmed unresolved P0/P1; next priority W05/W06 native exit paths, service stop and settings/pairing preservation. Permissions/DPI/SmartScreen, backup cancellation/conflicts and real AI quality remain separate pending risks. No production/version/dependency/build/archive/SHA/Release changes; v1.0.0 stays draft, not published or submitted to Chrome Web Store."
+  },
+  "windowsLifecycleManualArchive": {
+    "version": "1.0.0",
+    "status": "PASS",
+    "total": 2,
+    "passed": 2,
+    "failed": 0,
+    "source": "维护者在本项目 ChatGPT 对话中按此前 W05/W06 流程提供的整项人工 PASS 声明",
+    "codexReexecuted": false,
+    "performedAt": null,
+    "dateStatus": "日期待补充",
+    "record": "docs/v1.0.0-windows-lifecycle-manual-results.md",
+    "issuesDeclared": "无",
+    "stepLogsProvided": false,
+    "screenshotsProvided": [],
+    "logsProvided": [],
+    "processPidsProvided": [],
+    "actualTestDirectory": null,
+    "windowsFullVersion": null,
+    "chromeFullVersion": null,
+    "cases": [
+      {
+        "id": "W05",
+        "maintainerStatement": "关闭网页与停止并退出：PASS",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": null,
+        "dateStatus": "日期待补充",
+        "coverageBasis": "docs/phase21/manual-acceptance.md 原用例标准；不是逐步骤执行日志"
+      },
+      {
+        "id": "W06",
+        "maintainerStatement": "关闭启动窗口与重启：PASS",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": null,
+        "dateStatus": "日期待补充",
+        "coverageBasis": "docs/phase21/manual-acceptance.md 原用例标准；不是逐步骤执行日志"
+      }
     ],
-    "safety": "仅隔离测试资料；自定义 DataRoot 继续同一隔离入口，不能误开默认生产目录；不结束陌生进程或删除资料/队列"
+    "previousPartialCoverageRecords": [
+      {
+        "phase": "21",
+        "candidate_version": "1.0.0",
+        "case_id": "W05",
+        "scenario": "关闭网页与停止并退出",
+        "status": "pending",
+        "session_id": "maintainer-v100-backup-20261016",
+        "performed_at": "2026-10-16",
+        "tester_alias": "维护者",
+        "evidence_files": "docs/v1.0.0-backup-restore-manual-results.md",
+        "actual_result": "维护者实际操作声明，v1.0.0，实际执行日期 2026-10-16（不是 Codex 本轮重新执行）：M10：测试程序正常退出，日常数据未被修改。无截图、日志或完整环境版本附件。performed_at 只对应本次 M 项声明；此前六项烟雾未提供的日期仍待补充。",
+        "pending_or_blocked_reason": "部分覆盖，仍 pending；未确认只关闭网页后服务仍在、通过启动器重新打开或停止后在线写入拒绝。 既有自动化证据保留：docs/v1.0.0-backup-restore-validation.md。",
+        "bug_id": "",
+        "retest_of": ""
+      },
+      {
+        "phase": "21",
+        "candidate_version": "1.0.0",
+        "case_id": "W06",
+        "scenario": "关闭启动窗口与重启",
+        "status": "pending",
+        "session_id": "maintainer-v100-backup-20261016",
+        "performed_at": "2026-10-16",
+        "tester_alias": "维护者",
+        "evidence_files": "docs/v1.0.0-manual-smoke-test.md; docs/v1.0.0-backup-restore-manual-results.md",
+        "actual_result": "维护者实际操作声明（不是 Codex 当前重测），v1.0.0，执行日期待补充；S06：重启后数据保留。仅部分覆盖原详细用例，无截图或日志附件。 维护者实际操作声明，v1.0.0，实际执行日期 2026-10-16（不是 Codex 本轮重新执行）：M09：关闭重启后，恢复的数据仍然完整；M10：测试程序正常退出，日常数据未被修改。无截图、日志或完整环境版本附件。performed_at 只对应本次 M 项声明；此前六项烟雾未提供的日期仍待补充。",
+        "pending_or_blocked_reason": "部分覆盖，仍 pending；未确认右上角 × 及两种退出路径、重启后设置和配对状态。 既有自动化证据保留：docs/v1.0.0-backup-restore-validation.md。",
+        "bug_id": "",
+        "retest_of": ""
+      }
+    ],
+    "otherDetailedRowsPreserved": true,
+    "doesNotPassCompatibilityOrBackupConflictCases": true
   }
 }
