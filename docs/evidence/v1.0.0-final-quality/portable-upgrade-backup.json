@@ -1,0 +1,1326 @@
+{
+  "portable": {
+    "status": "PASS",
+    "checks": [
+      {
+        "name": "package inventory SHA-256, bundled runtime, MV3 permissions, no user data or env",
+        "status": "PASS"
+      },
+      {
+        "name": "incomplete package explains full extraction and launches no service",
+        "status": "PASS"
+      },
+      {
+        "name": "file occupying user-data directory produces clear error without overwriting the file",
+        "status": "PASS"
+      },
+      {
+        "name": "actual denied data-directory ACL is detected before service launch without elevation or data loss",
+        "status": "PASS"
+      },
+      {
+        "name": "port conflict is explained, unknown listener preserved",
+        "status": "PASS"
+      },
+      {
+        "name": "headless launcher with no installed Node.js/pnpm on PATH, localhost, Mock, authentication",
+        "status": "PASS"
+      },
+      {
+        "name": "duplicate start creates no second service process",
+        "status": "PASS"
+      },
+      {
+        "name": "complete Mock analysis persists; graceful stop releases port and retains user data",
+        "status": "PASS"
+      },
+      {
+        "name": "packaged HTTPS guard rejects unapproved HTTP before any local-trap request and preserves complete analysis",
+        "status": "PASS"
+      },
+      {
+        "name": "AI settings use Windows DPAPI CurrentUser, no plaintext test key on disk",
+        "status": "PASS"
+      },
+      {
+        "name": "restart retains complete ProductAnalysis, product ID, creation and update times",
+        "status": "PASS"
+      },
+      {
+        "name": "same-schema reinstall/moved package retains complete analysis and single instance",
+        "status": "PASS"
+      },
+      {
+        "name": "launcher crash cleanup with corrupt stop-request JSON and abandoned mutex recovery preserve data",
+        "status": "PASS"
+      }
+    ],
+    "startedAt": "2026-10-16T17:16:27.682Z",
+    "finishedAt": "2026-10-16T17:17:07.614Z"
+  },
+  "upgrades": [
+    {
+      "from": "1.0.0-rc.2",
+      "to": "1.0.0",
+      "checks": [
+        {
+          "name": "distinct frozen source and closed-test target package versions and launcher/runtime hashes",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package decrypts all explicit DPAPI fixture preferences; no real Key or model request",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0-rc.2: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "actual v1.0.0-rc.2 stores explicit safe media selection, generated source/analysis references, signed manual history archive and preserved archived-parent lineage; complete business export and conflict preview validated before upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "actual frozen v1.0.0-rc.2 saves custom template created/edited/restored history and Japanese 45-second Mock/manual/candidate/replayed/restored content with comparison snapshot before upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "old v1.0.0-rc.2 actual UI saves nondefault content parameters/pricing and built-in template favorite in an isolated browser",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package saves nondefault browser analysis preferences through actual UI",
+          "status": "PASS"
+        },
+        {
+          "name": "1.0.0-rc.2 saves complete Product, edited analysis/history and supported group/tag metadata; stop leaves bytes unchanged",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "actual v1.0.0-rc.2 → target first launch preserves products/comparisons/templates/content-plans/analysis-usage exact bytes, custom IDs, all histories/current selections and snapshot references without a read migration rewrite",
+          "status": "PASS"
+        },
+        {
+          "name": "actual v1.0.0-rc.2 comparison snapshots, media metadata, merchant specifications and complete generated/manual history are byte-preserved on upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "upgrade preserves protected settings, paired token and old usage ledger byte-for-byte; original token remains usable",
+          "status": "PASS"
+        },
+        {
+          "name": "same isolated browser retains saved analysis preferences across actual old-to-new package upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "1.0.0-rc.2 → current package preserves entire Product, ID, timestamps, group/tag definitions, analysis metadata and history",
+          "status": "PASS"
+        },
+        {
+          "name": "v1.0.0-rc.2 complete backup remains identical after upgrade (except export timestamp); explicit preserve-conflict restore retains all original data, private settings and pairing",
+          "status": "PASS"
+        },
+        {
+          "name": "legacy archive, manual version, Japanese partial generation, request replay and local usage ledger",
+          "status": "PASS"
+        },
+        {
+          "name": "new groups/tags and partial batch failure preserve all upgraded AI versions and metadata",
+          "status": "PASS"
+        },
+        {
+          "name": "new package updates existing ID, keeps createdAt, archives stale analysis and restores version without losing newer history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "old v1.0.0-rc.2 saved content/template/comparison snapshots and complete history remain byte-identical after source product recapture, new analysis/group/tag mutations and real new-package restart",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart retains DPAPI settings, original pairing and same-browser saved preferences",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart preserves complete edited Product and analysis, then releases owned processes",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.6.0 independent comparison snapshots, Mock/edited/restored versions, safe backup conflicts, deleted source survival and restart preserve original upgraded Product/history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.7.0 templates/restored history, custom 45-second Mock content, protected manual current/candidate/replay/history, safe backups and true service restart retain old product/comparison/settings/pairing",
+          "status": "PASS"
+        }
+      ],
+      "passed": true,
+      "startedAt": "2026-10-16T17:17:08.421Z",
+      "finishedAt": "2026-10-16T17:18:00.381Z",
+      "isolatedRawReport": ".test-data/phase20-upgrade/2026-10-16T17-17-08-421Z-pw7urV/report.json"
+    },
+    {
+      "from": "1.0.0-rc.1",
+      "to": "1.0.0",
+      "checks": [
+        {
+          "name": "distinct frozen source and closed-test target package versions and launcher/runtime hashes",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package decrypts all explicit DPAPI fixture preferences; no real Key or model request",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0-rc.1: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "actual v1.0.0-rc.1 stores explicit safe media selection, generated source/analysis references, signed manual history archive and preserved archived-parent lineage; complete business export and conflict preview validated before upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "actual frozen v1.0.0-rc.1 saves custom template created/edited/restored history and Japanese 45-second Mock/manual/candidate/replayed/restored content with comparison snapshot before upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "old v1.0.0-rc.1 actual UI saves nondefault content parameters/pricing and built-in template favorite in an isolated browser",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package saves nondefault browser analysis preferences through actual UI",
+          "status": "PASS"
+        },
+        {
+          "name": "1.0.0-rc.1 saves complete Product, edited analysis/history and supported group/tag metadata; stop leaves bytes unchanged",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "actual v1.0.0-rc.1 → target first launch preserves products/comparisons/templates/content-plans/analysis-usage exact bytes, custom IDs, all histories/current selections and snapshot references without a read migration rewrite",
+          "status": "PASS"
+        },
+        {
+          "name": "actual v1.0.0-rc.1 comparison snapshots, media metadata, merchant specifications and complete generated/manual history are byte-preserved on upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "upgrade preserves protected settings, paired token and old usage ledger byte-for-byte; original token remains usable",
+          "status": "PASS"
+        },
+        {
+          "name": "same isolated browser retains saved analysis preferences across actual old-to-new package upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "1.0.0-rc.1 → current package preserves entire Product, ID, timestamps, group/tag definitions, analysis metadata and history",
+          "status": "PASS"
+        },
+        {
+          "name": "v1.0.0-rc.1 complete backup remains identical after upgrade (except export timestamp); explicit preserve-conflict restore retains all original data, private settings and pairing",
+          "status": "PASS"
+        },
+        {
+          "name": "legacy archive, manual version, Japanese partial generation, request replay and local usage ledger",
+          "status": "PASS"
+        },
+        {
+          "name": "new groups/tags and partial batch failure preserve all upgraded AI versions and metadata",
+          "status": "PASS"
+        },
+        {
+          "name": "new package updates existing ID, keeps createdAt, archives stale analysis and restores version without losing newer history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "old v1.0.0-rc.1 saved content/template/comparison snapshots and complete history remain byte-identical after source product recapture, new analysis/group/tag mutations and real new-package restart",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart retains DPAPI settings, original pairing and same-browser saved preferences",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart preserves complete edited Product and analysis, then releases owned processes",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.6.0 independent comparison snapshots, Mock/edited/restored versions, safe backup conflicts, deleted source survival and restart preserve original upgraded Product/history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.7.0 templates/restored history, custom 45-second Mock content, protected manual current/candidate/replay/history, safe backups and true service restart retain old product/comparison/settings/pairing",
+          "status": "PASS"
+        }
+      ],
+      "passed": true,
+      "startedAt": "2026-10-16T17:18:01.202Z",
+      "finishedAt": "2026-10-16T17:19:05.855Z",
+      "isolatedRawReport": ".test-data/phase20-upgrade/2026-10-16T17-18-01-201Z-SdS6WD/report.json"
+    },
+    {
+      "from": "0.8.0",
+      "to": "1.0.0",
+      "checks": [
+        {
+          "name": "distinct frozen source and closed-test target package versions and launcher/runtime hashes",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package decrypts all explicit DPAPI fixture preferences; no real Key or model request",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 0.8.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "actual v0.8.0 stores explicit safe media selection, generated source/analysis references, signed manual history archive and preserved archived-parent lineage; complete business export and conflict preview validated before upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "actual frozen v0.8.0 saves custom template created/edited/restored history and Japanese 45-second Mock/manual/candidate/replayed/restored content with comparison snapshot before upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "old v0.8.0 actual UI saves nondefault content parameters/pricing and built-in template favorite in an isolated browser",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package saves nondefault browser analysis preferences through actual UI",
+          "status": "PASS"
+        },
+        {
+          "name": "0.8.0 saves complete Product, edited analysis/history and supported group/tag metadata; stop leaves bytes unchanged",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "actual v0.8.0 → target first launch preserves products/comparisons/templates/content-plans/analysis-usage exact bytes, custom IDs, all histories/current selections and snapshot references without a read migration rewrite",
+          "status": "PASS"
+        },
+        {
+          "name": "actual v0.8.0 comparison snapshots, media metadata, merchant specifications and complete generated/manual history are byte-preserved on upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "upgrade preserves protected settings, paired token and old usage ledger byte-for-byte; original token remains usable",
+          "status": "PASS"
+        },
+        {
+          "name": "same isolated browser retains saved analysis preferences across actual old-to-new package upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "0.8.0 → current package preserves entire Product, ID, timestamps, group/tag definitions, analysis metadata and history",
+          "status": "PASS"
+        },
+        {
+          "name": "v0.8.0 complete backup remains identical after upgrade (except export timestamp); explicit preserve-conflict restore retains all original data, private settings and pairing",
+          "status": "PASS"
+        },
+        {
+          "name": "legacy archive, manual version, Japanese partial generation, request replay and local usage ledger",
+          "status": "PASS"
+        },
+        {
+          "name": "new groups/tags and partial batch failure preserve all upgraded AI versions and metadata",
+          "status": "PASS"
+        },
+        {
+          "name": "new package updates existing ID, keeps createdAt, archives stale analysis and restores version without losing newer history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "old v0.8.0 saved content/template/comparison snapshots and complete history remain byte-identical after source product recapture, new analysis/group/tag mutations and real new-package restart",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart retains DPAPI settings, original pairing and same-browser saved preferences",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart preserves complete edited Product and analysis, then releases owned processes",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.6.0 independent comparison snapshots, Mock/edited/restored versions, safe backup conflicts, deleted source survival and restart preserve original upgraded Product/history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.7.0 templates/restored history, custom 45-second Mock content, protected manual current/candidate/replay/history, safe backups and true service restart retain old product/comparison/settings/pairing",
+          "status": "PASS"
+        }
+      ],
+      "passed": true,
+      "startedAt": "2026-10-16T17:19:06.693Z",
+      "finishedAt": "2026-10-16T17:20:11.232Z",
+      "isolatedRawReport": ".test-data/phase20-upgrade/2026-10-16T17-19-06-661Z-7gWL9U/report.json"
+    },
+    {
+      "from": "0.7.0",
+      "to": "1.0.0",
+      "checks": [
+        {
+          "name": "distinct frozen source and closed-test target package versions and launcher/runtime hashes",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package decrypts all explicit DPAPI fixture preferences; no real Key or model request",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 0.7.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "actual frozen v0.7.0 saves custom template created/edited/restored history and Japanese 45-second Mock/manual/candidate/replayed/restored content with comparison snapshot before upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "old v0.7.0 actual UI saves nondefault content parameters/pricing and built-in template favorite in an isolated browser",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package saves nondefault browser analysis preferences through actual UI",
+          "status": "PASS"
+        },
+        {
+          "name": "0.7.0 saves complete Product, edited analysis/history and supported group/tag metadata; stop leaves bytes unchanged",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "actual v0.7.0 → target first launch preserves products/comparisons/templates/content-plans/analysis-usage exact bytes, custom IDs, all histories/current selections and snapshot references without a read migration rewrite",
+          "status": "PASS"
+        },
+        {
+          "name": "actual v0.7.0 comparison snapshots, media metadata, merchant specifications and complete generated/manual history are byte-preserved on upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "upgrade preserves protected settings, paired token and old usage ledger byte-for-byte; original token remains usable",
+          "status": "PASS"
+        },
+        {
+          "name": "same isolated browser retains saved analysis preferences across actual old-to-new package upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "0.7.0 → current package preserves entire Product, ID, timestamps, group/tag definitions, analysis metadata and history",
+          "status": "PASS"
+        },
+        {
+          "name": "legacy archive, manual version, Japanese partial generation, request replay and local usage ledger",
+          "status": "PASS"
+        },
+        {
+          "name": "new groups/tags and partial batch failure preserve all upgraded AI versions and metadata",
+          "status": "PASS"
+        },
+        {
+          "name": "new package updates existing ID, keeps createdAt, archives stale analysis and restores version without losing newer history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "old v0.7.0 saved content/template/comparison snapshots and complete history remain byte-identical after source product recapture, new analysis/group/tag mutations and real new-package restart",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart retains DPAPI settings, original pairing and same-browser saved preferences",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart preserves complete edited Product and analysis, then releases owned processes",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.6.0 independent comparison snapshots, Mock/edited/restored versions, safe backup conflicts, deleted source survival and restart preserve original upgraded Product/history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.7.0 templates/restored history, custom 45-second Mock content, protected manual current/candidate/replay/history, safe backups and true service restart retain old product/comparison/settings/pairing",
+          "status": "PASS"
+        }
+      ],
+      "passed": true,
+      "startedAt": "2026-10-16T17:20:12.065Z",
+      "finishedAt": "2026-10-16T17:21:04.593Z",
+      "isolatedRawReport": ".test-data/phase20-upgrade/2026-10-16T17-20-12-064Z-zbo43n/report.json"
+    },
+    {
+      "from": "0.6.0",
+      "to": "1.0.0",
+      "checks": [
+        {
+          "name": "distinct frozen source and closed-test target package versions and launcher/runtime hashes",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package decrypts all explicit DPAPI fixture preferences; no real Key or model request",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 0.6.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package saves nondefault browser analysis preferences through actual UI",
+          "status": "PASS"
+        },
+        {
+          "name": "0.6.0 saves complete Product, edited analysis/history and supported group/tag metadata; stop leaves bytes unchanged",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "actual v0.6.0 comparison snapshots, media metadata, merchant specifications and complete generated/manual history are byte-preserved on upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "upgrade preserves protected settings, paired token and old usage ledger byte-for-byte; original token remains usable",
+          "status": "PASS"
+        },
+        {
+          "name": "same isolated browser retains saved analysis preferences across actual old-to-new package upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "0.6.0 → current package preserves entire Product, ID, timestamps, group/tag definitions, analysis metadata and history",
+          "status": "PASS"
+        },
+        {
+          "name": "legacy archive, manual version, Japanese partial generation, request replay and local usage ledger",
+          "status": "PASS"
+        },
+        {
+          "name": "new groups/tags and partial batch failure preserve all upgraded AI versions and metadata",
+          "status": "PASS"
+        },
+        {
+          "name": "new package updates existing ID, keeps createdAt, archives stale analysis and restores version without losing newer history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart retains DPAPI settings, original pairing and same-browser saved preferences",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart preserves complete edited Product and analysis, then releases owned processes",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.6.0 independent comparison snapshots, Mock/edited/restored versions, safe backup conflicts, deleted source survival and restart preserve original upgraded Product/history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.7.0 templates/restored history, custom 45-second Mock content, protected manual current/candidate/replay/history, safe backups and true service restart retain old product/comparison/settings/pairing",
+          "status": "PASS"
+        }
+      ],
+      "passed": true,
+      "startedAt": "2026-10-16T17:21:05.418Z",
+      "finishedAt": "2026-10-16T17:21:42.695Z",
+      "isolatedRawReport": ".test-data/phase20-upgrade/2026-10-16T17-21-05-418Z-DttHsb/report.json"
+    },
+    {
+      "from": "0.5.2",
+      "to": "1.0.0",
+      "checks": [
+        {
+          "name": "distinct frozen source and closed-test target package versions and launcher/runtime hashes",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package decrypts all explicit DPAPI fixture preferences; no real Key or model request",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 0.5.2: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package saves nondefault browser analysis preferences through actual UI",
+          "status": "PASS"
+        },
+        {
+          "name": "0.5.2 saves complete Product, edited analysis/history and supported group/tag metadata; stop leaves bytes unchanged",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "upgrade preserves protected settings, paired token and old usage ledger byte-for-byte; original token remains usable",
+          "status": "PASS"
+        },
+        {
+          "name": "same isolated browser retains saved analysis preferences across actual old-to-new package upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "0.5.2 → current package preserves entire Product, ID, timestamps, group/tag definitions, analysis metadata and history",
+          "status": "PASS"
+        },
+        {
+          "name": "legacy archive, manual version, Japanese partial generation, request replay and local usage ledger",
+          "status": "PASS"
+        },
+        {
+          "name": "new groups/tags and partial batch failure preserve all upgraded AI versions and metadata",
+          "status": "PASS"
+        },
+        {
+          "name": "new package updates existing ID, keeps createdAt, archives stale analysis and restores version without losing newer history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart retains DPAPI settings, original pairing and same-browser saved preferences",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart preserves complete edited Product and analysis, then releases owned processes",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.6.0 independent comparison snapshots, Mock/edited/restored versions, safe backup conflicts, deleted source survival and restart preserve original upgraded Product/history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.7.0 templates/restored history, custom 45-second Mock content, protected manual current/candidate/replay/history, safe backups and true service restart retain old product/comparison/settings/pairing",
+          "status": "PASS"
+        }
+      ],
+      "passed": true,
+      "startedAt": "2026-10-16T17:21:43.485Z",
+      "finishedAt": "2026-10-16T17:22:19.280Z",
+      "isolatedRawReport": ".test-data/phase20-upgrade/2026-10-16T17-21-43-483Z-T8bwpr/report.json"
+    },
+    {
+      "from": "0.5.1",
+      "to": "1.0.0",
+      "checks": [
+        {
+          "name": "distinct frozen source and closed-test target package versions and launcher/runtime hashes",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package decrypts all explicit DPAPI fixture preferences; no real Key or model request",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 0.5.1: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package saves nondefault browser analysis preferences through actual UI",
+          "status": "PASS"
+        },
+        {
+          "name": "0.5.1 saves complete Product, edited analysis/history and supported group/tag metadata; stop leaves bytes unchanged",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "upgrade preserves protected settings, paired token and old usage ledger byte-for-byte; original token remains usable",
+          "status": "PASS"
+        },
+        {
+          "name": "same isolated browser retains saved analysis preferences across actual old-to-new package upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "0.5.1 → current package preserves entire Product, ID, timestamps, group/tag definitions, analysis metadata and history",
+          "status": "PASS"
+        },
+        {
+          "name": "legacy archive, manual version, Japanese partial generation, request replay and local usage ledger",
+          "status": "PASS"
+        },
+        {
+          "name": "new groups/tags and partial batch failure preserve all upgraded AI versions and metadata",
+          "status": "PASS"
+        },
+        {
+          "name": "new package updates existing ID, keeps createdAt, archives stale analysis and restores version without losing newer history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart retains DPAPI settings, original pairing and same-browser saved preferences",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart preserves complete edited Product and analysis, then releases owned processes",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.6.0 independent comparison snapshots, Mock/edited/restored versions, safe backup conflicts, deleted source survival and restart preserve original upgraded Product/history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.7.0 templates/restored history, custom 45-second Mock content, protected manual current/candidate/replay/history, safe backups and true service restart retain old product/comparison/settings/pairing",
+          "status": "PASS"
+        }
+      ],
+      "passed": true,
+      "startedAt": "2026-10-16T17:22:20.105Z",
+      "finishedAt": "2026-10-16T17:22:54.320Z",
+      "isolatedRawReport": ".test-data/phase20-upgrade/2026-10-16T17-22-20-102Z-oX8m7P/report.json"
+    },
+    {
+      "from": "0.5.0",
+      "to": "1.0.0",
+      "checks": [
+        {
+          "name": "distinct frozen source and closed-test target package versions and launcher/runtime hashes",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package decrypts all explicit DPAPI fixture preferences; no real Key or model request",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 0.5.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package saves nondefault browser analysis preferences through actual UI",
+          "status": "PASS"
+        },
+        {
+          "name": "0.5.0 saves complete Product, edited analysis/history and supported group/tag metadata; stop leaves bytes unchanged",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "upgrade preserves protected settings, paired token and old usage ledger byte-for-byte; original token remains usable",
+          "status": "PASS"
+        },
+        {
+          "name": "same isolated browser retains saved analysis preferences across actual old-to-new package upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "0.5.0 → current package preserves entire Product, ID, timestamps, group/tag definitions, analysis metadata and history",
+          "status": "PASS"
+        },
+        {
+          "name": "legacy archive, manual version, Japanese partial generation, request replay and local usage ledger",
+          "status": "PASS"
+        },
+        {
+          "name": "new groups/tags and partial batch failure preserve all upgraded AI versions and metadata",
+          "status": "PASS"
+        },
+        {
+          "name": "new package updates existing ID, keeps createdAt, archives stale analysis and restores version without losing newer history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart retains DPAPI settings, original pairing and same-browser saved preferences",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart preserves complete edited Product and analysis, then releases owned processes",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.6.0 independent comparison snapshots, Mock/edited/restored versions, safe backup conflicts, deleted source survival and restart preserve original upgraded Product/history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.7.0 templates/restored history, custom 45-second Mock content, protected manual current/candidate/replay/history, safe backups and true service restart retain old product/comparison/settings/pairing",
+          "status": "PASS"
+        }
+      ],
+      "passed": true,
+      "startedAt": "2026-10-16T17:22:55.136Z",
+      "finishedAt": "2026-10-16T17:23:34.289Z",
+      "isolatedRawReport": ".test-data/phase20-upgrade/2026-10-16T17-22-55-134Z-YO2YUp/report.json"
+    },
+    {
+      "from": "0.4.0",
+      "to": "1.0.0",
+      "checks": [
+        {
+          "name": "distinct frozen source and closed-test target package versions and launcher/runtime hashes",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package decrypts all explicit DPAPI fixture preferences; no real Key or model request",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 0.4.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "old frozen package saves nondefault browser analysis preferences through actual UI",
+          "status": "PASS"
+        },
+        {
+          "name": "0.4.0 saves complete Product, edited analysis/history and supported group/tag metadata; stop leaves bytes unchanged",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "upgrade preserves protected settings, paired token and old usage ledger byte-for-byte; original token remains usable",
+          "status": "PASS"
+        },
+        {
+          "name": "same isolated browser retains saved analysis preferences across actual old-to-new package upgrade",
+          "status": "PASS"
+        },
+        {
+          "name": "0.4.0 → current package preserves entire Product, ID, timestamps, group/tag definitions, analysis metadata and history",
+          "status": "PASS"
+        },
+        {
+          "name": "legacy archive, manual version, Japanese partial generation, request replay and local usage ledger",
+          "status": "PASS"
+        },
+        {
+          "name": "new groups/tags and partial batch failure preserve all upgraded AI versions and metadata",
+          "status": "PASS"
+        },
+        {
+          "name": "new package updates existing ID, keeps createdAt, archives stale analysis and restores version without losing newer history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart retains DPAPI settings, original pairing and same-browser saved preferences",
+          "status": "PASS"
+        },
+        {
+          "name": "new package restart preserves complete edited Product and analysis, then releases owned processes",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.6.0 independent comparison snapshots, Mock/edited/restored versions, safe backup conflicts, deleted source survival and restart preserve original upgraded Product/history",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "owned launcher 1.0.0: isolated user data, bundled runtime, Mock",
+          "status": "PASS"
+        },
+        {
+          "name": "0.7.0 templates/restored history, custom 45-second Mock content, protected manual current/candidate/replay/history, safe backups and true service restart retain old product/comparison/settings/pairing",
+          "status": "PASS"
+        }
+      ],
+      "passed": true,
+      "startedAt": "2026-10-16T17:23:35.112Z",
+      "finishedAt": "2026-10-16T17:24:09.891Z",
+      "isolatedRawReport": ".test-data/phase20-upgrade/2026-10-16T17-23-35-111Z-HK6D1U/report.json"
+    }
+  ],
+  "backup": {
+    "status": "PASS",
+    "wrapper": [
+      {
+        "name": "all seven frozen release asset hashes unchanged",
+        "status": "PASS"
+      },
+      {
+        "name": "actual installed portable tree matches frozen bundle manifest",
+        "status": "PASS"
+      },
+      {
+        "name": "synthetic encrypted Key exists only in isolated source settings; AI mode remains Mock",
+        "status": "PASS"
+      },
+      {
+        "name": "source: owned service stopped and port released",
+        "status": "PASS"
+      },
+      {
+        "name": "target: owned service stopped and port released",
+        "status": "PASS"
+      },
+      {
+        "name": "synthetic offline prepared-crash state created only in stopped test target",
+        "status": "PASS"
+      },
+      {
+        "name": "restart: owned service stopped and port released",
+        "status": "PASS"
+      },
+      {
+        "name": "frozen restart and ordinary read recover prepared-crash state without exposing partial data",
+        "status": "PASS"
+      },
+      {
+        "name": "source backup file remains immutable through restore, failure, retry and restart",
+        "status": "PASS"
+      },
+      {
+        "name": "validation scripts remained byte-identical throughout this attempt",
+        "status": "PASS"
+      }
+    ],
+    "phases": [
+      {
+        "phase": "seed",
+        "checks": [
+          {
+            "name": "Frozen service reports v1.0.0 and Mock mode before any fixture write",
+            "status": "PASS"
+          },
+          {
+            "name": "Authenticated local web session succeeds without logging its cookie",
+            "status": "PASS"
+          },
+          {
+            "name": "Fresh source contains no pre-existing business records",
+            "status": "PASS"
+          },
+          {
+            "name": "Create an isolated synthetic extension pairing solely to verify credentials are excluded from backup",
+            "status": "PASS"
+          },
+          {
+            "name": "Create two synthetic Amazon products including specifications and associated image/video metadata",
+            "status": "PASS"
+          },
+          {
+            "name": "Create a group and colored tag and associate both original product IDs",
+            "status": "PASS"
+          },
+          {
+            "name": "Mock product analysis retains generated and manual edit history with original IDs",
+            "status": "PASS"
+          },
+          {
+            "name": "Comparison retains snapshots, Mock analysis, provenance and manual edit history",
+            "status": "PASS"
+          },
+          {
+            "name": "Custom template preserves creation and edited historical definitions",
+            "status": "PASS"
+          },
+          {
+            "name": "Mock content preserves media/references, manual edits and independently regenerated candidate",
+            "status": "PASS"
+          },
+          {
+            "name": "Complete backup is generated with all expected business counts and independent histories",
+            "status": "PASS"
+          },
+          {
+            "name": "Shareable backup excludes session/pairing credentials and API/config secrets",
+            "status": "PASS"
+          }
+        ],
+        "status": "PASS",
+        "report": ".test-data/v100-backup-restore/final-quality-2026-10-17-validation/workflow-2026-10-16T17-24-24-530Z/seed-2026-10-16T17-24-26-763Z.report.json",
+        "sha256": "c713cca919f3e853d01a51f45f7025b9c6906349f72e30a26aa51b43db394d59"
+      },
+      {
+        "phase": "restore",
+        "checks": [
+          {
+            "name": "Frozen service reports v1.0.0 and Mock mode before any fixture write",
+            "status": "PASS"
+          },
+          {
+            "name": "Authenticated local web session succeeds without logging its cookie",
+            "status": "PASS"
+          },
+          {
+            "name": "Fresh restore target has no pre-existing business records",
+            "status": "PASS"
+          },
+          {
+            "name": "Preview followed by cancellation writes none of the five business files",
+            "status": "PASS"
+          },
+          {
+            "name": "Unconfirmed restore is rejected before any business write",
+            "status": "PASS"
+          },
+          {
+            "name": "Confirmed restore imports every original entity, ID and historical version",
+            "status": "PASS"
+          },
+          {
+            "name": "Restored product media, taxonomy, snapshots, AI/template/content histories and references equal source",
+            "status": "PASS"
+          },
+          {
+            "name": "Full business restore does not import or modify local pairing credentials or protected AI settings",
+            "status": "PASS"
+          },
+          {
+            "name": "Invalid non-JSON file rejected with clear error and five files byte-identical",
+            "status": "PASS"
+          },
+          {
+            "name": "Truncated backup JSON rejected with clear error and five files byte-identical",
+            "status": "PASS"
+          },
+          {
+            "name": "Missing required contentPlans rejected with clear error and five files byte-identical",
+            "status": "PASS"
+          },
+          {
+            "name": "Incompatible schemaVersion rejected with clear error and five files byte-identical",
+            "status": "PASS"
+          },
+          {
+            "name": "Forbidden sensitive API Key field rejected with clear error and five files byte-identical",
+            "status": "PASS"
+          },
+          {
+            "name": "Unsafe localhost URL in nested saved product snapshot rejected with clear error and five files byte-identical",
+            "status": "PASS"
+          },
+          {
+            "name": "Broken product group reference rejected with clear error and five files byte-identical",
+            "status": "PASS"
+          },
+          {
+            "name": "Changed business data invalidates an old preview and cannot overwrite new manual content",
+            "status": "PASS"
+          },
+          {
+            "name": "Duplicate restore with preserve imports no duplicate entities or usage and keeps newer edits",
+            "status": "PASS"
+          },
+          {
+            "name": "Duplicate restore with skip imports no duplicate entities or usage and keeps newer edits",
+            "status": "PASS"
+          },
+          {
+            "name": "Restored idempotency usage replays the original Mock request without new generation or charge",
+            "status": "PASS"
+          }
+        ],
+        "status": "PASS",
+        "report": ".test-data/v100-backup-restore/final-quality-2026-10-17-validation/workflow-2026-10-16T17-24-24-530Z/restore-2026-10-16T17-24-29-181Z.report.json",
+        "sha256": "a1041447418dad576e45fe27830e86a3dfd0f36ef5a88d656676e0ed2aec2ee0"
+      },
+      {
+        "phase": "failure",
+        "checks": [
+          {
+            "name": "Frozen service reports v1.0.0 and Mock mode before any fixture write",
+            "status": "PASS"
+          },
+          {
+            "name": "Authenticated local web session succeeds without logging its cookie",
+            "status": "PASS"
+          },
+          {
+            "name": "Bounded owned Windows helper permits reads but blocks replacement of isolated templates.json",
+            "status": "PASS"
+          },
+          {
+            "name": "Real restore replacement failure returns 500 and retains a prepared recoverable transaction",
+            "status": "PASS"
+          },
+          {
+            "name": "While the recovery target is locked ordinary business reads are blocked without exposing partial state",
+            "status": "PASS"
+          },
+          {
+            "name": "After releasing the file lock the next business read safely rolls back all five original files",
+            "status": "PASS"
+          },
+          {
+            "name": "Explicit fresh preview and manual-equivalent retry succeeds once after recovery without lost records",
+            "status": "PASS"
+          }
+        ],
+        "status": "PASS",
+        "report": ".test-data/v100-backup-restore/final-quality-2026-10-17-validation/workflow-2026-10-16T17-24-24-530Z/failure-2026-10-16T17-24-31-935Z.report.json",
+        "sha256": "21208b0a343fd8daecfd54246b5c98b67ae240320da6f975c82a790ca8320f2c"
+      },
+      {
+        "phase": "verify",
+        "checks": [
+          {
+            "name": "Frozen service reports v1.0.0 and Mock mode before any fixture write",
+            "status": "PASS"
+          },
+          {
+            "name": "Authenticated local web session succeeds without logging its cookie",
+            "status": "PASS"
+          },
+          {
+            "name": "After a real portable-service stop and restart every business record and complete history remains identical",
+            "status": "PASS"
+          },
+          {
+            "name": "Re-export after restart has original IDs, ASINs, references, human edits and no extra AI usage",
+            "status": "PASS"
+          }
+        ],
+        "status": "PASS",
+        "report": ".test-data/v100-backup-restore/final-quality-2026-10-17-validation/workflow-2026-10-16T17-24-24-530Z/verify-2026-10-16T17-24-37-818Z.report.json",
+        "sha256": "e6b6d94ca35d9099aef8459603b3e12bb595488a96c9fa0b002881e6affd9bd7"
+      }
+    ],
+    "backupFile": {
+      "file": ".test-data/v100-backup-restore/final-quality-2026-10-17-validation/workflow-2026-10-16T17-24-24-530Z/backup.json",
+      "bytes": 192656,
+      "sha256": "ceccf7ae86c9a4859ce0d62ec0d3715fa85482c347e2cff72f689a11f0f86117"
+    },
+    "integrityBeforeAfter": "all five business files byte-identical after controlled rollback/restart",
+    "actualPowerLossTest": false
+  },
+  "zip": {
+    "status": "PASS",
+    "checks": [
+      {
+        "name": "portable: archive hash, bytes, count, CRC32, raw paths, private paths and credential scan",
+        "status": "PASS"
+      },
+      {
+        "name": "portable: every bundle record matches actual ZIP bytes/SHA256; no missing or unlisted files",
+        "status": "PASS"
+      },
+      {
+        "name": "extension: archive hash, bytes, count, CRC32, raw paths, private paths and credential scan",
+        "status": "PASS"
+      },
+      {
+        "name": "extension: root MV3 1.0.0.3 (1.0.0), original permission/host allowlist, CSP, no source maps; embedded extension matches ZIP",
+        "status": "PASS"
+      }
+    ],
+    "portable": {
+      "file": "ProductSpy-1.0.0-windows-x64.zip",
+      "bytes": 42506037,
+      "sha256": "b0f3bdf2a2ccdd2b9e10d0970434b6e6c10e77171c4eefd6f9ccb56bfc4e3fa0",
+      "entries": 2335,
+      "files": 2335,
+      "scannedTextFiles": 2159,
+      "crc32Verified": true,
+      "rawPathsVerified": true,
+      "privatePathsVerified": true,
+      "credentialPatternScanPassed": true,
+      "configuredApiKeysChecked": 0,
+      "bundleRecordsVerified": 2334,
+      "embeddedExtensionFilesVerified": 11
+    },
+    "extension": {
+      "file": "ProductSpy-1.0.0-extension.zip",
+      "bytes": 408886,
+      "sha256": "e6e1a24e76f6b3d3d1608901582aff3ce66c549f4a0edb79bf9c09aa370a2e70",
+      "entries": 226,
+      "files": 226,
+      "scannedTextFiles": 222,
+      "crc32Verified": true,
+      "rawPathsVerified": true,
+      "privatePathsVerified": true,
+      "credentialPatternScanPassed": true,
+      "configuredApiKeysChecked": 0,
+      "manifestVersion": 3,
+      "extensionVersion": "1.0.0.3",
+      "extensionVersionName": "1.0.0",
+      "permissions": ["activeTab", "scripting", "storage"],
+      "hostPermissions": ["http://localhost/*", "http://127.0.0.1/*"],
+      "sourceMapsAbsent": true
+    }
+  }
+}

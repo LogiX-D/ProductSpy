@@ -1,0 +1,1029 @@
+{
+  "schemaVersion": 1,
+  "release": "1.0.0",
+  "evidenceType": "REAL_PUBLIC_AMAZON_CFT_AUTOMATION",
+  "startedAt": "2026-10-16T17:08:40.059Z",
+  "completedAt": "2026-10-16T17:11:33.503Z",
+  "auditedAt": "2026-10-16T17:12:04.547Z",
+  "clientTimezone": "Asia/Shanghai",
+  "browser": {
+    "distribution": "Chrome for Testing (Playwright chromium channel)",
+    "version": "156.0.8078.4",
+    "headless": true,
+    "stableChromeManualAcceptance": false
+  },
+  "command": "node scripts/phase16-amazon-capture.mjs --phase 21 --extension artifacts/ProductSpy-1.0.0-windows-x64/extension --output .test-data/final-quality/amazon/current",
+  "auditCommand": "node scripts/final-quality-amazon.mjs .test-data/final-quality/amazon/current",
+  "counts": {
+    "primaryPlanned": 10,
+    "primaryNavigationsAttempted": 10,
+    "primaryCaptured": 8,
+    "primaryBlockedOrNotAttempted": 2,
+    "visibleVariantsCaptured": 1,
+    "uniqueCapturedAsins": 8,
+    "plannedCategories": ["electronics", "home", "beauty", "clothing", "kitchen", "books"],
+    "capturedCategories": ["electronics", "home", "beauty", "clothing", "kitchen", "books"],
+    "plannedCountryHosts": [
+      "www.amazon.com",
+      "www.amazon.de",
+      "www.amazon.co.uk",
+      "www.amazon.co.jp"
+    ],
+    "capturedCountryHosts": ["www.amazon.com", "www.amazon.co.jp"],
+    "fields": {
+      "asin": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "title": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "price": {
+        "pass": 8,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 1,
+        "requires-content-review": 0
+      },
+      "currency": {
+        "pass": 8,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 1,
+        "requires-content-review": 0
+      },
+      "brand": {
+        "pass": 8,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 1,
+        "requires-content-review": 0
+      },
+      "mainImage": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "gallery": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "highResolution": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "bulletPoints": {
+        "pass": 8,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 1,
+        "requires-content-review": 0
+      },
+      "rating": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "reviewCount": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "videos": {
+        "pass": 5,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 4,
+        "requires-content-review": 0
+      },
+      "mainImageHttp": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      },
+      "description": {
+        "pass": 9,
+        "fail": 0,
+        "unverified": 0,
+        "not-available": 0,
+        "requires-content-review": 0
+      }
+    }
+  },
+  "frozenExtension": {
+    "bundleManifestSha256": "6b6dd25c267ae02d6ce1335534acb7f19d609ed92b6d23bb468c1898c282ee02",
+    "verifiedFiles": [
+      {
+        "path": "extension/assets/messages-vW1u_Lm5.js",
+        "bytes": 80235,
+        "sha256": "d58035d278781a2104005e2759c420172cc3c36bb6f1b010718631a01e134225"
+      },
+      {
+        "path": "extension/assets/popup-46gp5JO-.js",
+        "bytes": 243042,
+        "sha256": "b2b69da219f341a3ad45a404a4f1ce4af8c8460bfeee9ac66d6f038da1bcebce"
+      },
+      {
+        "path": "extension/assets/popup-ClUXcI5n.css",
+        "bytes": 11709,
+        "sha256": "1f62a8b6ff5094241ace3fd9ae4a5a4d94517be776cf1452eade01f5cb5fe77b"
+      },
+      {
+        "path": "extension/background.js",
+        "bytes": 7555,
+        "sha256": "110827d83e0458fdf70b7a01073d1ca6a5163f8ffbfcb31a6e82a5a617619648"
+      },
+      {
+        "path": "extension/content.js",
+        "bytes": 98621,
+        "sha256": "a175fdf76ee7efd6ea5bb7e0e240ce9885608560dee44f1086da41155484787d"
+      },
+      {
+        "path": "extension/icons/icon-128.png",
+        "bytes": 6340,
+        "sha256": "df81194f3b69d533e4bd0bc5122002ab3325d8d96e552d4f7427b164d1271f08"
+      },
+      {
+        "path": "extension/icons/icon-16.png",
+        "bytes": 704,
+        "sha256": "65cdf483d5c37219c54eff71a38b2f1e639c8f8c91fae44e6f41b211b0b620dd"
+      },
+      {
+        "path": "extension/icons/icon-32.png",
+        "bytes": 1582,
+        "sha256": "4d586ce0f3d8ee4589fc7853dc371156ce1fbbb98f4781b898a0738e8c8bbd9e"
+      },
+      {
+        "path": "extension/icons/icon-48.png",
+        "bytes": 2440,
+        "sha256": "a6c211ddaae806142e96da2fc171293926bfbc38df6730c9495f1f8cc4640ab6"
+      },
+      {
+        "path": "extension/manifest.json",
+        "bytes": 958,
+        "sha256": "3d5a7c031734c2579c54204f9c23b82a27a8ab51b560cac59ad876839cb4d28e"
+      },
+      {
+        "path": "extension/popup.html",
+        "bytes": 475,
+        "sha256": "1a6c100246620c2d1a8696121f77ace932503a8beeed931fe29e40c239157d3b"
+      }
+    ]
+  },
+  "evidenceHashes": {
+    "captureReport": "d076740ee3d735065c9bec9fa00840481a740859b03e54c51eb06af31093a4c5",
+    "independentAudit": "9af9e3c58cae376117473489437eff2035d9ebba54d4fdbb7c728ab1bff034f3"
+  },
+  "boundaries": [
+    "Direct ordinary public navigation in a fresh isolated Chrome for Testing profile, not native stable Chrome toolbar acceptance.",
+    "No CAPTCHA solving, account login, request interception, response substitution or navigation retry; host stops on verification.",
+    "Visible merchant text/data comparison does not independently validate merchant claims or real customer review bodies.",
+    "Missing fields are unknown, not fabricated; unavailable values are excluded from field successes.",
+    "Raw HTML, captured URLs and browser profiles remain ignored; sanitized output includes no session headers or credentials.",
+    "Media HEAD/GET accessibility does not prove complete download, playback or decode success.",
+    "Repeated extraction and variant checks make no product-library write; duplicate upsert/persistence is covered elsewhere.",
+    "No AI requests or library saves. Normal read-only Popup workspace status checks may occur."
+  ],
+  "rows": [
+    {
+      "category": "electronics",
+      "label": "Logitech C920",
+      "kind": "primary",
+      "requestedUrl": "https://www.amazon.com/dp/B006JH8T3S",
+      "countryHost": "www.amazon.com",
+      "capturedAt": "2026-10-16T17:08:54.995Z",
+      "httpStatus": 200,
+      "originalCaptureOutcome": "captured",
+      "status": "CAPTURED",
+      "challenge": false,
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "pass",
+        "currency": "pass",
+        "brand": "pass",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "pass",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "pass",
+        "mainImageHttp": "pass",
+        "description": "pass"
+      },
+      "publicValues": {
+        "asin": "B006JH8T3S",
+        "title": "Logitech 罗技 HD Pro 网络摄像头 C920 宽屏视频通话和录制,1080p 摄像头,台式机或笔记本电脑网络摄像头",
+        "price": "TWD2,180.11",
+        "currency": "TWD",
+        "brand": "Logitech",
+        "images": 10,
+        "videos": 2,
+        "bulletPoints": 1,
+        "rating": 4.6,
+        "reviewCount": 32796,
+        "descriptionCharacters": 859
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "variationInteraction": null,
+      "sourceHashes": {
+        "html": "22eaf1fd7f9c68b19ab61fea0c0c585f2c929c8dd0fee7654536a8b28b4fd1b6",
+        "screenshot": "493b5e830e5b9b21d18fbc27ed70aff2bf3d987582731e68feb484ab8e966ac2"
+      },
+      "mediaChecks": {
+        "mainImage": {
+          "status": 200,
+          "contentType": "image/jpeg",
+          "failed": false
+        },
+        "videos": [
+          {
+            "urlSha256": "795e5661a87e2a338c05bd8f46b956329d018f758ae8ac4398acacf461320cfe",
+            "host": "m.media-amazon.com",
+            "status": 200,
+            "contentType": "video/mp4",
+            "failed": false,
+            "playback": "NOT_EXECUTED"
+          },
+          {
+            "urlSha256": "609cd62693ea3ab1babd089e7202e6a1cfdfd6bd2c50a385d71b7674d41c4c97",
+            "host": "m.media-amazon.com",
+            "status": 200,
+            "contentType": "application/vnd.apple.mpegurl",
+            "failed": false,
+            "playback": "NOT_EXECUTED"
+          }
+        ]
+      },
+      "descriptionEvidence": {
+        "observedVisibleSections": 2,
+        "capturedTextContainedInVisibleSection": true,
+        "merchantClaimsIndependentlyVerified": false
+      },
+      "urlDeduplication": {
+        "exactUnique": true,
+        "metadataBoundToAsin": true
+      },
+      "videoNote": "ASIN binding audited separately from HEAD accessibility; playback/decoding remains unverified.",
+      "confirmedFieldFailures": []
+    },
+    {
+      "category": "home",
+      "label": "upsimples frame",
+      "kind": "primary",
+      "requestedUrl": "https://www.amazon.com/dp/B0BQR2BQYZ",
+      "countryHost": "www.amazon.com",
+      "capturedAt": "2026-10-16T17:09:09.383Z",
+      "httpStatus": 200,
+      "originalCaptureOutcome": "captured",
+      "status": "CAPTURED",
+      "challenge": false,
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "pass",
+        "currency": "pass",
+        "brand": "pass",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "pass",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "pass",
+        "mainImageHttp": "pass",
+        "description": "pass"
+      },
+      "publicValues": {
+        "asin": "B0BQR2BQYZ",
+        "title": "upsimples 27.94 x 35.56 厘米相框,墙壁装饰相框,黑色 1 件装",
+        "price": "TWD203.91",
+        "currency": "TWD",
+        "brand": "upsimples",
+        "images": 8,
+        "videos": 2,
+        "bulletPoints": 5,
+        "rating": 4.4,
+        "reviewCount": 44360,
+        "descriptionCharacters": 294
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "variationInteraction": null,
+      "sourceHashes": {
+        "html": "eff25f04eb994e49866f0a88746675a268b8b102093f19d26a5983ab64d29138",
+        "screenshot": "239835f8cfd4d6522d3c0ee20168e293caaa1b935f4c869b22c2ca4a58ab0b0f"
+      },
+      "mediaChecks": {
+        "mainImage": {
+          "status": 200,
+          "contentType": "image/jpeg",
+          "failed": false
+        },
+        "videos": [
+          {
+            "urlSha256": "e7ed4eea9ceec35cd6f7ec770b85ee101b655a7eb54967573c1ffccc9ff401d4",
+            "host": "m.media-amazon.com",
+            "status": 200,
+            "contentType": "video/mp4",
+            "failed": false,
+            "playback": "NOT_EXECUTED"
+          },
+          {
+            "urlSha256": "20aa60afd6663da6f1ab38c234bdb6dddcc6cf4c89e5c0af25495134416e59c7",
+            "host": "m.media-amazon.com",
+            "status": 200,
+            "contentType": "application/vnd.apple.mpegurl",
+            "failed": false,
+            "playback": "NOT_EXECUTED"
+          }
+        ]
+      },
+      "descriptionEvidence": {
+        "observedVisibleSections": 2,
+        "capturedTextContainedInVisibleSection": true,
+        "merchantClaimsIndependentlyVerified": false
+      },
+      "urlDeduplication": {
+        "exactUnique": true,
+        "metadataBoundToAsin": true
+      },
+      "videoNote": "ASIN binding audited separately from HEAD accessibility; playback/decoding remains unverified.",
+      "confirmedFieldFailures": []
+    },
+    {
+      "category": "beauty",
+      "label": "CeraVe moisturizer",
+      "kind": "primary",
+      "requestedUrl": "https://www.amazon.com/dp/B00TTD9BRC",
+      "countryHost": "www.amazon.com",
+      "capturedAt": "2026-10-16T17:09:18.199Z",
+      "httpStatus": 200,
+      "originalCaptureOutcome": "captured",
+      "status": "CAPTURED",
+      "challenge": false,
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "pass",
+        "currency": "pass",
+        "brand": "pass",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "pass",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "pass",
+        "mainImageHttp": "pass",
+        "description": "pass"
+      },
+      "publicValues": {
+        "asin": "B00TTD9BRC",
+        "title": "CeraVe 保湿霜 16 盎司（约 453.59 克）日常面部和身体保湿霜，适用于干性肌肤, 19 盎司",
+        "price": "TWD614.65",
+        "currency": "TWD",
+        "brand": "CeraVe",
+        "images": 12,
+        "videos": 2,
+        "bulletPoints": 5,
+        "rating": 4.7,
+        "reviewCount": 149018,
+        "descriptionCharacters": 293
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "variationInteraction": null,
+      "sourceHashes": {
+        "html": "ca6154debdac800028adaf6b1df3774975cd198e1aec0f12dd8e0ba3f3619285",
+        "screenshot": "41c8dc43c3a991c06b2a1e91eeca5e036cfd7a10022b50f27ef8abcc396adb50"
+      },
+      "mediaChecks": {
+        "mainImage": {
+          "status": 200,
+          "contentType": "image/jpeg",
+          "failed": false
+        },
+        "videos": [
+          {
+            "urlSha256": "8f91bda774065a8cdc452e916f20aed9b83fe069404a74ef19883a50b2f246d6",
+            "host": "m.media-amazon.com",
+            "status": 200,
+            "contentType": "video/mp4",
+            "failed": false,
+            "playback": "NOT_EXECUTED"
+          },
+          {
+            "urlSha256": "2f7c2b412fa896d95c74ee78675d43eeff9e9f35249e8a51afa0524046b02401",
+            "host": "m.media-amazon.com",
+            "status": 200,
+            "contentType": "application/vnd.apple.mpegurl",
+            "failed": false,
+            "playback": "NOT_EXECUTED"
+          }
+        ]
+      },
+      "descriptionEvidence": {
+        "observedVisibleSections": 3,
+        "capturedTextContainedInVisibleSection": true,
+        "merchantClaimsIndependentlyVerified": false
+      },
+      "urlDeduplication": {
+        "exactUnique": true,
+        "metadataBoundToAsin": true
+      },
+      "videoNote": "ASIN binding audited separately from HEAD accessibility; playback/decoding remains unverified.",
+      "confirmedFieldFailures": []
+    },
+    {
+      "category": "clothing",
+      "label": "Hanes hoodie",
+      "kind": "primary",
+      "requestedUrl": "https://www.amazon.com/dp/B00JUM2V4W",
+      "countryHost": "www.amazon.com",
+      "capturedAt": "2026-10-16T17:09:31.470Z",
+      "httpStatus": 200,
+      "originalCaptureOutcome": "captured",
+      "status": "CAPTURED",
+      "challenge": false,
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "pass",
+        "currency": "pass",
+        "brand": "pass",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "pass",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "not-available",
+        "mainImageHttp": "pass",
+        "description": "pass"
+      },
+      "publicValues": {
+        "asin": "B00JUM2V4W",
+        "title": "Hanes P170 - EcoSmart 连帽运动衫",
+        "price": "TWD625.34",
+        "currency": "TWD",
+        "brand": "Hanes",
+        "images": 8,
+        "videos": 0,
+        "bulletPoints": 5,
+        "rating": 4.5,
+        "reviewCount": 172299,
+        "descriptionCharacters": 183
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "variationInteraction": {
+        "status": "captured",
+        "originalAsin": "B00JUM2V4W",
+        "tileAsin": "B0C34WVJVT",
+        "tileId": "",
+        "activeAsin": "B0C34WVJVT",
+        "capturedAsinMatches": true,
+        "tileAsinMatches": true,
+        "imageChanged": true,
+        "priceChanged": true
+      },
+      "sourceHashes": {
+        "html": "6b45515ee6dc71fe3bdd93c23d7023a431f276afa6a1c185fa5060cb6577d3fd",
+        "screenshot": "3c9529f6ae93f52c42c043de50ef0a2ef85978fbe193087531f413d20b50a972"
+      },
+      "mediaChecks": {
+        "mainImage": {
+          "status": 200,
+          "contentType": "image/jpeg",
+          "failed": false
+        },
+        "videos": []
+      },
+      "descriptionEvidence": {
+        "observedVisibleSections": 2,
+        "capturedTextContainedInVisibleSection": true,
+        "merchantClaimsIndependentlyVerified": false
+      },
+      "urlDeduplication": {
+        "exactUnique": true,
+        "metadataBoundToAsin": true
+      },
+      "videoNote": "No reliable video URL was extracted at this instant; this does not prove no video exists.",
+      "confirmedFieldFailures": []
+    },
+    {
+      "category": "clothing",
+      "label": "Hanes hoodie visible variant",
+      "kind": "visible-variant",
+      "requestedUrl": "https://www.amazon.com/dp/B0C34WVJVT",
+      "countryHost": "www.amazon.com",
+      "capturedAt": "2026-10-16T17:09:41.331Z",
+      "httpStatus": null,
+      "originalCaptureOutcome": "captured",
+      "status": "CAPTURED",
+      "challenge": false,
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "pass",
+        "currency": "pass",
+        "brand": "pass",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "pass",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "not-available",
+        "mainImageHttp": "pass",
+        "description": "pass"
+      },
+      "publicValues": {
+        "asin": "B0C34WVJVT",
+        "title": "Hanes P170 - EcoSmart 连帽运动衫",
+        "price": "TWD518.69",
+        "currency": "TWD",
+        "brand": "Hanes",
+        "images": 8,
+        "videos": 0,
+        "bulletPoints": 5,
+        "rating": 4.5,
+        "reviewCount": 172299,
+        "descriptionCharacters": 183
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "variationInteraction": null,
+      "sourceHashes": {
+        "html": "c226481c4d495841b4e97b56d201f30ee5f7e1ba245c2d7a4c6d265a244f90b9",
+        "screenshot": "b66a3347ba967b840972f17f530170c6613f467f183e680f0f26189aff70c2d2"
+      },
+      "mediaChecks": {
+        "mainImage": {
+          "status": 200,
+          "contentType": "image/jpeg",
+          "failed": false
+        },
+        "videos": []
+      },
+      "descriptionEvidence": {
+        "observedVisibleSections": 2,
+        "capturedTextContainedInVisibleSection": true,
+        "merchantClaimsIndependentlyVerified": false
+      },
+      "urlDeduplication": {
+        "exactUnique": true,
+        "metadataBoundToAsin": true
+      },
+      "videoNote": "No reliable video URL was extracted at this instant; this does not prove no video exists.",
+      "confirmedFieldFailures": []
+    },
+    {
+      "category": "kitchen",
+      "label": "OXO cookie scoop",
+      "kind": "primary",
+      "requestedUrl": "https://www.amazon.com/dp/B0000CCY1E",
+      "countryHost": "www.amazon.com",
+      "capturedAt": "2026-10-16T17:09:49.040Z",
+      "httpStatus": 200,
+      "originalCaptureOutcome": "captured",
+      "status": "CAPTURED",
+      "challenge": false,
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "pass",
+        "currency": "pass",
+        "brand": "pass",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "pass",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "pass",
+        "mainImageHttp": "pass",
+        "description": "pass"
+      },
+      "publicValues": {
+        "asin": "B0000CCY1E",
+        "title": "OXO Good Grips 小号不锈钢饼干勺 - 1 汤匙",
+        "price": "TWD581.90",
+        "currency": "TWD",
+        "brand": "OXO",
+        "images": 9,
+        "videos": 1,
+        "bulletPoints": 5,
+        "rating": 4.4,
+        "reviewCount": 3518,
+        "descriptionCharacters": 221
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "variationInteraction": null,
+      "sourceHashes": {
+        "html": "5bc63cf2123dbd2a8786c791ce1d090f965fe5aade58c16995c3165bf5e30def",
+        "screenshot": "0b3cae22b2af059da77e839bef72877544b2de85ce3583ffaf50f1ef9cf6191d"
+      },
+      "mediaChecks": {
+        "mainImage": {
+          "status": 200,
+          "contentType": "image/jpeg",
+          "failed": false
+        },
+        "videos": [
+          {
+            "urlSha256": "f87199dd0d057c55538cb5e3ebe7fa8854f8afeedc3e1a729e48378c8fb8c850",
+            "host": "m.media-amazon.com",
+            "status": 200,
+            "contentType": "video/mp4",
+            "failed": false,
+            "playback": "NOT_EXECUTED"
+          }
+        ]
+      },
+      "descriptionEvidence": {
+        "observedVisibleSections": 2,
+        "capturedTextContainedInVisibleSection": true,
+        "merchantClaimsIndependentlyVerified": false
+      },
+      "urlDeduplication": {
+        "exactUnique": true,
+        "metadataBoundToAsin": true
+      },
+      "videoNote": "ASIN binding audited separately from HEAD accessibility; playback/decoding remains unverified.",
+      "confirmedFieldFailures": []
+    },
+    {
+      "category": "books",
+      "label": "Atomic Habits",
+      "kind": "primary",
+      "requestedUrl": "https://www.amazon.com/dp/0735211299",
+      "countryHost": "www.amazon.com",
+      "capturedAt": "2026-10-16T17:10:20.427Z",
+      "httpStatus": 200,
+      "originalCaptureOutcome": "captured",
+      "status": "CAPTURED",
+      "challenge": false,
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "pass",
+        "currency": "pass",
+        "brand": "not-available",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "not-available",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "pass",
+        "mainImageHttp": "pass",
+        "description": "pass"
+      },
+      "publicValues": {
+        "asin": "0735211299",
+        "title": "Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones",
+        "price": "TWD 612.05",
+        "currency": "TWD",
+        "brand": null,
+        "images": 1,
+        "videos": 2,
+        "bulletPoints": 0,
+        "rating": 4.8,
+        "reviewCount": 150194,
+        "descriptionCharacters": 2002
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "variationInteraction": null,
+      "sourceHashes": {
+        "html": "03e563a7ca2780cd57928f78b0efd0c5bcc028d3e28553a42ee28114bfdb2d00",
+        "screenshot": "84c7778397baa0c3616bf5c349c3866e14711dcd9508a0f9966a9b73aa8d47ee"
+      },
+      "mediaChecks": {
+        "mainImage": {
+          "status": 200,
+          "contentType": "image/jpeg",
+          "failed": false
+        },
+        "videos": [
+          {
+            "urlSha256": "bc8de825c6f4e96d4e7976908f2d2d3ef12bc3bf0bbc99e54ab85b0c7f2d94f7",
+            "host": "m.media-amazon.com",
+            "status": 200,
+            "contentType": "video/mp4",
+            "failed": false,
+            "playback": "NOT_EXECUTED"
+          },
+          {
+            "urlSha256": "c5ec91b501f68dd146b434dd52388b88864cb6b43c44f84b5ef0322b1bdba339",
+            "host": "m.media-amazon.com",
+            "status": 200,
+            "contentType": "application/vnd.apple.mpegurl",
+            "failed": false,
+            "playback": "NOT_EXECUTED"
+          }
+        ]
+      },
+      "brandNote": "Author/format byline is not an explicit product brand.",
+      "descriptionEvidence": {
+        "observedVisibleSections": 1,
+        "capturedTextContainedInVisibleSection": true,
+        "merchantClaimsIndependentlyVerified": false
+      },
+      "urlDeduplication": {
+        "exactUnique": true,
+        "metadataBoundToAsin": true
+      },
+      "videoNote": "ASIN binding audited separately from HEAD accessibility; playback/decoding remains unverified.",
+      "confirmedFieldFailures": []
+    },
+    {
+      "category": "clothing",
+      "label": "Crocs Classic variant",
+      "kind": "primary",
+      "requestedUrl": "https://www.amazon.com/dp/B0014C5S7S",
+      "countryHost": "www.amazon.com",
+      "capturedAt": "2026-10-16T17:10:34.567Z",
+      "httpStatus": 200,
+      "originalCaptureOutcome": "captured",
+      "status": "CAPTURED",
+      "challenge": false,
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "not-available",
+        "currency": "not-available",
+        "brand": "pass",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "pass",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "not-available",
+        "mainImageHttp": "pass",
+        "description": "pass"
+      },
+      "publicValues": {
+        "asin": "B0014C5S7S",
+        "title": "Crocs 卡骆驰中性款成人经典洞洞鞋,男女洞洞鞋",
+        "price": null,
+        "currency": null,
+        "brand": "Crocs",
+        "images": 13,
+        "videos": 0,
+        "bulletPoints": 5,
+        "rating": 4.8,
+        "reviewCount": 489254,
+        "descriptionCharacters": 384
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "variationInteraction": {
+        "status": "interaction-error",
+        "originalAsin": "B0014C5S7S",
+        "tileAsin": "B0FPSBG9CY",
+        "tileId": "",
+        "error": "TimeoutError: page.waitForFunction: Timeout 18000ms exceeded."
+      },
+      "sourceHashes": {
+        "html": "e2e785b75bf0f3a59c58d6bb6648c33f572c04b9b268c8bd43163b885f4715b6",
+        "screenshot": "ab4a630a6563898ba936320b611ed10834fcaf82583356a4f09b3112421c9e17"
+      },
+      "mediaChecks": {
+        "mainImage": {
+          "status": 200,
+          "contentType": "image/jpeg",
+          "failed": false
+        },
+        "videos": []
+      },
+      "descriptionEvidence": {
+        "observedVisibleSections": 3,
+        "capturedTextContainedInVisibleSection": true,
+        "merchantClaimsIndependentlyVerified": false
+      },
+      "urlDeduplication": {
+        "exactUnique": true,
+        "metadataBoundToAsin": true
+      },
+      "videoNote": "No reliable video URL was extracted at this instant; this does not prove no video exists.",
+      "confirmedFieldFailures": []
+    },
+    {
+      "category": "electronics",
+      "label": "Logitech DE",
+      "kind": "primary",
+      "requestedUrl": "https://www.amazon.de/dp/B006JH8T3S",
+      "countryHost": "www.amazon.de",
+      "capturedAt": "2026-10-16T17:10:59.650Z",
+      "httpStatus": 200,
+      "originalCaptureOutcome": "challenge",
+      "status": "BLOCKED",
+      "challenge": true,
+      "fields": {},
+      "publicValues": null,
+      "repeatCapture": null,
+      "variationInteraction": null,
+      "sourceHashes": {
+        "html": "a5f79348f8126d5145e82bc08dfd4dde10d0182ec9487fc2ad52f2a0e0defc6a",
+        "screenshot": "442e4d295e816e378948fbe135c2eef1fbed27a169c2b38322e259fa16b409f0"
+      },
+      "mediaChecks": {
+        "mainImage": null,
+        "videos": []
+      },
+      "reason": "Amazon access verification; not bypassed."
+    },
+    {
+      "category": "kitchen",
+      "label": "OXO UK",
+      "kind": "primary",
+      "requestedUrl": "https://www.amazon.co.uk/dp/B0000CCY1E",
+      "countryHost": "www.amazon.co.uk",
+      "capturedAt": "2026-10-16T17:11:03.428Z",
+      "httpStatus": 200,
+      "originalCaptureOutcome": "challenge",
+      "status": "BLOCKED",
+      "challenge": true,
+      "fields": {},
+      "publicValues": null,
+      "repeatCapture": null,
+      "variationInteraction": null,
+      "sourceHashes": {
+        "html": "eb322ef6e5a47592c50143f5720f261ae36231a4cb139de730a292b58c330905",
+        "screenshot": "aa40fc9863ac194390652161316c954640744704b69f7d9758207391ccadcf3f"
+      },
+      "mediaChecks": {
+        "mainImage": null,
+        "videos": []
+      },
+      "reason": "Amazon access verification; not bypassed."
+    },
+    {
+      "category": "electronics",
+      "label": "Logitech JP",
+      "kind": "primary",
+      "requestedUrl": "https://www.amazon.co.jp/dp/B006JH8T3S",
+      "countryHost": "www.amazon.co.jp",
+      "capturedAt": "2026-10-16T17:11:23.766Z",
+      "httpStatus": 200,
+      "originalCaptureOutcome": "captured",
+      "status": "CAPTURED",
+      "challenge": false,
+      "fields": {
+        "asin": "pass",
+        "title": "pass",
+        "price": "pass",
+        "currency": "pass",
+        "brand": "pass",
+        "mainImage": "pass",
+        "gallery": "pass",
+        "highResolution": "pass",
+        "bulletPoints": "pass",
+        "rating": "pass",
+        "reviewCount": "pass",
+        "videos": "not-available",
+        "mainImageHttp": "pass",
+        "description": "pass"
+      },
+      "publicValues": {
+        "asin": "B006JH8T3S",
+        "title": "LOGICOOL HD Pro 网络摄像头 C920",
+        "price": "TWD2,746.91",
+        "currency": "TWD",
+        "brand": "Logitech",
+        "images": 10,
+        "videos": 0,
+        "bulletPoints": 3,
+        "rating": 4.5,
+        "reviewCount": 32077,
+        "descriptionCharacters": 146
+      },
+      "repeatCapture": {
+        "status": "captured",
+        "sourceIdUnchanged": true,
+        "titleUnchanged": true,
+        "priceUnchanged": true,
+        "imagesUnchanged": true,
+        "priceMatchesCurrentDom": true,
+        "currentAsinMatches": true,
+        "noLibrarySave": true
+      },
+      "variationInteraction": null,
+      "sourceHashes": {
+        "html": "431efc230b8811bccf7eff0a297e3cd753cb1043805bc0ff430dd352e32cb6d0",
+        "screenshot": "04f6d509677fadb0bbb572dfe980b6f1ff5632d8181b827c43b06b4492b844a2"
+      },
+      "mediaChecks": {
+        "mainImage": {
+          "status": 200,
+          "contentType": "image/jpeg",
+          "failed": false
+        },
+        "videos": []
+      },
+      "descriptionEvidence": {
+        "observedVisibleSections": 2,
+        "capturedTextContainedInVisibleSection": true,
+        "merchantClaimsIndependentlyVerified": false
+      },
+      "urlDeduplication": {
+        "exactUnique": true,
+        "metadataBoundToAsin": true
+      },
+      "videoNote": "No reliable video URL was extracted at this instant; this does not prove no video exists.",
+      "confirmedFieldFailures": []
+    }
+  ]
+}

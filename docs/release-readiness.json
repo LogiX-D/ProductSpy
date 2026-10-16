@@ -1165,5 +1165,38 @@
     ],
     "otherDetailedRowsPreserved": true,
     "doesNotPassCompatibilityOrBackupConflictCases": true
+  },
+  "latestUnifiedQualityValidation": {
+    "date": "2026-10-17",
+    "baseline": "0880b927b11218836c15bc8b1258f23c8e648c04",
+    "report": "docs/v1.0.0-final-quality-validation.md",
+    "machineReport": "docs/v1.0.0-final-quality-validation.json",
+    "manualChecklist": "docs/v1.0.0-final-manual-checklist.md",
+    "assessment": {
+      "featureDevelopmentComplete": true,
+      "engineeringAutomationPassed": true,
+      "nativeManualAcceptanceComplete": false,
+      "historicalManualCases": {
+        "pass": 9,
+        "pending": 44,
+        "fail": 0
+      },
+      "newManualPasses": 0,
+      "realPaidAIQuality": "PENDING_NOT_AUTHORIZED",
+      "confirmedUnresolvedP0P1": [],
+      "newConfirmedProductP0P1P2": [],
+      "readyForPublicRelease": false,
+      "releasePublished": false,
+      "storeSubmitted": false,
+      "productionCodeChanged": false,
+      "releaseArtifactsChanged": false,
+      "blockingEvidenceGaps": [
+        "正式 Chrome C01/C02/C06 完整条件",
+        "Windows 原生配置/目录/权限及真实 DPI",
+        "F/B 详细清单尚缺的交互/取消/冲突证据",
+        "AI01–AI03 真实质量未授权；必须如实披露"
+      ]
+    },
+    "allPriorEvidencePreserved": true
   }
 }

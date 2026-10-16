@@ -1,0 +1,1256 @@
+[
+  {
+    "file": "scripts/final-quality-provider.test.mjs",
+    "passed": 9,
+    "status": "passed",
+    "tests": [
+      "Final quality: actual HTTP OpenAI-compatible contracts, never real model quality product analysis sends one text-only request and validates evidence and token usage",
+      "Final quality: actual HTTP OpenAI-compatible contracts, never real model quality competitor comparison uses one strict-schema HTTP request without media or invented model facts",
+      "Final quality: actual HTTP OpenAI-compatible contracts, never real model quality content creation keeps untrusted prompt text in user data and never transmits selected media",
+      "Final quality: actual HTTP OpenAI-compatible contracts, never real model quality HTTP 500 returns a readable single-call failure without leaking its response body",
+      "Final quality: actual HTTP OpenAI-compatible contracts, never real model quality HTTP 429 preserves Retry-After and never performs an automatic second request",
+      "Final quality: actual HTTP OpenAI-compatible contracts, never real model quality a real blocked HTTP response times out once and reports possible billing, not a zero-cost assertion",
+      "Final quality: actual HTTP OpenAI-compatible contracts, never real model quality a malformed HTTP response body is rejected after one request",
+      "Final quality: actual HTTP OpenAI-compatible contracts, never real model quality structured output claiming review-text analysis is rejected over actual HTTP",
+      "Final quality: actual HTTP OpenAI-compatible contracts, never real model quality an HTTP redirect is rejected without following even a loopback redirect target"
+    ]
+  },
+  {
+    "file": "scripts/windows-launcher.test.mjs",
+    "passed": 5,
+    "status": "passed",
+    "tests": [
+      "Windows portable launcher lifecycle guards stops an orphaned owned service even when its stop-request JSON is corrupt",
+      "Windows portable launcher lifecycle guards does not stop a live owner for corrupt or unrelated stop requests",
+      "Windows portable launcher lifecycle guards stops an orphaned service without a stop file",
+      "Windows portable launcher lifecycle guards checks real directory writability without changing existing data or ACLs",
+      "Windows portable launcher lifecycle guards stops only its owned process when the control directory cannot receive a stop request"
+    ]
+  },
+  {
+    "file": "scripts/packaging/files.test.mjs",
+    "passed": 4,
+    "status": "passed",
+    "tests": [
+      "distributable package boundaries rejects output traversal instead of touching unrelated folders",
+      "distributable package boundaries excludes credentials and user data even if tracing included them",
+      "distributable package boundaries fails the package inspection when a key appears inside compiled code",
+      "distributable package boundaries writes portable ZIP entries with extension root and optional Windows package root"
+    ]
+  },
+  {
+    "file": "scripts/packaging/guides.test.mjs",
+    "passed": 3,
+    "status": "passed",
+    "tests": [
+      "portable user guide links keeps bundled guides local and resolves the renamed entrypoint/privacy",
+      "portable user guide links routes evidence files to source docs instead of shipping broken local links",
+      "portable user guide links all current packaged guide links point to a shipped file or an explicit external source"
+    ]
+  },
+  {
+    "file": "scripts/packaging/notices.test.mjs",
+    "passed": 4,
+    "status": "passed",
+    "tests": [
+      "third-party notices copies exact license texts and bundled Next notices without machine paths or private files",
+      "third-party notices deduplicates installed peer copies and explicitly reports missing original license texts",
+      "third-party notices preserves README license sections and the upstream project text when tarballs omit it",
+      "third-party notices rejects dependency paths outside the allowed source tree"
+    ]
+  },
+  {
+    "file": "scripts/packaging/release-version.test.mjs",
+    "passed": 6,
+    "status": "passed",
+    "tests": [
+      "candidate application and Chrome version mapping uses the application RC label for files and the numeric version for Chrome updates",
+      "candidate application and Chrome version mapping retains stable release mapping and enforces Chrome numeric constraints",
+      "candidate application and Chrome version mapping increments rc.2 without changing the frozen rc.1 numeric mapping",
+      "candidate application and Chrome version mapping refuses mismatched builds and candidates without a clear display label",
+      "candidate application and Chrome version mapping allows the stable successor to update both frozen candidates without a numeric downgrade",
+      "candidate application and Chrome version mapping keeps every workspace package and the distributed manifest on the same release"
+    ]
+  },
+  {
+    "file": "scripts/packaging/standalone.test.mjs",
+    "passed": 2,
+    "status": "passed",
+    "tests": [
+      "relocatable pnpm standalone dependencies preserves package dependency lookup after junctions are materialized",
+      "relocatable pnpm standalone dependencies rejects absolute links into the original workspace or other private folders"
+    ]
+  },
+  {
+    "file": "packages/shared/src/analysis-contract.test.ts",
+    "passed": 4,
+    "status": "passed",
+    "tests": [
+      "Phase 12 shared contract and old data fills predictable preferences and rejects unsupported values and oversized instructions",
+      "Phase 12 shared contract and old data reads v0.3.0 Product without manufacturing new metadata or history",
+      "Phase 12 shared contract and old data cannot declare review text was analyzed when it was never collected",
+      "Phase 12 shared contract and old data distinguishes unknown usage from measured zero and rejects unsafe cost values"
+    ]
+  },
+  {
+    "file": "packages/shared/src/business-backup.test.ts",
+    "passed": 6,
+    "status": "passed",
+    "tests": [
+      "complete workspace backup schema and source boundaries keeps deleted sources as independently valid immutable snapshots",
+      "complete workspace backup schema and source boundaries rejects nested hostile media URLs and changed ASIN identity",
+      "complete workspace backup schema and source boundaries checks incoming identities against an existing library without overwriting it",
+      "complete workspace backup schema and source boundaries rejects credentials, arbitrary preferences and unsupported archive formats",
+      "complete workspace backup schema and source boundaries keeps only explicit preference and one-way usage fields with exact generation options",
+      "complete workspace backup schema and source boundaries rejects repeated request identifiers and unknown template snapshots"
+    ]
+  },
+  {
+    "file": "packages/shared/src/comparison.test.ts",
+    "passed": 6,
+    "status": "passed",
+    "tests": [
+      "comparison schema and export boundaries requires 2–5 unique snapshots and retains original product IDs",
+      "comparison schema and export boundaries rejects incomplete AI fields, extra claims and review analysis impersonation",
+      "comparison schema and export boundaries shows unknown missing fields, historical currencies without numeric price ranking",
+      "comparison schema and export boundaries counts unique primary image and labels merchant-provided specifications",
+      "comparison schema and export boundaries escapes CSV formulas and Markdown table syntax without inventing data",
+      "comparison schema and export boundaries rejects unexpected backup fields and duplicate plan identifiers"
+    ]
+  },
+  {
+    "file": "packages/shared/src/content-references.test.ts",
+    "passed": 6,
+    "status": "passed",
+    "tests": [
+      "immutable cross-module content references does not falsely mark a source stale after group/tag, favorite, identical recapture or history housekeeping",
+      "immutable cross-module content references distinguishes changed captured facts from newly saved AI analysis",
+      "immutable cross-module content references preserves snapshots after deletion and refuses a live product with another ASIN",
+      "immutable cross-module content references marks template definition updates but ignores unchanged names from history restoration",
+      "immutable cross-module content references reports changed or deleted comparison source without mutating the original source",
+      "immutable cross-module content references provides legacy provenance without inventing a generated version"
+    ]
+  },
+  {
+    "file": "packages/shared/src/content.test.ts",
+    "passed": 9,
+    "status": "passed",
+    "tests": [
+      "groups captured quality sources into one visible reference asset without removing saved URL choices",
+      "content contracts, duration and safe text exports accepts optional bounded selection for legacy plans and only approves media belonging to their snapshots",
+      "content contracts, duration and safe text exports refuses unsupported HLS selection and preserves per-generation media provenance in all text exports",
+      "content contracts, duration and safe text exports keeps legacy defaults and accepts a custom content duration independently",
+      "content contracts, duration and safe text exports validates required script sections and five hooks",
+      "content contracts, duration and safe text exports labels the duration heuristic honestly and warns on an obvious text conflict",
+      "content contracts, duration and safe text exports preserves snapshots without a live source and validates the current version",
+      "content contracts, duration and safe text exports rejects duplicate plan/version IDs and unsupported backup formats",
+      "content contracts, duration and safe text exports exports selected fields with provenance and escaped Markdown"
+    ]
+  },
+  {
+    "file": "packages/shared/src/history-management.test.ts",
+    "passed": 4,
+    "status": "passed",
+    "tests": [
+      "explicit history capacity cleanup keeps first and current while descriptive parent chains can free capacity",
+      "explicit history capacity cleanup protects restore dependency nodes without protecting every parent",
+      "explicit history capacity cleanup never chooses or deletes edits automatically and rejects invalid selections",
+      "explicit history capacity cleanup selection schema requires unique IDs and valid revision timestamp"
+    ]
+  },
+  {
+    "file": "packages/shared/src/http.test.ts",
+    "passed": 5,
+    "status": "passed",
+    "tests": [
+      "shared workspace HTTP client preserves custom headers in every RequestInit format",
+      "shared workspace HTTP client preserves custom headers in every RequestInit format",
+      "shared workspace HTTP client preserves custom headers in every RequestInit format",
+      "shared workspace HTTP client turns wrong-port HTML responses into readable errors",
+      "shared workspace HTTP client preserves a server error without claiming success"
+    ]
+  },
+  {
+    "file": "packages/shared/src/library-transfer.test.ts",
+    "passed": 36,
+    "status": "passed",
+    "tests": [
+      "validated non-destructive library import and backup round-trips every product ID, ASIN, manual analysis, history and membership",
+      "validated non-destructive library import and backup reads unchanged v0.4 product arrays without adding memberships or losing AI",
+      "validated non-destructive library import and backup policy skip leaves duplicate existing records exactly untouched",
+      "validated non-destructive library import and backup policy preserve leaves duplicate existing records exactly untouched",
+      "validated non-destructive library import and backup reassigns an incoming colliding ID and conflicting definition IDs without touching old metadata",
+      "validated non-destructive library import and backup reuses matching names and preserves original name/color while mapping new products",
+      "validated non-destructive library import and backup rejects a corrupt file or unknown backup version instead of importing valid pieces",
+      "validated non-destructive library import and backup rejects duplicate ASINs, duplicate IDs, invalid membership and duplicate definitions",
+      "validated non-destructive library import and backup rejects ambiguous repeated analysis version IDs without trimming history",
+      "validated non-destructive library import and backup rejects files over 25 MiB and more than 2000 products, counting UTF-8 bytes",
+      "validated non-destructive library import and backup rejects unsafe imported media URL javascript:alert(1)",
+      "validated non-destructive library import and backup rejects unsafe imported media URL data:image/svg+xml,<svg/>",
+      "validated non-destructive library import and backup rejects unsafe imported media URL file:///C:/secret",
+      "validated non-destructive library import and backup rejects unsafe imported media URL https://127.0.0.1/picture.jpg",
+      "validated non-destructive library import and backup rejects unsafe imported media URL https://2130706433/picture.jpg",
+      "validated non-destructive library import and backup rejects unsafe imported media URL https://[::1]/picture.jpg",
+      "validated non-destructive library import and backup rejects unsafe imported media URL https://192.168.1.1/picture.jpg",
+      "validated non-destructive library import and backup rejects unsafe imported media URL https://localhost/picture.jpg",
+      "validated non-destructive library import and backup rejects unsafe imported media URL https://server.local/a.jpg",
+      "validated non-destructive library import and backup rejects unsafe imported media URL https://server.internal/a.jpg",
+      "validated non-destructive library import and backup rejects unsafe imported media URL https://127.0.0.1.nip.io/a.jpg",
+      "validated non-destructive library import and backup rejects unsafe imported media URL https://user:password@example.com/a.jpg",
+      "validated non-destructive library import and backup rejects unsafe imported media URL https://example.com:8443/a.jpg",
+      "validated non-destructive library import and backup rejects unsafe imported media URL https://example.com/a\n.jpg",
+      "validated non-destructive library import and backup preserves compatible public HTTP(S) media and validates ASIN for all supported product paths",
+      "validated non-destructive library import and backup rejects definition capacity overflow atomically and refuses a broken ID factory",
+      "safe readable exports neutralizes formula value \"=HYPERLINK(\\\"evil\\\")\" in CSV",
+      "safe readable exports neutralizes formula value \"+cmd\" in CSV",
+      "safe readable exports neutralizes formula value \"-1+2\" in CSV",
+      "safe readable exports neutralizes formula value \"@SUM(1)\" in CSV",
+      "safe readable exports neutralizes formula value \" \\t=1+1\" in CSV",
+      "safe readable exports neutralizes formula value \"\\u0000=1+1\" in CSV",
+      "safe readable exports neutralizes formula value \"\\tplain\" in CSV",
+      "safe readable exports quotes embedded commas, quotes and newlines using RFC CSV rules",
+      "safe readable exports escapes injected HTML, links and fences without losing plain analysis text",
+      "safe readable exports exports all products, including a clear note for absent analysis"
+    ]
+  },
+  {
+    "file": "packages/shared/src/media.test.ts",
+    "passed": 14,
+    "status": "passed",
+    "tests": [
+      "captured media catalogue includes real metadata-only resolutions for an existing current-product image",
+      "captured media catalogue retains an unmeasured captured preferred source rather than defaulting to a measured thumbnail",
+      "captured media catalogue ignores metadata from other ASINs, source pages, country sites or image identities",
+      "captured media catalogue deduplicates URLs and groups only actually captured image variants",
+      "captured media catalogue preserves signed query strings but removes fragments for URL dedup",
+      "captured media catalogue backfills provenance from old products without mutating them",
+      "captured media catalogue prefers an actually captured HTTPS source over an unsafe larger HTTP variant",
+      "captured media catalogue does not expose download for unsafe video https://evil.example/video.mp4",
+      "captured media catalogue does not expose download for unsafe video http://m.media-amazon.com/video.mp4",
+      "captured media catalogue does not expose download for unsafe video https://m.media-amazon.com:8443/video.mp4",
+      "captured media catalogue does not expose download for unsafe video https://user:secret@m.media-amazon.com/video.mp4",
+      "captured media catalogue does not expose download for unsafe video https://m.media-amazon.com.evil.example/video.mp4",
+      "captured media catalogue recognizes public MP4/WebM, HLS and unknown video formats",
+      "captured media catalogue generates short Windows-safe names containing title, ASIN and media type"
+    ]
+  },
+  {
+    "file": "packages/shared/src/product.test.ts",
+    "passed": 4,
+    "status": "passed",
+    "tests": [
+      "product identity and deduplication uses source + normalized ASIN and preserves identity and creation date",
+      "product identity and deduplication accepts missing optional fields and rejects invalid protocols or deceptive hosts",
+      "product identity and deduplication always advances the update version, even inside the same millisecond",
+      "AI response schema validation rejects empty and partial responses"
+    ]
+  },
+  {
+    "file": "packages/shared/src/templates.test.ts",
+    "passed": 11,
+    "status": "passed",
+    "tests": [
+      "safe plain-text AI templates provides four complete immutable-origin builtins with stable distinct IDs",
+      "safe plain-text AI templates checks whitespace identifiers and rejects unknown variables or executable expressions",
+      "safe plain-text AI templates does not treat ordinary JSON braces as variable expressions",
+      "safe plain-text AI templates replaces missing page fields with unknown without invented values",
+      "safe plain-text AI templates substitutes once, preserving adversarial product text as literal data",
+      "safe plain-text AI templates bounds repeated page-variable expansion before an oversized request can be produced",
+      "safe plain-text AI templates requires unique bounded tags and allowlisted output sections",
+      "safe plain-text AI templates rejects unknown properties, oversized prompts and malformed variables in output requirements",
+      "safe plain-text AI templates extracts editable definition without accidentally duplicating IDs or origin",
+      "safe plain-text AI templates validates coherent current snapshot and unique history before import",
+      "safe plain-text AI templates does not allow imported builtins or reserved IDs to replace system templates"
+    ]
+  },
+  {
+    "file": "apps/extension/tests/access-state.test.ts",
+    "passed": 3,
+    "status": "passed",
+    "tests": [
+      "normal Amazon access restrictions recognizes /errors/validateCaptcha without submitting verification",
+      "normal Amazon access restrictions recognizes /errors_page/validateCaptcha without submitting verification",
+      "normal Amazon access restrictions does not mistake ordinary product content for verification"
+    ]
+  },
+  {
+    "file": "apps/extension/tests/AmazonProductExtractor.test.ts",
+    "passed": 48,
+    "status": "passed",
+    "tests": [
+      "AmazonProductExtractor structured sources reads JSON-LD graph price, brand, rating and reviews before metadata fallback",
+      "AmazonProductExtractor structured sources handles JSON-LD image objects, deduplicates resized images and extracts public video",
+      "AmazonProductExtractor structured sources prefers a matching product in a JSON-LD array",
+      "AmazonProductExtractor structured sources does not use recommendation JSON-LD with a different ASIN",
+      "AmazonProductExtractor structured sources uses the selected purchase-form variant and its matching structured product",
+      "AmazonProductExtractor structured sources falls back to the URL when the purchase form has no usable ASIN",
+      "AmazonProductExtractor structured sources reads scoped Amazon product-data price without visible DOM pricing",
+      "AmazonProductExtractor structured sources supports aggregate offers and product property fallback",
+      "AmazonProductExtractor structured sources reads metadata and safe Amazon inline literals without executing JavaScript",
+      "AmazonProductExtractor DOM fallbacks does not mistake the observed book author byline for a brand",
+      "AmazonProductExtractor DOM fallbacks keeps an explicit product brand when the book page also has an author byline",
+      "AmazonProductExtractor DOM fallbacks preserves observed book description line, paragraph and list boundaries",
+      "AmazonProductExtractor DOM fallbacks excludes the observed 360 degree gallery control icon",
+      "AmazonProductExtractor DOM fallbacks reads actual A+ content after duplicated brand-story and comparison modules",
+      "AmazonProductExtractor DOM fallbacks leaves image-only A+ content without a fake description",
+      "AmazonProductExtractor DOM fallbacks accepts only player states bound to the current ASIN and scoped public video",
+      "AmazonProductExtractor DOM fallbacks reads later current-ASIN video state on explicit re-extraction of the same synthetic document",
+      "AmazonProductExtractor DOM fallbacks excludes observed A+ video label tooltips from product descriptions",
+      "AmazonProductExtractor DOM fallbacks prefers declared product ASIN over a conflicting recommendation player page context",
+      "AmazonProductExtractor DOM fallbacks uses the current DOM title, actual description and explicit displayed currency",
+      "AmazonProductExtractor DOM fallbacks decodes the current gallery and excludes other colors and duplicate resolution aliases",
+      "AmazonProductExtractor DOM fallbacks uses only an identifiable current group when initial gallery data is unavailable",
+      "AmazonProductExtractor DOM fallbacks keeps a decoded gallery when the main image node is still empty",
+      "AmazonProductExtractor DOM fallbacks uses a scoped brand value when the store link is unavailable",
+      "AmazonProductExtractor DOM fallbacks removes the observed localized store wrapper from 访问 CeraVe 品牌旗舰店",
+      "AmazonProductExtractor DOM fallbacks removes the observed localized store wrapper from 品牌：CeraVe",
+      "AmazonProductExtractor DOM fallbacks removes the observed localized store wrapper from 访问亚马逊 Echo 和 Alexa 商店",
+      "AmazonProductExtractor DOM fallbacks removes the observed localized store wrapper from Besuche den Logitech-Store",
+      "AmazonProductExtractor DOM fallbacks reads TWD604.05 without guessing currency from the storefront",
+      "AmazonProductExtractor DOM fallbacks reads NT$604.05 without guessing currency from the storefront",
+      "AmazonProductExtractor DOM fallbacks reads US$29.99 without guessing currency from the storefront",
+      "AmazonProductExtractor DOM fallbacks reads $29.99 without guessing currency from the storefront",
+      "AmazonProductExtractor DOM fallbacks keeps explicit DOM currency when metadata refers to another display currency",
+      "AmazonProductExtractor DOM fallbacks extracts title, visible price, ASIN, gallery, bullet points, rating and reviews",
+      "AmazonProductExtractor DOM fallbacks supports decimal comma rating and localized review separators",
+      "AmazonProductExtractor DOM fallbacks selects the largest dynamic gallery image and rejects unrelated images",
+      "AmazonProductExtractor DOM fallbacks exposes each extractor as an independent method",
+      "AmazonProductExtractor failure isolation keeps a usable draft when optional fields are missing",
+      "AmazonProductExtractor failure isolation recovers from malformed JSON-LD, script objects and invalid HTML",
+      "AmazonProductExtractor failure isolation does not fail the complete capture when one field throws",
+      "AmazonProductExtractor failure isolation returns unsupported state for https://www.amazon.com/s?k=lamp",
+      "AmazonProductExtractor failure isolation returns unsupported state for https://www.amazon.com/",
+      "AmazonProductExtractor failure isolation returns unsupported state for https://amazon.com.evil.example/dp/B012345678",
+      "AmazonProductExtractor failure isolation returns unsupported state for https://www.example.com/dp/B012345678",
+      "AmazonProductExtractor failure isolation returns null instead of throwing for an empty document",
+      "AmazonProductExtractor failure isolation drops invalid or out-of-range ratings",
+      "AmazonProductExtractor failure isolation rejects executable page-data expressions",
+      "AmazonProductExtractor failure isolation decodes only known JSON wrappers with a single literal argument"
+    ]
+  },
+  {
+    "file": "apps/extension/tests/media-specifications.test.ts",
+    "passed": 3,
+    "status": "passed",
+    "tests": [
+      "current product specifications and media provenance keeps merchant specifications separate from recommendations, review counts and mismatched ASINs",
+      "current product specifications and media provenance records actual current-image variants/dimensions, ASIN, page and extraction time without synthesizing URLs",
+      "current product specifications and media provenance bad dimension JSON cannot erase valid URLs or crash capture"
+    ]
+  },
+  {
+    "file": "apps/extension/tests/popup-layout.test.ts",
+    "passed": 6,
+    "status": "passed",
+    "tests": [
+      "action Popup intrinsic sizing contract (static CSS, not native Chrome acceptance) never feeds viewport units, percentages or unresolved variables into root dimensions",
+      "action Popup intrinsic sizing contract (static CSS, not native Chrome acceptance) gives html stable width and height before React or asynchronous initialization",
+      "action Popup intrinsic sizing contract (static CSS, not native Chrome acceptance) gives body stable width and height before React or asynchronous initialization",
+      "action Popup intrinsic sizing contract (static CSS, not native Chrome acceptance) gives #root stable width and height before React or asynchronous initialization",
+      "action Popup intrinsic sizing contract (static CSS, not native Chrome acceptance) gives .popup-shell stable width and height before React or asynchronous initialization",
+      "action Popup intrinsic sizing contract (static CSS, not native Chrome acceptance) keeps long content inside a shrinkable vertical scroll region"
+    ]
+  },
+  {
+    "file": "apps/web/src/components/analysis-export.test.ts",
+    "passed": 5,
+    "status": "passed",
+    "tests": [
+      "analysis exports and comparison exports every result, multiline content, product source and inference boundary as TXT",
+      "analysis exports and comparison exports readable Markdown without dropping script or repeated list values",
+      "analysis exports and comparison compares semantic field values and retains array ordering and line changes",
+      "analysis exports and comparison uses a bounded filesystem-safe export filename",
+      "analysis exports and comparison discloses partial generation scope without attributing the retained content to the new language or model"
+    ]
+  },
+  {
+    "file": "apps/web/src/components/analysis-panel.test.ts",
+    "passed": 6,
+    "status": "passed",
+    "tests": [
+      "explicit AI request authorization does not issue a real request on mount, opening the confirmation or cancelling",
+      "explicit AI request authorization issues exactly one authorized envelope after explicit approval and never sends analysis history",
+      "explicit AI request authorization requires no fee authorization for local Mock mode",
+      "explicit AI request authorization prevents generation when service mode cannot be determined",
+      "explicit AI request authorization checks a lost response by request identifier without replaying AI or replacing a later manual edit",
+      "explicit AI request authorization keeps unknown-result recovery across remounts and requires new explicit approval before another request"
+    ]
+  },
+  {
+    "file": "apps/web/src/components/analysis-preferences.test.ts",
+    "passed": 4,
+    "status": "passed",
+    "tests": [
+      "analysis preference validation uses explicit default market, language and duration without invented model prices",
+      "analysis preference validation restores valid preferences including zero and decimal explicitly entered pricing",
+      "analysis preference validation rejects malformed and unsupported versions and bounds hostile custom content",
+      "analysis preference validation never allows persisted state to inject unsupported generation or authorization flags"
+    ]
+  },
+  {
+    "file": "apps/web/src/components/analysis-utils.test.ts",
+    "passed": 9,
+    "status": "passed",
+    "tests": [
+      "analysis text and editor helpers displays original English script labels in Chinese without dropping multiline content",
+      "analysis text and editor helpers reads Chinese script labels and preserves text that has no recognized headings",
+      "analysis text and editor helpers keeps every analysis field and multiline item while encoding the original script schema",
+      "analysis text and editor helpers copies all nine Chinese sections and every stored field",
+      "analysis text and editor helpers preserves the mock disclosure even when the summary is replaced by hand",
+      "analysis text and editor helpers recognizes localized Mock results and preserves the requested disclosure language after editing",
+      "analysis text and editor helpers rejects invalid hooks, missing script segments, and oversized scripts before saving",
+      "same-tab analysis drafts restores drafts with the baseline version intact, including temporarily invalid edits",
+      "same-tab analysis drafts rejects obsolete versions, other products, malformed fields, and excessive content"
+    ]
+  },
+  {
+    "file": "apps/web/src/components/bridge-pairing.test.ts",
+    "passed": 3,
+    "status": "passed",
+    "tests": [
+      "pairing code expiry and recovery keeps the final partial second visible, then expires exactly at the deadline",
+      "pairing code expiry and recovery does not show an invalid server expiry as a usable code",
+      "pairing code expiry and recovery removes an expired code, explains recovery and lets the user generate a fresh code"
+    ]
+  },
+  {
+    "file": "apps/web/src/components/content-export.test.ts",
+    "passed": 4,
+    "status": "passed",
+    "tests": [
+      "browser content and template export contracts exports a builtin as an importable independent custom template",
+      "browser content and template export contracts keeps a user template ID and complete history for safe conflict detection",
+      "browser content and template export contracts exports selected text with provenance without fetching or copying media",
+      "browser content and template export contracts refuses an export without a saved generation version"
+    ]
+  },
+  {
+    "file": "apps/web/src/components/content-preferences.test.ts",
+    "passed": 3,
+    "status": "passed",
+    "tests": [
+      "content browser preferences preserves custom duration and valid pricing on the next create form",
+      "content browser preferences drops malformed or unsupported settings and never guesses prices",
+      "content browser preferences reuses existing analysis parameters only when content preferences are absent"
+    ]
+  },
+  {
+    "file": "apps/web/src/components/ui.test.ts",
+    "passed": 3,
+    "status": "passed",
+    "tests": [
+      "copy feedback and recovery copies complete multiline text and returns to its Chinese label",
+      "copy feedback and recovery preserves text in a selectable fallback when the clipboard is blocked",
+      "copy feedback and recovery does not claim new content was copied when a section changes"
+    ]
+  },
+  {
+    "file": "apps/web/src/components/workspace-preferences.test.ts",
+    "passed": 12,
+    "status": "passed",
+    "tests": [
+      "workspace library selection searches titles, brands and ASIN with whitespace and case normalization",
+      "workspace library selection combines analysis, source and search filters",
+      "workspace library selection sorts updates independently of collection dates without mutating the source",
+      "workspace library selection sorts titles naturally and orders timestamp ties consistently",
+      "workspace library selection handles missing optional brand and invalid timestamps safely",
+      "workspace library selection combines group, tag and analysis filters without altering old products",
+      "workspace library selection bounds rendering for 100 and 500 products and recovers out-of-range pages",
+      "workspace preference restoration round trips search, filter, sorting and grid/list preferences",
+      "workspace preference restoration recovers defaults from absent, malformed or unsupported stored values",
+      "workspace preference restoration restores supported fields when an older preference format is partial",
+      "workspace preference restoration clears conditions while retaining selected sorting and layout",
+      "workspace preference restoration retains safe definition filters and defaults missing or hostile values"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/format.test.ts",
+    "passed": 3,
+    "status": "passed",
+    "tests": [
+      "captured price display displays the captured price without duplicating or guessing currency",
+      "captured price display displays the captured price without duplicating or guessing currency",
+      "captured price display displays the captured price without duplicating or guessing currency"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/session.test.ts",
+    "passed": 7,
+    "status": "passed",
+    "tests": [
+      "authenticated web requests shares a single bootstrap between concurrent operations and reuses the session",
+      "authenticated web requests renews an expired session and retries a business operation exactly once on 401",
+      "authenticated web requests does not loop when the single renewed-session retry is also rejected",
+      "authenticated web requests coalesces renewal when concurrent reads encounter the same expired session",
+      "authenticated web requests does not retry an unsuccessful business operation on 503",
+      "authenticated web requests can recover from a failed bootstrap without sending the first business request",
+      "authenticated web requests authenticates media fetches and retries once after canceling a rejected response"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/workspace-backup-api.test.ts",
+    "passed": 2,
+    "status": "passed",
+    "tests": [
+      "business preference allowlist reads only fixed public business keys and skips corrupt or unknown preference fields",
+      "business preference allowlist restores validated preferences and never arbitrary localStorage values"
+    ]
+  },
+  {
+    "file": "apps/extension/src/popup/App.test.ts",
+    "passed": 19,
+    "status": "passed",
+    "tests": [
+      "first-use popup recovery renders the shell immediately while consent settings and background initialization are pending",
+      "first-use popup recovery renders the capture loading shell without waiting for pending counts or the workspace",
+      "first-use popup recovery renders an actionable first-consent shell when storage rejects without reading the page",
+      "first-use popup recovery fails closed after consent-read timeout and ignores a late accepted record until explicit user action",
+      "first-use popup recovery releases the consent button after a write timeout and requires a fresh user click even if the old write finishes",
+      "first-use popup recovery aborts consent initialization and removes timers on unmount without logging a storage failure",
+      "first-use popup recovery aborts a pending consent write on unmount and never captures after its late completion",
+      "first-use popup recovery keeps the captured shell usable when workspace status times out",
+      "first-use popup recovery renders an unsupported page with recovery and workspace links inside the same shell",
+      "first-use popup recovery explains double-click startup while disconnected and recovers without recapturing",
+      "first-use popup recovery does not read an Amazon page before first consent and starts capture after accepting",
+      "first-use popup recovery keeps capture blocked when saving consent fails",
+      "first-use popup recovery lets a user retry an incomplete page capture and keeps the save action available after recovery",
+      "first-use popup recovery re-identifies a synthetic captured product with later videos only on user action and saves the updated draft",
+      "first-use popup recovery confirms saving in the action bar and opens analysis without saving a second time",
+      "first-use popup recovery keeps capture and queued sync errors distinct so either operation can be retried",
+      "first-use popup recovery retains the captured product after a save failure and makes retry explicit",
+      "first-use popup recovery keeps queued products on sync failure and opens no analysis before a real save",
+      "first-use popup recovery preserves a successful save when opening analysis fails and allows opening again"
+    ]
+  },
+  {
+    "file": "apps/extension/src/popup/capture-consent.test.ts",
+    "passed": 8,
+    "status": "passed",
+    "tests": [
+      "versioned capture consent storage requires acceptance for missing, malformed or older-version records",
+      "versioned capture consent storage writes only the consent key and preserves existing product queues and tokens",
+      "versioned capture consent storage bounds a never-settling read and ignores a late success without retrying storage",
+      "versioned capture consent storage bounds a never-settling write and ignores a late success without retrying storage",
+      "versioned capture consent storage cleans up a pending read on abort",
+      "versioned capture consent storage cleans up a pending write on abort",
+      "versioned capture consent storage does not start a storage operation after its owner has unmounted",
+      "versioned capture consent storage preserves storage failures and releases the timeout after a settled request"
+    ]
+  },
+  {
+    "file": "apps/extension/src/storage/ExtensionLocalStorageAdapter.test.ts",
+    "passed": 13,
+    "status": "passed",
+    "tests": [
+      "ExtensionLocalStorageAdapter persists asynchronously and is readable from a fresh adapter",
+      "ExtensionLocalStorageAdapter serializes concurrent captures and keeps a single product for the same ASIN",
+      "ExtensionLocalStorageAdapter deduplicates concurrent pending saves and remembers the newest draft",
+      "ExtensionLocalStorageAdapter reconciles successful server captures and clears the matching pending draft",
+      "ExtensionLocalStorageAdapter deletes the product and its pending save together",
+      "ExtensionLocalStorageAdapter saves analysis with a strictly newer version and rejects stale results",
+      "ExtensionLocalStorageAdapter rejects analysis when a capture changed the product or it was deleted",
+      "ExtensionLocalStorageAdapter preserves valid data after a storage write failure and keeps the queue usable",
+      "ExtensionLocalStorageAdapter validates stored records and rejects invalid analysis before writing",
+      "ExtensionLocalStorageAdapter retains pending updates after a failed synchronization cache write",
+      "ExtensionLocalStorageAdapter keeps other pending products after partially successful synchronization",
+      "ExtensionLocalStorageAdapter does not discard saved analysis or queued captures when validation fails",
+      "ExtensionLocalStorageAdapter allows recovery from a transient read failure without replacing saved state"
+    ]
+  },
+  {
+    "file": "apps/extension/src/storage/LocalhostProductSyncAdapter.test.ts",
+    "passed": 22,
+    "status": "passed",
+    "tests": [
+      "LocalhostProductSyncAdapter posts a validated capture to the local workspace using the extension client header",
+      "LocalhostProductSyncAdapter rejects invalid server data instead of acknowledging a successful save",
+      "LocalhostProductSyncAdapter provides a readable error when localhost is not running",
+      "LocalhostProductSyncAdapter preserves readable API errors and validates input before contacting the workspace",
+      "LocalhostProductSyncAdapter keeps an unpaired capture local without contacting the workspace",
+      "LocalhostProductSyncAdapter never sends an invalid stored credential \"short\"",
+      "LocalhostProductSyncAdapter never sends an invalid stored credential \"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\"",
+      "LocalhostProductSyncAdapter never sends an invalid stored credential \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"",
+      "LocalhostProductSyncAdapter never sends an invalid stored credential null",
+      "LocalhostProductSyncAdapter never sends an invalid stored credential {\"token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
+      "LocalhostProductSyncAdapter pairs with a cleaned code and stores only the validated credential",
+      "LocalhostProductSyncAdapter rejects invalid pairing code short before any request",
+      "LocalhostProductSyncAdapter rejects invalid pairing code xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx before any request",
+      "LocalhostProductSyncAdapter rejects invalid pairing code bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb before any request",
+      "LocalhostProductSyncAdapter rejects invalid pairing code bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb before any request",
+      "LocalhostProductSyncAdapter rejects invalid pairing response null without replacing an existing credential",
+      "LocalhostProductSyncAdapter rejects invalid pairing response {} without replacing an existing credential",
+      "LocalhostProductSyncAdapter rejects invalid pairing response {\"token\":123} without replacing an existing credential",
+      "LocalhostProductSyncAdapter rejects invalid pairing response {\"token\":\"short\"} without replacing an existing credential",
+      "LocalhostProductSyncAdapter rejects invalid pairing response {\"token\":\"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\"} without replacing an existing credential",
+      "LocalhostProductSyncAdapter forgets only a revoked credential on 401 and keeps queued captures intact",
+      "LocalhostProductSyncAdapter keeps a credential after a server failure so a later retry can succeed"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/ai-quality/quality.test.ts",
+    "passed": 73,
+    "status": "passed",
+    "tests": [
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 电子产品 / US / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 电子产品 / US / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 电子产品 / US / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 电子产品 / UK / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 电子产品 / UK / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 电子产品 / UK / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 电子产品 / EU / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 电子产品 / EU / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 电子产品 / EU / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 电子产品 / JP / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 电子产品 / JP / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 电子产品 / JP / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 家居用品 / US / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 家居用品 / US / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 家居用品 / US / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 家居用品 / UK / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 家居用品 / UK / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 家居用品 / UK / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 家居用品 / EU / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 家居用品 / EU / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 家居用品 / EU / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 家居用品 / JP / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 家居用品 / JP / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 家居用品 / JP / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 美妆产品 / US / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 美妆产品 / US / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 美妆产品 / US / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 美妆产品 / UK / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 美妆产品 / UK / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 美妆产品 / UK / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 美妆产品 / EU / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 美妆产品 / EU / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 美妆产品 / EU / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 美妆产品 / JP / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 美妆产品 / JP / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 美妆产品 / JP / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 服装鞋帽 / US / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 服装鞋帽 / US / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 服装鞋帽 / US / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 服装鞋帽 / UK / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 服装鞋帽 / UK / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 服装鞋帽 / UK / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 服装鞋帽 / EU / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 服装鞋帽 / EU / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 服装鞋帽 / EU / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 服装鞋帽 / JP / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 服装鞋帽 / JP / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 服装鞋帽 / JP / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 厨房用品 / US / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 厨房用品 / US / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 厨房用品 / US / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 厨房用品 / UK / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 厨房用品 / UK / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 厨房用品 / UK / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 厨房用品 / EU / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 厨房用品 / EU / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 厨房用品 / EU / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 厨房用品 / JP / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 厨房用品 / JP / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 厨房用品 / JP / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 多规格商品 / US / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 多规格商品 / US / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 多规格商品 / US / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 多规格商品 / UK / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 多规格商品 / UK / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 多规格商品 / UK / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 多规格商品 / EU / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 多规格商品 / EU / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 多规格商品 / EU / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 多规格商品 / JP / zh-CN / 15s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 多规格商品 / JP / en / 30s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only 多规格商品 / JP / ja / 60s",
+      "repeatable AI quality guardrails: synthetic fixtures + local Mock only detects a fabricated specification and a false review-analysis claim in adversarial output"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/ai/comparison-provider.test.ts",
+    "passed": 7,
+    "status": "passed",
+    "tests": [
+      "comparison AI transport and provenance (Stub / Mock only) produces labelled zh-CN Mock with stored options and no fabricated reviews",
+      "comparison AI transport and provenance (Stub / Mock only) produces labelled en Mock with stored options and no fabricated reviews",
+      "comparison AI transport and provenance (Stub / Mock only) produces labelled ja Mock with stored options and no fabricated reviews",
+      "comparison AI transport and provenance (Stub / Mock only) keeps seller claims outside captured facts and removes media/AI history from request data",
+      "comparison AI transport and provenance (Stub / Mock only) uses the existing key transport, schema, no redirects and grounded server evidence",
+      "comparison AI transport and provenance (Stub / Mock only) rejects review impersonation, malformed output and truncated output without retries",
+      "comparison AI transport and provenance (Stub / Mock only) propagates 429 and timeout without silently changing provider or retrying"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/ai/content-generation.test.ts",
+    "passed": 25,
+    "status": "passed",
+    "tests": [
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Wireless headphones / zh-CN",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Wireless headphones / en",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Wireless headphones / ja",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Home storage organizer / zh-CN",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Home storage organizer / en",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Home storage organizer / ja",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Skincare serum / zh-CN",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Skincare serum / en",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Skincare serum / ja",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Running shoes / zh-CN",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Running shoes / en",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Running shoes / ja",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Kitchen coffee grinder / zh-CN",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Kitchen coffee grinder / en",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Kitchen coffee grinder / ja",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Travel water bottle / zh-CN",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Travel water bottle / en",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries local Mock contract only: Travel water bottle / ja",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries honors selected template content without creating unselected categories",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries keeps imported template, page injection and custom prompt in untrusted user data only",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries rebuilds model facts and merchant claims from captured data",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries rejects claims of review analysis and malformed script output",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries includes explicit provenance when referring to saved comparison inferences",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries rejects oversized expanded prompts before transport",
+      "repeatable content Mock/Stub quality and fixed prompt boundaries cites bounded saved product analysis as untrusted inference and never promotes it to facts"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/ai/provider-compat.test.ts",
+    "passed": 32,
+    "status": "passed",
+    "tests": [
+      "Explicit compatible configuration without extra paid requests uses one structured JSON request, omits unsupported temperature assumptions and all media URLs",
+      "Explicit compatible configuration without extra paid requests supports explicit json_schema and reasoning token parameter",
+      "Explicit compatible configuration without extra paid requests supports explicit text and reasoning token parameter",
+      "Explicit compatible configuration without extra paid requests loads environment compatibility options only on the server factory",
+      "Explicit compatible configuration without extra paid requests rejects unsupported local configuration before network: {\"timeoutMs\":0}",
+      "Explicit compatible configuration without extra paid requests rejects unsupported local configuration before network: {\"timeoutMs\":120001}",
+      "Explicit compatible configuration without extra paid requests rejects unsupported local configuration before network: {\"maxOutputTokens\":0}",
+      "Explicit compatible configuration without extra paid requests rejects unsupported local configuration before network: {\"maxOutputTokens\":32769}",
+      "Explicit compatible configuration without extra paid requests rejects unsupported local configuration before network: {\"temperature\":null}",
+      "Explicit compatible configuration without extra paid requests rejects unsupported local configuration before network: {\"temperature\":3}",
+      "Explicit compatible configuration without extra paid requests rejects unsupported local configuration before network: {\"model\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"}",
+      "Explicit compatible configuration without extra paid requests rejects unsupported local configuration before network: {\"apiKey\":\"bad\\nheader\"}",
+      "Explicit compatible configuration without extra paid requests does not silently fall back or retry when parameters are rejected",
+      "Explicit compatible configuration without extra paid requests bounds captured text before sending it while retaining original local data",
+      "Bounded responses and honest evidence accepts compatible text parts and fenced JSON",
+      "Bounded responses and honest evidence rebuilds page facts from captured values and does not promote invented model facts",
+      "Bounded responses and honest evidence rejects a model claim to have analyzed uncollected review text",
+      "Bounded responses and honest evidence rejects refusal or truncation without saving: {\"message\":{\"refusal\":\"not allowed\",\"content\":null}}",
+      "Bounded responses and honest evidence rejects refusal or truncation without saving: {\"message\":{\"content\":[{\"type\":\"refusal\",\"refusal\":\"no\"}]}}",
+      "Bounded responses and honest evidence rejects refusal or truncation without saving: {\"finish_reason\":\"length\",\"message\":{\"content\":\"{}\"}}",
+      "Bounded responses and honest evidence rejects refusal or truncation without saving: {\"finish_reason\":\"max_tokens\",\"message\":{\"content\":\"{}\"}}",
+      "Bounded responses and honest evidence rejects refusal or truncation without saving: {\"finish_reason\":\"content_filter\",\"message\":{\"content\":null}}",
+      "Bounded responses and honest evidence ignores nonsensical usage instead of estimating fabricated token counts",
+      "Bounded responses and honest evidence enforces size bounds when no content-length is supplied",
+      "Bounded responses and honest evidence bounds timeout while reading an unfinished response body",
+      "Bounded responses and honest evidence safely exposes Retry-After 17 without retry",
+      "Bounded responses and honest evidence safely exposes Retry-After 999999999 without retry",
+      "Bounded responses and honest evidence safely exposes Retry-After secret-upstream-token without retry",
+      "Parameterized local Mock is explicitly a template generates valid zh-CN output for each duration and platform",
+      "Parameterized local Mock is explicitly a template generates valid en output for each duration and platform",
+      "Parameterized local Mock is explicitly a template generates valid ja output for each duration and platform",
+      "Parameterized local Mock is explicitly a template retains custom requirements for human review without falsely claiming semantic compliance"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/ai/provider.test.ts",
+    "passed": 27,
+    "status": "passed",
+    "tests": [
+      "Mock and AI provider configuration returns complete validated analysis, 5+ hooks and a five-part script",
+      "Mock and AI provider configuration supports incomplete captured fields without fabricating parameters",
+      "Mock and AI provider configuration defaults to mock without key and requires a key for explicit real mode",
+      "Mock and AI provider configuration prevents concurrent analysis and releases the lock after a failure",
+      "OpenAI-compatible HTTP provider rejects unencrypted non-local API http://api.example.com/v1 before any request",
+      "OpenAI-compatible HTTP provider rejects unencrypted non-local API http://192.168.1.10:8080/v1 before any request",
+      "OpenAI-compatible HTTP provider rejects unencrypted non-local API http://localhost.example.com/v1 before any request",
+      "OpenAI-compatible HTTP provider rejects unencrypted non-local API http://127.0.0.1.example.com/v1 before any request",
+      "OpenAI-compatible HTTP provider rejects unencrypted non-local API http://127.0.0.2/v1 before any request",
+      "OpenAI-compatible HTTP provider rejects unencrypted non-local API http://0.0.0.0/v1 before any request",
+      "OpenAI-compatible HTTP provider rejects unencrypted non-local API http://[::ffff:127.0.0.1]/v1 before any request",
+      "OpenAI-compatible HTTP provider rejects unencrypted non-local API http://localhost./v1 before any request",
+      "OpenAI-compatible HTTP provider accepts secure remote or explicit local API http://localhost:11434/v1 without a request",
+      "OpenAI-compatible HTTP provider accepts secure remote or explicit local API http://127.0.0.1:11434/v1 without a request",
+      "OpenAI-compatible HTTP provider accepts secure remote or explicit local API http://[::1]:11434/v1 without a request",
+      "OpenAI-compatible HTTP provider accepts secure remote or explicit local API https://api.example.com/v1 without a request",
+      "OpenAI-compatible HTTP provider calls a real local HTTP endpoint and validates the response contract",
+      "OpenAI-compatible HTTP provider turns provider HTTP 401 into a readable error without returning its body",
+      "OpenAI-compatible HTTP provider turns provider HTTP 403 into a readable error without returning its body",
+      "OpenAI-compatible HTTP provider turns provider HTTP 429 into a readable error without returning its body",
+      "OpenAI-compatible HTTP provider turns provider HTTP 500 into a readable error without returning its body",
+      "OpenAI-compatible HTTP provider rejects invalid provider output",
+      "OpenAI-compatible HTTP provider rejects invalid provider output",
+      "OpenAI-compatible HTTP provider rejects invalid provider output",
+      "OpenAI-compatible HTTP provider enforces response size before parsing",
+      "OpenAI-compatible HTTP provider times out a blocked network request",
+      "OpenAI-compatible HTTP provider rejects malformed configured endpoints"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/ai/windows-settings.test.ts",
+    "passed": 4,
+    "status": "passed",
+    "tests": [
+      "Windows launcher AI settings remain encrypted and backward compatible rejects remote HTTP in the actual launcher save guard without writing settings",
+      "Windows launcher AI settings remain encrypted and backward compatible loads defaults without a Key or any external call",
+      "Windows launcher AI settings remain encrypted and backward compatible reads Phase 10/11 DPAPI settings and supplies compatibility defaults",
+      "Windows launcher AI settings remain encrypted and backward compatible decrypts and retains explicit advanced compatibility options"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/analysis-usage.test.ts",
+    "passed": 5,
+    "status": "passed",
+    "tests": [
+      "AnalysisUsageLedger persists a reservation before calling AI and never logs private input text",
+      "AnalysisUsageLedger blocks duplicate identifiers and applies concurrency and daily bounds",
+      "AnalysisUsageLedger persists a safe Retry-After cooldown and never treats unknown tokens as known zero",
+      "AnalysisUsageLedger fails closed when the ledger is corrupt instead of resetting cost history",
+      "AnalysisUsageLedger does not write an unreadable ledger when environment model configuration is invalid"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/atomic-file.test.ts",
+    "passed": 6,
+    "status": "passed",
+    "tests": [
+      "bounded atomic publication on Windows recovers a transient sharing violation without repeating the logical operation",
+      "bounded atomic publication on Windows bounds permanent locks and preserves the original error instead of deleting the destination",
+      "bounded atomic publication on Windows never retries permanent ENOSPC failures",
+      "bounded atomic publication on Windows never retries permanent ENOENT failures",
+      "bounded atomic publication on Windows never retries permanent EINVAL failures",
+      "bounded atomic publication on Windows does not add Windows retry behavior on other systems"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/auth.test.ts",
+    "passed": 14,
+    "status": "passed",
+    "tests": [
+      "local sessions and bound extension pairing bootstraps only a same-origin web request and uses a protected host-only cookie",
+      "local sessions and bound extension pairing requires a valid host-bound cookie before any product read and allows same-origin GET without Origin",
+      "local sessions and bound extension pairing uses the actual loopback Host when Next normalizes request.url to localhost",
+      "local sessions and bound extension pairing cannot use a forged extension Origin or fixed client label as authentication",
+      "local sessions and bound extension pairing allows only the pairing preflight before pairing and never exposes wildcard CORS",
+      "local sessions and bound extension pairing issues a single-use code and persists only a SHA256 token hash bound to the actual Origin",
+      "local sessions and bound extension pairing loads persisted credentials in a fresh data-directory state and rejects a changed on-disk token",
+      "local sessions and bound extension pairing loads paired credentials for the very first OPTIONS request after a cold auth registry restart",
+      "local sessions and bound extension pairing reuses a valid session instead of minting more tokens and limits new sessions per minute",
+      "local sessions and bound extension pairing bounds active sessions without evicting valid sessions and reclaims expired sessions",
+      "local sessions and bound extension pairing revokes the previous token on a new pairing and clears unused codes when revoked",
+      "local sessions and bound extension pairing expires pairing codes and permits only one concurrent successful exchange",
+      "local sessions and bound extension pairing preserves malformed credentials and user products, while allowing an authenticated revoke to recover",
+      "local sessions and bound extension pairing rate-limits failed pairing attempts globally without including secrets in errors"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/business-backup.test.ts",
+    "passed": 16,
+    "status": "passed",
+    "tests": [
+      "business restore non-destructive consistency retains the original snapshot ID and warns when duplicate ASIN uses another live product ID",
+      "business restore non-destructive consistency validates combined entity capacity during preview before requesting any restore confirmation",
+      "business restore non-destructive consistency reports imported and retained grouping definitions accurately without changing existing colors",
+      "business restore non-destructive consistency round-trips all four real repository histories, snapshots and usage across an independent data root",
+      "business restore non-destructive consistency requires preview, revision and second confirmation then survives a new service instance",
+      "business restore non-destructive consistency preserves duplicate product edits, complete content history and all existing request reservations",
+      "business restore non-destructive consistency rejects a changed revision and mismatched request fingerprint before any publishing",
+      "business restore non-destructive consistency does not include config/auth files and blocks hostile nested import data",
+      "atomic five-file publishing and crash recovery gate recovers a crash during staging copy without touching original files or trusting unknown files",
+      "atomic five-file publishing and crash recovery gate refuses publishing from a shared gate without creating any stage or file",
+      "atomic five-file publishing and crash recovery gate rolls back every original byte on a partial publish failure and removes only new files",
+      "atomic five-file publishing and crash recovery gate recovers prepared crash state before an ordinary repository read exposes any partial import",
+      "atomic five-file publishing and crash recovery gate keeps committed data through interrupted cleanup and refuses corrupted or hostile journal paths",
+      "atomic five-file publishing and crash recovery gate holds restore until shared writes finish and permits nested operations without deadlock",
+      "complete backup local API security requires authenticated web context and blocks extension or foreign-origin backup access",
+      "complete backup local API security rejects undeclared secret fields, oversized declared bodies, and implicit restore commits"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/comparison-api.test.ts",
+    "passed": 7,
+    "status": "passed",
+    "tests": [
+      "web-only comparison API, explicit authorization and request reservations denies anonymous, extension and cross-origin management",
+      "web-only comparison API, explicit authorization and request reservations persists Mock analysis and replays a lost response before version conflicts",
+      "web-only comparison API, explicit authorization and request reservations requires per-request real authorization before creating provider or calling fetch",
+      "web-only comparison API, explicit authorization and request reservations reserves an authorized Stub once and refuses retry after unknown failure",
+      "web-only comparison API, explicit authorization and request reservations records shared-ledger limits and rejects a second paid Stub at the daily ceiling",
+      "web-only comparison API, explicit authorization and request reservations edits/restores append history and delete requires confirmation",
+      "web-only comparison API, explicit authorization and request reservations backs up full snapshots and preserves duplicate IDs during preview/commit"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/comparison-repository.test.ts",
+    "passed": 11,
+    "status": "passed",
+    "tests": [
+      "separate atomic comparison repository creates and reloads independent snapshots without writing source products",
+      "separate atomic comparison repository serializes writes across repository instances and retains all plans",
+      "separate atomic comparison repository retains snapshots after source deletion/update until explicit refresh",
+      "separate atomic comparison repository adds new snapshots while keeping old snapshots and rejects stale writes",
+      "separate atomic comparison repository preserves generated/manual/restored versions and their options",
+      "separate atomic comparison repository previews and restores backups conservatively without overwriting manual content",
+      "separate atomic comparison repository requires backup revision, delete confirmation and protects corrupt files",
+      "separate atomic comparison repository rejects mismatched ASIN, unsafe URLs and malformed imports before any writes",
+      "separate atomic comparison repository keeps snapshot freshness independent of renaming and analysis version writes",
+      "separate atomic comparison repository archives imported active content before a new manual version and preserves old backup compatibility",
+      "separate atomic comparison repository stops at the history cap before overwriting any analysis or requesting AI"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/content-api.test.ts",
+    "passed": 10,
+    "status": "passed",
+    "tests": [
+      "content API, explicit cost consent and protected generation history denies anonymous, extension and cross-origin content management",
+      "content API, explicit cost consent and protected generation history saves Mock content once and replays a lost response before version conflicts",
+      "content API, explicit cost consent and protected generation history requires authorization before constructing provider or making any real request",
+      "content API, explicit cost consent and protected generation history generates only the first explicitly selected content fields and records their scope",
+      "content API, explicit cost consent and protected generation history reserves an authorized Stub once and forbids retries after unknown billing failure",
+      "content API, explicit cost consent and protected generation history saves authenticated Stub usage with real tokens, configured price and rebuilt evidence",
+      "content API, explicit cost consent and protected generation history supports manual edits, candidate regeneration, explicit adoption and restore",
+      "content API, explicit cost consent and protected generation history exports an importable strict backup and preserves conflict history",
+      "content API, explicit cost consent and protected generation history rejects invalid imports, missing sources and unconfirmed deletion",
+      "content API, explicit cost consent and protected generation history validates expanded prompts before reserving or calling an authorized real Stub"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/content-repository.test.ts",
+    "passed": 10,
+    "status": "passed",
+    "tests": [
+      "atomic content storage with safe candidate and edit history persists independent plans and original source snapshots across restart",
+      "atomic content storage with safe candidate and edit history serializes concurrent writes from separate repository instances",
+      "atomic content storage with safe candidate and edit history keeps edited current content during full and partial regeneration",
+      "atomic content storage with safe candidate and edit history adopts candidates explicitly and restores without deleting edited versions",
+      "atomic content storage with safe candidate and edit history rejects stale updates, invalid version IDs and conflicting edit operations",
+      "atomic content storage with safe candidate and edit history protects corrupted content without overwriting original bytes",
+      "atomic content storage with safe candidate and edit history previews import conflicts and preserves all existing analysis and versions",
+      "atomic content storage with safe candidate and edit history restores complete independent content into an empty data directory",
+      "atomic content storage with safe candidate and edit history requires confirmation for deleting content and leaves source data intact",
+      "atomic content storage with safe candidate and edit history refuses generation at the history limit without pruning any old version"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/content-security-review.test.ts",
+    "passed": 5,
+    "status": "passed",
+    "tests": [
+      "independent content import and provenance security review validates a separate comparison snapshot even when its ID duplicates the selected product ID",
+      "independent content import and provenance security review does not omit private media addresses in a duplicate-ID source snapshot",
+      "independent content import and provenance security review rejects comparison membership with a copied product ID and different ASIN",
+      "independent content import and provenance security review rejects generation metadata that cites a different template, source timestamp or unknown version",
+      "independent content import and provenance security review rejects parent or restore history references outside the retained content history"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/history-backup-review.test.ts",
+    "passed": 4,
+    "status": "passed",
+    "tests": [
+      "independent backup safety review retains exact existing real request reservations and the daily limit through older backup restore",
+      "independent backup safety review concurrent ledger reservations and a restore never lose a request or silently replay its fingerprint",
+      "independent backup safety review refuses a restore-stage directory junction without reading or deleting its target",
+      "independent backup safety review keeps local private settings and pairing file byte-identical during full business restore"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/history-management.test.ts",
+    "passed": 11,
+    "status": "passed",
+    "tests": [
+      "history archives, protected cleanup and exact revision writes archives exact full snapshot and selected edits, preserving current on cleanup",
+      "history archives, protected cleanup and exact revision writes refuses current and first recovery nodes without modifying bytes",
+      "history archives, protected cleanup and exact revision writes protects restored source versions and retains all saved restore references",
+      "history archives, protected cleanup and exact revision writes rejects forged, reused, mismatched and stale receipts",
+      "history archives, protected cleanup and exact revision writes expires archives without cleaning and blocks same timestamp content changes",
+      "history archives, protected cleanup and exact revision writes cleans descriptive content lineage with archive provenance and valid schema",
+      "history archives, protected cleanup and exact revision writes cleans template and comparison histories independently and preserves snapshots",
+      "history archives, protected cleanup and exact revision writes reopens full 50 version capacity only after explicit archival cleanup",
+      "history archives, protected cleanup and exact revision writes preserves original file after permanent atomic write failure and corrupt JSON",
+      "history archives, protected cleanup and exact revision writes protects history API from anonymous, extension and unconfirmed cleanup requests",
+      "history archives, protected cleanup and exact revision writes does not permit built-in history cleanup"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/http.test.ts",
+    "passed": 9,
+    "status": "passed",
+    "tests": [
+      "local API request protection keeps the normal body limit while allowing an explicit bounded import limit",
+      "local API request protection allows exact local origins and only the paired Chrome extension origin",
+      "local API request protection requires an authenticated session for reads and denies external Host or Origin",
+      "local API request protection rejects writes without Origin, client header, or application/json",
+      "local API request protection supports Authorization and private-network preflight only for paired extensions",
+      "local API request protection rejects unsupported preflight methods and headers",
+      "local API request protection validates JSON and limits actual UTF-8 body bytes independently of Content-Length",
+      "local API request protection returns consistent success/errors without revealing internal exceptions or executing unauthorized operations",
+      "local API request protection only emits bounded numeric Retry-After values from rate-limit errors"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/library-repository.test.ts",
+    "passed": 14,
+    "status": "passed",
+    "tests": [
+      "atomic local library management reads a v0.4 legacy array byte-for-byte without adding fields or rewriting it",
+      "atomic local library management creates, renames and persists colored groups/tags without changing product identity or analysis",
+      "atomic local library management deleting a definition requires confirmation and removes references while preserving all analysis versions",
+      "atomic local library management reports mixed successes, missing products and stale updates without losing other records",
+      "atomic local library management never reports uncommitted success after an atomic write fails",
+      "atomic local library management preserves memberships on recapture and archives prior analysis instead of overwriting history",
+      "atomic local library management moves between groups and removes tags only with explicit destructive confirmation",
+      "atomic local library management rejects unknown definitions, duplicate requests, overlarge batches, invalid names/colors without changing data",
+      "atomic local library management does not overwrite corrupt definitions or dangling membership references",
+      "atomic local library management serializes concurrent definition creation and rejects duplicate names",
+      "atomic local library management persists confirmed deletion with per-item CAS and preserves nonselected records",
+      "atomic local library management imports a backup atomically, preserves conflicting current analyses, and rejects a stale preview",
+      "atomic local library management refuses malformed or unsafe imported media before any persistent change",
+      "atomic local library management updates exactly 500 synthetic records in one batch without altering stored analysis or histories"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/media-downloads.test.ts",
+    "passed": 13,
+    "status": "passed",
+    "tests": [
+      "explicit native directory and bounded download jobs writes only to the server-picked directory with source metadata, hash and safe filename",
+      "explicit native directory and bounded download jobs deduplicates identical content from different URLs and safely replays successful requests",
+      "explicit native directory and bounded download jobs retains successful files when another item fails and retries only the failed item",
+      "explicit native directory and bounded download jobs cancels an in-flight download and permits an explicit later retry",
+      "explicit native directory and bounded download jobs never replaces an existing different file",
+      "explicit native directory and bounded download jobs preserves a manually modified manifest and reports the metadata failure",
+      "explicit native directory and bounded download jobs does not accept arbitrary assets, URLs, paths or cross-data-root jobs",
+      "explicit native directory and bounded download jobs opens only an existing job-owned file or its selected directory",
+      "explicit native directory and bounded download jobs cancelled directory selection writes nothing",
+      "explicit native directory and bounded download jobs cancels an active directory picker and never accepts its late selection",
+      "explicit native directory and bounded download jobs verifies saved files before replaying or reusing hashes",
+      "explicit native directory and bounded download jobs rejects a non-directory picker result before saving files",
+      "explicit native directory and bounded download jobs rejects arbitrary browser filesystem paths and hostile origins before opening a dialog"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/media-video.test.ts",
+    "passed": 14,
+    "status": "passed",
+    "tests": [
+      "direct public video policy allows exact CDN MP4/WebM URLs without losing signed parameters",
+      "direct public video policy rejects unsupported video https://m.media-amazon.com/a.m3u8 before network requests",
+      "direct public video policy rejects unsupported video https://m.media-amazon.com/a before network requests",
+      "direct public video policy rejects unsupported video https://evil.example/a.mp4 before network requests",
+      "direct public video policy rejects unsupported video https://s3.amazonaws.com/a.mp4 before network requests",
+      "direct public video policy rejects unsupported video http://m.media-amazon.com/a.mp4 before network requests",
+      "direct public video policy rejects unsupported video https://m.media-amazon.com:8443/a.mp4 before network requests",
+      "direct public video policy rejects unsupported video https://user:password@m.media-amazon.com/a.mp4 before network requests",
+      "direct public video policy checks MIME, file signature and disables redirects",
+      "direct public video policy rejects HTML challenges mislabeled as MP4",
+      "direct public video policy rejects AVIF image containers masquerading as MP4 video",
+      "direct public video policy rejects a format mismatch and oversized declared video before reading",
+      "direct public video policy rejects protected or expired upstream responses",
+      "direct public video policy propagates intentional cancellation without retrying image or video requests"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/media.test.ts",
+    "passed": 33,
+    "status": "passed",
+    "tests": [
+      "Amazon media download URL boundary allows exact Amazon image CDN https://m.media-amazon.com/images/I/image.jpg",
+      "Amazon media download URL boundary allows exact Amazon image CDN https://images-na.ssl-images-amazon.com/images/I/image.jpg",
+      "Amazon media download URL boundary allows exact Amazon image CDN https://images-eu.ssl-images-amazon.com/images/I/image.jpg",
+      "Amazon media download URL boundary allows exact Amazon image CDN https://images-fe.ssl-images-amazon.com/images/I/image.jpg",
+      "Amazon media download URL boundary allows exact Amazon image CDN https://images-cn.ssl-images-amazon.com/images/I/image.jpg",
+      "Amazon media download URL boundary allows exact Amazon image CDN https://ecx.images-amazon.com/images/I/image.jpg",
+      "Amazon media download URL boundary allows exact Amazon image CDN https://m.media-amazon.com:443/images/I/image.jpg",
+      "Amazon media download URL boundary rejects unsafe URL null before fetching",
+      "Amazon media download URL boundary rejects unsafe URL  before fetching",
+      "Amazon media download URL boundary rejects unsafe URL not a URL before fetching",
+      "Amazon media download URL boundary rejects unsafe URL http://m.media-amazon.com/image.jpg before fetching",
+      "Amazon media download URL boundary rejects unsafe URL https://m.media-amazon.com.evil.example/image.jpg before fetching",
+      "Amazon media download URL boundary rejects unsafe URL https://evil.example/m.media-amazon.com/image.jpg before fetching",
+      "Amazon media download URL boundary rejects unsafe URL https://localhost/image.jpg before fetching",
+      "Amazon media download URL boundary rejects unsafe URL https://127.0.0.1/image.jpg before fetching",
+      "Amazon media download URL boundary rejects unsafe URL https://m.media-amazon.com:8443/image.jpg before fetching",
+      "Amazon media download URL boundary rejects unsafe URL https://user:password@m.media-amazon.com/image.jpg before fetching",
+      "Amazon media download URL boundary rejects unsafe URL file:///etc/passwd before fetching",
+      "Amazon media download URL boundary rejects unsafe URL data:image/png;base64,dGVzdA== before fetching",
+      "bounded image retrieval downloads permitted binary images without following redirects",
+      "bounded image retrieval rejects SVG responses even from a permitted CDN",
+      "bounded image retrieval rejects HTML mislabeled as an image",
+      "bounded image retrieval rejects an oversized Content-Length before reading the body",
+      "bounded image retrieval rejects invalid Content-Length values",
+      "bounded image retrieval limits streamed bytes even when the declared Content-Length is small",
+      "bounded image retrieval reports upstream HTTP 302",
+      "bounded image retrieval reports upstream HTTP 403",
+      "bounded image retrieval reports upstream HTTP 404",
+      "bounded image retrieval reports upstream HTTP 500",
+      "bounded image retrieval handles network failure with a comprehensible error",
+      "media API response returns an attachment with no-store and nosniff",
+      "media API response rejects a nonlocal origin without requesting the CDN",
+      "media API response returns a JSON error when the image URL is missing"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/product-repository.test.ts",
+    "passed": 14,
+    "status": "passed",
+    "tests": [
+      "LocalJsonProductRepository starts with an empty library",
+      "LocalJsonProductRepository deduplicates concurrent captures across instances and persists them",
+      "LocalJsonProductRepository normalizes ASIN and updates product content while preserving identity",
+      "LocalJsonProductRepository reads current disk content on each list and deletes persistently",
+      "LocalJsonProductRepository does not overwrite malformed JSON and recovers its queue after failure",
+      "LocalJsonProductRepository rejects schema-invalid or duplicate on-disk records without overwriting",
+      "LocalJsonProductRepository validates and saves analysis, invalidating it after a meaningful capture update",
+      "LocalJsonProductRepository rejects stale analysis and does not revive a deleted product",
+      "LocalJsonProductRepository leaves previous valid analysis untouched when the new response fails validation",
+      "LocalJsonProductRepository reads v0.3 data unchanged and archives its active result before the first manual edit",
+      "LocalJsonProductRepository retains all analysis versions when a recapture invalidates the active result",
+      "LocalJsonProductRepository restores by adding a new version and rejects stale restoration without losing edits",
+      "LocalJsonProductRepository refuses a 51st version without pruning history or overwriting the active result",
+      "LocalJsonProductRepository rejects invalid provenance before committing an otherwise valid analysis"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/rc-ai-workflow.test.ts",
+    "passed": 3,
+    "status": "passed",
+    "tests": [
+      "RC complete AI routes: owned HTTP Stub, consent, replay, costs and failed save protection product: one authorized request persists validated data, replay never charges twice, and 429 retains manual data",
+      "RC complete AI routes: owned HTTP Stub, consent, replay, costs and failed save protection comparison: one authorized request persists validated data, replay never charges twice, and 429 retains manual data",
+      "RC complete AI routes: owned HTTP Stub, consent, replay, costs and failed save protection content: one authorized request persists validated data, replay never charges twice, and 429 retains manual data"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/server/template-repository.test.ts",
+    "passed": 11,
+    "status": "passed",
+    "tests": [
+      "persistent independent template repository lists builtins on fresh startup without writing product or template data",
+      "persistent independent template repository creates independent copies and reloads all histories after restart",
+      "persistent independent template repository serializes independent instances without losing concurrent template creations",
+      "persistent independent template repository preserves edits and restores history by appending a new version",
+      "persistent independent template repository protects simultaneous edits using expectedUpdatedAt and stores favorite changes in history",
+      "persistent independent template repository keeps builtins read-only and requires explicit deletion confirmation",
+      "persistent independent template repository previews import before writing, requires conflict policy, and preserves existing manual edits",
+      "persistent independent template repository refuses stale import revisions or unknown history versions without changing disk",
+      "persistent independent template repository preserves corrupt data rather than silently replacing it",
+      "persistent independent template repository rejects untrusted properties, invalid backup formats, reserved IDs and oversized imports",
+      "persistent independent template repository does not silently truncate histories at the 50-version limit"
+    ]
+  },
+  {
+    "file": "apps/web/src/lib/storage/web-storage.test.ts",
+    "passed": 1,
+    "status": "passed",
+    "tests": ["IndexedDB adapter persists data across adapter instances and deduplicates"]
+  },
+  {
+    "file": "apps/web/src/app/api/analysis-usage/route.test.ts",
+    "passed": 1,
+    "status": "passed",
+    "tests": [
+      "analysis-usage API requires the workspace session and returns local empty usage rather than exposing configuration"
+    ]
+  },
+  {
+    "file": "apps/web/src/app/api/analyze-product/route.test.ts",
+    "passed": 15,
+    "status": "passed",
+    "tests": [
+      "analyze-product API generates and persists a complete Mock analysis",
+      "analyze-product API rejects incomplete input and missing products",
+      "analyze-product API rejects stale product snapshots before calling AI",
+      "analyze-product API preserves previous analysis and data when the AI API fails",
+      "analyze-product API does not overwrite a product captured again during AI generation",
+      "analyze-product API supports parameters, structured provenance and zero-cost Mock without sending client history to AI",
+      "analyze-product API only replaces selected fields and archives existing human edits",
+      "analyze-product API replays an identical request without another generation and rejects reused IDs with changed options",
+      "analyze-product API requires explicit consent for real AI including legacy clients, with no call or usage reservation",
+      "analyze-product API counts actual tokens, estimates only explicit pricing and keeps missing usage unknown",
+      "analyze-product API fails closed before AI when the usage ledger cannot be read or persisted",
+      "analyze-product API respects real request daily limits and avoids retrying rate-limited calls",
+      "analyze-product API checks the history limit and partial-generation prerequisites before spending",
+      "analyze-product API caps real requests at two and rejects simultaneous requests for the same product",
+      "analyze-product API keeps a saved result replayable if usage completion storage fails"
+    ]
+  },
+  {
+    "file": "apps/web/src/app/api/library/route.test.ts",
+    "passed": 4,
+    "status": "passed",
+    "tests": [
+      "protected library API provides snapshots and creates/renames/deletes definitions only with authenticated confirmation",
+      "protected library API preserves strict same-origin/CSRF checks and never accepts even a paired extension token",
+      "protected library API returns explicit batch success/failure counts and rejects destructive operations without confirmation",
+      "protected library API rejects malformed JSON, schema fields, media-like colors and duplicate names without partial writes"
+    ]
+  },
+  {
+    "file": "apps/web/src/app/api/products/route.test.ts",
+    "passed": 3,
+    "status": "passed",
+    "tests": [
+      "products API bridge captures, lists, opens, saves analysis, rejects stale updates, and deletes a product",
+      "products API bridge validates capture and PATCH input without writing bad data",
+      "products API bridge rejects unauthorized browser writes before they can affect the library"
+    ]
+  },
+  {
+    "file": "apps/web/src/app/api/status/route.test.ts",
+    "passed": 3,
+    "status": "passed",
+    "tests": [
+      "workspace status API defaults to complete mock mode without a key",
+      "workspace status API treats a whitespace-only key consistently with the AI provider factory",
+      "workspace status API respects explicit mode and does not expose the API key"
+    ]
+  },
+  {
+    "file": "apps/web/src/app/api/templates/route.test.ts",
+    "passed": 4,
+    "status": "passed",
+    "tests": [
+      "protected templates API allows authenticated CRUD, retains histories, and requires confirmed deletion",
+      "protected templates API rejects anonymous reads, cross-origin writes, missing CSRF headers and paired extension access",
+      "protected templates API validates variables, denies builtin deletion and refuses history-plus-edit ambiguous requests",
+      "protected templates API requires import preview revision and never overwrites existing template histories"
+    ]
+  },
+  {
+    "file": "apps/web/src/app/api/library/import/route.test.ts",
+    "passed": 12,
+    "status": "passed",
+    "tests": [
+      "protected library transfer API previews without mutation, requires confirmation and restores complete analyses/history",
+      "protected library transfer API conflict policy skip never overwrites the original manual analysis/history",
+      "protected library transfer API conflict policy preserve never overwrites the original manual analysis/history",
+      "protected library transfer API rejects a stale preview atomically after another page changes the library",
+      "protected library transfer API rejects corrupt structure, duplicate input and malicious URLs before any write",
+      "protected library transfer API allows a validated import over the old 1 MiB limit without enlarging capture limits",
+      "protected library transfer API rejects oversized requests at the stream boundary",
+      "protected library transfer API backs up unused groups/tags and excludes pairing, AI configuration and usage files",
+      "protected library transfer API exports CSV formulas safely and Markdown as inert text",
+      "protected library transfer API exports 500 UUID selections via POST without an oversized URL or missing records",
+      "protected library transfer API rejects missing selections and invalid export formats rather than silently omitting them",
+      "protected library transfer API rejects foreign origins, missing sessions and extension access to private backup/import"
+    ]
+  },
+  {
+    "file": "apps/web/src/app/api/products/[id]/route.test.ts",
+    "passed": 1,
+    "status": "passed",
+    "tests": [
+      "manual analysis PATCH archives edits and rejects stale updates without truncating history"
+    ]
+  },
+  {
+    "file": "apps/web/src/app/api/products/[id]/analysis-history/route.test.ts",
+    "passed": 2,
+    "status": "passed",
+    "tests": [
+      "analysis-history API only returns history to an authenticated local workspace",
+      "analysis-history API requires a current version, restores by appending, and denies stale repeat restores"
+    ]
+  }
+]

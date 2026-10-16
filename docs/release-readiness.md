@@ -1,5 +1,11 @@
 # ProductSpy v1.0 发布就绪判断
 
+## 2026-10-17：统一全量质量重测
+
+本轮[统一报告](v1.0.0-final-quality-validation.md)及[机器结果](v1.0.0-final-quality-validation.json)记录实际命令、冻结便携包/升级/备份/真实Amazon/Mock及HTTP Stub边界。工程自动化PASS；生产代码和冻结包未改。人工CSV仍**9 PASS /44 PENDING /0 FAIL**，本轮新增人工PASS为0。6/6烟雾与10/10备份专项继续单独保留；真实付费模型未授权、0调用。新确认产品P0/P1/P2为0；Popup P1保持fixed + manually verified，历史视频时序原因仍未确认。
+
+v1.0.0仍为7附件Release草稿，旧Release/ZIP/SHA不变。关键正式Chrome/原生Windows/真实DPI及其他详细操作证据尚缺，**当前不建议公开发布**。剩余工作已合并为[一份操作清单](v1.0.0-final-manual-checklist.md)，不拆新阶段、不开启逐项确认；以下历史记录按原时点保留。
+
 ## 最新判断：W05/W06 Windows 生命周期整项获维护者确认，下一优先级为备份取消与冲突保护
 
 维护者按此前流程确认 **v1.0.0 W05「关闭网页与停止并退出」PASS、W06「关闭启动窗口与重启」PASS，2/2 PASS，问题说明无**。这是按原用例标准归档的整项人工声明，**不是逐步骤日志、Codex 本轮观察/执行或自动化结果**。实际日期待补充；未提供截图、日志、PID、目录或系统版本，不补造。旧 M09/M10 的 2026-10-16 仅保留为历史部分覆盖，不作为本次整项 PASS 日期。见 [Windows 生命周期归档及下一批测试](v1.0.0-windows-lifecycle-manual-results.md)。

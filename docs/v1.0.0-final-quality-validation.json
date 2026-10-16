@@ -1,0 +1,1954 @@
+{
+  "schemaVersion": 1,
+  "productVersion": "1.0.0",
+  "clientDate": "2026-10-17",
+  "timezone": "Asia/Shanghai",
+  "generatedAt": "2026-10-16T17:26:37.379859+00:00",
+  "baselineCommit": "0880b927b11218836c15bc8b1258f23c8e648c04",
+  "frozenBuildSourceCommit": "43d786fc8bc3e3ce495eaed84b8ab4588e111034",
+  "environment": {
+    "os": "Windows 11 Pro for Workstations",
+    "release": "10.0.26300",
+    "arch": "x64",
+    "node": "v24.14.0",
+    "pnpm": "10.32.1",
+    "browserAutomation": "Chrome for Testing 156.0.8078.4",
+    "installedStableChrome": {
+      "ProductName": "Google Chrome",
+      "ProductVersion": "155.0.8059.80",
+      "FileVersion": "155.0.8059.80"
+    },
+    "productionDataTouched": false,
+    "testRoots": [
+      ".test-data/final-quality/",
+      ".test-data/v100-backup-restore/",
+      ".test-data/phase10-portable/",
+      ".test-data/phase20-upgrade/"
+    ],
+    "nativeObservation": {
+      "nativeCasesPassed": [],
+      "ownProcessesOnly": true,
+      "reason": "Native launcher ran in isolated Mock mode, but Computer Use did not expose a ProductSpy window for UI actions. Hidden automated launch is not the CMD double-click acceptance flow.",
+      "serviceVersion": "1.0.0",
+      "cleanedAt": "2026-10-16T17:12:21.0904546Z",
+      "status": "MANUAL_REQUIRED",
+      "mode": "mock",
+      "serviceStillListening": false
+    }
+  },
+  "commands": [
+    {
+      "name": "install",
+      "command": "pnpm install --frozen-lockfile",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:09:35.271Z",
+      "finishedAt": "2026-10-16T17:09:42.034Z",
+      "durationMs": 6763,
+      "log": ".test-data/final-quality/2026-10-17-validation/install.log",
+      "bytes": 136,
+      "sha256": "f4118440112a2dbbf0df326874ad5f48ae229f89a92d4a77f0c09936ce469f1a"
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm typecheck",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:09:42.036Z",
+      "finishedAt": "2026-10-16T17:09:56.925Z",
+      "durationMs": 14889,
+      "log": ".test-data/final-quality/2026-10-17-validation/typecheck.log",
+      "bytes": 369,
+      "sha256": "cbec545bd7691390065a14413b448a8d1fae2c376d0819dadb069dcb6851fc34"
+    },
+    {
+      "name": "format-write",
+      "command": "pnpm format",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:09:56.927Z",
+      "finishedAt": "2026-10-16T17:10:09.147Z",
+      "durationMs": 12220,
+      "log": ".test-data/final-quality/2026-10-17-validation/format-write.log",
+      "bytes": 23704,
+      "sha256": "39036bba85bccdebfdef0377cf7db164b96823984c2fad5b0facfef1664331e4"
+    },
+    {
+      "name": "lint",
+      "command": "pnpm lint",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:10:09.190Z",
+      "finishedAt": "2026-10-16T17:11:07.123Z",
+      "durationMs": 57933,
+      "log": ".test-data/final-quality/2026-10-17-validation/lint.log",
+      "bytes": 99,
+      "sha256": "6af86f3ef5c13a72473d01276aaaae215281b4e825110c4f5970740b440610fd"
+    },
+    {
+      "name": "format-check",
+      "command": "pnpm format:check",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:11:07.124Z",
+      "finishedAt": "2026-10-16T17:11:14.491Z",
+      "durationMs": 7367,
+      "log": ".test-data/final-quality/2026-10-17-validation/format-check.log",
+      "bytes": 166,
+      "sha256": "ee33ad32afba958ecabfada69fc323ee873c0e7f2576e95aacfaf70c8b28baf2"
+    },
+    {
+      "name": "unit-1",
+      "command": "pnpm test --reporter=default --reporter=json --outputFile='.test-data/final-quality/2026-10-17-validation/unit-1.json'",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:11:14.492Z",
+      "finishedAt": "2026-10-16T17:11:46.434Z",
+      "durationMs": 31942,
+      "log": ".test-data/final-quality/2026-10-17-validation/unit-1.log",
+      "bytes": 14256,
+      "sha256": "34ae9e46d176890cb934f50bed1a7125f42a7c287ebb68b194fe9dcbabb0cafc"
+    },
+    {
+      "name": "build",
+      "command": "pnpm build",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:11:46.510Z",
+      "finishedAt": "2026-10-16T17:13:30.588Z",
+      "durationMs": 104078,
+      "log": ".test-data/final-quality/2026-10-17-validation/build.log",
+      "bytes": 6132,
+      "sha256": "405eeae917eb5102540493748256baad0b185a5491a4adc8e1616892b0a5fd60"
+    },
+    {
+      "name": "unit-2",
+      "command": "pnpm test --reporter=default --reporter=json --outputFile='.test-data/final-quality/2026-10-17-validation/unit-2.json'",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:13:30.590Z",
+      "finishedAt": "2026-10-16T17:13:40.232Z",
+      "durationMs": 9642,
+      "log": ".test-data/final-quality/2026-10-17-validation/unit-2.log",
+      "bytes": 13974,
+      "sha256": "733e3e46cb96952d44e2d2adf653fcb9eda3f95a3a1e3731b7d5001918533e35"
+    },
+    {
+      "name": "unit-3",
+      "command": "pnpm test --reporter=default --reporter=json --outputFile='.test-data/final-quality/2026-10-17-validation/unit-3.json'",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:13:40.234Z",
+      "finishedAt": "2026-10-16T17:13:49.996Z",
+      "durationMs": 9762,
+      "log": ".test-data/final-quality/2026-10-17-validation/unit-3.log",
+      "bytes": 13973,
+      "sha256": "3951f85fe69c2bf4310eb9d643df3ee94855b79e8963c24ec1f1a90f6359175a"
+    },
+    {
+      "name": "e2e",
+      "command": "node scripts/rc2-portable-workflow.mjs",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:14:30.178Z",
+      "finishedAt": "2026-10-16T17:16:27.071Z",
+      "durationMs": 116893,
+      "log": ".test-data/final-quality/2026-10-17-validation/e2e.log",
+      "bytes": 5719,
+      "sha256": "3eb9c39a6829cc7d3bda28240eb75806d9a7bedf645de2467e4144405985f254"
+    },
+    {
+      "name": "portable",
+      "command": "pnpm test:portable",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:16:27.073Z",
+      "finishedAt": "2026-10-16T17:17:07.647Z",
+      "durationMs": 40574,
+      "log": ".test-data/final-quality/2026-10-17-validation/portable.log",
+      "bytes": 2119,
+      "sha256": "b1ad129cd22a0d4f223ddaade4d140762cd2169cc216594e21dafe1eebffa960"
+    },
+    {
+      "name": "upgrade-1.0.0-rc.2",
+      "command": "pnpm test:upgrade --from artifacts/ProductSpy-1.0.0-rc.2-windows-x64 --to artifacts/ProductSpy-1.0.0-windows-x64",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:17:07.648Z",
+      "finishedAt": "2026-10-16T17:18:00.417Z",
+      "durationMs": 52769,
+      "log": ".test-data/final-quality/2026-10-17-validation/upgrade-1.0.0-rc.2.log",
+      "bytes": 5753,
+      "sha256": "1590d6945b32acfc4f319f094ded1e9e90cd6d418abd3fae8e6b873b8a9552eb"
+    },
+    {
+      "name": "upgrade-1.0.0-rc.1",
+      "command": "pnpm test:upgrade --from artifacts/ProductSpy-1.0.0-rc.1-windows-x64 --to artifacts/ProductSpy-1.0.0-windows-x64",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:18:00.419Z",
+      "finishedAt": "2026-10-16T17:19:05.891Z",
+      "durationMs": 65472,
+      "log": ".test-data/final-quality/2026-10-17-validation/upgrade-1.0.0-rc.1.log",
+      "bytes": 5753,
+      "sha256": "4ae663f8476fa06f47ec906b5f6946cc828743d73d5e077d8fdf608492ae1068"
+    },
+    {
+      "name": "upgrade-0.8.0",
+      "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.8.0-windows-x64 --to artifacts/ProductSpy-1.0.0-windows-x64",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:19:05.892Z",
+      "finishedAt": "2026-10-16T17:20:11.267Z",
+      "durationMs": 65375,
+      "log": ".test-data/final-quality/2026-10-17-validation/upgrade-0.8.0.log",
+      "bytes": 5688,
+      "sha256": "639c089fcd232337c52aae22d26ac6c4f3602ddc17c2eacb376c90dd83126e28"
+    },
+    {
+      "name": "upgrade-0.7.0",
+      "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.7.0-windows-x64 --to artifacts/ProductSpy-1.0.0-windows-x64",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:20:11.269Z",
+      "finishedAt": "2026-10-16T17:21:04.643Z",
+      "durationMs": 53374,
+      "log": ".test-data/final-quality/2026-10-17-validation/upgrade-0.7.0.log",
+      "bytes": 5183,
+      "sha256": "d14972478a7b4e45fc2f368c090cd957d9f8e9fb57c6232e0b16cbb5420b1adf"
+    },
+    {
+      "name": "upgrade-0.6.0",
+      "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.6.0-windows-x64 --to artifacts/ProductSpy-1.0.0-windows-x64",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:21:04.644Z",
+      "finishedAt": "2026-10-16T17:21:42.730Z",
+      "durationMs": 38086,
+      "log": ".test-data/final-quality/2026-10-17-validation/upgrade-0.6.0.log",
+      "bytes": 4259,
+      "sha256": "35727b26da05715d47dea2753c515087be0d99cf1538d7d0d13dfff063b53d96"
+    },
+    {
+      "name": "upgrade-0.5.2",
+      "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.5.2-windows-x64 --to artifacts/ProductSpy-1.0.0-windows-x64",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:21:42.731Z",
+      "finishedAt": "2026-10-16T17:22:19.316Z",
+      "durationMs": 36585,
+      "log": ".test-data/final-quality/2026-10-17-validation/upgrade-0.5.2.log",
+      "bytes": 4064,
+      "sha256": "fe8e46758096192a3d81334fb5894f085daa2f509d65b6c8daec762461f842de"
+    },
+    {
+      "name": "upgrade-0.5.1",
+      "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.5.1-windows-x64 --to artifacts/ProductSpy-1.0.0-windows-x64",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:22:19.318Z",
+      "finishedAt": "2026-10-16T17:22:54.357Z",
+      "durationMs": 35039,
+      "log": ".test-data/final-quality/2026-10-17-validation/upgrade-0.5.1.log",
+      "bytes": 4064,
+      "sha256": "42dfb0ff1d6ce773b4f100fe70d190acb64338f36b08d460752e5b71426cfcdf"
+    },
+    {
+      "name": "upgrade-0.5.0",
+      "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.5.0-windows-x64 --to artifacts/ProductSpy-1.0.0-windows-x64",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:22:54.358Z",
+      "finishedAt": "2026-10-16T17:23:34.325Z",
+      "durationMs": 39967,
+      "log": ".test-data/final-quality/2026-10-17-validation/upgrade-0.5.0.log",
+      "bytes": 4064,
+      "sha256": "64c45c2a80c9eb7f433e11b1e9a6f1243e9e9a199f4ef461ae16eecf9228a32d"
+    },
+    {
+      "name": "upgrade-0.4.0",
+      "command": "pnpm test:upgrade --from artifacts/ProductSpy-0.4.0-windows-x64 --to artifacts/ProductSpy-1.0.0-windows-x64",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:23:34.326Z",
+      "finishedAt": "2026-10-16T17:24:09.929Z",
+      "durationMs": 35603,
+      "log": ".test-data/final-quality/2026-10-17-validation/upgrade-0.4.0.log",
+      "bytes": 4064,
+      "sha256": "468ac1529d8ba5dbfec596ac2477c5ee53c31fb4a530c5b1d383e52976a2f5c5"
+    },
+    {
+      "name": "backup-regression",
+      "command": "node scripts/run-stable-backup-validation.mjs --stage regression --output '.test-data/v100-backup-restore/final-quality-2026-10-17-validation'",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:24:09.929Z",
+      "finishedAt": "2026-10-16T17:24:24.254Z",
+      "durationMs": 14325,
+      "log": ".test-data/final-quality/2026-10-17-validation/backup-regression.log",
+      "bytes": 204,
+      "sha256": "61c1638f1e253c4e5d1e5e89ffebb87e620adfe13840d26c4f7d3d92c8bb8bd4"
+    },
+    {
+      "name": "backup-workflow",
+      "command": "node scripts/run-stable-backup-validation.mjs --stage workflow --output '.test-data/v100-backup-restore/final-quality-2026-10-17-validation'",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:24:24.255Z",
+      "finishedAt": "2026-10-16T17:24:40.547Z",
+      "durationMs": 16292,
+      "log": ".test-data/final-quality/2026-10-17-validation/backup-workflow.log",
+      "bytes": 255,
+      "sha256": "085a903b85a0ecf258740e76aa7008ff3a8772b995c7ab8af71e8657651ac7c5"
+    },
+    {
+      "name": "zip-validation",
+      "command": "node scripts/validate-release.mjs",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:24:40.548Z",
+      "finishedAt": "2026-10-16T17:24:42.763Z",
+      "durationMs": 2215,
+      "log": ".test-data/final-quality/2026-10-17-validation/zip-validation.log",
+      "bytes": 1371,
+      "sha256": "6060976ed67dcb589e6ccfc3f91b737925b77afce166c66006194458eb9d9cc4"
+    },
+    {
+      "name": "final-lint",
+      "command": "pnpm lint",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:26:06.788Z",
+      "finishedAt": "2026-10-16T17:26:10.450Z",
+      "durationMs": 3662,
+      "log": ".test-data/final-quality/2026-10-17-validation/final-lint.log",
+      "bytes": 99,
+      "sha256": "6af86f3ef5c13a72473d01276aaaae215281b4e825110c4f5970740b440610fd"
+    },
+    {
+      "name": "final-format-check",
+      "command": "pnpm format:check",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:26:10.451Z",
+      "finishedAt": "2026-10-16T17:26:16.939Z",
+      "durationMs": 6488,
+      "log": ".test-data/final-quality/2026-10-17-validation/final-format-check.log",
+      "bytes": 166,
+      "sha256": "ee33ad32afba958ecabfada69fc323ee873c0e7f2576e95aacfaf70c8b28baf2"
+    },
+    {
+      "name": "unit-final",
+      "command": "pnpm test --reporter=default --reporter=json --outputFile='.test-data/final-quality/2026-10-17-validation/unit-final.json'",
+      "status": "PASS",
+      "exitCode": 0,
+      "startedAt": "2026-10-16T17:26:16.940Z",
+      "finishedAt": "2026-10-16T17:26:26.690Z",
+      "durationMs": 9750,
+      "log": ".test-data/final-quality/2026-10-17-validation/unit-final.log",
+      "bytes": 14159,
+      "sha256": "d4944cf5ea77033b6bef9998def7a8ec1b331dc914f15b299c6f5326007dc5d5"
+    }
+  ],
+  "units": [
+    {
+      "run": "unit-1",
+      "passed": 736,
+      "files": 72,
+      "fail": 0,
+      "skipped": 0,
+      "report": ".test-data/final-quality/2026-10-17-validation/unit-1.json",
+      "sha256": "10ebdc64c29e6d1c3a15fd0655ca36dbfa2ef99d7409a481bf4680e047737ebf"
+    },
+    {
+      "run": "unit-2",
+      "passed": 736,
+      "files": 72,
+      "fail": 0,
+      "skipped": 0,
+      "report": ".test-data/final-quality/2026-10-17-validation/unit-2.json",
+      "sha256": "b3996c67b4be5f1eb2b1cbf3afdc4c8c043c78e0baac57288c7b3cf29fad1fcb"
+    },
+    {
+      "run": "unit-3",
+      "passed": 736,
+      "files": 72,
+      "fail": 0,
+      "skipped": 0,
+      "report": ".test-data/final-quality/2026-10-17-validation/unit-3.json",
+      "sha256": "6440e8ff6bfb2a76b9bf9ffe05526d9fb1ce96d5f63011169e4f94c31d6c6e1e"
+    },
+    {
+      "run": "unit-final",
+      "passed": 745,
+      "files": 73,
+      "fail": 0,
+      "skipped": 0,
+      "report": ".test-data/final-quality/2026-10-17-validation/unit-final.json",
+      "sha256": "79fc273e4a9b1d8ca948058f8e6e99826a8b227dd3cf85ebdf85c17d0809a62e"
+    }
+  ],
+  "fullE2E": {
+    "status": "PASS",
+    "startTime": "2026-10-16T17:14:32.745Z",
+    "duration": 112795.193,
+    "expected": 34,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "report": ".test-data/final-quality/2026-10-17-validation/e2e-report.json",
+    "sha256": "6a94b9b964af71e2795985e49c5af9cb76f844dcb52c438e15effc9bb1d4387e"
+  },
+  "portable": {
+    "status": "PASS",
+    "checks": 13
+  },
+  "upgrades": {
+    "status": "PASS",
+    "paths": 9,
+    "checks": 216,
+    "versions": [
+      "1.0.0-rc.2",
+      "1.0.0-rc.1",
+      "0.8.0",
+      "0.7.0",
+      "0.6.0",
+      "0.5.2",
+      "0.5.1",
+      "0.5.0",
+      "0.4.0"
+    ]
+  },
+  "backupRestore": {
+    "status": "PASS_AUTOMATED",
+    "specialAssertions": 42,
+    "targetedUnit": 28,
+    "targetedE2E": 4,
+    "nativeManual": "HISTORICAL_MAINTAINER_10_OF_10",
+    "newHumanExecution": false
+  },
+  "extension": {
+    "status": "PASS_AUTOMATED",
+    "checks": 11,
+    "nativeStableChrome": "HISTORICAL_PASSES_ONLY; C01/C02/C06 remain PENDING",
+    "popup": "CFT actual action target 400x420 CSS px, internal scrolling; not Windows DPI"
+  },
+  "amazon": {
+    "schemaVersion": 1,
+    "release": "1.0.0",
+    "clientDate": "2026-10-17",
+    "clientTimezone": "Asia/Shanghai",
+    "productionCodeChanged": false,
+    "realPages": true,
+    "mock": false,
+    "stableChromeToolbarVerified": false,
+    "fullMediaPlaybackVerified": false,
+    "paidAiCalls": 0,
+    "librarySaves": 0,
+    "newConfirmedDefects": [],
+    "mainCapture": {
+      "status": "PASS_WITH_EXTERNAL_BLOCKS",
+      "durationSeconds": 173.444,
+      "startedAt": "2026-10-16T17:08:40.059Z",
+      "completedAt": "2026-10-16T17:11:33.503Z",
+      "counts": {
+        "primaryPlanned": 10,
+        "primaryNavigationsAttempted": 10,
+        "primaryCaptured": 8,
+        "primaryBlockedOrNotAttempted": 2,
+        "visibleVariantsCaptured": 1,
+        "uniqueCapturedAsins": 8,
+        "plannedCategories": ["electronics", "home", "beauty", "clothing", "kitchen", "books"],
+        "capturedCategories": ["electronics", "home", "beauty", "clothing", "kitchen", "books"],
+        "plannedCountryHosts": [
+          "www.amazon.com",
+          "www.amazon.de",
+          "www.amazon.co.uk",
+          "www.amazon.co.jp"
+        ],
+        "capturedCountryHosts": ["www.amazon.com", "www.amazon.co.jp"],
+        "fields": {
+          "asin": {
+            "pass": 9,
+            "fail": 0,
+            "unverified": 0,
+            "not-available": 0,
+            "requires-content-review": 0
+          },
+          "title": {
+            "pass": 9,
+            "fail": 0,
+            "unverified": 0,
+            "not-available": 0,
+            "requires-content-review": 0
+          },
+          "price": {
+            "pass": 8,
+            "fail": 0,
+            "unverified": 0,
+            "not-available": 1,
+            "requires-content-review": 0
+          },
+          "currency": {
+            "pass": 8,
+            "fail": 0,
+            "unverified": 0,
+            "not-available": 1,
+            "requires-content-review": 0
+          },
+          "brand": {
+            "pass": 8,
+            "fail": 0,
+            "unverified": 0,
+            "not-available": 1,
+            "requires-content-review": 0
+          },
+          "mainImage": {
+            "pass": 9,
+            "fail": 0,
+            "unverified": 0,
+            "not-available": 0,
+            "requires-content-review": 0
+          },
+          "gallery": {
+            "pass": 9,
+            "fail": 0,
+            "unverified": 0,
+            "not-available": 0,
+            "requires-content-review": 0
+          },
+          "highResolution": {
+            "pass": 9,
+            "fail": 0,
+            "unverified": 0,
+            "not-available": 0,
+            "requires-content-review": 0
+          },
+          "bulletPoints": {
+            "pass": 8,
+            "fail": 0,
+            "unverified": 0,
+            "not-available": 1,
+            "requires-content-review": 0
+          },
+          "rating": {
+            "pass": 9,
+            "fail": 0,
+            "unverified": 0,
+            "not-available": 0,
+            "requires-content-review": 0
+          },
+          "reviewCount": {
+            "pass": 9,
+            "fail": 0,
+            "unverified": 0,
+            "not-available": 0,
+            "requires-content-review": 0
+          },
+          "videos": {
+            "pass": 5,
+            "fail": 0,
+            "unverified": 0,
+            "not-available": 4,
+            "requires-content-review": 0
+          },
+          "mainImageHttp": {
+            "pass": 9,
+            "fail": 0,
+            "unverified": 0,
+            "not-available": 0,
+            "requires-content-review": 0
+          },
+          "description": {
+            "pass": 9,
+            "fail": 0,
+            "unverified": 0,
+            "not-available": 0,
+            "requires-content-review": 0
+          }
+        }
+      },
+      "reportPath": ".test-data/final-quality/amazon/current/sanitized-results.json",
+      "reportSha256": "bb87379b15ef3fb4a11013b1ac932c38de49ec3c117129c7c44b5272373522a8",
+      "command": "node scripts/phase16-amazon-capture.mjs --phase 21 --extension artifacts/ProductSpy-1.0.0-windows-x64/extension --output .test-data/final-quality/amazon/current",
+      "auditCommand": "node scripts/final-quality-amazon.mjs .test-data/final-quality/amazon/current"
+    },
+    "videoTiming": {
+      "status": "PASS_OBSERVED_BOUNDED_SAMPLE",
+      "durationSeconds": 69.528,
+      "startedAt": "2026-10-16T17:11:40.863Z",
+      "completedAt": "2026-10-16T17:12:50.391Z",
+      "counts": {
+        "primaryNavigationsAttempted": 2,
+        "capturesCompleted": 6,
+        "bridgeSaves": 0,
+        "aiCalls": 0,
+        "explicitMediaChecks": 0
+      },
+      "samples": [
+        {
+          "name": "CeraVe",
+          "asin": "B00TTD9BRC",
+          "outcome": "completed-three-bounded-captures",
+          "videoCounts": [2, 2, 2],
+          "asinMatched": true,
+          "allBracketConsistent": true,
+          "bracketMilliseconds": [967, 893, 967],
+          "laterVideoCountIncreaseObserved": false
+        },
+        {
+          "name": "OXO",
+          "asin": "B0000CCY1E",
+          "outcome": "completed-three-bounded-captures",
+          "videoCounts": [1, 1, 1],
+          "asinMatched": true,
+          "allBracketConsistent": true,
+          "bracketMilliseconds": [680, 891, 926],
+          "laterVideoCountIncreaseObserved": false
+        }
+      ],
+      "command": "node .test-data/final-quality/amazon/video-timing-current.mjs --evidence .test-data/final-quality/amazon/video-timing --output .test-data/final-quality/amazon/video-timing-results.json",
+      "qaScriptDerivation": "Existing scripts/phase21-video-timing.mjs with only frozen bundle path changed from rc.1 to stable 1.0.0; copied into ignored evidence, no production file changed.",
+      "qaScriptSha256": "cfb24bab4cf7846e131f7a9ea6f138ef4f1d9a5ba31270bfdaa91f721d692ac3",
+      "originalQaScriptSha256": "ced3bd216c84fe5f154a183a2861cf22937dfb0eba62e951d49693152cf46bbc",
+      "reportSha256": "70ae29e9e33e912f5f3dabe0aac09c8f5d7a84a10392567dfdbb5fbd94c41d31",
+      "historicalIssueClosed": false,
+      "limitations": [
+        "Before/after DOM brackets are not an atomic snapshot of extraction.",
+        "No actual-response per-URL instrumenting; ASIN and counts observed in actual frozen Popup, URL bindings checked by frozen extractor replay.",
+        "CFT Popup is opened in a tab, not stable Chrome native toolbar.",
+        "No media download/decoding/playback test in timing follow-up."
+      ]
+    },
+    "evidenceFiles": [
+      {
+        "path": ".test-data/final-quality/amazon/current/capture.log",
+        "sha256": "ff077d4b41971259c90f88d187998fef10e84e89542d8770d1153ea2e3432c6c",
+        "bytes": 2025
+      },
+      {
+        "path": ".test-data/final-quality/amazon/audit.log",
+        "sha256": "bdfe2a2d9ef3d75cbbc32631a12995ad70eb7e8208ee39c3d8aa1a728a503772",
+        "bytes": 3198
+      },
+      {
+        "path": ".test-data/final-quality/amazon/video-timing.log",
+        "sha256": "490ef674d7370852816095b26e6c42204258d1bd5a82d8952211bbb23f419128",
+        "bytes": 917
+      },
+      {
+        "path": "scripts/final-quality-amazon.mjs",
+        "sha256": "9c876e48f901a33222806857a67a40336b938546b136ba84c77cc104e26149cc",
+        "bytes": 10565
+      }
+    ],
+    "manualStatusUnchanged": {
+      "A01": "pending",
+      "A02": "pending",
+      "A03": "pending"
+    },
+    "limits": [
+      "Direct ordinary public navigation in a fresh isolated Chrome for Testing profile, not native stable Chrome toolbar acceptance.",
+      "No CAPTCHA solving, account login, request interception, response substitution or navigation retry; host stops on verification.",
+      "Visible merchant text/data comparison does not independently validate merchant claims or real customer review bodies.",
+      "Missing fields are unknown, not fabricated; unavailable values are excluded from field successes.",
+      "Raw HTML, captured URLs and browser profiles remain ignored; sanitized output includes no session headers or credentials.",
+      "Media HEAD/GET accessibility does not prove complete download, playback or decode success.",
+      "Repeated extraction and variant checks make no product-library write; duplicate upsert/persistence is covered elsewhere.",
+      "No AI requests or library saves. Normal read-only Popup workspace status checks may occur."
+    ]
+  },
+  "AI": {
+    "A_mock": "PASS",
+    "B_simulatedHTTPProvider": "PASS",
+    "newRealLoopbackHttpTests": 9,
+    "C_paidModelQuality": "PENDING_NOT_AUTHORIZED",
+    "realPaidRequests": 0,
+    "privateKeysRead": false
+  },
+  "security": {
+    "review": "SOURCE_AND_EXISTING_BOUNDARY_TESTS; not independent penetration certification",
+    "groups": [
+      {
+        "scope": "认证、Token 与会话",
+        "status": "PASS_AUTOMATED_BOUNDARY_TESTS",
+        "file": "apps/web/src/lib/server/auth.test.ts",
+        "tests": 14
+      },
+      {
+        "scope": "CORS/CSRF 与输入体限制",
+        "status": "PASS_AUTOMATED_BOUNDARY_TESTS",
+        "file": "apps/web/src/lib/server/http.test.ts",
+        "tests": 9
+      },
+      {
+        "scope": "图片 SSRF/类型/大小边界",
+        "status": "PASS_AUTOMATED_BOUNDARY_TESTS",
+        "file": "apps/web/src/lib/server/media.test.ts",
+        "tests": 33
+      },
+      {
+        "scope": "公开视频/重定向/HLS 边界",
+        "status": "PASS_AUTOMATED_BOUNDARY_TESTS",
+        "file": "apps/web/src/lib/server/media-video.test.ts",
+        "tests": 14
+      },
+      {
+        "scope": "路径、下载、取消及哈希",
+        "status": "PASS_AUTOMATED_BOUNDARY_TESTS",
+        "file": "apps/web/src/lib/server/media-downloads.test.ts",
+        "tests": 13
+      },
+      {
+        "scope": "原子写入与有界重试",
+        "status": "PASS_AUTOMATED_BOUNDARY_TESTS",
+        "file": "apps/web/src/lib/server/atomic-file.test.ts",
+        "tests": 6
+      },
+      {
+        "scope": "内容导入与来源完整性",
+        "status": "PASS_AUTOMATED_BOUNDARY_TESTS",
+        "file": "apps/web/src/lib/server/content-security-review.test.ts",
+        "tests": 5
+      },
+      {
+        "scope": "历史与备份边界",
+        "status": "PASS_AUTOMATED_BOUNDARY_TESTS",
+        "file": "apps/web/src/lib/server/history-backup-review.test.ts",
+        "tests": 4
+      },
+      {
+        "scope": "业务备份事务",
+        "status": "PASS_AUTOMATED_BOUNDARY_TESTS",
+        "file": "apps/web/src/lib/server/business-backup.test.ts",
+        "tests": 16
+      },
+      {
+        "scope": "导入大小/异常结构/重复冲突",
+        "status": "PASS_AUTOMATED_BOUNDARY_TESTS",
+        "file": "apps/web/src/app/api/library/import/route.test.ts",
+        "tests": 12
+      },
+      {
+        "scope": "AI Provider 请求/错误",
+        "status": "PASS_AUTOMATED_BOUNDARY_TESTS",
+        "file": "apps/web/src/lib/ai/provider.test.ts",
+        "tests": 27
+      },
+      {
+        "scope": "AI 兼容性/结构/事实",
+        "status": "PASS_AUTOMATED_BOUNDARY_TESTS",
+        "file": "apps/web/src/lib/ai/provider-compat.test.ts",
+        "tests": 32
+      },
+      {
+        "scope": "AI 竞品事实边界",
+        "status": "PASS_AUTOMATED_BOUNDARY_TESTS",
+        "file": "apps/web/src/lib/ai/comparison-provider.test.ts",
+        "tests": 7
+      },
+      {
+        "scope": "AI 内容与模板边界",
+        "status": "PASS_AUTOMATED_BOUNDARY_TESTS",
+        "file": "apps/web/src/lib/ai/content-generation.test.ts",
+        "tests": 25
+      }
+    ],
+    "dependencyAudit": {
+      "vulnerabilities": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0
+      },
+      "dependencies": 115,
+      "devDependencies": 0,
+      "optionalDependencies": 0,
+      "totalDependencies": 115
+    },
+    "releaseArchiveScan": "PASS; raw paths/CRC/manifest/hash/credential-file allowlist checks; not proof arbitrary secrets can never exist",
+    "privacyMaterials": "reviewed; local data plaintext and OS-compromise limits documented; old phase-specific store/privacy headings are historical and do not establish current CWS compliance",
+    "sourceReviewedFiles": [
+      "apps/web/src/lib/server/auth.ts",
+      "apps/web/src/lib/server/http.ts",
+      "apps/web/src/lib/server/media.ts",
+      "apps/web/src/lib/server/media-downloads.ts",
+      "apps/web/src/lib/ai/openai-compatible-provider.ts",
+      "apps/extension/manifest.json",
+      "apps/extension/src/background/index.ts",
+      "apps/extension/src/storage/ExtensionLocalStorageAdapter.ts",
+      "apps/extension/src/storage/bridge-credentials.ts",
+      "PRIVACY.md",
+      "docs/chrome-web-store.md",
+      "README.md"
+    ]
+  },
+  "release": {
+    "id": 414159626,
+    "draft": true,
+    "published": false,
+    "assets": 7,
+    "frozenArtifacts": {
+      "version": "1.0.0",
+      "portable": {
+        "file": "ProductSpy-1.0.0-windows-x64.zip",
+        "sha256": "b0f3bdf2a2ccdd2b9e10d0970434b6e6c10e77171c4eefd6f9ccb56bfc4e3fa0",
+        "bytes": 42506037,
+        "files": 2335
+      },
+      "extension": {
+        "file": "ProductSpy-1.0.0-extension.zip",
+        "version": "1.0.0",
+        "extensionVersion": "1.0.0.3",
+        "extensionVersionName": "1.0.0",
+        "sha256": "e6e1a24e76f6b3d3d1608901582aff3ce66c549f4a0edb79bf9c09aa370a2e70",
+        "bytes": 408886,
+        "files": 226
+      }
+    },
+    "preservation": {
+      "checkedAt": "2026-10-16T17:26:25.993Z",
+      "checks": [
+        {
+          "name": "all frozen ZIPs, seven stable assets, receipts and manual CSV unchanged",
+          "status": "PASS",
+          "files": 33
+        },
+        {
+          "name": "all GitHub Releases and attachment identities/digests unchanged",
+          "status": "PASS",
+          "releases": 12
+        },
+        {
+          "name": "production source unchanged",
+          "status": "PASS"
+        }
+      ]
+    }
+  },
+  "manual": {
+    "total": 53,
+    "counts": {
+      "pass": 9,
+      "pending": 44,
+      "fail": 0
+    },
+    "newPasses": 0,
+    "csvSha256": "7e3319c46ac772be6d265c5d51f8438fc283c7c8309f6510f872bce8f7fea95e",
+    "cases": [
+      {
+        "id": "W01",
+        "scenario": "Windows 11 版本与标准用户",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "portable:13/13",
+          "upgrade:9 frozen version paths",
+          "native:MANUAL_REQUIRED"
+        ],
+        "manualSteps": "Windows「设置 → 系统 → 系统信息」查看版本；确认是 Windows 11 x64，记录版本/OS build。",
+        "passCriteria": "产品名、OS build、架构和测试账户类型有记录；不以开发机结果代替。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "W02",
+        "scenario": "双击 CMD 原生启动",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": "2026-10-16",
+        "historicalEvidenceFiles": [
+          "docs/v1.0.0-manual-smoke-test.md",
+          "docs/v1.0.0-backup-restore-manual-results.md"
+        ],
+        "currentAutomationEvidence": [
+          "portable:13/13",
+          "upgrade:9 frozen version paths",
+          "native:MANUAL_REQUIRED"
+        ],
+        "manualSteps": "在文件资源管理器双击已完整解压的 `ProductSpy.cmd`，不使用“以管理员身份运行”。",
+        "passCriteria": "原生 ProductSpy 启动窗口及工作台打开；不要求安装开发工具、不弹不必要 UAC；录制从双击到可用的实际时间。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "W03",
+        "scenario": "状态与四个打开入口",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "portable:13/13",
+          "upgrade:9 frozen version paths",
+          "native:MANUAL_REQUIRED"
+        ],
+        "manualSteps": "检查运行状态及「打开工作台」「打开插件文件夹」「AI 设置」「打开用户数据」「停止并退出」。逐个点击前四个入口。",
+        "passCriteria": "状态明确、窗口可操作；网页为 `http://127.0.0.1:3000`，插件目录含 manifest.json，用户目录为测试账户；截图隐藏 Windows 用户名。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "W04",
+        "scenario": "重复启动不重复服务",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "portable:13/13",
+          "upgrade:9 frozen version paths",
+          "native:MANUAL_REQUIRED"
+        ],
+        "manualSteps": "工作台已有一条自建测试资料时，再双击同一个 CMD。",
+        "passCriteria": "没有第二个工作台服务；旧资料仍可读。重复窗口或提示应可理解。仅页面打开不能证明无重复服务，可附任务管理器中相关 PID/父子关系的脱敏记录。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "W05",
+        "scenario": "关闭网页与停止并退出",
+        "manualStatus": "PASS",
+        "manualEvidence": "HISTORICAL_MAINTAINER_DECLARATION",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [
+          "docs/v1.0.0-backup-restore-manual-results.md",
+          "docs/v1.0.0-windows-lifecycle-manual-results.md"
+        ],
+        "currentAutomationEvidence": [
+          "portable:13/13",
+          "upgrade:9 frozen version paths",
+          "native:MANUAL_REQUIRED"
+        ],
+        "manualSteps": "先只关闭网页标签，重新用启动器打开；再「停止并退出」。",
+        "passCriteria": "关闭网页不停止工作台；停止后启动器退出，刷新工作台无法在线写入，本次服务进程结束。不要把浏览器缓存页面当服务仍在运行。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "W06",
+        "scenario": "关闭启动窗口与重启",
+        "manualStatus": "PASS",
+        "manualEvidence": "HISTORICAL_MAINTAINER_DECLARATION",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [
+          "docs/v1.0.0-manual-smoke-test.md",
+          "docs/v1.0.0-backup-restore-manual-results.md",
+          "docs/v1.0.0-windows-lifecycle-manual-results.md"
+        ],
+        "currentAutomationEvidence": [
+          "portable:13/13",
+          "upgrade:9 frozen version paths",
+          "native:MANUAL_REQUIRED"
+        ],
+        "manualSteps": "重新双击，核对已存资料；再单独测试关闭启动器右上角 ×，随后再次启动。",
+        "passCriteria": "两种退出路径停止自己启动的服务；重启资料、设置和配对正常。若发现残留，仅记录自己服务 PID，不杀未知进程。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "W07",
+        "scenario": "用户数据与同版重新解压",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "portable:13/13",
+          "upgrade:9 frozen version paths",
+          "native:MANUAL_REQUIRED"
+        ],
+        "manualSteps": "「打开用户数据」，检查 data/settings/logs/runtime 分开；停止后再将程序完整解压到另一个新文件夹并启动。",
+        "passCriteria": "用户资料位置不随程序移动，既有测试资料不丢失；旧包和用户目录不被删除。不能把重新解压相同版本写成跨版本升级。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "W08",
+        "scenario": "原生 AI 配置保存 Mock",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "portable:13/13",
+          "upgrade:9 frozen version paths",
+          "native:MANUAL_REQUIRED"
+        ],
+        "manualSteps": "打开「AI 设置」，先不填真实 Key，选择 `mock`，保存、关闭、停止并重启。再打开核对。",
+        "passCriteria": "原生窗口标签/按钮完整，Mock 设置保存且服务页面明确标「本机演示」。不读取旧私人 Key，不调用外部服务。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "W09",
+        "scenario": "AI 配置取消与无收费调用",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "portable:13/13",
+          "upgrade:9 frozen version paths",
+          "native:MANUAL_REQUIRED"
+        ],
+        "manualSteps": "在测试账户的 AI 设置中，取消一次修改；仅检查地址/模型字段提示，不执行生成。",
+        "passCriteria": "取消不改变已保存的 Mock 设置；无 Key 进入截图，设置窗口不会自行调用收费模型。真实模式实际质量另走授权清单。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "W10",
+        "scenario": "受控端口冲突与恢复",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "portable:13/13",
+          "upgrade:9 frozen version paths",
+          "native:MANUAL_REQUIRED"
+        ],
+        "manualSteps": "在所有本次程序停止后，由维护者在隔离环境用自己的已知测试程序占用 3000，再双击 CMD；之后正常退出占用程序并重试。",
+        "passCriteria": "明确端口冲突、不结束别人的程序；释放后正常启动。没有可控占用程序时保留待验收，不让普通用户随意终止进程。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "W11",
+        "scenario": "拒绝写入或策略提示",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "portable:13/13",
+          "upgrade:9 frozen version paths",
+          "native:MANUAL_REQUIRED"
+        ],
+        "manualSteps": "使用现有组织策略拒绝或维护者预先准备的独立拒绝权限样本，尝试启动。",
+        "passCriteria": "提示具体写入/运行问题，原数据保留，不提权或改权限。不得修改生产目录 ACL、禁止用户目录权限或关闭安全策略来制造测试。无法安全准备则待验收。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "W12",
+        "scenario": "SmartScreen 和安全提示实况",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "portable:13/13",
+          "upgrade:9 frozen version paths",
+          "native:MANUAL_REQUIRED"
+        ],
+        "manualSteps": "正常启动时记录实际 SmartScreen、Defender、脚本策略或 UAC 提示；出现阻断即先停止该项。",
+        "passCriteria": "留下脱敏原文、动作和结果；未出现记“本机未出现”，不推断所有设备无提示。不要关闭保护、点击无法核实的继续运行或绕过组织策略。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "W13",
+        "scenario": "125% 显示缩放",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "portable:13/13",
+          "upgrade:9 frozen version paths",
+          "native:MANUAL_REQUIRED"
+        ],
+        "manualSteps": "由设备所有者在已有或自行选择的 Windows 125% 系统显示缩放下，检查启动器、AI 设置、正式 Chrome Popup、网页配对和原生素材目录窗。",
+        "passCriteria": "记录真实分辨率/缩放/Chrome 页面缩放；按钮文字不截断，能滚动及键盘操作；浏览器 viewport/模拟 scale 不算通过。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "W14",
+        "scenario": "150% 显示缩放",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "portable:13/13",
+          "upgrade:9 frozen version paths",
+          "native:MANUAL_REQUIRED"
+        ],
+        "manualSteps": "由设备所有者在已有或自行选择的 Windows 150% 系统显示缩放下，检查启动器、AI 设置、正式 Chrome Popup、网页配对和原生素材目录窗。",
+        "passCriteria": "记录真实分辨率/缩放/Chrome 页面缩放；按钮文字不截断，能滚动及键盘操作；浏览器 viewport/模拟 scale 不算通过。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "W15",
+        "scenario": "200% 显示缩放",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "portable:13/13",
+          "upgrade:9 frozen version paths",
+          "native:MANUAL_REQUIRED"
+        ],
+        "manualSteps": "由设备所有者在已有或自行选择的 Windows 200% 系统显示缩放下，检查启动器、AI 设置、正式 Chrome Popup、网页配对和原生素材目录窗。",
+        "passCriteria": "记录真实分辨率/缩放/Chrome 页面缩放；按钮文字不截断，能滚动及键盘操作；浏览器 viewport/模拟 scale 不算通过。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "C01",
+        "scenario": "正式 Chrome 手工加载",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": ["docs/v1.0.0-manual-smoke-test.md"],
+        "currentAutomationEvidence": [
+          "E2E:34/34; CFT action Popup and Fixture pairing/offline",
+          "unit auth/http/storage/consent"
+        ],
+        "manualSteps": "正式 Chrome 打开 `chrome://extensions`，手动启用开发者模式、加载包内 `extension` 并固定工具栏图标。",
+        "passCriteria": "记录正式产品/完整版本、来源/渠道和扩展 ID；显示无加载错误。Manifest 数字版 1.0.0、候选名 1.0.0-rc.1 的区别正常，不误作两个包。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "C02",
+        "scenario": "工具栏 Popup 显示与滚动",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": ["docs/v1.0.0-manual-smoke-test.md"],
+        "currentAutomationEvidence": [
+          "E2E:34/34; CFT action Popup and Fixture pairing/offline",
+          "unit auth/http/storage/consent"
+        ],
+        "manualSteps": "点击工具栏图标，展开连接设置，在普通显示器和长标题商品上检查滚动。",
+        "passCriteria": "Popup 文字、图片、保存/重试/连接操作可见，不裁切、不白屏；记录实际外边界尺寸。扩展网页单独开标签不能代替工具栏 Popup。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "C03",
+        "scenario": "首次一次性安全配对",
+        "manualStatus": "PASS",
+        "manualEvidence": "HISTORICAL_MAINTAINER_DECLARATION",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": ["docs/v1.0.0-pairing-manual-results.md"],
+        "currentAutomationEvidence": [
+          "E2E:34/34; CFT action Popup and Fixture pairing/offline",
+          "unit auth/http/storage/consent"
+        ],
+        "manualSteps": "工作台「安装与配对 → 生成配对码」，2 分钟内粘入 Popup「工作台配对码」，点击「连接工作台」。",
+        "passCriteria": "连接状态明确，保存后工作台可见；公开证据不出现码。第一次采集需明确同意。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "C04",
+        "scenario": "过期与已用配对码",
+        "manualStatus": "PASS",
+        "manualEvidence": "HISTORICAL_MAINTAINER_DECLARATION",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": ["docs/v1.0.0-pairing-manual-results.md"],
+        "currentAutomationEvidence": [
+          "E2E:34/34; CFT action Popup and Fixture pairing/offline",
+          "unit auth/http/storage/consent"
+        ],
+        "manualSteps": "生成一枚新码后等待超过 2 分钟再连接；再次生成并完成连接，尝试再次使用已经用过的旧码。",
+        "passCriteria": "过期/已用码被拒绝且提示可恢复，新码正常；不能通过移除身份验证“修复”。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "C05",
+        "scenario": "撤销与重新配对",
+        "manualStatus": "PASS",
+        "manualEvidence": "HISTORICAL_MAINTAINER_DECLARATION",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": ["docs/v1.0.0-pairing-manual-results.md"],
+        "currentAutomationEvidence": [
+          "E2E:34/34; CFT action Popup and Fixture pairing/offline",
+          "unit auth/http/storage/consent"
+        ],
+        "manualSteps": "工作台「撤销扩展连接」，在扩展尝试保存，再生成新码重新配对。",
+        "passCriteria": "旧凭据被拒绝，商品不消失；待同步条目保留，新授权后可明确重试。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "C06",
+        "scenario": "扩展重新加载保留状态",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "extension-lifecycle:11/11 CFT; synthetic token retention only",
+          "E2E/units:paired-origin and credential restart"
+        ],
+        "manualSteps": "已存两件公开商品且队列已同步后，在扩展管理页点击重新加载。",
+        "passCriteria": "必要状态、队列和现有商品保持；重新配对若确实需要则如实记录，不先卸载以免清空未同步队列。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "C07",
+        "scenario": "历史工具栏小黑框同条件修复后复测",
+        "manualStatus": "PASS",
+        "manualEvidence": "HISTORICAL_MAINTAINER_DECLARATION",
+        "historicalVersion": "1.0.0-rc.2",
+        "historicalPerformedAt": "2026-10-16",
+        "historicalEvidenceFiles": [
+          "docs/rc2-popup-hotfix.md#维护者同条件人工确认2026-10-16",
+          "docs/v1.0.0-manual-smoke-test.md"
+        ],
+        "currentAutomationEvidence": [
+          "E2E:34/34; CFT action Popup and Fixture pairing/offline",
+          "unit auth/http/storage/consent"
+        ],
+        "manualSteps": "执行下面的小空白窗口专项记录。",
+        "passCriteria": "有完整条件和实际证据才判定复现或未复现；“本机未复现”不等于根因修复。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "C08",
+        "scenario": "离线暂存重启与重试同步",
+        "manualStatus": "PASS",
+        "manualEvidence": "HISTORICAL_MAINTAINER_DECLARATION",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": ["docs/v1.0.0-offline-sync-manual-results.md"],
+        "currentAutomationEvidence": [
+          "E2E:34/34; CFT action Popup and Fixture pairing/offline",
+          "unit auth/http/storage/consent"
+        ],
+        "manualSteps": "先同步已有条目；停止自己的工作台，再采集一件测试商品并保存。重启工作台、必要时重配，点击「重试同步」。",
+        "passCriteria": "离线明确暂存而非已入库，数量可核对；重试后进入库，重复重试不增重复商品，原资料不丢。不要卸载扩展。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "A01",
+        "scenario": "六类真实商品逐字段核对",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": ["docs/v1.0.0-manual-smoke-test.md"],
+        "currentAutomationEvidence": [
+          "real Amazon:10 primary +1 visible variant; US/JP captured; UK/DE BLOCKED",
+          "Fixture extractor and duplicate-upsert tests"
+        ],
+        "manualSteps": "选择六类可正常访问的公开商品：电子、家居、美妆、服装鞋帽、厨房、书籍或其他类别；覆盖多规格变体，条件允许加 US/UK/DE/JP。逐页正常打开，等待选定变体稳定。",
+        "passCriteria": "对照当时可见页面，记录每次 URL、国家站、ASIN、变体、时间、标题、品牌、价格/币种、主图/图片数及实际高清来源、视频状态、卖点/描述、评分/评论数。缺失写未知，不猜。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "A02",
+        "scenario": "同 ASIN 更新与变体识别",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "real Amazon:10 primary +1 visible variant; US/JP captured; UK/DE BLOCKED",
+          "Fixture extractor and duplicate-upsert tests"
+        ],
+        "manualSteps": "对同一个 ASIN 保存两次；切换可见变体后再采集。",
+        "passCriteria": "同 ASIN 不新增重复商品，原 ID/分析/分组标签保留；变体 ASIN 对应当前页。价格是采集时点数据，不称实时监控。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "A03",
+        "scenario": "未加载或不支持页面及访问限制",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "real Amazon:10 primary +1 visible variant; US/JP captured; UK/DE BLOCKED",
+          "Fixture extractor and duplicate-upsert tests"
+        ],
+        "manualSteps": "在不支持的页面、尚在加载的商品页分别打开 Popup，再等待并点击「重新识别」。",
+        "passCriteria": "有可理解状态和恢复入口；访问验证码/登录/地区限制时记录阻断并停止，不绕过、不用 Fixture 冒充成功。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "F01",
+        "scenario": "商品采集分组标签搜索",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": ["docs/v1.0.0-manual-smoke-test.md"],
+        "currentAutomationEvidence": [
+          "E2E:full synthetic business workflow",
+          "unit repositories/media/export/AI contracts",
+          "Mock only; no paid model"
+        ],
+        "manualSteps": "正式 Chrome 保存至少两件不同 ASIN 真实公开商品；在商品库创建 P21 分组和彩色标签，搜索、组合筛选、排序后刷新。",
+        "passCriteria": "正确 ID/ASIN、来源/时间；无重复；分组标签刷新后仍在。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "F02",
+        "scenario": "素材分类高清来源原生目录",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "E2E:full synthetic business workflow",
+          "unit repositories/media/export/AI contracts",
+          "native directory dialog:MANUAL_REQUIRED"
+        ],
+        "manualSteps": "商品详情「素材」分别查看图片/视频，选择实际高清来源。Windows「选择保存目录」选择刚建的“素材”文件夹，下载少量允许图片，打开保存目录/文件位置。",
+        "passCriteria": "原生系统窗口由用户选目录；文件名含商品/ASIN/类型，清单有来源/时间/哈希；不要把 URL 末尾改写为猜测高清图。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "F03",
+        "scenario": "素材下载取消失败与安全重试",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "E2E:full synthetic business workflow",
+          "unit repositories/media/export/AI contracts",
+          "native directory dialog:MANUAL_REQUIRED"
+        ],
+        "manualSteps": "开始少量批量下载后取消；保留成功文件，只在确有失败项时明确点击重试。",
+        "passCriteria": "进度、成功/失败/取消数可核对，不覆盖原文件；HLS/保护/失效资源有明确状态，无直接下载假按钮。没有实际失败就不宣称失败重试已测。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "F04",
+        "scenario": "竞品快照保存差异与币种",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "E2E:full synthetic business workflow",
+          "unit repositories/media/export/AI contracts",
+          "Mock only; no paid model"
+        ],
+        "manualSteps": "选择 2–5 件保存 P21 竞品方案，滚动表格并高亮差异，刷新载入；必要时选不同国家站/币种商品。",
+        "passCriteria": "各商品 ID/ASIN/来源快照正确，缺失未知，币种不同不比较价格高低，不称实时信息；保存方案 ID。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "F05",
+        "scenario": "商品 Mock 分析人工编辑历史",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": ["docs/v1.0.0-manual-smoke-test.md"],
+        "currentAutomationEvidence": [
+          "E2E:full synthetic business workflow",
+          "unit repositories/media/export/AI contracts",
+          "Mock only; no paid model"
+        ],
+        "manualSteps": "为商品执行一次 Mock 分析并保存人工改动 `P21-人工商品分析`；局部重生成、比较和恢复一次。",
+        "passCriteria": "原分析和人工历史都保留；恢复新增版本，不丢后来版本，Mock 标识仍在。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "F06",
+        "scenario": "竞品 Mock 分析人工历史",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "E2E:full synthetic business workflow",
+          "unit repositories/media/export/AI contracts",
+          "Mock only; no paid model"
+        ],
+        "manualSteps": "竞品执行 Mock 对比，编辑保存 `P21-人工竞品结论`。",
+        "passCriteria": "事实/商家宣传/AI 推断/未知边界可见，不声称分析真实评论；历史仍在。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "F07",
+        "scenario": "模板变量编辑版本恢复",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "E2E:full synthetic business workflow",
+          "unit repositories/media/export/AI contracts",
+          "Mock only; no paid model"
+        ],
+        "manualSteps": "复制内置模板为 P21 自定义模板，加入允许变量，预览、保存编辑、查看历史并恢复。",
+        "passCriteria": "内置模板不被修改，自定义 ID/版本和变量预览正确；非法变量拒绝保存，恢复不删后来版本。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "F08",
+        "scenario": "内容创作分析竞品与素材引用",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": ["docs/v1.0.0-manual-smoke-test.md"],
+        "currentAutomationEvidence": [
+          "E2E:full synthetic business workflow",
+          "unit repositories/media/export/AI contracts",
+          "Mock only; no paid model"
+        ],
+        "manualSteps": "从商品或已保存对比结论进入「内容创作」，选择刚才模板及有来源的竞品结论，设置市场/语言/时长/平台/风格，保存参考素材选择后生成 Mock。",
+        "passCriteria": "自动带入正确商品 ID/ASIN/模板版本，分析与竞品引用标为推断和快照，不上传媒体；参数不需无意义重复填写。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "F09",
+        "scenario": "人工内容候选比较历史恢复",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "E2E:full synthetic business workflow",
+          "unit repositories/media/export/AI contracts",
+          "Mock only; no paid model"
+        ],
+        "manualSteps": "编辑口播或脚本，保存 `P21-人工内容-勿覆盖`；重新生成指定项，比较候选版本，再恢复先前人工版本。",
+        "passCriteria": "当前人工内容不被候选覆盖，原有历史可查；恢复新增版本，参考素材和来源各版本自洽。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "F10",
+        "scenario": "草稿恢复与取消编辑",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "E2E:full synthetic business workflow",
+          "unit repositories/media/export/AI contracts",
+          "Mock only; no paid model"
+        ],
+        "manualSteps": "在当前标签页编辑但不保存，刷新或切换后检查草稿恢复；先复制草稿，再取消编辑；保持一项已保存人工改动。",
+        "passCriteria": "清楚区分草稿与永久保存；恢复提示明确。关闭标签页/清理站点资料不作为草稿保证。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "F11",
+        "scenario": "全部单项与整篇复制导出",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "E2E:full synthetic business workflow",
+          "unit repositories/media/export/AI contracts",
+          "Mock only; no paid model"
+        ],
+        "manualSteps": "分别复制单项/整篇；导出商品 CSV/JSON、商品分析 Markdown/TXT、竞品 CSV/Markdown、模板 JSON、内容 Markdown/TXT/JSON/文字 ZIP。",
+        "passCriteria": "用记事本/自己的表格工具检查标题/ASIN/人工标记/来源；ZIP 正常解压且无媒体文件、无绝对路径或凭据。无需安装额外工具。CSV 公式风险用维护者合成样本回归，不向真实产品编造字段。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "F12",
+        "scenario": "来源更新与删除后快照保留",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "E2E:full synthetic business workflow",
+          "unit repositories/media/export/AI contracts",
+          "Mock only; no paid model"
+        ],
+        "manualSteps": "更新一件原商品，再删除该件测试商品前先备份；检查已有对比/内容引用状态。",
+        "passCriteria": "显示更新/删除提示，既有快照与人工结果可查看，不偷偷替换为同名商品；只有明确创建新方案/刷新快照才使用新资料。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "B01",
+        "scenario": "完整业务备份实际导出",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": "2026-10-16",
+        "historicalEvidenceFiles": [
+          "docs/v1.0.0-manual-smoke-test.md",
+          "docs/v1.0.0-backup-restore-manual-results.md"
+        ],
+        "currentAutomationEvidence": [
+          "backup:28 unit +4 E2E re-executions",
+          "frozen portable:42 special assertions +wrapper integrity checks",
+          "UI with actual Windows maintainer input:separate"
+        ],
+        "manualSteps": "在专用测试库导出完整业务备份，记录商品、分组、标签、对比、模板、内容、历史、用量数量；明确是否附带浏览器偏好。",
+        "passCriteria": "文件实际落盘，范围明确；已下载媒体另行备份。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "B02",
+        "scenario": "备份内容结构数量引用核对",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": "2026-10-16",
+        "historicalEvidenceFiles": ["docs/v1.0.0-backup-restore-manual-results.md"],
+        "currentAutomationEvidence": [
+          "backup:28 unit +4 E2E re-executions",
+          "frozen portable:42 special assertions +wrapper integrity checks",
+          "UI with actual Windows maintainer input:separate"
+        ],
+        "manualSteps": "用文本工具只读核对 JSON format/schemaVersion、五类业务记录、ID/ASIN/引用与历史；核对本地资料表。",
+        "passCriteria": "无 Key、Cookie、配对或 Windows 加密设置；记录数量、快照和历史一致。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "B03",
+        "scenario": "预览取消不写入",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "backup:28 unit +4 E2E re-executions",
+          "frozen portable:42 special assertions +wrapper integrity checks",
+          "UI with actual Windows maintainer input:separate"
+        ],
+        "manualSteps": "使用确实包含待新增记录的备份预览数量、冲突与容量后取消；刷新并重新导出。",
+        "passCriteria": "没有新增或覆盖；取消前后关键业务内容一致。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "B04",
+        "scenario": "重复冲突保护较新人工内容",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "backup:28 unit +4 E2E re-executions",
+          "frozen portable:42 special assertions +wrapper integrity checks",
+          "UI with actual Windows maintainer input:separate"
+        ],
+        "manualSteps": "先保存一个较新人工标记，再预览旧备份；按安全保留策略确认恢复，记录新增/跳过/失败数。",
+        "passCriteria": "较新人工内容、ID、全部历史保留；重复资料不静默覆盖。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "B05",
+        "scenario": "隔离测试资料删除确认",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "backup:28 unit +4 E2E re-executions",
+          "frozen portable:42 special assertions +wrapper integrity checks",
+          "UI with actual Windows maintainer input:separate"
+        ],
+        "manualSteps": "先再次导出并核对最新备份；仅通过 UI 确认删除专用测试标记资料，先观察原商品删除后的对比/内容快照。",
+        "passCriteria": "确认名称/数量正确，原快照仍可读；无非测试资料被删除。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "B06",
+        "scenario": "最新完整业务备份安全恢复",
+        "manualStatus": "PASS",
+        "manualEvidence": "HISTORICAL_MAINTAINER_DECLARATION",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": "2026-10-16",
+        "historicalEvidenceFiles": ["docs/v1.0.0-backup-restore-manual-results.md"],
+        "currentAutomationEvidence": [
+          "backup:28 unit +4 E2E re-executions",
+          "frozen portable:42 special assertions +wrapper integrity checks",
+          "UI with actual Windows maintainer input:separate"
+        ],
+        "manualSteps": "预览最新完整备份，核对增加/冲突和保留策略，明确确认恢复；浏览器偏好另外勾选。",
+        "passCriteria": "恢复成功；网络异常先核对结果，不盲目重复提交。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "B07",
+        "scenario": "原 ID ASIN 历史及快照一致",
+        "manualStatus": "PASS",
+        "manualEvidence": "HISTORICAL_MAINTAINER_DECLARATION",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": "2026-10-16",
+        "historicalEvidenceFiles": ["docs/v1.0.0-backup-restore-manual-results.md"],
+        "currentAutomationEvidence": [
+          "backup:28 unit +4 E2E re-executions",
+          "frozen portable:42 special assertions +wrapper integrity checks",
+          "UI with actual Windows maintainer input:separate"
+        ],
+        "manualSteps": "逐项核对原 ID/ASIN、分组标签、快照、人工标记、全部历史、模板、内容和用量，再导出比较。",
+        "passCriteria": "忽略 exportedAt 后关键业务内容一致，恢复不重发 AI 请求。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "B08",
+        "scenario": "重复恢复及停止重启持久化",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0",
+        "historicalPerformedAt": "2026-10-16",
+        "historicalEvidenceFiles": [
+          "docs/v1.0.0-manual-smoke-test.md",
+          "docs/v1.0.0-backup-restore-manual-results.md"
+        ],
+        "currentAutomationEvidence": [
+          "backup:28 unit +4 E2E re-executions",
+          "frozen portable:42 special assertions +wrapper integrity checks",
+          "UI with actual Windows maintainer input:separate"
+        ],
+        "manualSteps": "再次预览同一备份，检查冲突与保留；正常停止并重启，复核业务记录、历史、设置及扩展配对，再导出。",
+        "passCriteria": "没有重复或覆盖，重启数据及必要连接状态仍在。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "B09",
+        "scenario": "部分失败异常退出恢复人工边界",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "backup:28 unit +4 E2E re-executions",
+          "frozen portable:42 special assertions +wrapper integrity checks",
+          "UI with actual Windows maintainer input:separate"
+        ],
+        "manualSteps": "先阅读本轮受控文件锁与 prepared journal 回滚证据；若需人工故障验收，只能由维护者准备独立可回退的故障环境。",
+        "passCriteria": "明确故障点、失败提示、五文件哈希及回滚结果；不拔电、不杀未知进程、不损坏生产资料。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "U01",
+        "scenario": "实际 v0.8.0 到候选版人工升级",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "9 actual old frozen package upgrade paths; synthetic isolated business/settings/preferences/pairing"
+        ],
+        "manualSteps": "仅在独立测试资料中运行冻结 v0.8.0 建立数据，导出备份并停止；将 v1.0.0 解压到新目录沿用该隔离用户目录。",
+        "passCriteria": "原商品、ASIN、标签、素材元数据、各类快照/历史、偏好、AI 设置及配对保留；保留旧包/哈希/私人回退副本；不能在生产库回退。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "U02",
+        "scenario": "实际 v0.7.0 到候选版人工升级",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "9 actual old frozen package upgrade paths; synthetic isolated business/settings/preferences/pairing"
+        ],
+        "manualSteps": "仅在独立测试资料中运行冻结 v0.7.0 建立数据，导出备份并停止；将 v1.0.0 解压到新目录沿用该隔离用户目录。",
+        "passCriteria": "原商品、ASIN、标签、素材元数据、各类快照/历史、偏好、AI 设置及配对保留；保留旧包/哈希/私人回退副本；不能在生产库回退。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "AI01",
+        "scenario": "真实商品 AI 质量经授权验收",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "real Amazon:10 primary +1 visible variant; US/JP captured; UK/DE BLOCKED",
+          "Fixture extractor and duplicate-upsert tests"
+        ],
+        "manualSteps": "授权尚缺，当前不调用；取得明确服务商、模型、Key、最大次数及金额预算后，在隔离资料中评估商品分析的六类真实商品样本。",
+        "passCriteria": "记录事实/推断、自然度、可拍摄性、自定义要求、人工修改量与实际费用；Mock/HTTP Stub 不算真实质量。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "AI02",
+        "scenario": "真实竞品 AI 质量经授权验收",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "real Amazon:10 primary +1 visible variant; US/JP captured; UK/DE BLOCKED",
+          "Fixture extractor and duplicate-upsert tests"
+        ],
+        "manualSteps": "授权尚缺，当前不调用；取得明确服务商、模型、Key、最大次数及金额预算后，在隔离资料中评估竞品分析的六类真实商品样本。",
+        "passCriteria": "记录事实/推断、自然度、可拍摄性、自定义要求、人工修改量与实际费用；Mock/HTTP Stub 不算真实质量。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "AI03",
+        "scenario": "真实营销内容 AI 质量经授权验收",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": [
+          "real Amazon:10 primary +1 visible variant; US/JP captured; UK/DE BLOCKED",
+          "Fixture extractor and duplicate-upsert tests"
+        ],
+        "manualSteps": "授权尚缺，当前不调用；取得明确服务商、模型、Key、最大次数及金额预算后，在隔离资料中评估内容创作的六类真实商品样本。",
+        "passCriteria": "记录事实/推断、自然度、可拍摄性、自定义要求、人工修改量与实际费用；Mock/HTTP Stub 不算真实质量。",
+        "newHumanPassThisRun": false
+      },
+      {
+        "id": "G01",
+        "scenario": "发布阻断与四类状态最终核对",
+        "manualStatus": "PENDING",
+        "manualEvidence": "MANUAL_REQUIRED",
+        "historicalVersion": "1.0.0-rc.1",
+        "historicalPerformedAt": null,
+        "historicalEvidenceFiles": [],
+        "currentAutomationEvidence": ["aggregate gate; manual evidence incomplete"],
+        "manualSteps": "合并全部证据，核对发布包哈希、正式环境、主要业务、已确认缺陷和未执行项，由维护者作公开决定。",
+        "passCriteria": "真实证据覆盖关键条件，已确认 P0/P1 清零，影响使用 P2 已处理，AI 质量状态透明；不得把 pending 当作缺陷清零。",
+        "newHumanPassThisRun": false
+      }
+    ],
+    "separateHistoricalDeclarations": {
+      "basicSmoke": {
+        "pass": 6,
+        "total": 6,
+        "testDate": null
+      },
+      "backupWindows": {
+        "pass": 10,
+        "total": 10,
+        "testDate": "2026-10-16"
+      }
+    },
+    "deduplication": "separate historical declarations are not added to the 53-case count"
+  },
+  "issues": [
+    {
+      "id": "PAIRING-SMALL-WINDOW",
+      "priority": "P1",
+      "status": "fixed + manually verified",
+      "newDefect": false,
+      "notes": "rc.2 and v1.0.0 maintainer declarations preserved; no new native confirmation in this run"
+    },
+    {
+      "id": "AMAZON-VIDEO-TIMING",
+      "priority": "P2 investigation",
+      "status": "HISTORICAL_UNRESOLVED_CAUSE; NOT_REPRODUCED_THIS_RUN",
+      "newDefect": false,
+      "notes": "CeraVe2/2/2 OXO1/1/1; no later growth; bounded CFT sampling/HEAD is not playback or atomic extraction proof"
+    },
+    {
+      "id": "QA-EXTENSION-DEVELOPER-MODE",
+      "priority": "QA harness",
+      "status": "RESOLVED",
+      "newDefect": false,
+      "notes": "initial test profile Developer Mode off disabled reloaded unpacked extension; normal isolated setup fixed without changing product assertions or production"
+    },
+    {
+      "id": "DOC-STORE-VERSION-SCOPE",
+      "priority": "P3 documentation",
+      "status": "RECORDED",
+      "newDefect": false,
+      "notes": "store preparation retains0.2.0/Phase10 history; PRIVACY heading rc.1. Current stable docs and this report supersede scope; no CWS submission or current-policy approval claimed"
+    }
+  ],
+  "unexecuted": [
+    {
+      "scope": "formal Windows/Chrome UI and real display scaling",
+      "status": "MANUAL_REQUIRED",
+      "reason": "no exposed ProductSpy window object in current controlled native launch; default CMD doubleclick and stable toolbar not observed"
+    },
+    {
+      "scope": "UK/DE Amazon",
+      "status": "BLOCKED",
+      "reason": "verification pages; no bypass"
+    },
+    {
+      "scope": "real paid model quality",
+      "status": "PENDING",
+      "reason": "no authorized provider/model/key/request budget"
+    },
+    {
+      "scope": "physical power loss / SmartScreen bypass",
+      "status": "NOT_EXECUTED",
+      "reason": "unsafe and not authorized; controlled file locks/journal recovery are the engineering evidence"
+    },
+    {
+      "scope": "0.2.0/0.3.0 upgrade and other browser/Windows versions",
+      "status": "NOT_COVERED",
+      "reason": "current supported historical test runner covers0.4.0 through rc.2; no extrapolation"
+    }
+  ],
+  "assessment": {
+    "featureDevelopmentComplete": true,
+    "engineeringAutomationPassed": true,
+    "nativeManualAcceptanceComplete": false,
+    "historicalManualCases": {
+      "pass": 9,
+      "pending": 44,
+      "fail": 0
+    },
+    "newManualPasses": 0,
+    "realPaidAIQuality": "PENDING_NOT_AUTHORIZED",
+    "confirmedUnresolvedP0P1": [],
+    "newConfirmedProductP0P1P2": [],
+    "readyForPublicRelease": false,
+    "releasePublished": false,
+    "storeSubmitted": false,
+    "productionCodeChanged": false,
+    "releaseArtifactsChanged": false,
+    "blockingEvidenceGaps": [
+      "正式 Chrome C01/C02/C06 完整条件",
+      "Windows 原生配置/目录/权限及真实 DPI",
+      "F/B 详细清单尚缺的交互/取消/冲突证据",
+      "AI01–AI03 真实质量未授权；必须如实披露"
+    ]
+  },
+  "artifactsDocumentation": "raw profiles/data/logs stay ignored; sanitized evidence only in docs/evidence/v1.0.0-final-quality; no private credentials uploaded",
+  "supplementalExecutions": [
+    {
+      "command": "node scripts/final-quality-checks.mjs --stage freeze --output .test-data/final-quality/2026-10-17-validation",
+      "status": "PASS",
+      "count": 33,
+      "durationMs": null,
+      "report": ".test-data/final-quality/2026-10-17-validation/baseline.json",
+      "sha256": "38ee72325c6ee2de966c8eade260ca6e795dcc408a1e365f8caecf3be582251c",
+      "environment": "same isolated Windows environment unless the referenced receipt narrows it"
+    },
+    {
+      "command": "node scripts/phase16-amazon-capture.mjs --phase 21 --extension artifacts/ProductSpy-1.0.0-windows-x64/extension --output .test-data/final-quality/amazon/current",
+      "status": "PASS_WITH_EXTERNAL_BLOCKS",
+      "count": 11,
+      "durationMs": 173444,
+      "report": ".test-data/final-quality/amazon/current/sanitized-results.json",
+      "sha256": "bb87379b15ef3fb4a11013b1ac932c38de49ec3c117129c7c44b5272373522a8",
+      "environment": "same isolated Windows environment unless the referenced receipt narrows it"
+    },
+    {
+      "command": "node scripts/final-quality-amazon.mjs .test-data/final-quality/amazon/current",
+      "status": "PASS",
+      "count": 9,
+      "durationMs": null,
+      "report": ".test-data/final-quality/amazon/current/sanitized-results.json",
+      "sha256": "bb87379b15ef3fb4a11013b1ac932c38de49ec3c117129c7c44b5272373522a8",
+      "environment": "same isolated Windows environment unless the referenced receipt narrows it"
+    },
+    {
+      "command": "node .test-data/final-quality/amazon/video-timing-current.mjs --evidence .test-data/final-quality/amazon/video-timing --output .test-data/final-quality/amazon/video-timing-results.json",
+      "status": "PASS",
+      "count": 6,
+      "durationMs": 69528,
+      "report": ".test-data/final-quality/amazon/video-timing-results.json",
+      "sha256": "70ae29e9e33e912f5f3dabe0aac09c8f5d7a84a10392567dfdbb5fbd94c41d31",
+      "environment": "same isolated Windows environment unless the referenced receipt narrows it",
+      "qaScriptDerivation": "Existing scripts/phase21-video-timing.mjs with only frozen bundle path changed from rc.1 to stable 1.0.0; copied into ignored evidence, no production file changed."
+    },
+    {
+      "command": "node scripts/final-quality-extension.mjs .test-data/final-quality/2026-10-17-validation/extension-lifecycle-developer-mode-v2",
+      "status": "PASS",
+      "count": 11,
+      "durationMs": 14165,
+      "report": ".test-data/final-quality/2026-10-17-validation/extension-lifecycle-developer-mode-v2/result.json",
+      "sha256": "a3cd2e97ffa8f32ab916dc3aaf2299aafe482b5f42a81873f8ee59714c22d1cb",
+      "environment": "same isolated Windows environment unless the referenced receipt narrows it"
+    },
+    {
+      "command": "pnpm test scripts/final-quality-provider.test.mjs --reporter=default --reporter=json --outputFile=.test-data/final-quality/provider-http/vitest-results.json",
+      "status": "PASS",
+      "count": 9,
+      "durationMs": 1620,
+      "report": ".test-data/final-quality/provider-http/vitest-results.json",
+      "sha256": "cff4a7c74bc76ddb9d5c113502f9b35710951d632bdc2d81ec554ebca1433333",
+      "environment": "same isolated Windows environment unless the referenced receipt narrows it"
+    },
+    {
+      "command": "pnpm audit --prod --json",
+      "status": "PASS",
+      "count": 115,
+      "durationMs": 987,
+      "report": ".test-data/final-quality/2026-10-17-validation/dependency-audit.json",
+      "sha256": "8107b69306f46cee92ef86602cb9e3e238c1ee4e49b197064da3cb9956fd6c40",
+      "environment": "same isolated Windows environment unless the referenced receipt narrows it"
+    },
+    {
+      "command": "frozen launcher/ProductSpy.ps1 -NoBrowser -DataRoot <isolated native/user> -RuntimeRoot <isolated native/runtime>; owned stop and cleanup",
+      "status": "MANUAL_REQUIRED",
+      "count": null,
+      "durationMs": null,
+      "report": ".test-data/final-quality/2026-10-17-validation/native/result.json",
+      "sha256": "1b4a8682f5b3ed7910795eec3e42c55f494acaa262ce91880577a023d2ff2a52",
+      "environment": "same isolated Windows environment unless the referenced receipt narrows it"
+    },
+    {
+      "command": "node scripts/final-quality-checks.mjs --stage verify --output .test-data/final-quality/2026-10-17-validation",
+      "status": "PASS",
+      "count": 3,
+      "durationMs": null,
+      "report": ".test-data/final-quality/2026-10-17-validation/preservation.json",
+      "sha256": "c2c3398d451e8d7631120d064e039faa634f199d633783c1c9ec00c562d9ea8d",
+      "environment": "same isolated Windows environment unless the referenced receipt narrows it"
+    }
+  ],
+  "qaScripts": [
+    {
+      "file": "scripts/final-quality-amazon.mjs",
+      "sha256": "9c876e48f901a33222806857a67a40336b938546b136ba84c77cc104e26149cc"
+    },
+    {
+      "file": "scripts/final-quality-checks.mjs",
+      "sha256": "918c00f0598f0dc7ea4949d52576f398b97175615fe9b7616131acd2aa0c50e6"
+    },
+    {
+      "file": "scripts/final-quality-extension.mjs",
+      "sha256": "0df79c3f5c40b7d0035b455745e3564d5250e23d293d21dd073558549dd22165"
+    },
+    {
+      "file": "scripts/final-quality-provider.test.mjs",
+      "sha256": "fb45ec880784ac2d59545e9bbb546fa50415d4c291f95b6cd94d692cd5fe9b63"
+    }
+  ],
+  "failedQaAttemptsPreserved": {
+    "scope": "QA setup failures, not confirmed product defects",
+    "initial": ".test-data/final-quality/2026-10-17-validation/extension-lifecycle/result.json",
+    "initialFailure": "waited for lazily-started worker before opening a requesting client",
+    "retry": ".test-data/final-quality/2026-10-17-validation/extension-lifecycle-retry/",
+    "retryFailure": "unhandled event promise on cleanup; incomplete attempt receipt; never counted as PASS",
+    "diagnosis": "docs/evidence/v1.0.0-final-quality/extension-qa-diagnosis.json",
+    "initialLint": "new QA chrome global declaration missing; fixed in QA script and final full ESLint PASS"
+  },
+  "actualProviderHttpEvidence": {
+    "tests": 9,
+    "sourceFile": "scripts/final-quality-provider.test.mjs",
+    "type": "actual ephemeral loopback TCP HTTP, explicit synthetic Key; no remote model",
+    "reExecutedInsideFinalUnit": true,
+    "providerDoesNotPersistUsage": true
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "productionCodeChanged": false,
+  "frozenPackageChanged": false,
+  "rootCause": "The original QA profile launched an unpacked extension via command-line without enabling Chrome Developer Mode. The first launch ran it, but chrome.runtime.reload disabled the reloaded developer extension with reason 1<<24. The documented manual install requires Developer Mode.",
+  "officialSource": "https://raw.githubusercontent.com/chromium/chromium/main/extensions/browser/disable_reason.h",
+  "officialReason": "DISABLE_UNSUPPORTED_DEVELOPER_EXTENSION = 1 << 24",
+  "fixScope": "QA harness only: use the actual chrome://extensions Developer Mode toggle in the dedicated isolated profile, assert checked=true; no system protection changes or private browser profile.",
+  "qaOnlyInterimFailure": "The first setup correction asserted aria-pressed on a cr-toggle. This Chrome control uses the checked JS property; a follow-up corrected that setup assertion. All failed attempts retained.",
+  "nativeChromeManualAcceptance": "NOT_EXECUTED; C06 remains PENDING",
+  "observedPassChecks": 11,
+  "requestsToPaidAi": 0,
+  "sources": [
+    {
+      "run": "extension-lifecycle-final",
+      "resultPath": ".test-data/final-quality/2026-10-17-validation/extension-lifecycle-final/result.json",
+      "sha256": "cc2b75d3862800af534a555bf936fcf419069fdf6163463409bbbaaa9e8952bf",
+      "startedAt": "2026-10-16T17:16:04.852Z",
+      "finishedAt": "2026-10-16T17:16:29.416Z",
+      "passed": false,
+      "checksPassed": 6,
+      "error": "Error: page.goto: net::ERR_BLOCKED_BY_CLIENT at chrome-extension://dognahmknbokojoeppaehjanlkboecln/popup.html\nCall log:\n\u001b[2m  - navigating to \"chrome-extension://dognahmknbokojoeppaehjanlkboecln/popup.html\", waiting until \"load\"\u001b[22m\n",
+      "developerModeSetup": null,
+      "extensionInstallState": [
+        {
+          "id": "dognahmknbokojoeppaehjanlkboecln",
+          "location": 4,
+          "disableReasons": [16777216]
+        }
+      ]
+    },
+    {
+      "run": "extension-lifecycle-developer-mode",
+      "resultPath": ".test-data/final-quality/2026-10-17-validation/extension-lifecycle-developer-mode/result.json",
+      "sha256": "39f746b4dbe2d4a81e621a2c4ad249e5e7cb7aef45b52369e829b67332659668",
+      "startedAt": "2026-10-16T17:18:10.791Z",
+      "finishedAt": "2026-10-16T17:18:21.981Z",
+      "passed": false,
+      "checksPassed": 1,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\nnull !== 'true'\n",
+      "developerModeSetup": null,
+      "extensionInstallState": [
+        {
+          "id": "dognahmknbokojoeppaehjanlkboecln",
+          "location": 8,
+          "disableReasons": []
+        }
+      ]
+    },
+    {
+      "run": "extension-lifecycle-developer-mode-v2",
+      "resultPath": ".test-data/final-quality/2026-10-17-validation/extension-lifecycle-developer-mode-v2/result.json",
+      "sha256": "a3cd2e97ffa8f32ab916dc3aaf2299aafe482b5f42a81873f8ee59714c22d1cb",
+      "startedAt": "2026-10-16T17:19:02.684Z",
+      "finishedAt": "2026-10-16T17:19:16.849Z",
+      "passed": true,
+      "checksPassed": 11,
+      "error": null,
+      "developerModeSetup": [
+        {
+          "original": false,
+          "final": true,
+          "method": "normal chrome://extensions Developer Mode toggle in isolated QA profile"
+        },
+        {
+          "original": true,
+          "final": true,
+          "method": "normal chrome://extensions Developer Mode toggle in isolated QA profile"
+        }
+      ],
+      "extensionInstallState": [
+        {
+          "id": "dognahmknbokojoeppaehjanlkboecln",
+          "location": 8,
+          "disableReasons": []
+        }
+      ]
+    }
+  ]
+}
