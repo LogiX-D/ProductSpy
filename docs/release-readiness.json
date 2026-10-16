@@ -23,7 +23,7 @@
     "storeSubmitted": false,
     "paidAiCalls": 0,
     "automatedBackupRestoreVerified": true,
-    "nativeManualBackupRestoreVerified": false
+    "nativeManualBackupRestoreVerified": true
   },
   "currentChecks": {
     "startedAt": "2026-10-14T08:00:14.317Z",
@@ -315,12 +315,13 @@
   ],
   "manual": {
     "total": 53,
-    "pending": 52,
-    "pass": 1,
+    "pending": 50,
+    "pass": 3,
     "evidence": "docs/phase21/manual-results.csv",
-    "fullyPassedCaseIds": ["C07"],
+    "fullyPassedCaseIds": ["C07", "B06", "B07"],
     "partialCoverageCaseIds": [
       "W02",
+      "W05",
       "W06",
       "C01",
       "C02",
@@ -329,14 +330,42 @@
       "F05",
       "F08",
       "B01",
+      "B02",
       "B08"
     ],
-    "statusChangesThisUpdate": [],
-    "passedCountIncreaseThisUpdate": 0,
+    "statusChangesThisUpdate": [
+      {
+        "caseId": "B06",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-backup-restore-manual-results.md"
+      },
+      {
+        "caseId": "B07",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-backup-restore-manual-results.md"
+      }
+    ],
+    "passedCountIncreaseThisUpdate": 2,
     "existingResultsPreserved": true,
-    "evidenceScope": "Only C07 is a fully passed detailed case. Six v1.0.0 maintainer smoke statements are tracked separately; ten wider detailed cases are partly covered and remain pending. Do not add the two denominators.",
+    "evidenceScope": "53 detailed cases: C07 previously passed; only B06/B07 newly pass on maintainer 2026-10-16 normal restore and whole-business equality declarations. Partial cases stay pending. Six smoke and ten backup manual statements overlap detailed cases and are not added to its denominator.",
     "backupRestoreAutomationEvidence": "docs/v1.0.0-backup-restore-validation.md",
-    "backupRestoreStatusChangesThisUpdate": []
+    "backupRestoreStatusChangesThisUpdate": [
+      {
+        "caseId": "B06",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-backup-restore-manual-results.md"
+      },
+      {
+        "caseId": "B07",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-backup-restore-manual-results.md"
+      }
+    ],
+    "backupRestoreManualEvidence": "docs/v1.0.0-backup-restore-manual-results.md"
   },
   "videoFollowUp": {
     "evidence": "docs/phase21/video-timing-final.json",
@@ -447,7 +476,7 @@
       }
     ]
   },
-  "releaseDecision": "Frozen v1.0.0 backup/restore focused automation PASS: 28 unit, 4 E2E, 42 scenario, 4 ZIP checks. Fresh restore deep equality, real file-lock rollback and restart preservation verified with isolated synthetic data. Native GUI restore remains PENDING (0/10), detailed manual cases remain 1 pass / 52 pending, and paid AI quality remains unverified. Existing maintainer smoke 6/6 PASS has unknown execution dates. No production changes, repackaging or Release asset replacement; v1.0.0 remains a draft, not authorized for publication or Chrome Web Store submission.",
+  "releaseDecision": "Core features and prior engineering acceptance complete; maintainer reports six smoke PASS (dates unprovided) and normal Windows backup/restore 10/10 PASS on 2026-10-16. Prior backup automation 28 unit/4 E2E/42 scenario/4 ZIP remains unchanged, not rerun. Detailed checklist 3 pass / 50 pending: only B06/B07 newly pass, C07 preserved. No known confirmed unresolved P0/P1; real AI quality, pairing exceptions, native permissions/DPI/SmartScreen and other untested paths remain separate. v1.0.0 remains a draft; no production, version, ZIP, hash or Release changes and no authorization for public release or Chrome Web Store submission.",
   "historicalAssessment": {
     "assessedAt": "2026-10-14T08:02:48.142Z",
     "candidateVersion": "1.0.0-rc.1",
@@ -660,9 +689,9 @@
     "e2ePassed": 4,
     "specializedPassed": 42,
     "releaseChecksPassed": 4,
-    "manualStatus": "PENDING",
-    "manualPassed": 0,
-    "manualPending": 10,
+    "manualStatus": "PASS",
+    "manualPassed": 10,
+    "manualPending": 0,
     "report": "docs/v1.0.0-backup-restore-validation.md",
     "machineReport": "docs/v1.0.0-backup-restore-validation.json",
     "manualGuide": "docs/v1.0.0-backup-restore-manual.md",
@@ -681,10 +710,110 @@
       "jsonDeepEqualToActualExport": true,
       "formattingMayDiffer": true
     },
-    "doesNotChangeDetailedManualResults": true,
+    "doesNotChangeDetailedManualResults": false,
     "doesNotReplacePriorFullEngineeringReport": true,
     "noNewConfirmedProductionDefect": true,
-    "notProofAgainstAllUntestedDataLoss": true
+    "notProofAgainstAllUntestedDataLoss": true,
+    "manualFailed": 0,
+    "manualPerformedAt": "2026-10-16",
+    "manualSource": "Maintainer actual-operation statement in ChatGPT; not Codex re-execution",
+    "manualRecord": "docs/v1.0.0-backup-restore-manual-results.md",
+    "codexReexecuted": false,
+    "detailedStatusChanges": [
+      {
+        "caseId": "B06",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-backup-restore-manual-results.md"
+      },
+      {
+        "caseId": "B07",
+        "from": "pending",
+        "to": "pass",
+        "evidence": "docs/v1.0.0-backup-restore-manual-results.md"
+      }
+    ],
+    "otherDetailedStatusesPreserved": true
   },
-  "previousBackupRestoreDecision": "Existing v1.0.0 engineering acceptance passed; maintainer reports six basic real-device smoke cases PASS, dates pending. Detailed checklist remains 1 pass / 52 pending; paid AI quality and backup-file restoration are not inferred. v1.0.0 remains a draft. This documentation update does not authorize public release or Chrome Web Store submission and does not replace archives, hashes or attachments."
+  "previousBackupRestoreDecision": "Existing v1.0.0 engineering acceptance passed; maintainer reports six basic real-device smoke cases PASS, dates pending. Detailed checklist remains 1 pass / 52 pending; paid AI quality and backup-file restoration are not inferred. v1.0.0 remains a draft. This documentation update does not authorize public release or Chrome Web Store submission and does not replace archives, hashes or attachments.",
+  "previousBackupManualArchiveAssessment": {
+    "baselineCommit": "13e02fedd4c7fffd8b4ac57fcf8dd67af2370b6a",
+    "manual": {
+      "total": 53,
+      "pending": 52,
+      "pass": 1,
+      "evidence": "docs/phase21/manual-results.csv",
+      "fullyPassedCaseIds": ["C07"],
+      "partialCoverageCaseIds": [
+        "W02",
+        "W06",
+        "C01",
+        "C02",
+        "A01",
+        "F01",
+        "F05",
+        "F08",
+        "B01",
+        "B08"
+      ],
+      "statusChangesThisUpdate": [],
+      "passedCountIncreaseThisUpdate": 0,
+      "existingResultsPreserved": true,
+      "evidenceScope": "Only C07 is a fully passed detailed case. Six v1.0.0 maintainer smoke statements are tracked separately; ten wider detailed cases are partly covered and remain pending. Do not add the two denominators.",
+      "backupRestoreAutomationEvidence": "docs/v1.0.0-backup-restore-validation.md",
+      "backupRestoreStatusChangesThisUpdate": []
+    },
+    "backupRestoreValidation": {
+      "version": "1.0.0",
+      "executionDate": "2026-10-16",
+      "timezone": "Asia/Shanghai",
+      "automatedStatus": "PASS",
+      "unitPassed": 28,
+      "e2ePassed": 4,
+      "specializedPassed": 42,
+      "releaseChecksPassed": 4,
+      "manualStatus": "PENDING",
+      "manualPassed": 0,
+      "manualPending": 10,
+      "report": "docs/v1.0.0-backup-restore-validation.md",
+      "machineReport": "docs/v1.0.0-backup-restore-validation.json",
+      "manualGuide": "docs/v1.0.0-backup-restore-manual.md",
+      "sourceAndRestoredDeepEqual": true,
+      "failedRestoreAllFiveFilesRolledBack": true,
+      "restartDataPreserved": true,
+      "productionCodeChanged": false,
+      "archivesRebuilt": false,
+      "releaseAssetsUnchanged": true,
+      "paidAiRequests": 0,
+      "sourceBackupSha256": "c8a941439e6bd283ceb96dc54b1b935fe08742131367f17cb94d056316cbb6bd",
+      "publicSyntheticFixture": {
+        "file": "docs/fixtures/v1.0.0-workspace-backup.synthetic.json",
+        "bytes": 191612,
+        "sha256": "1fe3a77a77c784dfe2d5998ac2a38b0af0bc71efc4435afb6405be63fc43c679",
+        "jsonDeepEqualToActualExport": true,
+        "formattingMayDiffer": true
+      },
+      "doesNotChangeDetailedManualResults": true,
+      "doesNotReplacePriorFullEngineeringReport": true,
+      "noNewConfirmedProductionDefect": true,
+      "notProofAgainstAllUntestedDataLoss": true
+    },
+    "releaseDecision": "Frozen v1.0.0 backup/restore focused automation PASS: 28 unit, 4 E2E, 42 scenario, 4 ZIP checks. Fresh restore deep equality, real file-lock rollback and restart preservation verified with isolated synthetic data. Native GUI restore remains PENDING (0/10), detailed manual cases remain 1 pass / 52 pending, and paid AI quality remains unverified. Existing maintainer smoke 6/6 PASS has unknown execution dates. No production changes, repackaging or Release asset replacement; v1.0.0 remains a draft, not authorized for publication or Chrome Web Store submission.",
+    "nativeManualBackupRestoreVerified": false
+  },
+  "backupManualArchive": {
+    "version": "1.0.0",
+    "performedAt": "2026-10-16",
+    "source": "Maintainer actual-operation statement in project ChatGPT conversation",
+    "record": "docs/v1.0.0-backup-restore-manual-results.md",
+    "total": 10,
+    "passed": 10,
+    "pending": 0,
+    "attachmentsProvided": [],
+    "windowsFullVersion": null,
+    "chromeFullVersion": null,
+    "testDirectory": null,
+    "applicationTestsReexecuted": false,
+    "notAdditiveWithDetailedCaseCount": true
+  }
 }

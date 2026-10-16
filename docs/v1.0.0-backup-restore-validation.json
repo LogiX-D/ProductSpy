@@ -24,9 +24,9 @@
   },
   "status": {
     "automation": "PASS",
-    "manual": "PENDING",
+    "manual": "PASS",
     "manualChecks": 10,
-    "manualPass": 0,
+    "manualPass": 10,
     "manualFail": 0,
     "confirmedNewProductionDefects": [],
     "dataLossObserved": false,
@@ -1010,30 +1010,340 @@
   },
   "manual": {
     "guide": "docs/v1.0.0-backup-restore-manual.md",
-    "status": "PENDING",
+    "status": "PASS",
     "checks": 10,
-    "performedAt": null,
-    "tester": null,
+    "performedAt": "2026-10-16",
+    "tester": "维护者",
     "attachments": [],
     "existingDetailedAcceptance": {
       "total": 53,
-      "passed": 1,
-      "pending": 52,
-      "statusChanges": 0
+      "passed": 3,
+      "pending": 50,
+      "failed": 0,
+      "statusChanges": 2,
+      "fullyPassedCaseIds": ["C07", "B06", "B07"],
+      "newlyPassedCaseIds": ["B06", "B07"],
+      "notAdditiveWithTenManualCases": true
     },
     "previousMaintainerSmoke": {
       "passed": 6,
       "total": 6,
       "performedAt": null,
       "notRepeatedHere": true
-    }
+    },
+    "passed": 10,
+    "pending": 0,
+    "failed": 0,
+    "performedAtPrecision": "date",
+    "source": "维护者在本项目 ChatGPT 对话中提供的实际测试结果",
+    "codexReexecuted": false,
+    "record": "docs/v1.0.0-backup-restore-manual-results.md",
+    "environment": {
+      "windows": "Windows 实际环境；完整版本和 build 未提供",
+      "chrome": "专用 Chrome；完整版本和渠道未提供",
+      "displayScaling": null,
+      "testDirectory": null
+    },
+    "results": [
+      {
+        "id": "M01",
+        "scenario": "正式版 ZIP 哈希正确，测试目录与日常数据隔离",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": "2026-10-16"
+      },
+      {
+        "id": "M02",
+        "scenario": "Windows 启动器和专用 Chrome 正常打开",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": "2026-10-16"
+      },
+      {
+        "id": "M03",
+        "scenario": "合成测试数据成功导入，并导出备份",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": "2026-10-16"
+      },
+      {
+        "id": "M04",
+        "scenario": "全新目标库成功预览、确认并恢复备份",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": "2026-10-16"
+      },
+      {
+        "id": "M05",
+        "scenario": "商品、ASIN、分组、标签、素材信息一致",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": "2026-10-16"
+      },
+      {
+        "id": "M06",
+        "scenario": "竞品、商品分析及历史记录一致",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": "2026-10-16"
+      },
+      {
+        "id": "M07",
+        "scenario": "模板、内容方案、人工编辑和版本记录一致",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": "2026-10-16"
+      },
+      {
+        "id": "M08",
+        "scenario": "恢复前后导出的业务内容一致，无敏感配置",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": "2026-10-16"
+      },
+      {
+        "id": "M09",
+        "scenario": "关闭重启后，恢复的数据仍然完整",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": "2026-10-16"
+      },
+      {
+        "id": "M10",
+        "scenario": "测试程序正常退出，日常数据未被修改",
+        "result": "PASS",
+        "version": "1.0.0",
+        "performedAt": "2026-10-16"
+      }
+    ]
   },
   "limitations": [
     "Synthetic business records and Mock AI only; no actual Amazon acquisition or paid AI quality validation in this task.",
-    "Native GUI backup->restore->restart is not manually executed; all ten checklist items remain PENDING.",
+    "Native GUI backup->restore->restart archived as maintainer-declared PASS (10/10, 2026-10-16), not re-executed by Codex. Screenshots, logs, Windows/Chrome full versions and actual test directories were not provided; other native and failure conditions remain unverified.",
     "No physical power-cut, disk-full, antivirus quarantine, network/removable filesystem or arbitrary journal corruption test on this portable build. Existing unit coverage is not physical failure proof.",
     "A file lock persisting after failure intentionally blocks business reads/writes; keep original data and .workspace-restore, release the cause and preview again. Never delete the recovery journal to force access.",
     "Business backup excludes media binaries, credentials and Windows settings by design; configure private settings and re-pair separately in a new environment.",
     "The backup has no embedded authenticity signature; schema-valid content changes may not be detected. Keep and compare a separately stored SHA-256; parsing successfully does not prove authenticity."
-  ]
+  ],
+  "previousManualAssessment": {
+    "baselineCommit": "13e02fedd4c7fffd8b4ac57fcf8dd67af2370b6a",
+    "status": {
+      "automation": "PASS",
+      "manual": "PENDING",
+      "manualChecks": 10,
+      "manualPass": 0,
+      "manualFail": 0,
+      "confirmedNewProductionDefects": [],
+      "dataLossObserved": false,
+      "dataLossRiskEliminatedForAllEnvironments": false,
+      "realAiQuality": "PENDING"
+    },
+    "manual": {
+      "guide": "docs/v1.0.0-backup-restore-manual.md",
+      "status": "PENDING",
+      "checks": 10,
+      "performedAt": null,
+      "tester": null,
+      "attachments": [],
+      "existingDetailedAcceptance": {
+        "total": 53,
+        "passed": 1,
+        "pending": 52,
+        "statusChanges": 0
+      },
+      "previousMaintainerSmoke": {
+        "passed": 6,
+        "total": 6,
+        "performedAt": null,
+        "notRepeatedHere": true
+      }
+    },
+    "originalPendingLimitation": "Native GUI backup->restore->restart is not manually executed; all ten checklist items remain PENDING."
+  },
+  "manualArchiveUpdate": {
+    "performedAt": "2026-10-16",
+    "source": "Maintainer statement, not a new Codex execution",
+    "baselineCommit": "13e02fedd4c7fffd8b4ac57fcf8dd67af2370b6a",
+    "record": "docs/v1.0.0-backup-restore-manual-results.md",
+    "detailedCaseUpdates": [
+      {
+        "caseId": "W02",
+        "from": "pending",
+        "to": "pending",
+        "claimIds": ["M02"],
+        "previousRecord": {
+          "phase": "21",
+          "candidate_version": "1.0.0",
+          "case_id": "W02",
+          "scenario": "双击 CMD 原生启动",
+          "status": "pending",
+          "session_id": "maintainer-v100-smoke-date-pending",
+          "performed_at": "",
+          "tester_alias": "维护者",
+          "evidence_files": "docs/v1.0.0-manual-smoke-test.md",
+          "actual_result": "维护者实际操作声明（不是 Codex 当前重测），v1.0.0，执行日期待补充；S01：Windows 工作台正常启动。仅部分覆盖原详细用例，无截图或日志附件。",
+          "pending_or_blocked_reason": "部分覆盖，status 保持 pending；双击 CMD、非管理员、原生启动窗口、UAC、无需开发工具及启动耗时未明确确认。本次实际执行日期待补充，不沿用提交日期。",
+          "bug_id": "",
+          "retest_of": ""
+        }
+      },
+      {
+        "caseId": "W05",
+        "from": "pending",
+        "to": "pending",
+        "claimIds": ["M10"],
+        "previousRecord": {
+          "phase": "21",
+          "candidate_version": "1.0.0-rc.1",
+          "case_id": "W05",
+          "scenario": "关闭网页与停止并退出",
+          "status": "pending",
+          "session_id": "",
+          "performed_at": "",
+          "tester_alias": "",
+          "evidence_files": "",
+          "actual_result": "",
+          "pending_or_blocked_reason": "尚无本轮人工执行证据",
+          "bug_id": "",
+          "retest_of": ""
+        }
+      },
+      {
+        "caseId": "W06",
+        "from": "pending",
+        "to": "pending",
+        "claimIds": ["M09", "M10"],
+        "previousRecord": {
+          "phase": "21",
+          "candidate_version": "1.0.0",
+          "case_id": "W06",
+          "scenario": "关闭启动窗口与重启",
+          "status": "pending",
+          "session_id": "maintainer-v100-smoke-date-pending",
+          "performed_at": "",
+          "tester_alias": "维护者",
+          "evidence_files": "docs/v1.0.0-manual-smoke-test.md",
+          "actual_result": "维护者实际操作声明（不是 Codex 当前重测），v1.0.0，执行日期待补充；S06：重启后数据保留。仅部分覆盖原详细用例，无截图或日志附件。",
+          "pending_or_blocked_reason": "部分覆盖，status 保持 pending；关闭 × 与停止退出两种路径、重启设置/配对逐项核对未确认；未覆盖整个 W06。本次实际执行日期待补充，不沿用提交日期。",
+          "bug_id": "",
+          "retest_of": ""
+        }
+      },
+      {
+        "caseId": "B01",
+        "from": "pending",
+        "to": "pending",
+        "claimIds": ["M03", "M08"],
+        "previousRecord": {
+          "phase": "21",
+          "candidate_version": "1.0.0",
+          "case_id": "B01",
+          "scenario": "完整业务备份实际导出",
+          "status": "pending",
+          "session_id": "maintainer-v100-smoke-date-pending",
+          "performed_at": "",
+          "tester_alias": "维护者",
+          "evidence_files": "docs/v1.0.0-manual-smoke-test.md",
+          "actual_result": "维护者实际操作声明（不是 Codex 当前重测），v1.0.0，执行日期待补充；S06：完整业务备份导出成功。仅部分覆盖原详细用例，无截图或日志附件。",
+          "pending_or_blocked_reason": "部分覆盖，status 保持 pending；数量核对、浏览器偏好选择及下载媒体另备未确认；备份文件结构核对与安全恢复仍待验收。本次实际执行日期待补充，不沿用提交日期。 v1.0.0 对应范围自动化 PASS，见 docs/v1.0.0-backup-restore-validation.md；不是本轮人工执行，原生人工状态仍 pending。",
+          "bug_id": "",
+          "retest_of": ""
+        }
+      },
+      {
+        "caseId": "B02",
+        "from": "pending",
+        "to": "pending",
+        "claimIds": ["M05", "M06", "M07", "M08"],
+        "previousRecord": {
+          "phase": "21",
+          "candidate_version": "1.0.0-rc.1",
+          "case_id": "B02",
+          "scenario": "备份内容结构数量引用核对",
+          "status": "pending",
+          "session_id": "",
+          "performed_at": "",
+          "tester_alias": "",
+          "evidence_files": "",
+          "actual_result": "",
+          "pending_or_blocked_reason": "尚无本轮人工执行证据 v1.0.0 对应范围自动化 PASS，见 docs/v1.0.0-backup-restore-validation.md；不是本轮人工执行，原生人工状态仍 pending。",
+          "bug_id": "",
+          "retest_of": ""
+        }
+      },
+      {
+        "caseId": "B06",
+        "from": "pending",
+        "to": "pass",
+        "claimIds": ["M03", "M04", "M08"],
+        "previousRecord": {
+          "phase": "21",
+          "candidate_version": "1.0.0-rc.1",
+          "case_id": "B06",
+          "scenario": "最新完整业务备份安全恢复",
+          "status": "pending",
+          "session_id": "",
+          "performed_at": "",
+          "tester_alias": "",
+          "evidence_files": "",
+          "actual_result": "",
+          "pending_or_blocked_reason": "尚无本轮人工执行证据 v1.0.0 对应范围自动化 PASS，见 docs/v1.0.0-backup-restore-validation.md；不是本轮人工执行，原生人工状态仍 pending。",
+          "bug_id": "",
+          "retest_of": ""
+        }
+      },
+      {
+        "caseId": "B07",
+        "from": "pending",
+        "to": "pass",
+        "claimIds": ["M05", "M06", "M07", "M08", "M09"],
+        "previousRecord": {
+          "phase": "21",
+          "candidate_version": "1.0.0-rc.1",
+          "case_id": "B07",
+          "scenario": "原 ID ASIN 历史及快照一致",
+          "status": "pending",
+          "session_id": "",
+          "performed_at": "",
+          "tester_alias": "",
+          "evidence_files": "",
+          "actual_result": "",
+          "pending_or_blocked_reason": "尚无本轮人工执行证据 v1.0.0 对应范围自动化 PASS，见 docs/v1.0.0-backup-restore-validation.md；不是本轮人工执行，原生人工状态仍 pending。",
+          "bug_id": "",
+          "retest_of": ""
+        }
+      },
+      {
+        "caseId": "B08",
+        "from": "pending",
+        "to": "pending",
+        "claimIds": ["M08", "M09"],
+        "previousRecord": {
+          "phase": "21",
+          "candidate_version": "1.0.0",
+          "case_id": "B08",
+          "scenario": "重复恢复及停止重启持久化",
+          "status": "pending",
+          "session_id": "maintainer-v100-smoke-date-pending",
+          "performed_at": "",
+          "tester_alias": "维护者",
+          "evidence_files": "docs/v1.0.0-manual-smoke-test.md",
+          "actual_result": "维护者实际操作声明（不是 Codex 当前重测），v1.0.0，执行日期待补充；S06：重启后数据保留。仅部分覆盖原详细用例，无截图或日志附件。",
+          "pending_or_blocked_reason": "部分覆盖，status 保持 pending；从备份文件恢复、重复恢复/冲突保护、配对与完整资料一致性未确认；导出和重启保留不代表恢复通过。本次实际执行日期待补充，不沿用提交日期。 v1.0.0 对应范围自动化 PASS，见 docs/v1.0.0-backup-restore-validation.md；不是本轮人工执行，原生人工状态仍 pending。",
+          "bug_id": "",
+          "retest_of": ""
+        }
+      }
+    ],
+    "applicationTestsReexecuted": false,
+    "missingEvidence": [
+      "screenshots",
+      "logs",
+      "Windows full version/build",
+      "Chrome full version/channel",
+      "actual test directories",
+      "measured ZIP hash output",
+      "per-entity counts"
+    ]
+  }
 }
