@@ -88,25 +88,25 @@ PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、�
 
 新增可选 `AI_THINKING=disabled|enabled|omit`，省略或 omit 不改变既有兼容 payload。工厂和 provider 都在网络请求前拒绝非法值，显式设置时只发送一次请求，未自动切换模式或重试。官方 DeepSeek 文档与无域名 IP HTTPS 的前置条件见 [部署方案](saas-deployment.md)。尚未签发证书、部署或调用真实服务。
 
-本机定向 87/87、全仓 typecheck、lint、format 和扩展/Web 生产构建通过。完整单测 914 项中 **908 PASS / 4 SKIP / 2 FAIL**；两项失败为未修改的 Windows launcher DPAPI CurrentUser 加解密兼容测试。独立 PowerShell 合成字节 Protect/Unprotect 探针同样在 Protect 阶段报 `The system cannot find the path specified`，本轮未改变 launcher、该测试或系统加密配置，未将其跳过或计作成功。Linux 和数据库/容器检查仍以本次提交实际 CI 为准，不能沿用上次绿色结果。
+本机定向 87/87、全仓 typecheck、lint、format 和扩展/Web 生产构建通过。完整单测 914 项中 **908 PASS / 4 SKIP / 2 FAIL**；两项失败为未修改的 Windows launcher DPAPI CurrentUser 加解密兼容测试。独立 PowerShell 合成字节 Protect/Unprotect 探针同样在 Protect 阶段报 `The system cannot find the path specified`，本轮未改变 launcher、该测试或系统加密配置，未将其跳过或计作成功。Linux 与 Windows 专属检查分别记录。
 
-实际 MV3 + SaaS HTTP 浏览器回归 2/2 通过，继续使用 Amazon HTML fixture、Mock AI 和同机独立会话。CI 的受限 PostgreSQL 测试和原 Compose 业务容器现显式使用池 3 / Worker 并发 1；新增 Compose 配置护栏测试，实际 Linux 执行结果待本次 CI。上述完整单测计数来自加入该额外护栏之前的运行。
+实际 MV3 + SaaS HTTP 浏览器回归 2/2 通过，继续使用 Amazon HTML fixture、Mock AI 和同机独立会话。提交 `12c84c5` 的[完整 Linux CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39023725785)已成功：901 PASS / 14 SKIP（915 项）、受限 PostgreSQL 44/44、增强恢复、扩展 ZIP、standalone、镜像构建、真实容器、原 Compose 和 MV3 E2E 2/2。受限 PostgreSQL 与原 Compose 的 Web/Worker 明确使用池 3 / Worker 并发 1；目标 1GB 主机的 RSS、峰值和 OOM 仍未测量。新增 Compose 配置护栏 11/11 通过；上述本机完整单测计数来自加入该额外护栏之前的运行。
 
 私有服务器访问与凭据准备文件放在 Git 忽略目录，不包含于提交；SSH 尚未认证成功，未执行远端资源脚本。配置准备、源码测试和服务器运行验收分别记录。
 
 ## 尚未证明的要求
 
-| 项目                             | 状态 / 需要的证据                                                           |
-| -------------------------------- | --------------------------------------------------------------------------- |
-| HTTPS 云部署、正式 origin 扩展包 | 用户已指示暂不部署；实际 Docker/原 Compose 已通过临时 CI；公网 TLS 未验     |
-| 完整真实链路                     | 未完成：实际 Amazon→MV3→本机 PG→Mock→重启/另会话已通过；云端与真 AI 未验    |
-| 真实 AI                          | 未调用；需服务端凭据与明确测试预算/授权，另做内容质量核验                   |
-| 跨物理设备                       | 未完成；同机独立浏览器只证明会话与服务端持久化                              |
-| Stripe 沙盒                      | 未交易；需真实 test account、price、secret、Webhook 投递与取消/失败场景     |
-| 真实交易                         | 未授权、未执行                                                              |
-| 真实私人数据迁移                 | 源目录未改动；应先指定真实 SaaS 归属账号，再预览/提交，不导入测试账号       |
-| 生产恢复/PITR                    | 本机物理/逻辑与合成账号恢复后业务通过；云端/PITR/生产 RPO/RTO 待验收        |
-| 公开运营资料                     | 需经营者/隐私联系人/保留期限、邮件核验/找回、账户注销；商店材料旧版已标历史 |
-| 远端 CI                          | 881c3ec 的打包/恢复/Compose 完整 CI 通过；后续看 PR 当前 checks             |
+| 项目                             | 状态 / 需要的证据                                                                         |
+| -------------------------------- | ----------------------------------------------------------------------------------------- |
+| HTTPS 云部署、正式 origin 扩展包 | 用户已指示暂不部署；实际 Docker/原 Compose 已通过临时 CI；公网 TLS 未验                   |
+| 完整真实链路                     | 未完成：实际 Amazon→MV3→本机 PG→Mock→重启/另会话已通过；云端与真 AI 未验                  |
+| 真实 AI                          | 未调用；需服务端凭据与明确测试预算/授权，另做内容质量核验                                 |
+| 跨物理设备                       | 未完成；同机独立浏览器只证明会话与服务端持久化                                            |
+| Stripe 沙盒                      | 未交易；需真实 test account、price、secret、Webhook 投递与取消/失败场景                   |
+| 真实交易                         | 未授权、未执行                                                                            |
+| 真实私人数据迁移                 | 源目录未改动；应先指定真实 SaaS 归属账号，再预览/提交，不导入测试账号                     |
+| 生产恢复/PITR                    | 本机物理/逻辑与合成账号恢复后业务通过；云端/PITR/生产 RPO/RTO 待验收                      |
+| 公开运营资料                     | 需经营者/隐私联系人/保留期限、邮件核验/找回、账户注销；商店材料旧版已标历史               |
+| 远端 CI                          | 12c84c5 的缩小资源配置、恢复、打包、容器/Compose、MV3 完整 CI 通过；后续看 PR 当前 checks |
 
 未购买资源、未公开插件、未部署/修改生产、未合并主分支、未改动旧 Release。外部验收缺口仍在原始目标内，不能将本轮实现定义为全目标完成。
