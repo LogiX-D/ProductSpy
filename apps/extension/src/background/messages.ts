@@ -1,6 +1,8 @@
 import type { Product, ProductDraft } from '@productspy/shared';
+import { APP_URL } from '../config';
+import type { CloudUser } from '../storage/cloud-session';
 
-export const WORKSPACE_URL = 'http://127.0.0.1:3000';
+export const WORKSPACE_URL = APP_URL;
 
 export type ExtensionRequest =
   | { type: 'PRODUCTSPY_CAPTURE' }
@@ -8,6 +10,7 @@ export type ExtensionRequest =
   | { type: 'PRODUCTSPY_PENDING_COUNT' }
   | { type: 'PRODUCTSPY_SYNC_PENDING' }
   | { type: 'PRODUCTSPY_BRIDGE_STATE' }
+  | { type: 'PRODUCTSPY_LOGOUT' }
   | { type: 'PRODUCTSPY_PAIR'; code: string };
 
 export type CaptureResult =
@@ -23,9 +26,15 @@ export type SaveResult =
 export type ExtensionResponse =
   | CaptureResult
   | SaveResult
-  | { status: 'pending-count'; count: number }
+  | { status: 'pending-count'; count: number; unassignedCount?: number; error?: string }
   | { status: 'synced'; count: number }
-  | { status: 'bridge-state'; paired: boolean }
+  | {
+      status: 'bridge-state';
+      paired: boolean;
+      user?: CloudUser;
+      expiresAt?: string;
+      error?: string;
+    }
   | { status: 'paired' };
 
 export interface ContentRequest {

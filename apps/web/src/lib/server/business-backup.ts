@@ -27,6 +27,8 @@ import {
   type BusinessFile,
 } from './business-lock';
 import { dataDirectory } from './product-repository';
+import { saasEnabled } from '../saas/context';
+import { readWorkspaceDocument } from '../saas/workspace-storage';
 
 interface State {
   backup: WorkspaceBackup;
@@ -37,6 +39,12 @@ async function readState(directory: string): Promise<State> {
   const source: Partial<Record<BusinessFile, string>> = {};
   for (const name of BUSINESS_FILES) {
     try {
+      if (saasEnabled()) {
+        source[name] = await readWorkspaceDocument(directory, name);
+        if (Buffer.byteLength(source[name]) > MAX_WORKSPACE_FILE_BYTES)
+          throw new Error(`Invalid document ${name}`);
+        continue;
+      }
       const path = join(directory, name);
       const info = await lstat(path);
       if (!info.isFile() || info.isSymbolicLink() || info.size > MAX_WORKSPACE_FILE_BYTES)
@@ -264,6 +272,7 @@ export class WorkspaceBackupService {
       try {
         await commitBusinessFiles(this.directory, files);
       } catch (error) {
+        if (error instanceof AppError) throw error;
         console.error('[ProductSpy workspace backup] Restore rolled back', error);
         throw new AppError(
           500,

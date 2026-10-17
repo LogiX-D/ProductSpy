@@ -8,8 +8,14 @@ function failure(status: number, error: string): Response {
 }
 
 describe('authenticated web requests', () => {
-  beforeEach(() => vi.resetModules());
-  afterEach(() => vi.unstubAllGlobals());
+  beforeEach(() => {
+    vi.resetModules();
+    vi.stubEnv('NEXT_PUBLIC_PRODUCTSPY_MODE', 'legacy');
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
 
   it('shares a single bootstrap between concurrent operations and reuses the session', async () => {
     let release: ((response: Response) => void) | undefined;

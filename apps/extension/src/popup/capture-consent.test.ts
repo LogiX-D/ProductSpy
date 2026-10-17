@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   CAPTURE_CONSENT_KEY,
+  CAPTURE_CONSENT_VERSION,
   CAPTURE_CONSENT_TIMEOUT_MS,
   hasCaptureConsent,
   rememberCaptureConsent,
@@ -16,11 +17,11 @@ describe('versioned capture consent storage', () => {
   it('requires acceptance for missing, malformed or older-version records', async () => {
     const get = vi.fn();
     vi.stubGlobal('chrome', { storage: { local: { get } } });
-    for (const record of [undefined, true, { version: 0 }, { version: '1' }]) {
+    for (const record of [undefined, true, { version: 0 }, { version: '1' }, { version: 1 }]) {
       get.mockResolvedValue({ [CAPTURE_CONSENT_KEY]: record });
       expect(await hasCaptureConsent()).toBe(false);
     }
-    get.mockResolvedValue({ [CAPTURE_CONSENT_KEY]: { version: 1 } });
+    get.mockResolvedValue({ [CAPTURE_CONSENT_KEY]: { version: CAPTURE_CONSENT_VERSION } });
     expect(await hasCaptureConsent()).toBe(true);
   });
 

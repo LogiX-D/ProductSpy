@@ -23,7 +23,7 @@ import {
   updateComparison,
   type ComparisonGenerationRequest,
 } from '../lib/comparison-api';
-import { webRequest } from '../lib/session';
+import { isLegacyMode, webRequest } from '../lib/session';
 import { downloadLibraryFile } from '../lib/library-api';
 import { AnalysisOptionsPanel } from './analysis-options';
 import { AnalysisUsagePanel } from './analysis-usage';
@@ -305,7 +305,7 @@ export function ComparisonAnalysisPanel({
       }
       setMessage(
         mode === 'mock'
-          ? '本机 Mock 对比完成；这是工作流示例，不代表真实模型质量。'
+          ? 'Mock 对比完成；这是工作流示例，不代表真实模型质量。'
           : '真实 AI 对比已保存，请核对事实和推断。',
       );
       void loadUsage();
@@ -342,7 +342,7 @@ export function ComparisonAnalysisPanel({
         setMessage('已找到并载入本次请求的结果，没有重新调用模型。');
       } else
         setMessage(
-          '尚未找到本次请求的结果。可查看本机用量；继续同一次请求仍需明确操作和真实 AI 授权。',
+          '尚未找到本次请求的结果。可查看请求用量；继续同一次请求仍需明确操作和真实 AI 授权。',
         );
     } catch (cause) {
       setError(errorMessage(cause));
@@ -385,7 +385,7 @@ export function ComparisonAnalysisPanel({
             <h2>AI 对比分析</h2>
             {modeLabel && (
               <Badge tone={modeLabel === 'mock' ? 'warning' : 'default'}>
-                {modeLabel === 'mock' ? 'Mock · 本机演示' : '真实 AI · 需核查'}
+                {modeLabel === 'mock' ? 'Mock · 演示' : '真实 AI · 需核查'}
               </Badge>
             )}
           </div>
@@ -422,8 +422,9 @@ export function ComparisonAnalysisPanel({
       )}
       {mode === 'mock' && (
         <p className="comparison-boundary">
-          未配置真实 AI 时使用本机 Mock
-          示例，无外部请求和费用；示例内容不能作为真实市场研究或模型质量验收。
+          {isLegacyMode
+            ? '未配置真实 AI 时使用本机 Mock 示例，无外部请求和费用；示例内容不能作为真实市场研究或模型质量验收。'
+            : '当前为 Mock 演示模式，无外部模型调用，生成仍计入账号请求额度。示例内容不能作为真实市场研究或模型质量验收。'}
         </p>
       )}
       {mode === 'real' && (
@@ -667,7 +668,7 @@ export function ComparisonAnalysisPanel({
                 : dialog === 'restore'
                   ? '将此历史分析恢复为新的当前版本，所有现有历史继续保留。'
                   : dialog === 'abandon-request'
-                    ? '请先检查结果与本机用量。结束本地恢复记录不会取消已经发送给服务商的请求，也不会删除已保存的分析；之后新建的真实请求可能再次计费。'
+                    ? '请先检查结果与请求用量。结束浏览器恢复记录不会取消已经发送给服务商的请求，也不会删除已保存的分析；之后新建的真实请求可能再次计费。'
                     : '未保存的草稿保留在本浏览器，可稍后恢复。选择“放弃草稿”才会清除。'}
           </p>
           {dialog === 'authorize' && (

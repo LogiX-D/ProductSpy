@@ -1,0 +1,273 @@
+{
+  "date": "2026-10-17",
+  "timezone": "Asia/Shanghai",
+  "branch": "codex/saas-migration",
+  "implementationCommit": "18a4b8fa581b6429dfac9b3e38ae475450769a1d",
+  "baseline": "b83027a",
+  "status": "IMPLEMENTED_LOCALLY_EXTERNAL_ACCEPTANCE_PENDING",
+  "unit": {
+    "passed": 882,
+    "total": 886,
+    "files": 87,
+    "scope": "Legacy and SaaS local tests; four network PostgreSQL cases skipped here and exercised separately",
+    "skipped": 4
+  },
+  "postgres": {
+    "driver": "pg TCP loopback",
+    "role": "NOSUPERUSER NOBYPASSRLS",
+    "version": "18.4 Windows x64",
+    "passed": 44,
+    "scope": "real handlers, RLS, write locking and independent reads, CLI import, independent Node AI worker and billing SQL/authorization; synthetic data, Mock AI, offline Stripe provider"
+  },
+  "browser": {
+    "crossDevice": "independent browser contexts on one machine only",
+    "responsive375": true,
+    "browser": "Chrome for Testing Chromium",
+    "passed": 2,
+    "backend": "real local HTTP + PGlite",
+    "ai": "Mock",
+    "offlineRecovery": true,
+    "collection": "Amazon HTML fixture in actual MV3"
+  },
+  "liveAmazon": {
+    "images": 9,
+    "httpStatus": 200,
+    "outcome": "captured",
+    "aiRequests": 0,
+    "videos": 0,
+    "bulletPoints": 6,
+    "asin": "B09B8V1LZ3",
+    "htmlSha256": "0a6b3b29a981c2b02b5d84c01ea4909f7335356b61bc9d3d0665f93d75fed0b3",
+    "uploadedToSaaS": false
+  },
+  "recovery": {
+    "stoppedClusterPhysicalCopyRestore": "PASS",
+    "sentinelSha256": "07930677f4e6f4744217992188e0656eb249fb9d06c56ce73f1ed9fbb549b790",
+    "restoredTenantIsolation": "PASS",
+    "scope": "temporary local PostgreSQL only; no cloud/PITR/pg_dump certification",
+    "originalPostgresRestart": "PASS"
+  },
+  "billing": {
+    "offlineSdkSignatureTests": 9,
+    "realTransactions": "NOT_TESTED",
+    "actualStripeSandbox": "NOT_TESTED",
+    "checkoutRecoveryTests": 16,
+    "providerHTTP": "OFFLINE_SIMULATION_NO_STRIPE_HTTP"
+  },
+  "checks": {
+    "typecheck": "PASS",
+    "format": "PASS",
+    "lint": "PASS",
+    "build": "PASS",
+    "docker": "PASS: actual Linux runtime and worker image builds, Docker health, independent worker, web recreation, persistence and tenant isolation",
+    "remoteCI": "Verified source 881c3ec passed including enhanced app recovery, actual SaaS ZIP and original Compose; inspect PR checks for subsequent commits"
+  },
+  "privateLegacyData": {
+    "migrated": false,
+    "modified": false,
+    "reason": "Real SaaS owner account must be chosen first"
+  },
+  "artifacts": [
+    {
+      "sha256": "dd0db54c15c000daa759dd8a8da568c5d26b76aa6c465809fecc5b1e3d0cef1f",
+      "path": "docs/screenshots/saas/account-mobile.png"
+    },
+    {
+      "sha256": "0ad91299298b0c93dbfcacffe807223ed005b51c3f4bccbe8dc4d51d4e6ccc9e",
+      "path": "docs/screenshots/saas/extension-captured.png"
+    },
+    {
+      "sha256": "c8aa585b1c5e856d63a5a0602b7356358fd7ff659d6aa391739401e429465cc1",
+      "path": "docs/screenshots/saas/saved-mock-analysis.png"
+    },
+    {
+      "path": "docs/screenshots/saas/live-amazon-saved-mock.png",
+      "sha256": "e76eac8d2b0b6102b26f2f5bb710f26d3b1e5f03163758d59a90edd3aae1eb7f"
+    }
+  ],
+  "standalone": {
+    "tls": "private Host/Origin forwarding simulation only",
+    "status": "PASS",
+    "artifact": "actual standalone server.js",
+    "ai": "Mock",
+    "worker": "independent Node process",
+    "database": "local network PostgreSQL, restricted role"
+  },
+  "remoteCI": {
+    "laterCommits": "Inspect PR #1 checks for current state",
+    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39015571302",
+    "platform": "GitHub Ubuntu 24.04 + PostgreSQL 17.11 + actual Docker/Compose + cross-platform ZIP + Chromium",
+    "conclusion": "success",
+    "commit": "881c3ec2f6f2fff4823d57babe19ac5f5ebc3347",
+    "unitPassed": 872,
+    "unitSkipped": 14,
+    "skipScope": "Three network PostgreSQL cases run separately; ten Windows-only tests skipped on Linux"
+  },
+  "deploymentInstruction": "Review PR first; do not deploy (user instruction 2026-10-17)",
+  "liveWorkflow": {
+    "startedAt": "2026-10-17T05:05:04.503Z",
+    "outcome": "PASS",
+    "stage": "complete",
+    "scope": {
+      "amazon": "actual public Amazon page, no route fixtures or modified DOM",
+      "extension": "actual MV3 with activeTab; popup UI in an extension tab, not native popup sizing",
+      "backend": "local HTTP + actual PostgreSQL restricted application role",
+      "ai": "Mock only; no external AI or payment request",
+      "persistence": "restart actual standalone web process, retain the same PostgreSQL database",
+      "crossDevice": "isolated browser contexts on one physical computer only",
+      "cloud": "not deployed; no external TLS tested"
+    },
+    "checks": [
+      "web-registration",
+      "live-amazon-mv3-capture",
+      "extension-account-login",
+      "actual-extension-http-upload",
+      "postgres-product-library",
+      "durable-queue",
+      "independent-worker-mock-analysis",
+      "saved-analysis",
+      "web-process-restart-persistence",
+      "independent-browser-login-and-saved-analysis",
+      "other-account-404"
+    ],
+    "amazonHTTP": 200,
+    "amazonURL": "https://www.amazon.com/dp/B09B8V1LZ3",
+    "htmlSha256": "59bcffa9852c018021ad9ccc4d12e31de4f0e9812648269901649d80be60e827",
+    "product": {
+      "asin": "B09B8V1LZ3",
+      "title": "Amazon Echo Dot (最新型号) - 充满活力的扬声器,专为 Alexa+ 设计,非常适合卧室、餐厅和办公室,木炭",
+      "images": 9,
+      "videos": 0,
+      "bulletPoints": 6,
+      "priceCaptured": false
+    },
+    "syntheticAccountsCleaned": true,
+    "finishedAt": "2026-10-17T05:05:44.858Z"
+  },
+  "logicalRecovery": {
+    "status": "PASS",
+    "scope": "Local loopback logical backup/restore; no cloud, TLS, PITR, or production verification",
+    "server": "18.4",
+    "dumpTool": "pg_dump (PostgreSQL) 18.6",
+    "restoreTool": "pg_restore (PostgreSQL) 18.6",
+    "tables": 12,
+    "forcedRlsTables": 6,
+    "crossTenantWriteRejected": true,
+    "dumpBytes": 37368,
+    "dumpSha256": "1a843b55012ee6b062ef2ad2637067a7a33f6d5fc3ff746b3a51484c30600ecb",
+    "temporaryDatabasesCleaned": true,
+    "restoredApplicationLogin": "PASS: actual in-process Next route handlers and restricted PostgreSQL; no HTTP/cloud/TLS",
+    "cloudPITR": "NOT_TESTED",
+    "linuxCI": {
+      "status": "PASS_SQL_AND_APP_ROUTES",
+      "server": "17.11",
+      "pgDump": "17.11 Ubuntu PGDG",
+      "pgRestore": "17.11 Ubuntu PGDG",
+      "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39015571302"
+    },
+    "applicationRecovery": {
+      "status": "PASS_LOCAL",
+      "report": ".test-data/saas/logical-recovery/ddc59902c3f74ace85b41c2e23f3b8e4/report.json",
+      "seed": "Actual registration, product, template, comparison, content and Mock worker routes",
+      "restored": "Wrong-password rejection, fresh login, saved product/history and validated business export checksums, cross-tenant 404",
+      "scope": "In-process Request/Response route handlers with real restricted PostgreSQL, not network HTTP/cloud/real AI",
+      "postReadWrites": {
+        "sessionsAdded": 2,
+        "originalSessionsUnchanged": true,
+        "authAndApiRateLimitsUpdated": true,
+        "allOtherTablesUnchanged": true
+      },
+      "linux": "PASS_CI_39015571302"
+    }
+  },
+  "ciFailures": [
+    {
+      "commit": "1370467b8582f70b67cc06079763be122faf1589",
+      "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39005331463",
+      "failedStep": "Verify PostgreSQL logical backup and isolated restore",
+      "reason": "Runner default pg_dump 16.15 cannot dump PostgreSQL server 17.11; select matching clients and rerun",
+      "previousSteps": "typecheck, lint, format, unit, postgres passed"
+    }
+  ],
+  "containers": {
+    "status": "PASS",
+    "commit": "997b0a5fda3307ec5c0b405c627c111c796cf3d9",
+    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39006243043",
+    "checks": [
+      "actual image build and non-root revision inspection",
+      "actual Docker health on random PORT",
+      "durable queue before independent worker container",
+      "worker exit 0 and saved analysisHistory",
+      "web destruction and recreation with identical product/history checksums",
+      "other account empty library and product/history/job HTTP 404"
+    ],
+    "cleanup": "Owned containers and synthetic accounts removed",
+    "scope": "Actual Docker on GitHub Linux with loopback PostgreSQL, private HTTP Host/Origin simulation and Mock AI; no Compose, public TLS, cloud or physical cross-device acceptance"
+  },
+  "prReview": {
+    "baseCommit": "997b0a5fda3307ec5c0b405c627c111c796cf3d9",
+    "report": "docs/saas-pr-review.md",
+    "fixed": [
+      "Old-password login racing password revocation",
+      "Extension pairing racing password revocation",
+      "Cross-tab stale sessions after login/register"
+    ],
+    "regressions": "Five deterministic regressions failed against old code; all passed after fixes. Two server races proven with actual restricted PostgreSQL role.",
+    "deployment": "NOT_EXECUTED_PER_USER_INSTRUCTION"
+  },
+  "saasPackaging": {
+    "status": "PASS_LOCAL_PREVIEW_ONLY",
+    "checks": [
+      "Strict environment/origin and compiled metadata/file inventory",
+      "Manifest capability allowlist and exact CSP",
+      "Configured and typical server secret checks without echoing values",
+      "Unique artifacts/saas directories and legacy default guards",
+      "Real JSZip CRC/per-file verification plus Windows independent extraction"
+    ],
+    "sourceRevision": "d56d14c14312f49ba3a8a93df44a39a564f77043",
+    "sourceDirty": true,
+    "development": {
+      "sha256": "81f6672c29760b8fb0b40315216472a8c12e3dcbbcc5b7cd1a49ea9a14f96bca",
+      "origin": "http://127.0.0.1:3000",
+      "bytes": 430822
+    },
+    "productionConfigurationPreview": {
+      "sha256": "d902dcdbef5c2032b49cd618b9d8670c29dc9c65361e739b97b8aac984e9b405",
+      "origin": "https://productspy-preview.example.invalid",
+      "bytes": 430871
+    },
+    "linux": "PASS_CI_39015571302",
+    "publication": "NOT_SUBMITTED_NOT_PUBLISHED",
+    "preservedStableArtifacts": {
+      "extension": "e6e1a24e76f6b3d3d1608901582aff3ce66c549f4a0edb79bf9c09aa370a2e70",
+      "windows": "b0f3bdf2a2ccdd2b9e10d0970434b6e6c10e77171c4eefd6f9ccb56bfc4e3fa0"
+    },
+    "linuxArchives": {
+      "sourceCommit": "881c3ec2f6f2fff4823d57babe19ac5f5ebc3347",
+      "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39015571302",
+      "developmentSha256": "60790244a01861d68c99881b68e04c70ebef4f74bd4d37490ac57a0961fcb606",
+      "productionConfigurationPreviewSha256": "11efb686442f523b20423e31e70c661e93eabf8352472ac50d01c0c699fe3fa0",
+      "filesPerArchive": 243
+    }
+  },
+  "compose": {
+    "status": "PASS_CI",
+    "guardTests": 10,
+    "scope": "Original compose.yaml with isolated private environment, original service network/volume/worker and loopback random web port; no deployment",
+    "commit": "881c3ec2f6f2fff4823d57babe19ac5f5ebc3347",
+    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39015571302",
+    "checks": [
+      "Original Compose model with private test env, no production env_file or host DB port",
+      "Internal db DNS/network, migrations, restricted role and six FORCE RLS tables",
+      "Queued job before continuous independent worker starts, saved Mock analysis/history",
+      "Web and database containers recreated on original volume, fresh login and identical checksums",
+      "Other account empty library and product/history/job HTTP 404"
+    ],
+    "cleanup": {
+      "privateEnvironment": true,
+      "networks": 1,
+      "containers": 3,
+      "volumes": 1
+    }
+  }
+}

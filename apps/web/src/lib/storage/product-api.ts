@@ -10,9 +10,10 @@ import {
   type AnalysisVersion,
 } from '@productspy/shared';
 import { webCache } from './web-storage';
-import { webRequest } from '../session';
+import { isLegacyMode, webRequest } from '../session';
 
 async function cacheSafely(operation: () => Promise<void>): Promise<void> {
+  if (!isLegacyMode) return;
   try {
     await operation();
   } catch (error) {
@@ -91,6 +92,7 @@ export async function loadProducts(): Promise<{ products: Product[]; error?: str
     return { products: await productRepository.list() };
   } catch (error) {
     console.error('[ProductSpy] Failed to load products', error);
+    if (!isLegacyMode) return { products: [], error: errorMessage(error) };
     try {
       return {
         products: await webCache.list(),

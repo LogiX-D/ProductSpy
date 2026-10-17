@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { errorMessage, type LibrarySnapshot } from '@productspy/shared';
 import { fetchLibrary } from './library-api';
 import { webCache } from './storage/web-storage';
+import { isLegacyMode } from './session';
 
 /** The localhost snapshot is authoritative; an offline cache is strictly read-only. */
 export function useLibrary() {
@@ -33,6 +34,10 @@ export function useLibrary() {
       if (!mounted.current || request !== generation.current) return;
       online.current = false;
       setError(errorMessage(cause));
+      if (!isLegacyMode) {
+        setSnapshot({ products: [], groups: [], tags: [] });
+        return;
+      }
       try {
         const cached = await webCache.list();
         if (mounted.current && request === generation.current) {

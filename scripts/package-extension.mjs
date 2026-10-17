@@ -11,8 +11,10 @@ import {
 } from './packaging/files.mjs';
 import { writeThirdPartyNotices } from './packaging/notices.mjs';
 import { validateExtensionRelease } from './packaging/release-version.mjs';
+import { assertLegacyPackaging } from './saas/package-extension-legacy-guard.mjs';
 
 export async function packageExtension() {
+  assertLegacyPackaging();
   const source = resolve(workspace, 'apps/extension/dist');
   const manifest = JSON.parse(await readFile(resolve(source, 'manifest.json'), 'utf8'));
   const project = JSON.parse(await readFile(resolve(workspace, 'package.json'), 'utf8'));

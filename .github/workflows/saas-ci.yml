@@ -1,0 +1,104 @@
+name: ProductSpy SaaS checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+concurrency:
+  group: productspy-saas-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  quality:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: productspy_test
+          POSTGRES_PASSWORD: synthetic-ci-only
+          POSTGRES_DB: productspy_test
+        ports: [5432:5432]
+        options: --health-cmd "pg_isready -U productspy_test" --health-interval 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm test
+      - run: pnpm db:migrate
+        env:
+          DATABASE_URL: postgresql://productspy_test:synthetic-ci-only@127.0.0.1:5432/productspy_test
+      - name: Create restricted PostgreSQL application role
+        run: psql -h 127.0.0.1 -U productspy_test -d productspy_test -c "CREATE ROLE productspy_app LOGIN PASSWORD 'synthetic-ci-app' NOSUPERUSER NOBYPASSRLS; GRANT USAGE ON SCHEMA public TO productspy_app; GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO productspy_app;"
+        env:
+          PGPASSWORD: synthetic-ci-only
+      - run: pnpm test:postgres
+        env:
+          PRODUCTSPY_TEST_DATABASE_URL: postgresql://productspy_app:synthetic-ci-app@127.0.0.1:5432/productspy_test
+          PRODUCTSPY_DB_POOL_MAX: '3'
+          PRODUCTSPY_WORKER_CONCURRENCY: '1'
+      - name: Verify PostgreSQL logical backup and isolated restore
+        shell: bash
+        run: |
+          set -euo pipefail
+          pg_bin=/usr/lib/postgresql/17/bin
+          if [[ ! -x "$pg_bin/pg_dump" || ! -x "$pg_bin/pg_restore" ]]; then
+            # Ubuntu 24.04 ships 16; use the official PGDG client package for our 17 service.
+            # https://www.postgresql.org/download/linux/ubuntu/
+            . /etc/os-release
+            sudo install -d /usr/share/postgresql-common/pgdg
+            sudo curl --fail --silent --show-error --location --retry 3 \
+              -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+              https://www.postgresql.org/media/keys/ACCC4CF8.asc
+            sudo tee /etc/apt/sources.list.d/productspy-pgdg.sources >/dev/null <<EOF
+          Types: deb
+          URIs: https://apt.postgresql.org/pub/repos/apt
+          Suites: ${VERSION_CODENAME}-pgdg
+          Architectures: $(dpkg --print-architecture)
+          Components: main
+          Signed-By: /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+          EOF
+            sudo apt-get update
+            sudo apt-get install --yes --no-install-recommends postgresql-client-17
+          fi
+          dump_version="$("$pg_bin/pg_dump" --version)"
+          restore_version="$("$pg_bin/pg_restore" --version)"
+          printf '%s\n' "$dump_version" "$restore_version"
+          [[ "$dump_version" == 'pg_dump (PostgreSQL) 17.'* ]]
+          [[ "$restore_version" == 'pg_restore (PostgreSQL) 17.'* ]]
+          [[ "${dump_version#pg_dump }" == "${restore_version#pg_restore }" ]]
+          PRODUCTSPY_PG_BIN="$pg_bin" node scripts/saas/verify-logical-recovery.mjs
+        env:
+          PRODUCTSPY_LOGICAL_RECOVERY_ALLOW_CREATE: '1'
+          PRODUCTSPY_TEST_ADMIN_DATABASE_URL: postgresql://productspy_test:synthetic-ci-only@127.0.0.1:5432/productspy_test
+          PRODUCTSPY_TEST_DATABASE_URL: postgresql://productspy_app:synthetic-ci-app@127.0.0.1:5432/productspy_test
+      - run: pnpm build
+      - name: Build and verify an isolated SaaS extension preview ZIP
+        run: |
+          pnpm package:saas:extension --environment development --origin http://127.0.0.1:3000
+          pnpm package:saas:extension --environment production --origin https://productspy-preview.example.invalid
+      - run: node scripts/saas/verify-standalone.mjs
+        env:
+          PRODUCTSPY_TEST_DATABASE_URL: postgresql://productspy_app:synthetic-ci-app@127.0.0.1:5432/productspy_test
+      - name: Build local web and worker test images
+        run: |
+          docker build --target runtime --label org.opencontainers.image.revision="$GITHUB_SHA" -t productspy-web:ci .
+          docker build --target worker --label org.opencontainers.image.revision="$GITHUB_SHA" -t productspy-worker:ci .
+      - name: Verify actual web and worker containers
+        run: node scripts/saas/verify-containers.mjs
+        env:
+          PRODUCTSPY_CONTAINER_VERIFY: '1'
+          PRODUCTSPY_TEST_DATABASE_URL: postgresql://productspy_app:synthetic-ci-app@127.0.0.1:5432/productspy_test
+      - name: Verify original Compose orchestration
+        run: node scripts/saas/verify-compose.mjs
+        env:
+          PRODUCTSPY_COMPOSE_VERIFY: '1'
+      - run: node scripts/saas/build-test-extension.mjs
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:saas:e2e

@@ -1,3 +1,5 @@
+> 历史本地版资料（v1.0.0 及此前）。正式产品现为 Chrome Extension + 在线 SaaS + 云端后端；当前要求、部署和隐私说明以仓库根 README、PRIVACY.md 及 docs/saas-*.md 为准。本文件保留旧发行用法/证据，不作为 SaaS 发布材料。
+
 # Windows 普通用户首次使用指南
 
 适用于 ProductSpy 1.0.0 Windows x64 便携版。无需自行安装 Node.js、pnpm、数据库或 AI Key。需要 Windows 10 或更新版本的 x64 系统、系统 PowerShell 5.1，以及已安装的 Google Chrome；当前未发布 Chrome Web Store 版本，插件仍需按下面步骤手动加载。工作台网页不限定 Chrome，其他浏览器的扩展兼容性未完成验收。内置 Node.js 24.14.0 的 Windows 平台要求见 [官方平台表](https://github.com/nodejs/node/blob/v24.14.0/BUILDING.md#platform-list)，具体实际验收系统以本次报告为准。

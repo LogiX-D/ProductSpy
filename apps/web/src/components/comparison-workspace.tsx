@@ -161,7 +161,7 @@ export function ComparisonWorkspace() {
             selected.map((product) => product.id),
           );
       applyPlan(updated);
-      setMessage('对比方案已保存到本机。商品原始资料和已有 AI 历史保持完整。');
+      setMessage('对比方案已保存。商品原始资料和已有 AI 历史保持完整。');
     } catch (cause) {
       setError(`保存失败：${errorMessage(cause)}。当前选择仍保留，可重试或复制资料。`);
     } finally {

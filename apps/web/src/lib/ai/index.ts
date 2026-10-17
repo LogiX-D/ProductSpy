@@ -14,6 +14,9 @@ export function createAIProvider(): AIProvider {
   if (!['max_tokens', 'max_completion_tokens'].includes(tokenParameter))
     throw new AppError(503, 'AI_TOKEN_PARAMETER 需要 max_tokens 或 max_completion_tokens');
   const temperature = process.env.AI_TEMPERATURE?.trim();
+  const thinking = process.env.AI_THINKING?.trim();
+  if (thinking && !['omit', 'disabled', 'enabled'].includes(thinking))
+    throw new AppError(503, 'AI_THINKING 需要 omit、disabled 或 enabled');
   return new OpenAICompatibleProvider({
     apiKey,
     baseUrl: process.env.AI_BASE_URL || undefined,
@@ -25,6 +28,7 @@ export function createAIProvider(): AIProvider {
       ? Number(process.env.AI_MAX_OUTPUT_TOKENS)
       : undefined,
     temperature: !temperature || temperature === 'omit' ? undefined : Number(temperature),
+    thinking: !thinking || thinking === 'omit' ? undefined : (thinking as 'disabled' | 'enabled'),
   });
 }
 

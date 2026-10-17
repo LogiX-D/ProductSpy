@@ -17,6 +17,9 @@ import { materializeModules } from './packaging/standalone.mjs';
 import { writeThirdPartyNotices } from './packaging/notices.mjs';
 import { releaseVersion } from './packaging/release-version.mjs';
 import { PORTABLE_GUIDES, portableGuide } from './packaging/guides.mjs';
+import { assertLegacyPackaging } from './saas/package-extension-legacy-guard.mjs';
+
+assertLegacyPackaging();
 
 const run = promisify(execFile);
 const runtime = {

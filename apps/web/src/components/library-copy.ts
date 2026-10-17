@@ -1,5 +1,6 @@
 /** Product library interface strings live together for future localization. */
-export const libraryCopy = {
+import { isLegacyMode } from '../lib/session';
+const legacyLibraryCopy = {
   description: '按分组和标签整理竞品，筛选、批量处理与备份本机商品资料。',
   manage: '管理分组与标签',
   data: '导入与备份',
@@ -103,3 +104,16 @@ export const libraryCopy = {
     `导入完成：新增 ${added} 个，跳过 ${skipped} 个，失败 ${failed} 个`,
   safeBackup: '导出的文件包含商品资料与自定义分析要求，请按你的需要妥善保存。',
 } as const;
+export const libraryCopy = isLegacyMode
+  ? legacyLibraryCopy
+  : {
+      ...legacyLibraryCopy,
+      description: '按分组和标签整理竞品，筛选、批量处理与备份账号中的商品资料。',
+      offline: '暂时无法读取云端商品库。恢复网络并刷新后，即可继续修改、批量操作或导入导出。',
+      deleteDescription:
+        '选中的商品、素材链接、AI 分析及历史版本将从当前账号的商品库删除，无法撤销。建议先备份。',
+      preserve: '保留账号中已有资料',
+      preserveNote:
+        '两种安全选项均完整保留账号中重复商品，包括原 ID、分析、历史及分组标签；不会覆盖或合并旧分析。',
+      beforeConfirm: '确认前不会修改当前账号的商品库。',
+    };

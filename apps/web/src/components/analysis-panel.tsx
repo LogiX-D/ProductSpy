@@ -18,7 +18,7 @@ import {
   type ProductAnalysis,
 } from '@productspy/shared';
 import { productRepository } from '../lib/storage/product-api';
-import { webRequest } from '../lib/session';
+import { getAccountSession, isLegacyMode, webRequest } from '../lib/session';
 import { analysisCopy } from './analysis-copy';
 import { AnalysisEditor } from './analysis-editor';
 import { AnalysisOptionsPanel } from './analysis-options';
@@ -171,6 +171,9 @@ function AnalysisContent({
   onUpdate: (product: Product) => void;
 }) {
   const [mode, setMode] = useState<'mock' | 'real'>();
+  const privateDraftId = isLegacyMode
+    ? product.id
+    : `${getAccountSession()?.user.id ?? 'unverified'}:${product.id}`;
   const [modeFailed, setModeFailed] = useState(false);
   const [options, setOptions] = useState<AnalysisOptions>({ ...DEFAULT_ANALYSIS_OPTIONS });
   const [pricing, setPricing] = useState<AnalysisPricingPreference>({});
@@ -316,7 +319,7 @@ function AnalysisContent({
       .catch(() => {
         if (active) setModeFailed(true);
       });
-    const volatile = volatileDrafts.get(product.id);
+    const volatile = volatileDrafts.get(privateDraftId);
     if (volatile) {
       setRetained(volatile);
       setStorageFailed(true);
@@ -335,7 +338,7 @@ function AnalysisContent({
       active = false;
       mounted.current = false;
     };
-  }, [product.id, product.updatedAt]);
+  }, [product.id, product.updatedAt, privateDraftId]);
 
   useEffect(() => {
     if (!dirty) return;
@@ -359,7 +362,7 @@ function AnalysisContent({
 
   function clearDraft(expectedSerialized?: string | null) {
     try {
-      const volatile = volatileDrafts.get(product.id);
+      const volatile = volatileDrafts.get(privateDraftId);
       if (
         expectedSerialized !== undefined &&
         (volatile
@@ -367,7 +370,7 @@ function AnalysisContent({
           : sessionStorage.getItem(sessionDraftKey(product.id))) !== expectedSerialized
       )
         return;
-      volatileDrafts.delete(product.id);
+      volatileDrafts.delete(privateDraftId);
       sessionStorage.removeItem(sessionDraftKey(product.id));
     } catch {
       if (mounted.current) setStorageFailed(true);
@@ -385,7 +388,7 @@ function AnalysisContent({
       draft: next.draft,
     };
     const keepVolatile = () => {
-      volatileDrafts.set(product.id, session);
+      volatileDrafts.set(privateDraftId, session);
       setRetained(session);
       setStorageFailed(true);
       return false;
@@ -394,7 +397,7 @@ function AnalysisContent({
       const serialized = JSON.stringify(session);
       if (serialized.length > sessionDraftMaxCharacters) return keepVolatile();
       sessionStorage.setItem(sessionDraftKey(product.id), serialized);
-      volatileDrafts.delete(product.id);
+      volatileDrafts.delete(privateDraftId);
       setRetained(session);
       setStorageFailed(false);
       return true;
@@ -646,7 +649,7 @@ function AnalysisContent({
             : undefined;
         setMessage(
           entry
-            ? `上次请求状态：${({ started: '结果尚未确认', succeeded: '已完成，但商品中未找到对应保存版本', failed: '失败', conflict: '保存时发生版本冲突' } as const)[entry.status]}。未发起新的 AI 请求。${unconfirmedRequest.mode === 'real' ? '费用可能已产生；请核对本机用量与服务商账单，勿把结果未知视为免费。' : ''}`
+            ? `上次请求状态：${({ started: '结果尚未确认', succeeded: '已完成，但商品中未找到对应保存版本', failed: '失败', conflict: '保存时发生版本冲突' } as const)[entry.status]}。未发起新的 AI 请求。${unconfirmedRequest.mode === 'real' ? '费用可能已产生；请核对请求用量与服务商账单，勿把结果未知视为免费。' : ''}`
             : `尚未找到上次请求的保存记录。未发起新的 AI 请求。${unconfirmedRequest.mode === 'real' ? '网络中断或超时不能证明服务商没有计费，请先核对账单，再决定是否重新生成。' : ''}`,
         );
       }
@@ -991,7 +994,9 @@ function AnalysisContent({
           </h2>
           <p>
             {dialog === 'authorize'
-              ? '本次操作将把商品文字资料和自定义要求发送至你在 Windows 启动器配置的服务商，可能消耗 API 额度。商品图片和视频不会上传，不会自动重试。'
+              ? isLegacyMode
+                ? '本次操作将把商品文字资料和自定义要求发送至你在 Windows 启动器配置的服务商，可能消耗 API 额度。商品图片和视频不会上传，不会自动重试。'
+                : '本次操作会将商品文字资料和自定义要求发送至工作台配置的 AI 服务，并消耗账号请求额度。商品图片和视频不会发送给模型，不会自动重试。'
               : dialog === 'regenerate'
                 ? analysisCopy.regenerateDescription
                 : dialog === 'close'
