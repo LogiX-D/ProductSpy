@@ -6,9 +6,9 @@
   "baseline": "b83027a",
   "status": "IMPLEMENTED_LOCALLY_EXTERNAL_ACCEPTANCE_PENDING",
   "unit": {
-    "passed": 829,
-    "total": 832,
-    "files": 81,
+    "passed": 843,
+    "total": 846,
+    "files": 83,
     "scope": "legacy and SaaS local tests; three network PostgreSQL cases skipped here and exercised separately",
     "skipped": 3
   },
@@ -60,7 +60,7 @@
     "lint": "PASS",
     "build": "PASS",
     "docker": "NOT_EXECUTED",
-    "remoteCI": "Last verified head 66ef3a6 passed; inspect PR checks for subsequent commits"
+    "remoteCI": "Last verified head 35eec65 passed; inspect PR checks for subsequent commits"
   },
   "privateLegacyData": {
     "migrated": false,
@@ -79,6 +79,10 @@
     {
       "sha256": "c8aa585b1c5e856d63a5a0602b7356358fd7ff659d6aa391739401e429465cc1",
       "path": "docs/screenshots/saas/saved-mock-analysis.png"
+    },
+    {
+      "path": "docs/screenshots/saas/live-amazon-saved-mock.png",
+      "sha256": "e76eac8d2b0b6102b26f2f5bb710f26d3b1e5f03163758d59a90edd3aae1eb7f"
     }
   ],
   "standalone": {
@@ -91,10 +95,65 @@
   },
   "remoteCI": {
     "laterCommits": "Inspect PR #1 checks for current state",
-    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39002328813",
+    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39004394289",
     "platform": "GitHub Ubuntu + PostgreSQL 17 + Chromium",
     "conclusion": "success",
-    "commit": "66ef3a68dad3add0448581f4528bd96b971d2f3f"
+    "commit": "35eec659b8c8adeece4aee6cfccc3f9265052ade"
   },
-  "deploymentInstruction": "Review PR first; do not deploy (user instruction 2026-10-17)"
+  "deploymentInstruction": "Review PR first; do not deploy (user instruction 2026-10-17)",
+  "liveWorkflow": {
+    "startedAt": "2026-10-17T05:05:04.503Z",
+    "outcome": "PASS",
+    "stage": "complete",
+    "scope": {
+      "amazon": "actual public Amazon page, no route fixtures or modified DOM",
+      "extension": "actual MV3 with activeTab; popup UI in an extension tab, not native popup sizing",
+      "backend": "local HTTP + actual PostgreSQL restricted application role",
+      "ai": "Mock only; no external AI or payment request",
+      "persistence": "restart actual standalone web process, retain the same PostgreSQL database",
+      "crossDevice": "isolated browser contexts on one physical computer only",
+      "cloud": "not deployed; no external TLS tested"
+    },
+    "checks": [
+      "web-registration",
+      "live-amazon-mv3-capture",
+      "extension-account-login",
+      "actual-extension-http-upload",
+      "postgres-product-library",
+      "durable-queue",
+      "independent-worker-mock-analysis",
+      "saved-analysis",
+      "web-process-restart-persistence",
+      "independent-browser-login-and-saved-analysis",
+      "other-account-404"
+    ],
+    "amazonHTTP": 200,
+    "amazonURL": "https://www.amazon.com/dp/B09B8V1LZ3",
+    "htmlSha256": "59bcffa9852c018021ad9ccc4d12e31de4f0e9812648269901649d80be60e827",
+    "product": {
+      "asin": "B09B8V1LZ3",
+      "title": "Amazon Echo Dot (最新型号) - 充满活力的扬声器,专为 Alexa+ 设计,非常适合卧室、餐厅和办公室,木炭",
+      "images": 9,
+      "videos": 0,
+      "bulletPoints": 6,
+      "priceCaptured": false
+    },
+    "syntheticAccountsCleaned": true,
+    "finishedAt": "2026-10-17T05:05:44.858Z"
+  },
+  "logicalRecovery": {
+    "status": "PASS",
+    "scope": "Local loopback logical backup/restore; no cloud, TLS, PITR, or production verification",
+    "server": "18.4",
+    "dumpTool": "pg_dump (PostgreSQL) 18.6",
+    "restoreTool": "pg_restore (PostgreSQL) 18.6",
+    "tables": 12,
+    "forcedRlsTables": 6,
+    "crossTenantWriteRejected": true,
+    "dumpBytes": 27889,
+    "dumpSha256": "d28521b0b2271c65f0ed15a5f63fc91270a73334503cd02d646cfc981726a5cf",
+    "temporaryDatabasesCleaned": true,
+    "restoredApplicationLogin": "NOT_TESTED",
+    "cloudPITR": "NOT_TESTED"
+  }
 }

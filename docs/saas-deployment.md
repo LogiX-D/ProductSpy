@@ -76,4 +76,12 @@ pnpm db:import-legacy <business-backup.json> <existing-saas-user-id> --commit
 
 ## 发布前继续项
 
+### 本机手动验收命令
+
+`node scripts/saas/verify-live-workflow.mjs` 要求先完成构建及 `node scripts/saas/build-test-extension.mjs`，并显式设置 `PRODUCTSPY_TEST_DATABASE_URL` 为现有本机空测试库（库名必须 `productspy_live_*`，连接无查询参数/fragment，应用角色无 SUPERUSER/BYPASSRLS）。脚本仅监听 loopback 3100、强制 Mock AI、使用真实 Amazon 和独立 worker；自动停止自身 Web 进程并清理其注册的合成账号。不会接管已有 3100 服务；外部 Amazon 不可用时如实失败，不回退 fixture，因此不作为常规 CI 的外网依赖。
+
+`node scripts/saas/verify-logical-recovery.mjs` 要求 `PRODUCTSPY_TEST_ADMIN_DATABASE_URL` 与 `PRODUCTSPY_TEST_DATABASE_URL` 显式指向同一本机临时集群，使用不同的管理员及受限应用角色；设置 `PRODUCTSPY_LOGICAL_RECOVERY_ALLOW_CREATE=1` 和含 `pg_dump`/`pg_restore` 的 `PRODUCTSPY_PG_BIN`。管理员仅用于该临时集群的 CREATEDB/备份读取，切勿授予应用角色这些权限。脚本不 dump 环境变量所指的已有库，只创建唯一源/目标库并种合成记录；拒绝覆盖、`--clean`、远程地址和 URL 参数，清理前核对自身数据库 marker/owner。凭据通过环境传递，不放工具 argv 或报告。
+
+恢复采用 `--no-owner --no-acl`，随后显式对受限应用角色恢复 GRANT 并验证 RLS；真实运维也需单独审核恢复后的角色与授权。本机原始报告、custom dump 和浏览器 profile 留在忽略的 `.test-data`，不能当作公开附件或生产加密备份。测试命令不会证明云端灾备能力。
+
 真实 HTTPS 预发布、容器与 Linux PostgreSQL 验证、正式隐私联系人/保留期限/账户注销、邮件核验/找回、独立 worker 的云端运维、支付沙盒、跨物理设备、真实 Amazon 与 AI，以及数据库恢复演练必须分别记录结果。未通过的项目不标为最终验收完成。
