@@ -2,7 +2,7 @@
 
 **Chrome Extension + 在线 SaaS 工作台 + 云端后端**。采集 Amazon 商品，登录账号后同步到在线商品库，完成分析、竞品比较和内容创作。正式用户不需要 Windows 本地工作台或服务程序。
 
-当前为 SaaS 迁移开发分支，尚未公开部署或上架。现有 Next.js/React 工作台、MV3 采集器和核心业务继续复用。[产品要求](docs/saas-requirements.md) · [代码审计](docs/saas-audit.md) · [开发计划](docs/saas-plan.md) · [部署与恢复](docs/saas-deployment.md) · [验证记录](docs/saas-validation.md) · [PR 审阅](docs/saas-pr-review.md)。
+当前为 SaaS 迁移开发分支，尚未公开部署或上架。现有 Next.js/React 工作台、MV3 采集器和核心业务继续复用。[产品要求](docs/saas-requirements.md) · [代码审计](docs/saas-audit.md) · [开发计划](docs/saas-plan.md) · [部署与恢复](docs/saas-deployment.md) · [验证记录](docs/saas-validation.md) · [PR 审阅](docs/saas-pr-review.md) · [验收矩阵](docs/saas-acceptance-matrix.md) · [SaaS 扩展发布准备](docs/saas-store/README.md)。
 
 ## 开发运行
 

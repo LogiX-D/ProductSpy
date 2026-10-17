@@ -6,9 +6,9 @@
   "baseline": "b83027a",
   "status": "IMPLEMENTED_LOCALLY_EXTERNAL_ACCEPTANCE_PENDING",
   "unit": {
-    "passed": 856,
-    "total": 860,
-    "files": 84,
+    "passed": 882,
+    "total": 886,
+    "files": 87,
     "scope": "Legacy and SaaS local tests; four network PostgreSQL cases skipped here and exercised separately",
     "skipped": 4
   },
@@ -60,7 +60,7 @@
     "lint": "PASS",
     "build": "PASS",
     "docker": "PASS: actual Linux runtime and worker image builds, Docker health, independent worker, web recreation, persistence and tenant isolation",
-    "remoteCI": "Head 997b0a5 passed including actual PostgreSQL 17 logical recovery and Docker runtime checks; inspect PR checks for subsequent commits"
+    "remoteCI": "Last verified head d56d14c passed; enhanced packaging, route recovery and Compose require current-head CI"
   },
   "privateLegacyData": {
     "migrated": false,
@@ -95,12 +95,12 @@
   },
   "remoteCI": {
     "laterCommits": "Inspect PR #1 checks for current state",
-    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39006243043",
+    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39014465083",
     "platform": "GitHub Ubuntu + PostgreSQL 17.11 + actual Docker web/worker + Chromium",
     "conclusion": "success",
-    "commit": "997b0a5fda3307ec5c0b405c627c111c796cf3d9",
-    "unitPassed": 842,
-    "unitSkipped": 13,
+    "commit": "d56d14c14312f49ba3a8a93df44a39a564f77043",
+    "unitPassed": 846,
+    "unitSkipped": 14,
     "skipScope": "Three network PostgreSQL cases run separately; ten Windows-only tests skipped on Linux"
   },
   "deploymentInstruction": "Review PR first; do not deploy (user instruction 2026-10-17)",
@@ -153,10 +153,10 @@
     "tables": 12,
     "forcedRlsTables": 6,
     "crossTenantWriteRejected": true,
-    "dumpBytes": 27889,
-    "dumpSha256": "d28521b0b2271c65f0ed15a5f63fc91270a73334503cd02d646cfc981726a5cf",
+    "dumpBytes": 37368,
+    "dumpSha256": "1a843b55012ee6b062ef2ad2637067a7a33f6d5fc3ff746b3a51484c30600ecb",
     "temporaryDatabasesCleaned": true,
-    "restoredApplicationLogin": "NOT_TESTED",
+    "restoredApplicationLogin": "PASS: actual in-process Next route handlers and restricted PostgreSQL; no HTTP/cloud/TLS",
     "cloudPITR": "NOT_TESTED",
     "linuxCI": {
       "status": "PASS",
@@ -164,6 +164,20 @@
       "pgDump": "17.11 Ubuntu PGDG",
       "pgRestore": "17.11 Ubuntu PGDG",
       "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39005647343"
+    },
+    "applicationRecovery": {
+      "status": "PASS_LOCAL",
+      "report": ".test-data/saas/logical-recovery/ddc59902c3f74ace85b41c2e23f3b8e4/report.json",
+      "seed": "Actual registration, product, template, comparison, content and Mock worker routes",
+      "restored": "Wrong-password rejection, fresh login, saved product/history and validated business export checksums, cross-tenant 404",
+      "scope": "In-process Request/Response route handlers with real restricted PostgreSQL, not network HTTP/cloud/real AI",
+      "postReadWrites": {
+        "sessionsAdded": 2,
+        "originalSessionsUnchanged": true,
+        "authAndApiRateLimitsUpdated": true,
+        "allOtherTablesUnchanged": true
+      },
+      "linux": "PENDING_CURRENT_HEAD_CI"
     }
   },
   "ciFailures": [
@@ -200,5 +214,38 @@
     ],
     "regressions": "Five deterministic regressions failed against old code; all passed after fixes. Two server races proven with actual restricted PostgreSQL role.",
     "deployment": "NOT_EXECUTED_PER_USER_INSTRUCTION"
+  },
+  "saasPackaging": {
+    "status": "PASS_LOCAL_PREVIEW_ONLY",
+    "checks": [
+      "Strict environment/origin and compiled metadata/file inventory",
+      "Manifest capability allowlist and exact CSP",
+      "Configured and typical server secret checks without echoing values",
+      "Unique artifacts/saas directories and legacy default guards",
+      "Real JSZip CRC/per-file verification plus Windows independent extraction"
+    ],
+    "sourceRevision": "d56d14c14312f49ba3a8a93df44a39a564f77043",
+    "sourceDirty": true,
+    "development": {
+      "sha256": "81f6672c29760b8fb0b40315216472a8c12e3dcbbcc5b7cd1a49ea9a14f96bca",
+      "origin": "http://127.0.0.1:3000",
+      "bytes": 430822
+    },
+    "productionConfigurationPreview": {
+      "sha256": "d902dcdbef5c2032b49cd618b9d8670c29dc9c65361e739b97b8aac984e9b405",
+      "origin": "https://productspy-preview.example.invalid",
+      "bytes": 430871
+    },
+    "linux": "PENDING_CURRENT_HEAD_CI",
+    "publication": "NOT_SUBMITTED_NOT_PUBLISHED",
+    "preservedStableArtifacts": {
+      "extension": "e6e1a24e76f6b3d3d1608901582aff3ce66c549f4a0edb79bf9c09aa370a2e70",
+      "windows": "b0f3bdf2a2ccdd2b9e10d0970434b6e6c10e77171c4eefd6f9ccb56bfc4e3fa0"
+    }
+  },
+  "compose": {
+    "status": "PENDING_REAL_CI_EXECUTION",
+    "guardTests": 10,
+    "scope": "Original compose.yaml with isolated private environment, original service network/volume/worker and loopback random web port; no deployment"
   }
 }

@@ -14,6 +14,16 @@
 
 构建时生成 manifest：SaaS 只授权该 origin；开发模式仅该 loopback 地址。`activeTab` 与 `scripting` 继续保持用户触发采集；`storage` 保存凭证与离线队列；`alarms` 在网络恢复后重新同步。没有远程执行代码、Amazon 广泛站点权限或服务端密钥。正式域名及公开发布仍需单独授权。
 
+## 独立 SaaS preview 打包
+
+```text
+pnpm package:saas:extension --environment development --origin http://127.0.0.1:3000
+```
+
+命令独立构建并打包到 `artifacts/saas/` 的唯一目录，不覆盖历史稳定 ZIP。正式配置显式使用 `--environment production` 与已获授权的 HTTPS origin；所有输出仍是本机待审 preview，不自动提交或发布。打包核对编译元数据、manifest、文件 checksum、最小权限和已配置服务端秘密；未知环境名直接拒绝。
+
+默认 SaaS 模式不能使用旧 Windows/store 打包入口。新文案、数据披露、审核步骤和未完成的发布条件见 [SaaS 商店准备](../../docs/saas-store/README.md)。来源 metadata 不是数字签名，格式/秘密扫描通过不代表真实服务器或商店审核通过。
+
 ## 登录与上传
 
 1. 用户打开弹窗中的「打开网页登录与授权」，工作台地址包含当前插件 ID。

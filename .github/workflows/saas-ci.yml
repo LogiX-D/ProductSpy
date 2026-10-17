@@ -77,6 +77,10 @@ jobs:
           PRODUCTSPY_TEST_ADMIN_DATABASE_URL: postgresql://productspy_test:synthetic-ci-only@127.0.0.1:5432/productspy_test
           PRODUCTSPY_TEST_DATABASE_URL: postgresql://productspy_app:synthetic-ci-app@127.0.0.1:5432/productspy_test
       - run: pnpm build
+      - name: Build and verify an isolated SaaS extension preview ZIP
+        run: |
+          pnpm package:saas:extension --environment development --origin http://127.0.0.1:3000
+          pnpm package:saas:extension --environment production --origin https://productspy-preview.example.invalid
       - run: node scripts/saas/verify-standalone.mjs
         env:
           PRODUCTSPY_TEST_DATABASE_URL: postgresql://productspy_app:synthetic-ci-app@127.0.0.1:5432/productspy_test
@@ -89,6 +93,10 @@ jobs:
         env:
           PRODUCTSPY_CONTAINER_VERIFY: '1'
           PRODUCTSPY_TEST_DATABASE_URL: postgresql://productspy_app:synthetic-ci-app@127.0.0.1:5432/productspy_test
+      - name: Verify original Compose orchestration
+        run: node scripts/saas/verify-compose.mjs
+        env:
+          PRODUCTSPY_COMPOSE_VERIFY: '1'
       - run: node scripts/saas/build-test-extension.mjs
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:saas:e2e

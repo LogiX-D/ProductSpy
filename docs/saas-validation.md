@@ -7,7 +7,7 @@
 | 验证                                             | 结果                             | 证明范围                                                                 |
 | ------------------------------------------------ | -------------------------------- | ------------------------------------------------------------------------ |
 | TypeScript / ESLint / Prettier / diff whitespace | PASS                             | 当前代码静态检查                                                         |
-| `pnpm test`                                      | 84 files，856 PASS，4 SKIP / 860 | 原业务及 SaaS 单元/集成；4 项网络数据库专属测试由下一项单独执行          |
+| `pnpm test`                                      | 87 files，882 PASS，4 SKIP / 886 | 原业务及 SaaS 单元/集成；4 项网络数据库专属测试由下一项单独执行          |
 | `pnpm test:postgres`                             | 44/44 PASS                       | 实际 PostgreSQL 18.4、pg TCP 驱动、无 superuser/BYPASSRLS 应用角色       |
 | `pnpm build`                                     | PASS                             | MV3 扩展及 Next.js standalone 生产构建                                   |
 | `pnpm test:saas:e2e`                             | 2/2 PASS                         | 真实加载 MV3、真实本机 HTTP/数据库、Amazon HTML fixture、Mock AI         |
@@ -74,6 +74,14 @@ PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、�
 - 独立队列任务在写结果前不提前暴露 succeeded，避免轮询误判；最终 UI E2E 已在队列路径通过。
 - 新增逻辑恢复的首轮 [Linux CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39005331463) 在该步骤失败：runner 默认 pg_dump 16.15 不能备份服务 PostgreSQL 17.11。此前静态、全量单测、受限角色 PostgreSQL 检查均通过；客户端修正后须重新执行完整 CI，不将 Windows 18.x 成功替代 Linux 17 验证。
 
+## SaaS 打包与恢复后业务增强
+
+本轮新增独立 `package:saas:extension`。真实 development（loopback）与 production 配置（保留的 `.invalid` 测试 origin）preview ZIP 均通过 CRC、逐文件 checksum 和 Windows 独立解包；每包 243 文件。所有产物在 `artifacts/saas/` 唯一目录，构建来源记录 `d56d14c` / dirty=true，不能当正式发布包。旧 extension/Windows ZIP 的 SHA256 保持不变。默认 SaaS 下旧打包入口在任何构建/删除前拒绝；新入口严格验证环境、origin、metadata、manifest 能力/CSP和服务端秘密。详见 [SaaS 商店准备](saas-store/README.md)，该文案仍是待填运营资料的草案。
+
+增强逻辑恢复已在同一本机临时 PG18.4 + 客户端18.6 通过：源库由真实应用路由生成合法注册密码、商品、模板、竞品、内容、Mock 分析与任务；custom dump 恢复后先核对 12 表 SQL/checksum/RLS，再调用进程内实际 Next 路由，验证两账号正确密码登录、错误密码拒绝、商品/历史/合法导出业务 checksum 一致及跨用户 404。登录预期新增 2 条会话、更新限流；原会话及其他表不变。该过程是 Request/Response + 真实 PG，不是网络 HTTP、公网、真实 AI 或物理设备。报告 `.test-data/saas/logical-recovery/ddc59902c3f74ace85b41c2e23f3b8e4/report.json`，dump 37,368 字节、SHA256 `1a843b55012ee6b062ef2ad2637067a7a33f6d5fc3ff746b3a51484c30600ecb`；自建两库已删除并复查无残留。
+
+`scripts/saas/verify-compose.mjs` 的 10 项边界测试通过；实际 Compose 编排验证加入 CI，目前尚未执行成功，不能当成已部署。它只在临时 Linux CI 验证原服务网络、db DNS、受限角色、独立 worker 和命名卷重建，采用本次合成环境，不读取生产 `.env.production`。本轮 ZIP、增强恢复及 Compose 的 Linux 结果须等待新提交 CI。
+
 ## 尚未证明的要求
 
 | 项目                             | 状态 / 需要的证据                                                           |
@@ -85,8 +93,8 @@ PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、�
 | Stripe 沙盒                      | 未交易；需真实 test account、price、secret、Webhook 投递与取消/失败场景     |
 | 真实交易                         | 未授权、未执行                                                              |
 | 真实私人数据迁移                 | 源目录未改动；应先指定真实 SaaS 归属账号，再预览/提交，不导入测试账号       |
-| 生产恢复/PITR                    | 本机物理/逻辑 SQL 恢复通过；托管备份、PITR、真实用户恢复与 RPO/RTO 待验收   |
+| 生产恢复/PITR                    | 本机物理/逻辑与合成账号恢复后业务通过；云端/PITR/生产 RPO/RTO 待验收        |
 | 公开运营资料                     | 需经营者/隐私联系人/保留期限、邮件核验/找回、账户注销；商店材料旧版已标历史 |
-| 远端 CI                          | 997b0a5 已完整通过；新认证修复须看当前 head checks，不沿用旧绿灯            |
+| 远端 CI                          | d56d14c 完整 CI 已通过；本轮打包/恢复/Compose 须看新 head checks            |
 
 未购买资源、未公开插件、未部署/修改生产、未合并主分支、未改动旧 Release。外部验收缺口仍在原始目标内，不能将本轮实现定义为全目标完成。
