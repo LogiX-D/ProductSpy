@@ -1,5 +1,7 @@
 import { draftSchema, errorMessage, isAmazonProductUrl } from '@productspy/shared';
 import { ExtensionLocalStorageAdapter, LocalhostProductSyncAdapter } from '../storage';
+import { LEGACY_MODE } from '../config';
+import { CLOUD_SYNC_ALARM, CloudSyncController } from './cloud-sync';
 import type {
   CaptureResult,
   ContentRequest,
@@ -11,6 +13,7 @@ import type {
 
 const local = new ExtensionLocalStorageAdapter();
 const sync = new LocalhostProductSyncAdapter();
+const cloud = new CloudSyncController();
 
 // Credentials and queued products stay in extension-owned contexts, never content scripts.
 void chrome.storage.local.setAccessLevel({ accessLevel: 'TRUSTED_CONTEXTS' }).catch(() => {
@@ -43,6 +46,7 @@ async function save(
     return { status: 'error', error: '商品资料不完整或格式有误，请刷新 Amazon 页面后重新采集。' };
   }
   const draft = parsed.data;
+  if (!LEGACY_MODE) return cloud.save(draft);
   try {
     const product = await sync.save(draft);
     try {
@@ -70,16 +74,23 @@ export async function handleRequest(request: ExtensionRequest): Promise<Extensio
     case 'PRODUCTSPY_CAPTURE':
       return capture();
     case 'PRODUCTSPY_BRIDGE_STATE':
+      if (!LEGACY_MODE) return cloud.state();
       return { status: 'bridge-state', paired: await sync.isPaired() };
     case 'PRODUCTSPY_PAIR':
       if (typeof request.code !== 'string') return { status: 'error', error: '请输入有效配对码。' };
+      if (!LEGACY_MODE) return cloud.pair(request.code);
       await sync.pair(request.code);
       return { status: 'paired' };
     case 'PRODUCTSPY_SAVE':
       return save(request);
     case 'PRODUCTSPY_PENDING_COUNT':
+      if (!LEGACY_MODE) return cloud.count();
       return { status: 'pending-count', count: (await local.pendingDrafts()).length };
+    case 'PRODUCTSPY_LOGOUT':
+      if (!LEGACY_MODE) return cloud.logout();
+      return { status: 'error', error: '本地兼容模式请在工作台撤销配对。' };
     case 'PRODUCTSPY_SYNC_PENDING': {
+      if (!LEGACY_MODE) return { status: 'synced', count: await cloud.syncPending(true) };
       const drafts = await local.pendingDrafts();
       let count = 0;
       for (const draft of drafts) {
@@ -103,11 +114,12 @@ chrome.runtime.onMessage.addListener(
         'PRODUCTSPY_SYNC_PENDING',
         'PRODUCTSPY_BRIDGE_STATE',
         'PRODUCTSPY_PAIR',
+        'PRODUCTSPY_LOGOUT',
       ].includes(request.type)
     )
       return;
-    if (request.type === 'PRODUCTSPY_PAIR' && sender.url !== chrome.runtime.getURL('popup.html'))
-      return;
+    // Page content scripts may only extract; all account, queue and save operations are popup-owned.
+    if (sender.url !== chrome.runtime.getURL('popup.html')) return;
     void handleRequest(request)
       .then(respond)
       .catch((error: unknown) => {
@@ -117,3 +129,15 @@ chrome.runtime.onMessage.addListener(
     return true;
   },
 );
+
+if (!LEGACY_MODE) {
+  chrome.alarms.onAlarm.addListener((alarm) => {
+    if (alarm.name === CLOUD_SYNC_ALARM) void cloud.syncPending(false).catch(() => undefined);
+  });
+  const resume = () => {
+    void cloud.schedule().catch(() => undefined);
+  };
+  chrome.runtime.onStartup.addListener(resume);
+  chrome.runtime.onInstalled.addListener(resume);
+  resume();
+}

@@ -15,6 +15,7 @@ import {
 } from './analysis-export';
 import { analysisOptionsSummary } from './analysis-preferences';
 import { Button, CopyButton } from './ui';
+import { isLegacyMode } from '../lib/session';
 
 const versionKinds: Record<AnalysisVersion['kind'], string> = {
   legacy: '旧版分析',
@@ -30,7 +31,7 @@ export function analysisProvenance(metadata?: AnalysisMetadata): string {
   if (!metadata) return '旧版分析：未记录生成参数、模型和用量；请自行核对内容来源。';
   return [
     metadata.mode === 'mock'
-      ? '本机演示 · 未调用外部模型'
+      ? `${isLegacyMode ? '本机演示' : 'Mock 演示'} · 未调用外部模型`
       : metadata.mode === 'real'
         ? `真实 AI · ${metadata.model ?? '模型未记录'}`
         : '旧版分析',
@@ -124,7 +125,9 @@ export function AnalysisHistory({
                   <p>{readableDate(version.createdAt)}</p>
                   <small>
                     {version.metadata?.mode === 'mock'
-                      ? '本机演示'
+                      ? isLegacyMode
+                        ? '本机演示'
+                        : 'Mock 演示'
                       : version.metadata?.mode === 'real'
                         ? `真实 AI · ${version.metadata.model ?? '模型未记录'}`
                         : '来源未完整记录'}

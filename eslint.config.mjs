@@ -13,6 +13,7 @@ export default tseslint.config(
       '**/artifacts/**',
       '**/.pack-cache/**',
       '**/dist/**',
+      '**/dist-saas-e2e/**',
       '**/next-env.d.ts',
       '**/test-results/**',
       '**/playwright-report/**',

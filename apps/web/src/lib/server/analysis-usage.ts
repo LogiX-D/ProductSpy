@@ -11,6 +11,11 @@ import {
 } from '@productspy/shared';
 import { AppError } from './errors';
 import { dataDirectory } from './product-repository';
+import { saasEnabled } from '../saas/context';
+import { dbTransaction } from '../saas/database';
+import { consumeAIAllowance } from '../saas/entitlements';
+import { startAIJob, finishAIJob } from '../saas/jobs';
+import { readWorkspaceDocument, writeWorkspaceDocument } from '../saas/workspace-storage';
 
 const usageRecordSchema = analysisUsageRecordSchema
   .extend({
@@ -68,7 +73,11 @@ export class AnalysisUsageLedger {
     const prior = registry.queues.get(this.filePath) ?? Promise.resolve();
     const result = prior
       .catch(() => undefined)
-      .then(() => withBusinessOperation(this.directory, operation));
+      .then(() =>
+        withBusinessOperation(this.directory, () =>
+          saasEnabled() ? dbTransaction(operation) : operation(),
+        ),
+      );
     registry.queues.set(
       this.filePath,
       result.catch(() => undefined),
@@ -78,7 +87,10 @@ export class AnalysisUsageLedger {
 
   private async read(): Promise<UsageRecord[]> {
     try {
-      const parsed: unknown = JSON.parse(await readFile(this.filePath, 'utf8'));
+      const source = saasEnabled()
+        ? await readWorkspaceDocument(this.directory, 'analysis-usage.json')
+        : await readFile(this.filePath, 'utf8');
+      const parsed: unknown = JSON.parse(source);
       const records = usageRecordSchema.array().safeParse(parsed);
       if (!records.success) throw new Error('Invalid usage ledger');
       const ids = records.data.map((record) => record.requestId);
@@ -95,6 +107,10 @@ export class AnalysisUsageLedger {
   }
 
   private async write(records: UsageRecord[]): Promise<void> {
+    if (saasEnabled()) {
+      await writeWorkspaceDocument(this.directory, 'analysis-usage.json', JSON.stringify(records));
+      return;
+    }
     await mkdir(this.directory, { recursive: true, mode: 0o700 });
     const temporary = join(this.directory, `.analysis-usage-${randomUUID()}.tmp`);
     try {
@@ -191,6 +207,17 @@ export class AnalysisUsageLedger {
           'AI 请求配置或用量记录格式无效，请检查模型名称与参数；尚未调用 AI 服务。',
         );
       records.push(record.data);
+      if (saasEnabled()) {
+        await consumeAIAllowance(input.requestId);
+        await startAIJob(
+          input.requestId,
+          input.productId.startsWith('content:')
+            ? 'content'
+            : input.productId.startsWith('comparison:')
+              ? 'comparison'
+              : 'analysis',
+        );
+      }
       // Commit the reservation before any network operation. A crash remains visible as unknown.
       await this.write(records);
       if (input.mode === 'real') this.active.add(input.requestId);
@@ -225,6 +252,12 @@ export class AnalysisUsageLedger {
         record.cooldownUntil = new Date(Date.now() + seconds * 1000).toISOString();
       }
       await this.write(records);
+      if (saasEnabled())
+        await finishAIJob(
+          requestId,
+          record.status === 'succeeded' ? 'succeeded' : 'failed',
+          result.errorCode,
+        );
     }).finally(() => this.active.delete(requestId));
   }
 

@@ -24,7 +24,7 @@ import {
   updateContentPlan,
   type ContentGenerationRequest,
 } from '../lib/content-api';
-import { webRequest } from '../lib/session';
+import { isLegacyMode, webRequest } from '../lib/session';
 import { ContentOptionsPanel } from './content-options';
 import { downloadContent } from './content-export';
 import { CONTENT_PREFERENCES_KEY } from './content-preferences';
@@ -328,7 +328,7 @@ export function ContentPlanPanel({
         JSON.stringify({ ...recovery, request: { ...request, authorizeReal: undefined } }),
       );
     } catch {
-      setPreferenceMessage('请求记录暂存失败；若连接中断，请先检查历史版本和本机用量。');
+      setPreferenceMessage('请求记录暂存失败；若连接中断，请先检查历史版本和请求用量。');
     }
     try {
       const result = await generateContent({ ...request, authorizeReal: authorized });
@@ -375,7 +375,7 @@ export function ContentPlanPanel({
         setMessage('找到上次已保存结果，没有重新调用 AI。');
       } else
         setMessage(
-          '尚未找到上次请求的保存结果。请核对本机用量与服务商账单；连接中断不能证明没有计费。',
+          '尚未找到上次请求的保存结果。请核对请求用量与服务商账单；连接中断不能证明没有计费。',
         );
     });
   }
@@ -450,7 +450,7 @@ export function ContentPlanPanel({
             {mode === 'real'
               ? '服务：真实 AI'
               : mode === 'mock'
-                ? '服务：Mock 本机演示'
+                ? '服务：Mock 演示'
                 : '正在确认 AI 模式'}
           </Badge>
         </div>
@@ -466,8 +466,9 @@ export function ContentPlanPanel({
         </p>
         {mode === 'mock' && (
           <p className="creation-notice">
-            未配置真实 AI 时，生成内容使用本机 Mock 示例，不消耗外部 API，也不代表真实模型质量。可在
-            Windows 启动器配置 API 地址、模型与 Key。
+            {isLegacyMode
+              ? '未配置真实 AI 时，生成内容使用本机 Mock 示例，不消耗外部 API，也不代表真实模型质量。可在 Windows 启动器配置 API 地址、模型与 Key。'
+              : '当前为 Mock 演示模式：输出为示例，不代表真实模型质量。生成仍计入账号的 AI 请求额度。'}
           </p>
         )}
         {mode === 'real' && (
@@ -877,7 +878,7 @@ export function ContentPlanPanel({
             {dialog === 'authorize'
               ? '将商品文字、模板指令、生成参数与可选对比结论发送至你配置的服务商，可能消耗 API 额度。不会上传图片和视频，不会自动重试。'
               : dialog === 'abandon'
-                ? '新请求可能再次产生费用。请先核对保存历史、本机用量与服务商账单；未知结果不能当作免费。'
+                ? '新请求可能再次产生费用。请先核对保存历史、请求用量与服务商账单；未知结果不能当作免费。'
                 : dialog === 'adopt'
                   ? '此操作只切换当前采用版本，原内容和人工编辑继续保留在历史中。'
                   : '历史内容将另存为新的恢复版本；原生成结果和人工编辑全部保留。'}

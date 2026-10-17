@@ -1,5 +1,10 @@
 import type { ApiResult } from '@productspy/shared';
 import { AppError } from './errors';
+import { saasEnabled, withTenant, withTenantRead } from '../saas/context';
+import { appOrigin, extensionOriginPattern } from '../saas/config';
+import { assertCloudContext, authenticateAccount, rateLimit } from '../saas/security';
+import { query } from '../saas/database';
+import { randomUUID } from 'node:crypto';
 import {
   assertAuthentication,
   assertWebContext,
@@ -14,6 +19,7 @@ const LOCAL_ORIGINS = new Set(['http://localhost:3000', 'http://127.0.0.1:3000']
 const MAX_BODY_BYTES = 1024 * 1024;
 
 export function isAllowedOrigin(origin: string): boolean {
+  if (saasEnabled()) return origin === appOrigin() || extensionOriginPattern.test(origin);
   return LOCAL_ORIGINS.has(origin) || pairedOrigin(origin);
 }
 
@@ -28,6 +34,11 @@ export async function assertLocalRequest(
   write = false,
   options: RequestProtection = {},
 ): Promise<void> {
+  if (saasEnabled()) {
+    assertCloudContext(request, write, options.webOnly, options.unpairedExtension);
+    if (options.authentication !== false) await authenticateAccount(request, options.webOnly);
+    return;
+  }
   const host = requestHost(request);
   const url = new URL(request.url);
   if (
@@ -89,7 +100,16 @@ export function jsonFailure(
   allowUnpairedExtension = false,
 ): Response {
   const known = error instanceof AppError;
-  if (!known || error.status >= 500) console.error('[ProductSpy API]', error);
+  if (!known || error.status >= 500)
+    console.error(
+      '[ProductSpy API]',
+      saasEnabled()
+        ? {
+            status: known ? error.status : 500,
+            type: error instanceof Error ? error.name : 'UnknownError',
+          }
+        : error,
+    );
   const body: ApiResult<never> = {
     ok: false,
     error: known ? error.message : '工作台暂时无法完成操作，请重试并检查服务日志',
@@ -116,6 +136,30 @@ export async function withApiRequest<T>(
   options: RequestProtection & { write?: boolean; status?: number } = {},
 ): Promise<Response> {
   try {
+    if (saasEnabled()) {
+      assertCloudContext(request, options.write, options.webOnly, options.unpairedExtension);
+      if (options.authentication === false)
+        return jsonSuccess(request, await operation(), options.status, options.unpairedExtension);
+      const identity = await authenticateAccount(request, options.webOnly);
+      await rateLimit(`api:${identity.user.id}`, 180);
+      const inTenant =
+        request.method === 'GET' && new URL(request.url).pathname !== '/api/workspace-backup'
+          ? withTenantRead
+          : withTenant;
+      return await inTenant(identity.user.id, async () => {
+        // A password change/revocation may have won the tenant lock while this request waited.
+        const current = await authenticateAccount(request, options.webOnly);
+        if (current.user.id !== identity.user.id || current.tokenHash !== identity.tokenHash)
+          throw new AppError(401, '登录状态已变化，请重新登录');
+        const result = await operation();
+        if (options.write)
+          await query(
+            'INSERT INTO audit_events(id,user_id,action,created_at) VALUES($1,$2,$3,now())',
+            [randomUUID(), identity.user.id, `${request.method} ${new URL(request.url).pathname}`],
+          );
+        return jsonSuccess(request, result, options.status, options.unpairedExtension);
+      });
+    }
     await assertLocalRequest(request, options.write, options);
     return jsonSuccess(request, await operation(), options.status, options.unpairedExtension);
   } catch (error) {
@@ -132,7 +176,7 @@ export async function preflight(
     await assertLocalRequest(request, false, { ...options, authentication: false });
     if (!request.headers.get('origin')) throw new AppError(403, '预检请求缺少有效来源');
     const origin = request.headers.get('origin') ?? '';
-    if (isExtensionOrigin(origin) && !options.unpairedExtension) {
+    if (!saasEnabled() && isExtensionOrigin(origin) && !options.unpairedExtension) {
       await refreshPairedOrigin();
       if (!pairedOrigin(origin)) throw new AppError(403, '扩展尚未与此工作台配对');
     }
@@ -144,14 +188,20 @@ export async function preflight(
       .filter(Boolean);
     if (
       requestedHeaders.some(
-        (header) => !['content-type', 'x-productspy-client', 'authorization'].includes(header),
+        (header) =>
+          !['content-type', 'x-productspy-client', 'authorization', 'idempotency-key'].includes(
+            header,
+          ),
       )
     ) {
       throw new AppError(403, '不支持此请求头');
     }
     const headers = corsHeaders(request, options.unpairedExtension);
     headers.set('Access-Control-Allow-Methods', [...methods, 'OPTIONS'].join(', '));
-    headers.set('Access-Control-Allow-Headers', 'Content-Type, X-ProductSpy-Client, Authorization');
+    headers.set(
+      'Access-Control-Allow-Headers',
+      'Content-Type, X-ProductSpy-Client, Authorization, Idempotency-Key',
+    );
     headers.set('Access-Control-Max-Age', '600');
     if (request.headers.get('access-control-request-private-network') === 'true') {
       headers.set('Access-Control-Allow-Private-Network', 'true');

@@ -5,6 +5,8 @@ import { join, resolve } from 'node:path';
 import { z } from 'zod';
 import { publishAtomicFile } from './atomic-file';
 import { AppError } from './errors';
+import { saasEnabled } from '../saas/context';
+import { commitWorkspaceDocuments } from '../saas/workspace-storage';
 
 export const BUSINESS_FILES = [
   'products.json',
@@ -129,6 +131,7 @@ async function cleanupStage(directory: string): Promise<void> {
 }
 /** Recovery runs before ordinary reads/writes, so a crashed multi-file restore is never visible. */
 export async function recoverBusinessRestore(directoryInput: string): Promise<void> {
+  if (saasEnabled()) return;
   const directory = resolve(directoryInput);
   const stage = join(directory, stageName);
   try {
@@ -205,6 +208,7 @@ export async function withBusinessExclusive<T>(
   directoryInput: string,
   operation: () => Promise<T>,
 ): Promise<T> {
+  if (saasEnabled()) return operation();
   const directory = resolve(directoryInput);
   if (registry.context.getStore()?.has(directory))
     throw new Error('Exclusive business restore cannot be nested inside a normal operation');
@@ -222,6 +226,7 @@ export async function withBusinessOperation<T>(
   directoryInput: string,
   operation: () => Promise<T>,
 ): Promise<T> {
+  if (saasEnabled()) return operation();
   const directory = resolve(directoryInput);
   if (registry.context.getStore()?.has(directory)) return operation();
   // Exclusive recovery precedes each shared grant; fair queueing prevents restore starvation.
@@ -241,6 +246,7 @@ export async function commitBusinessFiles(
   files: Record<BusinessFile, string>,
   publish: (source: string, destination: string) => Promise<void> = publishAtomicFile,
 ): Promise<void> {
+  if (saasEnabled()) return commitWorkspaceDocuments(directoryInput, files);
   const directory = resolve(directoryInput);
   if (registry.context.getStore()?.get(directory) !== 'exclusive')
     throw new Error('Restore requires business gate');
@@ -248,7 +254,7 @@ export async function commitBusinessFiles(
   const entries: z.infer<typeof entrySchema>[] = [];
   const originals = new Map<BusinessFile, string | undefined>();
   for (const name of BUSINESS_FILES) {
-    const old = await optionalRead(join(directory, name));
+    const old = await optionalRead(join(/* turbopackIgnore: true */ directory, name));
     originals.set(name, old);
     entries.push({
       name,
@@ -281,7 +287,7 @@ export async function commitBusinessFiles(
     for (const name of BUSINESS_FILES) {
       const temporary = join(stage, `publish-${name}`);
       await writeFile(temporary, files[name], { flag: 'wx', mode: 0o600 });
-      await publish(temporary, join(directory, name));
+      await publish(temporary, join(/* turbopackIgnore: true */ directory, name));
     }
     await writeFile(
       join(stage, 'journal-next.json'),

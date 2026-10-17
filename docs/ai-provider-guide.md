@@ -1,3 +1,5 @@
+> 历史本地版资料（v1.0.0 及此前）。正式产品现为 Chrome Extension + 在线 SaaS + 云端后端；当前要求、部署和隐私说明以仓库根 README、PRIVACY.md 及 docs/saas-*.md 为准。本文件保留旧发行用法/证据，不作为 SaaS 发布材料。
+
 # ProductSpy AI 服务配置与分析使用指南
 
 v0.5.1 起，远程 API 地址必须使用 HTTPS。HTTP 只接受 `localhost`、`127.0.0.1` 或 `[::1]` 本机服务；局域网 IP 也需要 HTTPS。服务端和 Windows 设置保存处均在发送请求前检查。旧版已保存的远程 HTTP 设置需要改为服务商的 HTTPS 地址；修正配置不会删除商品、分析或历史。

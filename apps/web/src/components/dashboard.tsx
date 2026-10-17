@@ -8,6 +8,7 @@ import { ProductCard } from './product-card';
 import { OpenSetupButton } from './first-use-guide';
 import { workspaceCopy as copy } from './workspace-copy';
 import { DEFAULT_LIBRARY_PREFERENCES, selectLibraryProducts } from './workspace-preferences';
+import { AccountUsage } from './account-usage';
 
 function startOfWeek(): number {
   const date = new Date();
@@ -35,6 +36,7 @@ export function Dashboard() {
   return (
     <div className="ws-page ws-dashboard">
       <PageHeading title={copy.dashboard.title} description={copy.dashboard.description} />
+      <AccountUsage />
       {error && <ErrorNotice message={error} onRetry={() => void reload()} />}
       <dl className="ws-dashboard-summary" aria-label={copy.dashboard.metrics}>
         {metrics.map(({ label, value, href }) => (

@@ -13,7 +13,7 @@ import {
   type Product,
 } from '@productspy/shared';
 import { Button, CopyButton, EmptyState, ErrorNotice } from './ui';
-import { webFetch, webRequest } from '../lib/session';
+import { isLegacyMode, webFetch, webRequest } from '../lib/session';
 import { workspaceCopy as copy } from './workspace-copy';
 import './media.css';
 
@@ -105,11 +105,12 @@ export function ProductMedia({ product }: { product: Product }) {
     let active = true;
     mountedRef.current = true;
     setHasSavePicker(Boolean((window as PickerWindow).showSaveFilePicker));
-    void webRequest<{ nativeDirectoryPicker: boolean }>('/api/media/downloads')
-      .then((data) => {
-        if (active) setNativeAvailable(data.nativeDirectoryPicker);
-      })
-      .catch(() => undefined);
+    if (isLegacyMode)
+      void webRequest<{ nativeDirectoryPicker: boolean }>('/api/media/downloads')
+        .then((data) => {
+          if (active) setNativeAvailable(data.nativeDirectoryPicker);
+        })
+        .catch(() => undefined);
     return () => {
       active = false;
       mountedRef.current = false;
@@ -275,7 +276,7 @@ export function ProductMedia({ product }: { product: Product }) {
     const picker = (window as PickerWindow).showSaveFilePicker;
     if (!picker && !browserPromptConfirmed) {
       setFailure(
-        '此浏览器不支持文件选择 API。请先开启“下载前询问每个文件的保存位置”，并勾选下方确认；或使用 Windows 保存目录。',
+        '此浏览器不支持文件选择 API。请先开启“下载前询问每个文件的保存位置”，并勾选下方确认。',
       );
       return;
     }
@@ -411,9 +412,7 @@ export function ProductMedia({ product }: { product: Product }) {
       <div className="media-destination panel">
         <div>
           <strong>保存位置</strong>
-          <p className="small muted">
-            {job ? job.directory : '请自行选择本机目录，或使用浏览器“另存为”。'}
-          </p>
+          <p className="small muted">{job ? job.directory : '素材由浏览器下载到你选择的位置。'}</p>
         </div>
         <div className="media-actions">
           {nativeAvailable && (
@@ -438,7 +437,9 @@ export function ProductMedia({ product }: { product: Product }) {
           </label>
         )}
         <p className="small muted">
-          Windows 目录下载会保留来源清单和 SHA-256；不会覆盖已有文件。保存会话 30 分钟内有效。
+          {isLegacyMode
+            ? 'Windows 目录下载会保留来源清单和 SHA-256；不会覆盖已有文件。保存会话 30 分钟内有效。'
+            : '浏览器 ZIP 下载包含来源清单与 SHA-256。素材下载至当前设备，不会写入云服务器的本地目录。'}
         </p>
       </div>
       {failure && <ErrorNotice message={failure} />}

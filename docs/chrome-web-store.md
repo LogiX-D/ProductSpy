@@ -1,3 +1,5 @@
+> 历史本地版资料（v1.0.0 及此前）。正式产品现为 Chrome Extension + 在线 SaaS + 云端后端；当前要求、部署和隐私说明以仓库根 README、PRIVACY.md 及 docs/saas-*.md 为准。本文件保留旧发行用法/证据，不作为 SaaS 发布材料。
+
 # Chrome Web Store 提交准备
 
 > 当前适用范围：1.0.0（Manifest 数字版 1.0.0.3）；正式文件名为 `ProductSpy-1.0.0-windows-x64.zip`、`ProductSpy-1.0.0-extension.zip`，既有哈希及草稿附件未变。[商店材料目录](store/README.md)、[隐私披露](store/privacy-disclosures.md)和[最终人工归档](v1.0.0-final-manual-acceptance-results.md)提供当前文档入口。维护者已声明53/53 PASS，但没有提供完整逐步骤/真实AI附件；未提交商店、未复核未来提交时的全部政策。**下文保留0.2.0/Phase10原准备记录，包括当时未发现Chrome和旧包名，属于历史事实，不代表当前安装环境或待验收数量。** GitHub公开发布与商店提交分别需要维护者另行决定。

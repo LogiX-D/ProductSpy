@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { errorMessage } from '@productspy/shared';
-import { webRequest } from '../lib/session';
+import { isLegacyMode, webRequest } from '../lib/session';
 import { Button, CopyButton, ErrorNotice } from './ui';
 
 export function pairingSecondsLeft(expiresAt: string, now = Date.now()): number {
@@ -15,6 +15,11 @@ export function BridgePairing() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [secondsLeft, setSecondsLeft] = useState(0);
+  const [extensionId, setExtensionId] = useState('');
+  useEffect(() => {
+    const candidate = new URLSearchParams(window.location.search).get('extensionId') ?? '';
+    if (/^[a-p]{32}$/.test(candidate)) setExtensionId(candidate);
+  }, []);
   const codeActive = Boolean(code && secondsLeft > 0);
   useEffect(() => {
     let active = true;
@@ -24,7 +29,7 @@ export function BridgePairing() {
       })
       .catch((failure: unknown) => {
         console.warn('[ProductSpy] Pairing status unavailable', failure);
-        if (active) setError('暂时无法读取工作台连接状态。请确认本地服务正在运行，再生成配对码。');
+        if (active) setError('暂时无法读取扩展授权状态。请检查网络后重试。');
       });
     return () => {
       active = false;
@@ -53,12 +58,18 @@ export function BridgePairing() {
     };
   }, [codeActive]);
   async function generate() {
+    if (!isLegacyMode && !/^[a-p]{32}$/.test(extensionId.trim())) {
+      setError('请输入有效的 Chrome 扩展 ID（32 个 a–p 字母）。');
+      return;
+    }
     setBusy(true);
     setError('');
     try {
       const next = await webRequest<{ code: string; expiresAt: string }>('/api/bridge/code', {
         method: 'POST',
-        body: '{}',
+        body: JSON.stringify(
+          isLegacyMode ? {} : { extensionOrigin: `chrome-extension://${extensionId.trim()}` },
+        ),
       });
       setSecondsLeft(pairingSecondsLeft(next.expiresAt));
       setCode(next);
@@ -83,11 +94,30 @@ export function BridgePairing() {
   }
   return (
     <div className="mt-4 border-t border-slate-200 pt-4">
-      <h3 className="text-sm font-semibold">连接本机工作台</h3>
+      <h3 className="text-sm font-semibold">
+        {isLegacyMode ? '连接本机工作台' : '授权 Chrome 扩展访问当前账号'}
+      </h3>
       <p className="mt-2 text-xs leading-5 text-slate-500">
-        生成一次性配对码，复制到插件的「工作台配对码」。配对码有效 2
-        分钟，只能使用一次；重新配对会撤销旧连接。
+        {isLegacyMode
+          ? '生成一次性配对码，复制到插件的「工作台配对码」。配对码有效 2 分钟，只能使用一次；重新配对会撤销旧连接。'
+          : '核对插件显示的扩展 ID，生成仅供该扩展使用的一次性授权码，再复制回插件完成登录。授权码有效 2 分钟；请勿分享。'}
       </p>
+      {!isLegacyMode && (
+        <label className="saas-extension-field">
+          Chrome 扩展 ID
+          <input
+            value={extensionId}
+            onChange={(event) => {
+              setExtensionId(event.target.value);
+              setCode(undefined);
+            }}
+            maxLength={32}
+            autoComplete="off"
+            spellCheck={false}
+            placeholder="32 个 a–p 字母"
+          />
+        </label>
+      )}
       <div className="mt-3 flex flex-wrap gap-2">
         <Button onClick={() => void generate()} disabled={busy}>
           {busy ? '正在处理…' : '生成配对码'}
@@ -96,7 +126,11 @@ export function BridgePairing() {
           撤销扩展连接
         </Button>
       </div>
-      {paired && <p className="mt-2 text-xs text-teal-700">已有扩展配对；可随时撤销。</p>}
+      {paired && (
+        <p className="mt-2 text-xs text-teal-700">
+          已有扩展授权；可随时撤销当前账号的全部扩展连接。
+        </p>
+      )}
       {code && secondsLeft > 0 && (
         <div className="mt-3">
           <div className="flex items-center gap-2">

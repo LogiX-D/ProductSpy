@@ -1,5 +1,6 @@
 import type { AnalysisUsageReport } from '@productspy/shared';
 import { Button } from './ui';
+import { isLegacyMode } from '../lib/session';
 
 export function AnalysisUsagePanel({
   report,
@@ -15,11 +16,13 @@ export function AnalysisUsagePanel({
   return (
     <details className="analysis-usage">
       <summary>
-        <strong>本机用量记录</strong>
+        <strong>{isLegacyMode ? '本机用量记录' : '账号请求记录'}</strong>
         <span>{report ? `${report.totals.realRequests} 次真实 AI 请求` : '未读取'}</span>
       </summary>
       <p className="analysis-field-hint">
-        记录只保存在本机。刷新用量不会调用外部模型。费用按你填写的单价估算，以服务商账单为准。
+        {isLegacyMode
+          ? '记录只保存在本机。刷新用量不会调用外部模型。费用按你填写的单价估算，以服务商账单为准。'
+          : '记录保存在当前账号。刷新不会调用外部模型。套餐剩余额度见“订阅与账单”；模型费用估算不代表订阅价格。'}
       </p>
       <Button variant="ghost" onClick={onRefresh} disabled={loading}>
         {loading ? '正在读取…' : '刷新用量'}
@@ -60,7 +63,7 @@ export function AnalysisUsagePanel({
               <div key={record.id}>
                 <span>
                   {new Date(record.createdAt).toLocaleString('zh-CN', { hour12: false })} ·{' '}
-                  {record.mode === 'mock' ? '本机演示' : '真实 AI'} ·{' '}
+                  {record.mode === 'mock' ? (isLegacyMode ? '本机演示' : 'Mock 演示') : '真实 AI'} ·{' '}
                   {
                     (
                       {
@@ -74,7 +77,9 @@ export function AnalysisUsagePanel({
                 </span>
                 <span>
                   {record.mode === 'mock'
-                    ? '本机演示 · 无外部费用'
+                    ? isLegacyMode
+                      ? '本机演示 · 无外部费用'
+                      : 'Mock 演示 · 计入套餐额度'
                     : record.usage?.costUsd === undefined
                       ? '费用未知'
                       : `估算 $${record.usage.costUsd.toFixed(6)}`}

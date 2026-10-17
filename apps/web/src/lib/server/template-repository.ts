@@ -20,6 +20,8 @@ import { publishAtomicFile } from './atomic-file';
 import { withBusinessOperation } from './business-lock';
 import { AppError } from './errors';
 import { dataDirectory } from './product-repository';
+import { saasEnabled } from '../saas/context';
+import { readWorkspaceDocument, writeWorkspaceDocument } from '../saas/workspace-storage';
 
 interface Registry {
   queues: Map<string, Promise<unknown>>;
@@ -60,9 +62,14 @@ export class LocalTemplateRepository {
   }
   private async read(): Promise<AITemplate[]> {
     try {
-      if ((await stat(this.filePath)).size > MAX_TEMPLATE_BACKUP_BYTES)
+      if (!saasEnabled() && (await stat(this.filePath)).size > MAX_TEMPLATE_BACKUP_BYTES)
         throw new Error('Template file exceeds size limit');
-      const value: unknown = JSON.parse(await readFile(this.filePath, 'utf8'));
+      const text = saasEnabled()
+        ? await readWorkspaceDocument(this.directory, 'templates.json')
+        : await readFile(this.filePath, 'utf8');
+      if (Buffer.byteLength(text) > MAX_TEMPLATE_BACKUP_BYTES)
+        throw new Error('Template document exceeds size limit');
+      const value: unknown = JSON.parse(text);
       return templateFileSchema.parse(value).templates;
     } catch (error) {
       if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT')
@@ -80,6 +87,10 @@ export class LocalTemplateRepository {
     const text = JSON.stringify(data.data, null, 2);
     if (Buffer.byteLength(text) > MAX_TEMPLATE_BACKUP_BYTES)
       throw new AppError(413, '模板资料超过 25 MiB。请先导出备份并整理模板；不会覆盖原文件。');
+    if (saasEnabled()) {
+      await writeWorkspaceDocument(this.directory, 'templates.json', text);
+      return;
+    }
     await mkdir(this.directory, { recursive: true, mode: 0o700 });
     const temporary = join(this.directory, `.templates-${randomUUID()}.tmp`);
     try {

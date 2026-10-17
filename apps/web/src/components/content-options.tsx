@@ -3,6 +3,7 @@
 import type { ContentOptions } from '@productspy/shared';
 import { analysisOptionChoices, type AnalysisPricingPreference } from './analysis-preferences';
 import { Button } from './ui';
+import { isLegacyMode } from '../lib/session';
 
 const labels = {
   market: '目标市场',
@@ -145,7 +146,9 @@ export function ContentOptionsPanel({
           </span>
         </div>
         <p className="creation-note">
-          模型、API 地址与 Key 在 Windows 启动器的 AI 设置中配置，Key 仅由服务端读取。
+          {isLegacyMode
+            ? '模型、API 地址与 Key 在 Windows 启动器的 AI 设置中配置，Key 仅由服务端读取。'
+            : 'AI 服务由工作台服务端配置，模型密钥不会发送至浏览器或扩展。生成消耗当前账号的请求额度。'}
         </p>
       </fieldset>
     </details>

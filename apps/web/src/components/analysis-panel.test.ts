@@ -16,7 +16,11 @@ vi.mock('@productspy/shared', async (original) => ({
   ...(await original<typeof import('@productspy/shared')>()),
   apiRequest: stubs.status,
 }));
-vi.mock('../lib/session', () => ({ webRequest: stubs.request }));
+vi.mock('../lib/session', () => ({
+  webRequest: stubs.request,
+  isLegacyMode: true,
+  getAccountSession: () => undefined,
+}));
 vi.mock('../lib/storage/product-api', () => ({
   productRepository: { saveAnalysis: stubs.save, restoreAnalysis: stubs.restore, get: stubs.get },
 }));

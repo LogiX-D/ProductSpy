@@ -15,7 +15,7 @@ export function portableGuide(source) {
     if (target === '../PRIVACY.md' || target === 'PRIVACY.md') return `](PRIVACY.md${anchor})`;
     if (target === 'windows-guide.md') return `](FIRST-RUN.md${anchor})`;
     if (PORTABLE_GUIDES.includes(target)) return match;
-    if (/^[a-zA-Z0-9][a-zA-Z0-9-]*\.(?:md|json)$/.test(target))
+    if (/^[a-zA-Z0-9][a-zA-Z0-9.-]*\.(?:md|json)$/.test(target))
       return `](https://github.com/LogiX-D/ProductSpy/blob/main/docs/${target}${anchor})`;
     throw new Error(`Unsupported portable help link: ${target}`);
   });

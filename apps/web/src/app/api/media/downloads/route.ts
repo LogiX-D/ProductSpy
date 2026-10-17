@@ -10,6 +10,7 @@ import {
   prepareMediaDownload,
 } from '../../../../lib/server/media-downloads';
 import { AppError } from '../../../../lib/server/errors';
+import { saasEnabled } from '../../../../lib/saas/context';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -37,14 +38,20 @@ const requestSchema = z.discriminatedUnion('action', [
     .strict(),
 ]);
 export function GET(request: Request): Promise<Response> {
-  return withApiRequest(request, () => ({ nativeDirectoryPicker: mediaDirectoryAvailable() }), {
-    webOnly: true,
-  });
+  return withApiRequest(
+    request,
+    () => ({ nativeDirectoryPicker: !saasEnabled() && mediaDirectoryAvailable() }),
+    {
+      webOnly: true,
+    },
+  );
 }
 export function POST(request: Request): Promise<Response> {
   return withApiRequest(
     request,
     async () => {
+      if (saasEnabled())
+        throw new AppError(410, '在线工作台请使用浏览器下载；服务器不提供本机目录操作');
       const parsed = requestSchema.safeParse(await readJsonBody(request, 16384));
       if (!parsed.success) throw new AppError(400, '素材下载请求无效；目录只能由本机选择窗口指定');
       const input = parsed.data;

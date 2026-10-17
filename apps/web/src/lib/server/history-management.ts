@@ -17,11 +17,19 @@ import { getComparisonRepository } from './comparison-repository';
 import { getTemplateRepository } from './template-repository';
 import { getContentRepository } from './content-repository';
 import { AppError } from './errors';
+import { saasEnabled } from '../saas/context';
 
 type Entity = Product | ComparisonPlan | AITemplate | ContentPlan;
 const hash = (value: string): string => createHash('sha256').update(value).digest('hex');
 const globals = globalThis as typeof globalThis & { __productspyArchiveSecret?: Buffer };
-const secret = (globals.__productspyArchiveSecret ??= randomBytes(32));
+const legacySecret = (globals.__productspyArchiveSecret ??= randomBytes(32));
+function archiveSecret(): Buffer {
+  if (!saasEnabled()) return legacySecret;
+  const configured = process.env.PRODUCTSPY_ARCHIVE_SECRET;
+  if (!configured || configured.length < 32)
+    throw new AppError(503, '历史清理未配置服务端签名密钥；仍可正常查看和导出');
+  return Buffer.from(configured, 'utf8');
+}
 const signedSchema = z
   .object({
     kind: historyKindSchema,
@@ -154,7 +162,7 @@ export async function exportHistoryArchive(input: {
       expiresAt: Date.now() + 30 * 60 * 1000,
     }),
   ).toString('base64url');
-  const signature = createHmac('sha256', secret).update(encoded).digest('base64url');
+  const signature = createHmac('sha256', archiveSecret()).update(encoded).digest('base64url');
   return { archive, archiveReceipt: `${encoded}.${signature}`, sha256 };
 }
 export async function cleanupArchivedHistory(input: {
@@ -167,7 +175,7 @@ export async function cleanupArchivedHistory(input: {
 }): Promise<{ removed: number; summary: HistorySummary }> {
   const [encoded, signature, extra] = input.archiveReceipt.split('.');
   if (!encoded || !signature || extra) throw new AppError(400, '归档凭证无效，请重新导出历史。');
-  const expected = createHmac('sha256', secret).update(encoded).digest();
+  const expected = createHmac('sha256', archiveSecret()).update(encoded).digest();
   const actual = Buffer.from(signature, 'base64url');
   if (actual.length !== expected.length || !timingSafeEqual(actual, expected))
     throw new AppError(400, '归档凭证校验失败，请重新导出；没有清理任何版本。');

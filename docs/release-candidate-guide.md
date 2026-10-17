@@ -1,3 +1,5 @@
+> 历史本地版资料（v1.0.0 及此前）。正式产品现为 Chrome Extension + 在线 SaaS + 云端后端；当前要求、部署和隐私说明以仓库根 README、PRIVACY.md 及 docs/saas-*.md 为准。本文件保留旧发行用法/证据，不作为 SaaS 发布材料。
+
 # ProductSpy 1.0.0 安装与使用
 
 这是基于 rc.2 制作的 1.0.0 正式版交付包，Release 仅为草稿，尚未公开。ProductSpy 只支持 Amazon，本机保存商品及营销资料，不需要注册账户、数据库、Node.js 或 pnpm。Mock 可以完整演示；真实 AI 由你配置服务并逐次授权。

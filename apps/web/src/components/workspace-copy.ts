@@ -1,5 +1,6 @@
 /** Workspace UI copy. Product content and technical identifiers keep their original text. */
-export const workspaceCopy = {
+import { isLegacyMode } from '../lib/session';
+const legacyWorkspaceCopy = {
   common: {
     amazon: 'Amazon',
     library: '商品库',
@@ -174,3 +175,24 @@ export const workspaceCopy = {
       '当前扩展需加载本地文件，请保留 extension 文件夹。工作台页面可以关闭，服务需保持运行；退出时在启动器点击「停止并退出」。商品保存在独立用户数据目录，更新程序不会清空商品。',
   },
 } as const;
+
+export const workspaceCopy = isLegacyMode
+  ? legacyWorkspaceCopy
+  : {
+      ...legacyWorkspaceCopy,
+      library: {
+        ...legacyWorkspaceCopy.library,
+        eyebrow: '云端商品库',
+        syncNote: '商品由 Chrome 扩展同步至账号 · 每 5 秒刷新',
+      },
+      card: {
+        ...legacyWorkspaceCopy.card,
+        confirmDescription: '商品与 AI 分析将从当前账号的商品库删除，此操作无法撤销。',
+      },
+      shell: {
+        ...legacyWorkspaceCopy.shell,
+        local: '账号数据 · 云端同步',
+        setup: '连接 Chrome 扩展',
+        setupLabel: '查看扩展安装与授权说明',
+      },
+    };

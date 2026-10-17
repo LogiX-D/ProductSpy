@@ -1,3 +1,5 @@
+> 历史本地版资料（v1.0.0 及此前）。正式产品现为 Chrome Extension + 在线 SaaS + 云端后端；当前要求、部署和隐私说明以仓库根 README、PRIVACY.md 及 docs/saas-*.md 为准。本文件保留旧发行用法/证据，不作为 SaaS 发布材料。
+
 # 商品库、批量操作与本地备份
 
 适用于 ProductSpy 0.5.0。仅支持 Amazon；批量操作不会调用 AI。

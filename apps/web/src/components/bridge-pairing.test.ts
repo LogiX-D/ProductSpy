@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { BridgePairing, pairingSecondsLeft } from './bridge-pairing';
 import { webRequest } from '../lib/session';
 
-vi.mock('../lib/session', () => ({ webRequest: vi.fn() }));
+vi.mock('../lib/session', () => ({ webRequest: vi.fn(), isLegacyMode: true }));
 
 describe('pairing code expiry and recovery', () => {
   let root: Root | undefined;
