@@ -6,17 +6,17 @@
   "baseline": "b83027a",
   "status": "IMPLEMENTED_LOCALLY_EXTERNAL_ACCEPTANCE_PENDING",
   "unit": {
-    "passed": 852,
-    "total": 855,
+    "passed": 856,
+    "total": 860,
     "files": 84,
-    "scope": "legacy and SaaS local tests; three network PostgreSQL cases skipped here and exercised separately",
-    "skipped": 3
+    "scope": "Legacy and SaaS local tests; four network PostgreSQL cases skipped here and exercised separately",
+    "skipped": 4
   },
   "postgres": {
     "driver": "pg TCP loopback",
     "role": "NOSUPERUSER NOBYPASSRLS",
     "version": "18.4 Windows x64",
-    "passed": 42,
+    "passed": 44,
     "scope": "real handlers, RLS, write locking and independent reads, CLI import, independent Node AI worker and billing SQL/authorization; synthetic data, Mock AI, offline Stripe provider"
   },
   "browser": {
@@ -59,8 +59,8 @@
     "format": "PASS",
     "lint": "PASS",
     "build": "PASS",
-    "docker": "PENDING_CURRENT_CI_EXECUTION; real runtime/worker image smoke added, not inferred from Node command tests",
-    "remoteCI": "Last verified head 6436dd9 passed including actual PostgreSQL 17 logical recovery; inspect PR checks for subsequent commits"
+    "docker": "PASS: actual Linux runtime and worker image builds, Docker health, independent worker, web recreation, persistence and tenant isolation",
+    "remoteCI": "Head 997b0a5 passed including actual PostgreSQL 17 logical recovery and Docker runtime checks; inspect PR checks for subsequent commits"
   },
   "privateLegacyData": {
     "migrated": false,
@@ -95,10 +95,13 @@
   },
   "remoteCI": {
     "laterCommits": "Inspect PR #1 checks for current state",
-    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39005647343",
-    "platform": "GitHub Ubuntu + PostgreSQL 17 + Chromium",
+    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39006243043",
+    "platform": "GitHub Ubuntu + PostgreSQL 17.11 + actual Docker web/worker + Chromium",
     "conclusion": "success",
-    "commit": "6436dd99abf12ddf2f89e4eea76a32329ca1154d"
+    "commit": "997b0a5fda3307ec5c0b405c627c111c796cf3d9",
+    "unitPassed": 842,
+    "unitSkipped": 13,
+    "skipScope": "Three network PostgreSQL cases run separately; ten Windows-only tests skipped on Linux"
   },
   "deploymentInstruction": "Review PR first; do not deploy (user instruction 2026-10-17)",
   "liveWorkflow": {
@@ -171,5 +174,31 @@
       "reason": "Runner default pg_dump 16.15 cannot dump PostgreSQL server 17.11; select matching clients and rerun",
       "previousSteps": "typecheck, lint, format, unit, postgres passed"
     }
-  ]
+  ],
+  "containers": {
+    "status": "PASS",
+    "commit": "997b0a5fda3307ec5c0b405c627c111c796cf3d9",
+    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39006243043",
+    "checks": [
+      "actual image build and non-root revision inspection",
+      "actual Docker health on random PORT",
+      "durable queue before independent worker container",
+      "worker exit 0 and saved analysisHistory",
+      "web destruction and recreation with identical product/history checksums",
+      "other account empty library and product/history/job HTTP 404"
+    ],
+    "cleanup": "Owned containers and synthetic accounts removed",
+    "scope": "Actual Docker on GitHub Linux with loopback PostgreSQL, private HTTP Host/Origin simulation and Mock AI; no Compose, public TLS, cloud or physical cross-device acceptance"
+  },
+  "prReview": {
+    "baseCommit": "997b0a5fda3307ec5c0b405c627c111c796cf3d9",
+    "report": "docs/saas-pr-review.md",
+    "fixed": [
+      "Old-password login racing password revocation",
+      "Extension pairing racing password revocation",
+      "Cross-tab stale sessions after login/register"
+    ],
+    "regressions": "Five deterministic regressions failed against old code; all passed after fixes. Two server races proven with actual restricted PostgreSQL role.",
+    "deployment": "NOT_EXECUTED_PER_USER_INSTRUCTION"
+  }
 }

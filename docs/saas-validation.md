@@ -7,8 +7,8 @@
 | 验证                                             | 结果                             | 证明范围                                                                 |
 | ------------------------------------------------ | -------------------------------- | ------------------------------------------------------------------------ |
 | TypeScript / ESLint / Prettier / diff whitespace | PASS                             | 当前代码静态检查                                                         |
-| `pnpm test`                                      | 84 files，852 PASS，3 SKIP / 855 | 原业务及 SaaS 单元/集成；3 项网络数据库专属测试由下一项单独执行          |
-| `pnpm test:postgres`                             | 42/42 PASS                       | 实际 PostgreSQL 18.4、pg TCP 驱动、无 superuser/BYPASSRLS 应用角色       |
+| `pnpm test`                                      | 84 files，856 PASS，4 SKIP / 860 | 原业务及 SaaS 单元/集成；4 项网络数据库专属测试由下一项单独执行          |
+| `pnpm test:postgres`                             | 44/44 PASS                       | 实际 PostgreSQL 18.4、pg TCP 驱动、无 superuser/BYPASSRLS 应用角色       |
 | `pnpm build`                                     | PASS                             | MV3 扩展及 Next.js standalone 生产构建                                   |
 | `pnpm test:saas:e2e`                             | 2/2 PASS                         | 真实加载 MV3、真实本机 HTTP/数据库、Amazon HTML fixture、Mock AI         |
 | 实时 Amazon 读取                                 | CAPTURED，HTTP 200               | 实际 MV3 从 B09B8V1LZ3 采集标题、9 图、6 卖点；无视频；未上传/分析       |
@@ -18,6 +18,7 @@
 | Stripe 离线合同与结算恢复                        | 25/25 PASS                       | 9 项含官方 SDK 签名的 Webhook 合同及 16 项结算/核对；提供商 HTTP 为模拟  |
 | 真实 Amazon 串联验证                             | 本机 PASS                        | 实际 MV3 上传到 PostgreSQL、独立 worker 保存 Mock 分析、重启后另会话查看 |
 | PostgreSQL 逻辑备份恢复                          | 本机 PASS                        | custom dump → 独立空库 restore；12 表 checksum、6 表 RLS、跨用户写入拒绝 |
+| Docker Web / Worker 实际运行                     | Linux CI PASS                    | 两个非 root 镜像、随机 PORT 健康、独立 worker、销毁重建后数据与隔离一致  |
 
 PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、详情/历史/备份授权、一次性授权码来源绑定、扩展最小权限、采集幂等、Free/Pro 和导入超限回滚、改密撤销、已认证排队请求的撤销竞态、PG 写锁与无阻塞读取、RLS 连接清理、持久队列、独立 Node worker 和 CLI。
 
@@ -37,7 +38,9 @@ PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、�
 
 `node scripts/saas/verify-standalone.mjs` 已在本机直接启动构建产物的 `server.js`，使用临时真实 PostgreSQL 的受限角色，验证健康、注册、Secure/HttpOnly Cookie、商品保存与持久化、队列、独立 worker、Mock 结果及退出。内网请求使用 Node HTTP 模拟边缘代理的 Host/Origin；不是公网 HTTPS/TLS 或 Docker 运行证明。最初 fetch 忽略自定义 Host 导致 403，改用可控制 Host 的 HTTP 测试客户端后通过，没有放宽服务器来源校验。
 
-提交 `6436dd9` 的 [GitHub Linux / PostgreSQL CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39005647343) 已实际成功，包含 typecheck、lint、format、unit、真实 PostgreSQL、构建、实际 standalone + 独立 worker 及 MV3 E2E。逻辑恢复也已在 PostgreSQL 17.11 + pg_dump/pg_restore 17.11（Ubuntu PGDG）通过。后续提交的状态以 [PR #1 checks](https://github.com/LogiX-D/ProductSpy/pull/1/checks) 为准，不把旧提交绿灯套用到新提交。
+提交 `997b0a5` 的 [GitHub Linux / PostgreSQL / Docker CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39006243043) 已实际成功，包含 typecheck、lint、format、unit、真实 PostgreSQL、构建、实际 standalone + 独立 worker、两个 Docker 镜像构建/运行及 MV3 E2E。该提交当时受限角色 PostgreSQL 为 42/42。Linux 全量单测为 842 PASS / 13 SKIP（含 10 项 Windows 专属测试），浏览器 2/2。逻辑恢复也已在 PostgreSQL 17.11 + pg_dump/pg_restore 17.11（Ubuntu PGDG）通过。后续提交的状态以 [PR #1 checks](https://github.com/LogiX-D/ProductSpy/pull/1/checks) 为准，不把旧提交绿灯套用到新提交。
+
+`scripts/saas/verify-containers.mjs` 实际运行本次构建的 `runtime` / `worker` 镜像，核对镜像 revision 与非 root 用户。Web 在随机 PORT 上由 Docker HEALTHCHECK 报 healthy；HTTP 注册/保存商品后，任务在 worker 启动前保持 queued，独立 worker 容器退出 0 并保存分析历史。销毁 Web 容器后用相同镜像重建，重新登录，商品/历史 checksum 一致；另一个账号库为空，商品/历史/任务均返回 404。两个合成账号及自建容器已清理。该检查也发现并修复原健康检查写死 3000 的问题。它证明实际容器与测试 PostgreSQL 的运行，不证明 Compose、公网 TLS、云端部署、真实 AI 或跨物理设备。
 
 ## 真实 Amazon 本机串联与逻辑恢复
 
@@ -49,14 +52,14 @@ PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、�
 
 报告为 `.test-data/saas/logical-recovery/531dd8d17ea94a7face0aeaf68e80753/report.json`，dump SHA256 为 `d28521b0b2271c65f0ed15a5f63fc91270a73334503cd02d646cfc981726a5cf`。这里证明 SQL/策略恢复，不代表恢复后真实用户登录、有效 AI 结果质量、云端/PITR 或生产 RPO/RTO。Windows 客户端来自 [PostgreSQL 官方 Windows 页](https://www.postgresql.org/download/windows/)指向的 [EDB 便携包](https://www.enterprisedb.com/download-postgresql-binaries)，仅解压到 TEMP，未安装服务。Linux 恢复于上述 `6436dd9` CI 实际通过，使用官方 PGDG 的 17.11 客户端，没有降级服务器或跳过检查。
 
-## PR 订阅流程复核
+## PR 认证与订阅流程复核
 
-用户要求先审阅 PR、暂不部署。本轮只修改开发分支及测试数据库。
+用户要求先审阅 PR、暂不部署。本轮只修改开发分支及测试数据库。完整发现与范围见 [PR 审阅记录](saas-pr-review.md)。新增两项真实 PostgreSQL 并发回归证明：旧密码登录、旧授权码配对可以逃逸改密撤销，旧码均返回可用凭证 200；统一用户锁内重新验证/签发后均拒绝 401。另有 3 项跨标签页旧会话回归在旧码失败，登录/注册成功后再次失效广播的修复已通过。
 
 - 旧实现按小时生成 Checkout 幂等键。新增的三个回归在旧代码全部失败：跨小时重复新建、同小时过期后复用旧页、provider 已接收但响应丢失后跨小时重复新建。现改为先持久化 UUID 和完整请求再调用 provider；三项均通过。
 - 新增并发结算、配置变化后原参数恢复、超过安全窗口停止重发、完成并取消后的重新订阅、Webhook 延迟防重复、past_due/unpaid/incomplete/paused、客户/owner/价格/quantity/有效期及分页失败的回归。
 - 新增网页主动核对接口，真实 route 验证匿名、跨站和扩展请求被拒绝，客户端伪造用户/套餐不影响其他用户。旧订阅终止事件不再覆盖新权益，重复事件不依赖再次访问 provider。
-- 新字段通过迁移角色连续执行两次迁移均成功；真实 PostgreSQL 受限角色共 42 项通过。首次并行支付测试因两个文件复用同一合成 customer ID 触发唯一约束，改为每文件独立 ID 后通过。
+- 新字段通过迁移角色连续执行两次迁移均成功；真实 PostgreSQL 受限角色共 44 项通过。首次并行支付测试因两个文件复用同一合成 customer ID 触发唯一约束，改为每文件独立 ID 后通过。
 
 这些测试使用真实 SQL、应用角色和路由；支付 provider 为离线模拟，没有发送 Stripe HTTP，没有测试付款、沙盒交易或真实交易。
 
@@ -75,7 +78,7 @@ PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、�
 
 | 项目                             | 状态 / 需要的证据                                                           |
 | -------------------------------- | --------------------------------------------------------------------------- |
-| HTTPS 云部署、正式 origin 扩展包 | 用户已指示暂不部署；Dockerfile/Compose 具备准备，当前没有 Docker 运行证明   |
+| HTTPS 云部署、正式 origin 扩展包 | 用户已指示暂不部署；实际 Docker Web/Worker 已通过 CI；Compose/公网 TLS 未验 |
 | 完整真实链路                     | 未完成：实际 Amazon→MV3→本机 PG→Mock→重启/另会话已通过；云端与真 AI 未验    |
 | 真实 AI                          | 未调用；需服务端凭据与明确测试预算/授权，另做内容质量核验                   |
 | 跨物理设备                       | 未完成；同机独立浏览器只证明会话与服务端持久化                              |
@@ -84,6 +87,6 @@ PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、�
 | 真实私人数据迁移                 | 源目录未改动；应先指定真实 SaaS 归属账号，再预览/提交，不导入测试账号       |
 | 生产恢复/PITR                    | 本机物理/逻辑 SQL 恢复通过；托管备份、PITR、真实用户恢复与 RPO/RTO 待验收   |
 | 公开运营资料                     | 需经营者/隐私联系人/保留期限、邮件核验/找回、账户注销；商店材料旧版已标历史 |
-| 远端 CI                          | 查看开发 PR 当前 checks；本文件是推送前本机验收快照，不预先宣称 CI 成功     |
+| 远端 CI                          | 997b0a5 已完整通过；新认证修复须看当前 head checks，不沿用旧绿灯            |
 
 未购买资源、未公开插件、未部署/修改生产、未合并主分支、未改动旧 Release。外部验收缺口仍在原始目标内，不能将本轮实现定义为全目标完成。
