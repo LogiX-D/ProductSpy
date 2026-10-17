@@ -42,7 +42,36 @@ jobs:
         env:
           PRODUCTSPY_TEST_DATABASE_URL: postgresql://productspy_app:synthetic-ci-app@127.0.0.1:5432/productspy_test
       - name: Verify PostgreSQL logical backup and isolated restore
-        run: PRODUCTSPY_PG_BIN="$(dirname "$(command -v pg_dump)")" node scripts/saas/verify-logical-recovery.mjs
+        shell: bash
+        run: |
+          set -euo pipefail
+          pg_bin=/usr/lib/postgresql/17/bin
+          if [[ ! -x "$pg_bin/pg_dump" || ! -x "$pg_bin/pg_restore" ]]; then
+            # ubuntu-latest currently ships 16; use the official PGDG client package for our 17 service.
+            # https://www.postgresql.org/download/linux/ubuntu/
+            . /etc/os-release
+            sudo install -d /usr/share/postgresql-common/pgdg
+            sudo curl --fail --silent --show-error --location --retry 3 \
+              -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+              https://www.postgresql.org/media/keys/ACCC4CF8.asc
+            sudo tee /etc/apt/sources.list.d/productspy-pgdg.sources >/dev/null <<EOF
+          Types: deb
+          URIs: https://apt.postgresql.org/pub/repos/apt
+          Suites: ${VERSION_CODENAME}-pgdg
+          Architectures: $(dpkg --print-architecture)
+          Components: main
+          Signed-By: /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+          EOF
+            sudo apt-get update
+            sudo apt-get install --yes --no-install-recommends postgresql-client-17
+          fi
+          dump_version="$("$pg_bin/pg_dump" --version)"
+          restore_version="$("$pg_bin/pg_restore" --version)"
+          printf '%s\n' "$dump_version" "$restore_version"
+          [[ "$dump_version" == 'pg_dump (PostgreSQL) 17.'* ]]
+          [[ "$restore_version" == 'pg_restore (PostgreSQL) 17.'* ]]
+          [[ "${dump_version#pg_dump }" == "${restore_version#pg_restore }" ]]
+          PRODUCTSPY_PG_BIN="$pg_bin" node scripts/saas/verify-logical-recovery.mjs
         env:
           PRODUCTSPY_LOGICAL_RECOVERY_ALLOW_CREATE: '1'
           PRODUCTSPY_TEST_ADMIN_DATABASE_URL: postgresql://productspy_test:synthetic-ci-only@127.0.0.1:5432/productspy_test

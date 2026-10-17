@@ -69,6 +69,7 @@ PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、�
 - MV3 E2E 首轮因两个 Mock 标签触发严格选择器失败；修正选择器后通过，未把失败写成业务成功。
 - 首次迁移脚本 top-level await/CJS、CLI 预览漏 options、测试重复 import 的 typecheck 失败均已修复并复跑相应命令。
 - 独立队列任务在写结果前不提前暴露 succeeded，避免轮询误判；最终 UI E2E 已在队列路径通过。
+- 新增逻辑恢复的首轮 [Linux CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39005331463) 在该步骤失败：runner 默认 pg_dump 16.15 不能备份服务 PostgreSQL 17.11。此前静态、全量单测、受限角色 PostgreSQL 检查均通过；客户端修正后须重新执行完整 CI，不将 Windows 18.x 成功替代 Linux 17 验证。
 
 ## 尚未证明的要求
 

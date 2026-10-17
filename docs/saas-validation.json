@@ -155,5 +155,14 @@
     "temporaryDatabasesCleaned": true,
     "restoredApplicationLogin": "NOT_TESTED",
     "cloudPITR": "NOT_TESTED"
-  }
+  },
+  "ciFailures": [
+    {
+      "commit": "1370467b8582f70b67cc06079763be122faf1589",
+      "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39005331463",
+      "failedStep": "Verify PostgreSQL logical backup and isolated restore",
+      "reason": "Runner default pg_dump 16.15 cannot dump PostgreSQL server 17.11; select matching clients and rerun",
+      "previousSteps": "typecheck, lint, format, unit, postgres passed"
+    }
+  ]
 }
