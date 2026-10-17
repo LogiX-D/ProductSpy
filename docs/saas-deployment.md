@@ -34,8 +34,6 @@ standalone 静态资源须复制到对应 `apps/web/.next/static`，Dockerfile �
 
 `compose.yaml` 提供数据库与 web 准备。先设置管理员密码并启动 db，运行一次迁移与应用角色初始化，再构建/启动 web；迁移凭证不注入 web。不要仅因 Compose 文件存在就声明已验证 Docker/云端部署。
 
-## Stripe
-
 ## 后台 AI Worker
 
 工作台提交 `/api/jobs` 后即持久入队，前端轮询自身任务并读取结果；关闭页面不会取消已提交任务。额度、任务与 dispatch 同事务预留；消费复用原分析/对比/内容 pipeline，结果和版本仍写原业务模型。

@@ -1,0 +1,82 @@
+{
+  "date": "2026-10-17",
+  "timezone": "Asia/Shanghai",
+  "branch": "codex/saas-migration",
+  "implementationCommit": "18a4b8fa581b6429dfac9b3e38ae475450769a1d",
+  "baseline": "b83027a",
+  "status": "IMPLEMENTED_LOCALLY_EXTERNAL_ACCEPTANCE_PENDING",
+  "unit": {
+    "passed": 811,
+    "total": 814,
+    "files": 80,
+    "scope": "legacy and SaaS local tests; three network PostgreSQL cases skipped here and exercised separately",
+    "skipped": 3
+  },
+  "postgres": {
+    "driver": "pg TCP loopback",
+    "role": "NOSUPERUSER NOBYPASSRLS",
+    "version": "18.4 Windows x64",
+    "passed": 17,
+    "scope": "real handlers, RLS, write locking and independent reads, CLI import, independent Node AI worker; synthetic data and Mock AI"
+  },
+  "browser": {
+    "crossDevice": "independent browser contexts on one machine only",
+    "responsive375": true,
+    "browser": "Chrome for Testing Chromium",
+    "passed": 2,
+    "backend": "real local HTTP + PGlite",
+    "ai": "Mock",
+    "offlineRecovery": true,
+    "collection": "Amazon HTML fixture in actual MV3"
+  },
+  "liveAmazon": {
+    "images": 9,
+    "httpStatus": 200,
+    "outcome": "captured",
+    "aiRequests": 0,
+    "videos": 0,
+    "bulletPoints": 6,
+    "asin": "B09B8V1LZ3",
+    "htmlSha256": "0a6b3b29a981c2b02b5d84c01ea4909f7335356b61bc9d3d0665f93d75fed0b3",
+    "uploadedToSaaS": false
+  },
+  "recovery": {
+    "stoppedClusterPhysicalCopyRestore": "PASS",
+    "sentinelSha256": "07930677f4e6f4744217992188e0656eb249fb9d06c56ce73f1ed9fbb549b790",
+    "restoredTenantIsolation": "PASS",
+    "scope": "temporary local PostgreSQL only; no cloud/PITR/pg_dump certification",
+    "originalPostgresRestart": "PASS"
+  },
+  "billing": {
+    "offlineSdkSignatureTests": 7,
+    "realTransactions": "NOT_TESTED",
+    "actualStripeSandbox": "NOT_TESTED"
+  },
+  "checks": {
+    "typecheck": "PASS",
+    "format": "PASS",
+    "lint": "PASS",
+    "build": "PASS",
+    "docker": "NOT_EXECUTED",
+    "remoteCI": "See current PR checks; this is the local pre-push snapshot"
+  },
+  "privateLegacyData": {
+    "migrated": false,
+    "modified": false,
+    "reason": "Real SaaS owner account must be chosen first"
+  },
+  "artifacts": [
+    {
+      "sha256": "dd0db54c15c000daa759dd8a8da568c5d26b76aa6c465809fecc5b1e3d0cef1f",
+      "path": "docs/screenshots/saas/account-mobile.png"
+    },
+    {
+      "sha256": "0ad91299298b0c93dbfcacffe807223ed005b51c3f4bccbe8dc4d51d4e6ccc9e",
+      "path": "docs/screenshots/saas/extension-captured.png"
+    },
+    {
+      "sha256": "c8aa585b1c5e856d63a5a0602b7356358fd7ff659d6aa391739401e429465cc1",
+      "path": "docs/screenshots/saas/saved-mock-analysis.png"
+    }
+  ]
+}
