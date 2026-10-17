@@ -49,6 +49,7 @@ export interface OpenAICompatibleConfig {
   tokenParameter?: 'max_tokens' | 'max_completion_tokens';
   maxOutputTokens?: number;
   temperature?: number;
+  thinking?: 'disabled' | 'enabled';
 }
 export class AIProviderError extends AppError {
   constructor(
@@ -335,6 +336,8 @@ export class OpenAICompatibleProvider implements AIProvider {
       (!Number.isFinite(config.temperature) || config.temperature < 0 || config.temperature > 2)
     )
       throw new AppError(503, 'AI_TEMPERATURE 需要 omit 或 0 至 2 的数值');
+    if (config.thinking !== undefined && !['disabled', 'enabled'].includes(config.thinking))
+      throw new AppError(503, 'AI_THINKING 需要 disabled 或 enabled');
   }
   async analyze(product: Product, options?: AnalysisOptions): Promise<ProductAnalysis> {
     return (await this.generate(product, options)).analysis;
@@ -401,6 +404,7 @@ export class OpenAICompatibleProvider implements AIProvider {
       model: this.model,
       [this.config.tokenParameter ?? 'max_tokens']: this.config.maxOutputTokens ?? 8192,
       ...(this.config.temperature === undefined ? {} : { temperature: this.config.temperature }),
+      ...(this.config.thinking === undefined ? {} : { thinking: { type: this.config.thinking } }),
       ...(format === 'text'
         ? {}
         : {

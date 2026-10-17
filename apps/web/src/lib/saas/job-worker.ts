@@ -6,6 +6,7 @@ import { query, dbTransaction } from './database';
 import { appOrigin } from './config';
 import { withTaskIdentity } from './task-identity';
 import type { AccountUser } from './security';
+import { workerConcurrency } from './runtime-limits';
 
 const handlers = {
   '/api/analyze-product': analyzeProduct,
@@ -81,10 +82,13 @@ export async function runAIJob(userId: string, id: string): Promise<boolean> {
     return true;
   });
 }
-export async function runPendingAIJobsOnce(limit = 2): Promise<number> {
+export async function runPendingAIJobsOnce(limit = workerConcurrency()): Promise<number> {
+  const concurrency = workerConcurrency();
+  if (!Number.isInteger(limit) || limit < 1 || limit > 10)
+    throw new Error('Worker batch limit must be an integer between 1 and 10.');
   const rows = await query<{ user_id: string; id: string }>(
     'SELECT user_id,id FROM job_dispatch ORDER BY created_at LIMIT $1',
-    [Math.max(1, Math.min(10, limit))],
+    [Math.min(concurrency, limit)],
   );
   const outcomes = await Promise.all(rows.rows.map((job) => runAIJob(job.user_id, job.id)));
   return outcomes.filter(Boolean).length;

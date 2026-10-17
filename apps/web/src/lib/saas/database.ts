@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import type { Pool, PoolClient } from 'pg';
 import type { PGlite } from '@electric-sql/pglite';
 import { migrationSQL } from './migrations';
+import { databasePoolMax } from './runtime-limits';
 
 export interface QueryResult<T> {
   rows: T[];
@@ -60,7 +61,7 @@ export async function ensureDatabase(): Promise<void> {
       const { Pool: PostgresPool } = await import('pg');
       database.pool = new PostgresPool({
         connectionString: process.env.DATABASE_URL,
-        max: 12,
+        max: databasePoolMax(),
         connectionTimeoutMillis: 10000,
       });
       const client = await database.pool.connect();

@@ -95,6 +95,8 @@ export function validateModel(model, { project, runId, databaseUrl }) {
     assert(service.environment.DATABASE_URL === databaseUrl, 'Synthetic app DB URL required.');
     assert.equal(service.environment.PRODUCTSPY_JOB_RUNNER, 'external');
     assert.equal(service.environment.PRODUCTSPY_AUTO_MIGRATE, '0');
+    assert.equal(service.environment.PRODUCTSPY_DB_POOL_MAX, '3');
+    assert.equal(service.environment.PRODUCTSPY_WORKER_CONCURRENCY, '1');
     assert.equal(service.environment.AI_MODE, 'mock', 'Only Mock AI is allowed.');
     for (const key of [
       'AI_API_KEY',
@@ -231,6 +233,8 @@ async function main() {
     PRODUCTSPY_DB_DRIVER: 'pg',
     PRODUCTSPY_AUTO_MIGRATE: '0',
     PRODUCTSPY_JOB_RUNNER: 'external',
+    PRODUCTSPY_DB_POOL_MAX: '3',
+    PRODUCTSPY_WORKER_CONCURRENCY: '1',
     PRODUCTSPY_ARCHIVE_SECRET: randomBytes(48).toString('hex'),
     AI_MODE: 'mock',
     AI_API_KEY: '',

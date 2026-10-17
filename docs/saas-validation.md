@@ -82,6 +82,18 @@ PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、�
 
 `scripts/saas/verify-compose.mjs` 的 10 项边界测试通过；实际 Compose 编排已在提交 `881c3ec` 的 [完整 Linux CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39015571302) 通过；它是临时 CI 验证，不是已部署。它只在临时 Linux CI 验证原服务网络、db DNS、受限角色、独立 worker 和命名卷重建，采用本次合成环境，不读取生产 `.env.production`。同一次 CI 的增强业务恢复、两种配置 preview ZIP、Docker 和 MV3 E2E 全部通过：Linux 单测 872 PASS / 14 SKIP（含 10 项 Windows 专属）、实际 PG 44/44、浏览器 2/2。Compose 成功核对内部数据库、原持续 Worker、Web/数据库容器重建后的原卷和业务 checksum、双用户 404；结束清理 3 容器、1 网络、1 卷及私有测试环境文件。
 
+## 预发布资源与 DeepSeek 配置准备（2026-10-17）
+
+新增服务端 `PRODUCTSPY_DB_POOL_MAX`（默认 12，范围 1–20）和 `PRODUCTSPY_WORKER_CONCURRENCY`（默认 2，范围 1–10）。显式非法配置在连接/claim 前拒绝；小规模预发布可选每进程池 3、单 Worker 并发 1，尚未测量目标主机的资源峰值或稳定性。离线测试核对真实 Pool 构造参数和带等待屏障的 Worker claim/同时执行数量，不将这些测试称为服务器内存验证。
+
+新增可选 `AI_THINKING=disabled|enabled|omit`，省略或 omit 不改变既有兼容 payload。工厂和 provider 都在网络请求前拒绝非法值，显式设置时只发送一次请求，未自动切换模式或重试。官方 DeepSeek 文档与无域名 IP HTTPS 的前置条件见 [部署方案](saas-deployment.md)。尚未签发证书、部署或调用真实服务。
+
+本机定向 87/87、全仓 typecheck、lint、format 和扩展/Web 生产构建通过。完整单测 914 项中 **908 PASS / 4 SKIP / 2 FAIL**；两项失败为未修改的 Windows launcher DPAPI CurrentUser 加解密兼容测试。独立 PowerShell 合成字节 Protect/Unprotect 探针同样在 Protect 阶段报 `The system cannot find the path specified`，本轮未改变 launcher、该测试或系统加密配置，未将其跳过或计作成功。Linux 和数据库/容器检查仍以本次提交实际 CI 为准，不能沿用上次绿色结果。
+
+实际 MV3 + SaaS HTTP 浏览器回归 2/2 通过，继续使用 Amazon HTML fixture、Mock AI 和同机独立会话。CI 的受限 PostgreSQL 测试和原 Compose 业务容器现显式使用池 3 / Worker 并发 1；新增 Compose 配置护栏测试，实际 Linux 执行结果待本次 CI。上述完整单测计数来自加入该额外护栏之前的运行。
+
+私有服务器访问与凭据准备文件放在 Git 忽略目录，不包含于提交；SSH 尚未认证成功，未执行远端资源脚本。配置准备、源码测试和服务器运行验收分别记录。
+
 ## 尚未证明的要求
 
 | 项目                             | 状态 / 需要的证据                                                           |

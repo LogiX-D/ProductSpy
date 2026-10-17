@@ -24,6 +24,8 @@ function model() {
     environment: {
       DATABASE_URL: databaseUrl,
       PRODUCTSPY_JOB_RUNNER: 'external',
+      PRODUCTSPY_DB_POOL_MAX: '3',
+      PRODUCTSPY_WORKER_CONCURRENCY: '1',
       PRODUCTSPY_AUTO_MIGRATE: '0',
       AI_MODE: 'mock',
       AI_API_KEY: '',
@@ -117,6 +119,15 @@ describe('isolated Compose verification boundaries (no Docker execution)', () =>
 
   it('accepts the intended privately bound resolved original service model', () => {
     expect(() => validateModel(model(), options)).not.toThrow();
+  });
+  it('requires the intended reduced pool and worker concurrency in both business services', () => {
+    for (const service of ['web', 'worker']) {
+      for (const key of ['PRODUCTSPY_DB_POOL_MAX', 'PRODUCTSPY_WORKER_CONCURRENCY']) {
+        const changed = model();
+        changed.services[service].environment[key] = '12';
+        expect(() => validateModel(changed, options)).toThrow();
+      }
+    }
   });
 
   it('rejects public or additional ports, including accidental original port merging', () => {

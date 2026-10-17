@@ -13,6 +13,21 @@
 
 PostgreSQL 18.4 Windows 临时实例用于本轮真实网络回归；Linux CI 使用 PostgreSQL 17.11 并已通过实际逻辑备份恢复及 Web/Worker 容器检查。Compose 示例使用 17；原编排的临时 Linux CI 已通过，公网环境仍待验。
 
+## 小内存预发布与无域名 HTTPS
+
+小内存主机应在 Linux CI 或其他构建机器生成与目标 CPU 架构一致的 Web/Worker 镜像，再传输校验过的镜像；不要在 1GB 主机现场安装全量依赖或构建 Next。原 Compose 的 `build` 不代表必须在目标机器构建，但使用预构建镜像时须显式配置 image，并禁止现场 build。实际部署前先检查现有服务、可用内存/swap、磁盘、端口和容器占用；没有实测不能承诺 1GB 稳定运行。
+
+| 服务端配置                      | 省略时默认 | 允许范围  | 小规模预发布候选 |
+| ------------------------------- | ---------- | --------- | ---------------- |
+| `PRODUCTSPY_DB_POOL_MAX`        | 12         | 1–20 整数 | 每进程 3         |
+| `PRODUCTSPY_WORKER_CONCURRENCY` | 2          | 1–10 整数 | 每 Worker 1      |
+
+显式空白、0、负数、小数、科学计数法和越界值会被拒绝，不能靠错误配置静默回退。数据库池在进程初始化时生效，改值后应重启；Web 与 Worker 各自有池。Worker 并发同时约束 dispatch 查询和本轮实际任务数量，显式 batch 参数不能越过配置值；多 Worker 的合计并发仍需单独管理。这些配置不是内存硬限额，仍需测量 RSS、峰值、OOM、重启与任务持久化。
+
+没有自有域名时，可评估精确 `https://<公网IPv4>` origin。Let's Encrypt 已支持受公共信任的短期 IP 证书；[官方 Certbot 指引](https://letsencrypt.org/2026/03/11/shorter-certs-certbot/)要求合适版本的客户端、IP 控制权及可访问的 HTTP-01 challenge。需确认 80/443 的既有用途和入站策略，设置自动续期、失败监控与证书更新后的代理 reload。应用预发布也必须使用受信任证书；Let's Encrypt 的 `--staging` 测试证书不满足浏览器信任。代码接受精确 IPv4 HTTPS origin，不等于该服务器的签发、Chrome 或 Stripe Webhook 已验收。
+
+SSH 隧道到 loopback 的开发联调可作临时诊断，但不是公网 HTTPS 或跨物理设备最终验收。任何服务器安装、证书签发、端口或代理修改仍遵循已获授权范围，不接管现有服务。
+
 ## 数据库初始化
 
 1. PostgreSQL 准备专用数据库与迁移用户。以迁移连接设置 DATABASE_URL 后执行 `pnpm db:migrate`，此命令幂等建表/索引/RLS；源为 `lib/saas/migrations.ts`。
@@ -41,6 +56,12 @@ standalone 静态资源须复制到对应 `apps/web/.next/static`，Dockerfile �
 生产设置 `PRODUCTSPY_JOB_RUNNER=external`，用与 Web 相同的受限 PostgreSQL 应用连接及 AI 环境运行 `pnpm worker`；`pnpm worker --once` 用于单轮诊断。Compose 已提供 worker target。worker 每轮最多处理两项，用户写锁防止不同进程重复执行。已进入 running 的任务不会因进程重启自动重新收费调用，过期状态显示 interrupted；未执行的 queued 任务可由新 worker 接手。
 
 PGlite 不能被 Web/worker 两个进程同时打开；开发默认在 Web 同一进程内调度，任务页可触发持久队列恢复。生产应使用独立 worker + PostgreSQL，不依赖浏览器在线或本机服务。每次模型调用仍受超时与明确授权约束。
+
+## DeepSeek 接入与测试预算
+
+现有兼容器可使用 `AI_BASE_URL=https://api.deepseek.com`、`AI_MODEL=deepseek-flash`、`AI_RESPONSE_FORMAT=json_object`、`AI_TOKEN_PARAMETER=max_tokens`、`AI_TEMPERATURE=omit`。模型名与价格应在真实调用前核对[官方文档](https://api-docs.deepseek.com/zh-cn/)。可设置 `AI_THINKING=disabled` 明确关闭默认思考，避免推理消耗输出上限；`enabled` 开启，`omit`、空白或省略不向其他兼容平台发送该参数。无效值在发起请求前拒绝。此为配置及离线 wire 测试证明，不替代真实 DeepSeek 调用和生成内容质量验证。
+
+`AI_DAILY_REQUEST_LIMIT` 是每用户、UTC 日的真实请求次数，Free/Pro 是每用户、UTC 月额度；两者都不是整个 API Key 的人民币支出封顶。0 不是禁用值。当前没有全局人民币金额预留；超时或失败也可能被服务商计费，不能用成功响应后的估算或请求次数冒称已实现预算硬上限。有限金额的验收应使用独立测试身份、串行少量请求，调用前核对最新价格与余额，为未知费用保留余量并记录每次消耗，不自动收费重试，不开放无预算约束的真实 AI 公共入口。如需程序级金额硬封顶，应另行落实可核验的服务商硬限额或全局预算预留。
 
 ## Stripe 配置
 
