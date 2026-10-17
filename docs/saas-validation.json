@@ -6,9 +6,9 @@
   "baseline": "b83027a",
   "status": "IMPLEMENTED_LOCALLY_EXTERNAL_ACCEPTANCE_PENDING",
   "unit": {
-    "passed": 811,
-    "total": 814,
-    "files": 80,
+    "passed": 829,
+    "total": 832,
+    "files": 81,
     "scope": "legacy and SaaS local tests; three network PostgreSQL cases skipped here and exercised separately",
     "skipped": 3
   },
@@ -16,8 +16,8 @@
     "driver": "pg TCP loopback",
     "role": "NOSUPERUSER NOBYPASSRLS",
     "version": "18.4 Windows x64",
-    "passed": 17,
-    "scope": "real handlers, RLS, write locking and independent reads, CLI import, independent Node AI worker; synthetic data and Mock AI"
+    "passed": 42,
+    "scope": "real handlers, RLS, write locking and independent reads, CLI import, independent Node AI worker and billing SQL/authorization; synthetic data, Mock AI, offline Stripe provider"
   },
   "browser": {
     "crossDevice": "independent browser contexts on one machine only",
@@ -48,9 +48,11 @@
     "originalPostgresRestart": "PASS"
   },
   "billing": {
-    "offlineSdkSignatureTests": 7,
+    "offlineSdkSignatureTests": 9,
     "realTransactions": "NOT_TESTED",
-    "actualStripeSandbox": "NOT_TESTED"
+    "actualStripeSandbox": "NOT_TESTED",
+    "checkoutRecoveryTests": 16,
+    "providerHTTP": "OFFLINE_SIMULATION_NO_STRIPE_HTTP"
   },
   "checks": {
     "typecheck": "PASS",
@@ -58,7 +60,7 @@
     "lint": "PASS",
     "build": "PASS",
     "docker": "NOT_EXECUTED",
-    "remoteCI": "See current PR checks; this is the local pre-push snapshot"
+    "remoteCI": "Last verified head 66ef3a6 passed; inspect PR checks for subsequent commits"
   },
   "privateLegacyData": {
     "migrated": false,
@@ -89,9 +91,10 @@
   },
   "remoteCI": {
     "laterCommits": "Inspect PR #1 checks for current state",
-    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39002060537",
+    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39002328813",
     "platform": "GitHub Ubuntu + PostgreSQL 17 + Chromium",
     "conclusion": "success",
-    "commit": "99ea4680b60bd3117048465ac6ef0ff7865b6f93"
-  }
+    "commit": "66ef3a68dad3add0448581f4528bd96b971d2f3f"
+  },
+  "deploymentInstruction": "Review PR first; do not deploy (user instruction 2026-10-17)"
 }

@@ -4,18 +4,18 @@
 
 ## 实际执行
 
-| 验证                                             | 结果                             | 证明范围                                                                  |
-| ------------------------------------------------ | -------------------------------- | ------------------------------------------------------------------------- |
-| TypeScript / ESLint / Prettier / diff whitespace | PASS                             | 当前代码静态检查                                                          |
-| `pnpm test`                                      | 80 files，811 PASS，3 SKIP / 814 | 原业务及 SaaS 单元/集成；3 项网络数据库专属测试由下一项单独执行           |
-| `pnpm test:postgres`                             | 17/17 PASS                       | 实际 PostgreSQL 18.4、pg TCP 驱动、无 superuser/BYPASSRLS 应用角色        |
-| `pnpm build`                                     | PASS                             | MV3 扩展及 Next.js standalone 生产构建                                    |
-| `pnpm test:saas:e2e`                             | 2/2 PASS                         | 真实加载 MV3、真实本机 HTTP/数据库、Amazon HTML fixture、Mock AI          |
-| 实时 Amazon 读取                                 | CAPTURED，HTTP 200               | 实际 MV3 从 B09B8V1LZ3 采集标题、9 图、6 卖点；无视频；未上传/分析        |
-| PostgreSQL 服务重启                              | PASS                             | 测试商品在原数据库停止/启动后 checksum 一致                               |
-| 停机物理副本恢复到独立实例                       | PASS                             | 55433 恢复实例数据 checksum 一致，另一用户 scope 返回 0 条                |
-| legacy 导入 CLI                                  | PASS                             | 独立进程预览不写库，commit 归属目标账号，源 backup checksum 不变          |
-| Stripe 官方 SDK 签名合同                         | 7/7 PASS                         | 离线签名、篡改、时间、test/live、客户/价格、去重/乱序；提供商 HTTP 为模拟 |
+| 验证                                             | 结果                             | 证明范围                                                                |
+| ------------------------------------------------ | -------------------------------- | ----------------------------------------------------------------------- |
+| TypeScript / ESLint / Prettier / diff whitespace | PASS                             | 当前代码静态检查                                                        |
+| `pnpm test`                                      | 81 files，829 PASS，3 SKIP / 832 | 原业务及 SaaS 单元/集成；3 项网络数据库专属测试由下一项单独执行         |
+| `pnpm test:postgres`                             | 42/42 PASS                       | 实际 PostgreSQL 18.4、pg TCP 驱动、无 superuser/BYPASSRLS 应用角色      |
+| `pnpm build`                                     | PASS                             | MV3 扩展及 Next.js standalone 生产构建                                  |
+| `pnpm test:saas:e2e`                             | 2/2 PASS                         | 真实加载 MV3、真实本机 HTTP/数据库、Amazon HTML fixture、Mock AI        |
+| 实时 Amazon 读取                                 | CAPTURED，HTTP 200               | 实际 MV3 从 B09B8V1LZ3 采集标题、9 图、6 卖点；无视频；未上传/分析      |
+| PostgreSQL 服务重启                              | PASS                             | 测试商品在原数据库停止/启动后 checksum 一致                             |
+| 停机物理副本恢复到独立实例                       | PASS                             | 55433 恢复实例数据 checksum 一致，另一用户 scope 返回 0 条              |
+| legacy 导入 CLI                                  | PASS                             | 独立进程预览不写库，commit 归属目标账号，源 backup checksum 不变        |
+| Stripe 离线合同与结算恢复                        | 25/25 PASS                       | 9 项含官方 SDK 签名的 Webhook 合同及 16 项结算/核对；提供商 HTTP 为模拟 |
 
 PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、详情/历史/备份授权、一次性授权码来源绑定、扩展最小权限、采集幂等、Free/Pro 和导入超限回滚、改密撤销、已认证排队请求的撤销竞态、PG 写锁与无阻塞读取、RLS 连接清理、持久队列、独立 Node worker 和 CLI。
 
@@ -35,7 +35,18 @@ PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、�
 
 `node scripts/saas/verify-standalone.mjs` 已在本机直接启动构建产物的 `server.js`，使用临时真实 PostgreSQL 的受限角色，验证健康、注册、Secure/HttpOnly Cookie、商品保存与持久化、队列、独立 worker、Mock 结果及退出。内网请求使用 Node HTTP 模拟边缘代理的 Host/Origin；不是公网 HTTPS/TLS 或 Docker 运行证明。最初 fetch 忽略自定义 Host 导致 403，改用可控制 Host 的 HTTP 测试客户端后通过，没有放宽服务器来源校验。
 
-提交 `99ea468` 的 [GitHub Linux / PostgreSQL CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39002060537) 已实际成功，包含 typecheck、lint、format、unit、真实 PostgreSQL、构建及 MV3 E2E。后续提交的状态以 [PR #1 checks](https://github.com/LogiX-D/ProductSpy/pull/1/checks) 为准，不把旧提交绿灯套用到新提交。
+提交 `66ef3a6` 的 [GitHub Linux / PostgreSQL CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39002328813) 已实际成功，包含 typecheck、lint、format、unit、真实 PostgreSQL、构建、实际 standalone + 独立 worker 及 MV3 E2E。后续提交的状态以 [PR #1 checks](https://github.com/LogiX-D/ProductSpy/pull/1/checks) 为准，不把旧提交绿灯套用到新提交。
+
+## PR 订阅流程复核
+
+用户要求先审阅 PR、暂不部署。本轮只修改开发分支及测试数据库。
+
+- 旧实现按小时生成 Checkout 幂等键。新增的三个回归在旧代码全部失败：跨小时重复新建、同小时过期后复用旧页、provider 已接收但响应丢失后跨小时重复新建。现改为先持久化 UUID 和完整请求再调用 provider；三项均通过。
+- 新增并发结算、配置变化后原参数恢复、超过安全窗口停止重发、完成并取消后的重新订阅、Webhook 延迟防重复、past_due/unpaid/incomplete/paused、客户/owner/价格/quantity/有效期及分页失败的回归。
+- 新增网页主动核对接口，真实 route 验证匿名、跨站和扩展请求被拒绝，客户端伪造用户/套餐不影响其他用户。旧订阅终止事件不再覆盖新权益，重复事件不依赖再次访问 provider。
+- 新字段通过迁移角色连续执行两次迁移均成功；真实 PostgreSQL 受限角色共 42 项通过。首次并行支付测试因两个文件复用同一合成 customer ID 触发唯一约束，改为每文件独立 ID 后通过。
+
+这些测试使用真实 SQL、应用角色和路由；支付 provider 为离线模拟，没有发送 Stripe HTTP，没有测试付款、沙盒交易或真实交易。
 
 ## 失败记录与修复
 
@@ -49,17 +60,17 @@ PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、�
 
 ## 尚未证明的要求
 
-| 项目                             | 状态 / 需要的证据                                                                        |
-| -------------------------------- | ---------------------------------------------------------------------------------------- |
-| HTTPS 云部署、正式 origin 扩展包 | 待用户指定并授权的预发布环境/域名；Dockerfile/Compose 具备准备，当前没有 Docker 运行证明 |
-| 完整真实链路                     | 未完成：实时 Amazon 采集单独成功；完整链路仍为本机 fixture + Mock                        |
-| 真实 AI                          | 未调用；需服务端凭据与明确测试预算/授权，另做内容质量核验                                |
-| 跨物理设备                       | 未完成；同机独立浏览器只证明会话与服务端持久化                                           |
-| Stripe 沙盒                      | 未交易；需真实 test account、price、secret、Webhook 投递与取消/失败场景                  |
-| 真实交易                         | 未授权、未执行                                                                           |
-| 真实私人数据迁移                 | 源目录未改动；应先指定真实 SaaS 归属账号，再预览/提交，不导入测试账号                    |
-| 生产恢复/PITR                    | 仅临时本机物理恢复通过；托管备份、pg_dump/PITR、RPO/RTO 需目标环境演练                   |
-| 公开运营资料                     | 需经营者/隐私联系人/保留期限、邮件核验/找回、账户注销；商店材料旧版已标历史              |
-| 远端 CI                          | 查看开发 PR 当前 checks；本文件是推送前本机验收快照，不预先宣称 CI 成功                  |
+| 项目                             | 状态 / 需要的证据                                                           |
+| -------------------------------- | --------------------------------------------------------------------------- |
+| HTTPS 云部署、正式 origin 扩展包 | 用户已指示暂不部署；Dockerfile/Compose 具备准备，当前没有 Docker 运行证明   |
+| 完整真实链路                     | 未完成：实时 Amazon 采集单独成功；完整链路仍为本机 fixture + Mock           |
+| 真实 AI                          | 未调用；需服务端凭据与明确测试预算/授权，另做内容质量核验                   |
+| 跨物理设备                       | 未完成；同机独立浏览器只证明会话与服务端持久化                              |
+| Stripe 沙盒                      | 未交易；需真实 test account、price、secret、Webhook 投递与取消/失败场景     |
+| 真实交易                         | 未授权、未执行                                                              |
+| 真实私人数据迁移                 | 源目录未改动；应先指定真实 SaaS 归属账号，再预览/提交，不导入测试账号       |
+| 生产恢复/PITR                    | 仅临时本机物理恢复通过；托管备份、pg_dump/PITR、RPO/RTO 需目标环境演练      |
+| 公开运营资料                     | 需经营者/隐私联系人/保留期限、邮件核验/找回、账户注销；商店材料旧版已标历史 |
+| 远端 CI                          | 查看开发 PR 当前 checks；本文件是推送前本机验收快照，不预先宣称 CI 成功     |
 
 未购买资源、未公开插件、未部署/修改生产、未合并主分支、未改动旧 Release。外部验收缺口仍在原始目标内，不能将本轮实现定义为全目标完成。

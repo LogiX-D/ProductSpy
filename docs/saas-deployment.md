@@ -46,6 +46,12 @@ PGlite 不能被 Web/worker 两个进程同时打开；开发默认在 Web 同�
 
 默认未配置，Free 可用，账单入口说明不可用。配置 test secret、固定 Pro price 和 test webhook secret；事件采用 snapshot `customer.subscription.created/updated/deleted`，端点 `/api/billing/webhook`。原始正文使用官方 SDK 验签，校验 test/live 环境，事件去重；用户写锁内读取 Stripe 当前订阅状态，按客户、订阅、价格、quantity 和状态授予权益。Checkout 成功跳转本身不授予 Pro。
 
+结算请求在调用 Stripe 前将 UUID、完整请求参数及起始时间持久化到用户订阅行。重试复用原参数和幂等键；已知页面通过 provider retrieve 核对归属和状态，未过期页面复用，已过期或关联订阅已确认终止后才新建。新建前核对该客户全部订阅；未结清、暂停、未完成或多个存续订阅都不能再次购买。分页不能完整核对时停止新建。此设计依据 [Stripe 幂等请求](https://docs.stripe.com/api/idempotent_requests)、[Checkout Session 状态](https://docs.stripe.com/api/checkout/sessions/object) 和 [订阅列表](https://docs.stripe.com/api/subscriptions/list)。
+
+Stripe 的幂等键至少 24 小时后可能被清理，因此本应用对丢失响应且没有已知 session ID 的请求只允许在 23 小时内复用；超时返回 409，不换键自动重发。维护者应在 Stripe 的请求日志/结算记录中按原幂等键和所属客户核对结果，再恢复已确认的 session 关联。不能在结果未知时清空该记录。数据库迁移为现有 subscriptions 增加四个 nullable 字段，仍由原 RLS 保护；上线前使用迁移角色重新执行 `pnpm db:migrate`。
+
+Webhook 延迟时，用户可在账单页点击“刷新订阅状态”，经仅限已登录网页的 `POST /api/billing/reconcile` 核对服务端绑定客户和 provider 的最新状态。客户端提交的用户、套餐、订阅编号不授予权益；有效客户/owner、单项 Pro price、quantity=1、active/trialing 及未来有效期全部成立才授予 Pro。旧订阅的终止事件不降级新订阅；重复签名事件在读取 provider 前确认已处理，provider 暂时不可用时仍可安全确认重放。
+
 真实 secret 还需要显式 `PRODUCTSPY_ENABLE_LIVE_BILLING=1`，必须先有单独用户授权。测试信用卡/真实付款数据不落仓库或知识库。沙盒流程须实际完成结算、Webhook、Pro、续费/取消/失败再验收；本轮离线签名模拟不替代该过程。
 
 ## 业务数据迁移

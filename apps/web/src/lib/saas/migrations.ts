@@ -26,6 +26,10 @@ CREATE TABLE IF NOT EXISTS subscriptions (
   status text NOT NULL DEFAULT 'active', customer_id text UNIQUE, subscription_id text UNIQUE,
   current_period_end timestamptz, updated_at timestamptz NOT NULL DEFAULT now()
 );
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS checkout_attempt_id text;
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS checkout_started_at timestamptz;
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS checkout_session_id text;
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS checkout_request jsonb;
 CREATE TABLE IF NOT EXISTS usage_events (
   user_id text NOT NULL REFERENCES users(id) ON DELETE CASCADE, id text NOT NULL,
   kind text NOT NULL, period text NOT NULL, quantity integer NOT NULL DEFAULT 1 CHECK(quantity>0),

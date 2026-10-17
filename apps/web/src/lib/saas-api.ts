@@ -49,3 +49,8 @@ export async function openBilling(kind: 'checkout' | 'portal'): Promise<string> 
   if (parsed.protocol !== 'https:') throw new Error('账单链接无效，请稍后重试。');
   return parsed.href;
 }
+
+export async function refreshBilling(): Promise<AccountSession> {
+  await webRequest('/api/billing/reconcile', { method: 'POST', body: '{}' });
+  return refreshAccountSession(true);
+}

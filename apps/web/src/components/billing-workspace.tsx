@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { openBilling } from '../lib/saas-api';
+import { openBilling, refreshBilling } from '../lib/saas-api';
 import { useAccount } from './saas-access';
 import { AccountUsage } from './account-usage';
 import { Button, ErrorNotice, PageHeading } from './ui';
@@ -9,6 +9,7 @@ export function BillingWorkspace() {
   const account = useAccount();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   if (!account) return null;
   async function open(kind: 'checkout' | 'portal') {
     setBusy(true);
@@ -20,11 +21,25 @@ export function BillingWorkspace() {
       setBusy(false);
     }
   }
+  async function refresh() {
+    setBusy(true);
+    setError('');
+    setNotice('');
+    try {
+      await refreshBilling();
+      setNotice('已核对支付平台的最新订阅状态。');
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : '暂时无法刷新订阅。');
+    } finally {
+      setBusy(false);
+    }
+  }
   return (
     <div className="ws-page">
       <PageHeading title="订阅与账单" description="查看套餐、资源上限及本月用量。" />
       <AccountUsage />
       {error && <ErrorNotice message={error} />}
+      {notice && <p role="status">{notice}</p>}
       <div className="saas-settings-grid">
         <section className="panel saas-settings-panel">
           <p className="eyebrow">FREE</p>
@@ -53,7 +68,10 @@ export function BillingWorkspace() {
         <p>订阅状态：{account.subscription.status}</p>
         {account.billingEnabled ? (
           <>
-            <p className="muted">价格、计费周期和支付模式以付款页为准。付款后权益由服务端确认。</p>
+            <p className="muted">价格、计费周期和支付模式以付款页为准。付款后可刷新订阅状态。</p>
+            <Button variant="secondary" disabled={busy} onClick={() => void refresh()}>
+              刷新订阅状态
+            </Button>
             <Button variant="secondary" disabled={busy} onClick={() => void open('portal')}>
               管理订阅与账单
             </Button>

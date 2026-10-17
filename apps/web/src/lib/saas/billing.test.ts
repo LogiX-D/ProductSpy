@@ -16,12 +16,17 @@ vi.mock('stripe', async (importOriginal) => {
   };
 });
 const owner = randomUUID();
+const customer = `cus_webhook_${owner}`;
+const subscriptionId = `sub_webhook_${owner}`;
 const signingSecret = 'whsec_synthetic_test_value_not_a_credential';
 let latest: Record<string, unknown>;
 beforeAll(async () => {
   vi.stubEnv('PRODUCTSPY_MODE', 'saas');
-  vi.stubEnv('PRODUCTSPY_DB_DRIVER', 'pglite');
-  vi.stubEnv('PRODUCTSPY_PGLITE_DIR', '');
+  vi.stubEnv('PRODUCTSPY_DB_DRIVER', process.env.PRODUCTSPY_TEST_DATABASE_URL ? 'pg' : 'pglite');
+  if (process.env.PRODUCTSPY_TEST_DATABASE_URL) {
+    vi.stubEnv('DATABASE_URL', process.env.PRODUCTSPY_TEST_DATABASE_URL);
+    vi.stubEnv('PRODUCTSPY_AUTO_MIGRATE', '0');
+  } else vi.stubEnv('PRODUCTSPY_PGLITE_DIR', '');
   vi.stubEnv('STRIPE_SECRET_KEY', 'sk_test_synthetic_offline_only');
   vi.stubEnv('STRIPE_PRICE_PRO', 'price_synthetic_pro');
   vi.stubEnv('STRIPE_WEBHOOK_SECRET', signingSecret);
@@ -31,13 +36,20 @@ beforeAll(async () => {
     'synthetic',
   ]);
   await withTenant(owner, () =>
-    query("INSERT INTO subscriptions(user_id,customer_id) VALUES($1,'cus_synthetic')", [owner]),
+    query('INSERT INTO subscriptions(user_id,customer_id) VALUES($1,$2)', [owner, customer]),
   );
 }, 30000);
-beforeEach(() => {
+beforeEach(async () => {
+  vi.clearAllMocks();
+  await withTenant(owner, () =>
+    query(
+      "UPDATE subscriptions SET plan='free',status='active',subscription_id=NULL,current_period_end=NULL WHERE user_id=$1",
+      [owner],
+    ),
+  );
   latest = {
-    id: 'sub_synthetic',
-    customer: 'cus_synthetic',
+    id: subscriptionId,
+    customer,
     metadata: { productspy_user_id: owner },
     status: 'active',
     items: {
@@ -53,6 +65,7 @@ beforeEach(() => {
   provider.retrieve.mockImplementation(async () => latest);
 });
 afterAll(async () => {
+  await withTenant(owner, () => query('DELETE FROM users WHERE id=$1', [owner]));
   await closeDatabase();
   vi.unstubAllEnvs();
 });
@@ -62,7 +75,7 @@ async function eventPayload(overrides: Record<string, unknown> = {}, timestamp?:
     id: `evt_${randomUUID()}`,
     type: 'customer.subscription.updated',
     livemode: false,
-    data: { object: { id: 'sub_synthetic', metadata: { productspy_user_id: owner } } },
+    data: { object: { id: subscriptionId, metadata: { productspy_user_id: owner } } },
     ...overrides,
   });
   const signature = Stripe.webhooks.generateTestHeaderString({
@@ -95,9 +108,12 @@ describe('offline Stripe contract and real SDK signature verification (no sandbo
     expect(await handleStripeWebhook(sample.raw, sample.signature)).toMatchObject({
       replayed: false,
     });
+    provider.retrieve.mockRejectedValueOnce(new Error('synthetic provider unavailable on replay'));
     expect(await handleStripeWebhook(sample.raw, sample.signature)).toMatchObject({
       replayed: true,
     });
+    expect(provider.retrieve).toHaveBeenCalledTimes(1);
+    provider.retrieve.mockReset().mockImplementation(async () => latest);
     await withTenant(owner, async () => expect((await subscription()).plan).toBe('pro'));
     const count = await query<{ count: number }>(
       'SELECT count(*)::int AS count FROM webhook_events WHERE id=$1',
@@ -138,5 +154,42 @@ describe('offline Stripe contract and real SDK signature verification (no sandbo
     vi.stubEnv('PRODUCTSPY_ENABLE_LIVE_BILLING', '0');
     await expect(withTenant(owner, createCheckout)).rejects.toMatchObject({ status: 503 });
     vi.stubEnv('STRIPE_SECRET_KEY', 'sk_test_synthetic_offline_only');
+  });
+  it('acknowledges an obsolete canceled subscription without downgrading its replacement', async () => {
+    await withTenant(owner, () =>
+      query(
+        "UPDATE subscriptions SET plan='pro',status='active',subscription_id='sub_new',current_period_end=$1 WHERE user_id=$2",
+        [new Date(Date.now() + 3600_000).toISOString(), owner],
+      ),
+    );
+    latest = { ...latest, status: 'canceled' };
+    const sample = await eventPayload({ type: 'customer.subscription.deleted' });
+    expect(await handleStripeWebhook(sample.raw, sample.signature)).toMatchObject({
+      ignored: true,
+    });
+    await withTenant(owner, async () =>
+      expect(await subscription()).toMatchObject({ plan: 'pro', subscription_id: 'sub_new' }),
+    );
+  });
+  it('replaces an old binding only after provider confirmation that it is terminal', async () => {
+    await withTenant(owner, () =>
+      query("UPDATE subscriptions SET subscription_id='sub_old' WHERE user_id=$1", [owner]),
+    );
+    provider.retrieve.mockImplementation(async (id: string) =>
+      id === 'sub_old' ? { ...latest, id, status: 'active' } : latest,
+    );
+    const sample = await eventPayload();
+    await expect(handleStripeWebhook(sample.raw, sample.signature)).rejects.toMatchObject({
+      status: 409,
+    });
+    provider.retrieve.mockImplementation(async (id: string) =>
+      id === 'sub_old' ? { ...latest, id, status: 'canceled' } : latest,
+    );
+    expect(await handleStripeWebhook(sample.raw, sample.signature)).toMatchObject({
+      replayed: false,
+    });
+    await withTenant(owner, async () =>
+      expect(await subscription()).toMatchObject({ plan: 'pro', subscription_id: subscriptionId }),
+    );
   });
 });
