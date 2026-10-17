@@ -6,9 +6,9 @@
   "baseline": "b83027a",
   "status": "IMPLEMENTED_LOCALLY_EXTERNAL_ACCEPTANCE_PENDING",
   "unit": {
-    "passed": 843,
-    "total": 846,
-    "files": 83,
+    "passed": 852,
+    "total": 855,
+    "files": 84,
     "scope": "legacy and SaaS local tests; three network PostgreSQL cases skipped here and exercised separately",
     "skipped": 3
   },
@@ -59,8 +59,8 @@
     "format": "PASS",
     "lint": "PASS",
     "build": "PASS",
-    "docker": "NOT_EXECUTED",
-    "remoteCI": "Last verified head 35eec65 passed; inspect PR checks for subsequent commits"
+    "docker": "PENDING_CURRENT_CI_EXECUTION; real runtime/worker image smoke added, not inferred from Node command tests",
+    "remoteCI": "Last verified head 6436dd9 passed including actual PostgreSQL 17 logical recovery; inspect PR checks for subsequent commits"
   },
   "privateLegacyData": {
     "migrated": false,
@@ -95,10 +95,10 @@
   },
   "remoteCI": {
     "laterCommits": "Inspect PR #1 checks for current state",
-    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39004394289",
+    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39005647343",
     "platform": "GitHub Ubuntu + PostgreSQL 17 + Chromium",
     "conclusion": "success",
-    "commit": "35eec659b8c8adeece4aee6cfccc3f9265052ade"
+    "commit": "6436dd99abf12ddf2f89e4eea76a32329ca1154d"
   },
   "deploymentInstruction": "Review PR first; do not deploy (user instruction 2026-10-17)",
   "liveWorkflow": {
@@ -154,7 +154,14 @@
     "dumpSha256": "d28521b0b2271c65f0ed15a5f63fc91270a73334503cd02d646cfc981726a5cf",
     "temporaryDatabasesCleaned": true,
     "restoredApplicationLogin": "NOT_TESTED",
-    "cloudPITR": "NOT_TESTED"
+    "cloudPITR": "NOT_TESTED",
+    "linuxCI": {
+      "status": "PASS",
+      "server": "17.11",
+      "pgDump": "17.11 Ubuntu PGDG",
+      "pgRestore": "17.11 Ubuntu PGDG",
+      "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39005647343"
+    }
   },
   "ciFailures": [
     {

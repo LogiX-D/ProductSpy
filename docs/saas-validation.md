@@ -1,13 +1,13 @@
 # SaaS 本轮验证与交付记录
 
-日期：2026-10-17（Asia/Shanghai）。实现提交 `18a4b8f`，开发分支 `codex/saas-migration`；原始基线 `b83027a` / `codex/baseline-v1-before-saas`。机器记录见 [JSON](saas-validation.json)。**本地实现与流程已通过下列检查，正式云端验收仍未完成。**
+日期：2026-10-17（Asia/Shanghai）。实现提交 `18a4b8f`，开发分支 `codex/saas-migration`；原始基线 `b83027a` / `codex/baseline-v1-before-saas`。机器记录见 [JSON](saas-validation.json)。**已通过与待执行的验证分别列明，正式云端验收仍未完成。**
 
 ## 实际执行
 
 | 验证                                             | 结果                             | 证明范围                                                                 |
 | ------------------------------------------------ | -------------------------------- | ------------------------------------------------------------------------ |
 | TypeScript / ESLint / Prettier / diff whitespace | PASS                             | 当前代码静态检查                                                         |
-| `pnpm test`                                      | 83 files，843 PASS，3 SKIP / 846 | 原业务及 SaaS 单元/集成；3 项网络数据库专属测试由下一项单独执行          |
+| `pnpm test`                                      | 84 files，852 PASS，3 SKIP / 855 | 原业务及 SaaS 单元/集成；3 项网络数据库专属测试由下一项单独执行          |
 | `pnpm test:postgres`                             | 42/42 PASS                       | 实际 PostgreSQL 18.4、pg TCP 驱动、无 superuser/BYPASSRLS 应用角色       |
 | `pnpm build`                                     | PASS                             | MV3 扩展及 Next.js standalone 生产构建                                   |
 | `pnpm test:saas:e2e`                             | 2/2 PASS                         | 真实加载 MV3、真实本机 HTTP/数据库、Amazon HTML fixture、Mock AI         |
@@ -37,7 +37,7 @@ PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、�
 
 `node scripts/saas/verify-standalone.mjs` 已在本机直接启动构建产物的 `server.js`，使用临时真实 PostgreSQL 的受限角色，验证健康、注册、Secure/HttpOnly Cookie、商品保存与持久化、队列、独立 worker、Mock 结果及退出。内网请求使用 Node HTTP 模拟边缘代理的 Host/Origin；不是公网 HTTPS/TLS 或 Docker 运行证明。最初 fetch 忽略自定义 Host 导致 403，改用可控制 Host 的 HTTP 测试客户端后通过，没有放宽服务器来源校验。
 
-提交 `35eec65` 的 [GitHub Linux / PostgreSQL CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39004394289) 已实际成功，包含 typecheck、lint、format、unit、真实 PostgreSQL、构建、实际 standalone + 独立 worker 及 MV3 E2E。后续提交的状态以 [PR #1 checks](https://github.com/LogiX-D/ProductSpy/pull/1/checks) 为准，不把旧提交绿灯套用到新提交。
+提交 `6436dd9` 的 [GitHub Linux / PostgreSQL CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39005647343) 已实际成功，包含 typecheck、lint、format、unit、真实 PostgreSQL、构建、实际 standalone + 独立 worker 及 MV3 E2E。逻辑恢复也已在 PostgreSQL 17.11 + pg_dump/pg_restore 17.11（Ubuntu PGDG）通过。后续提交的状态以 [PR #1 checks](https://github.com/LogiX-D/ProductSpy/pull/1/checks) 为准，不把旧提交绿灯套用到新提交。
 
 ## 真实 Amazon 本机串联与逻辑恢复
 
@@ -47,7 +47,7 @@ PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、�
 
 `scripts/saas/verify-logical-recovery.mjs` 在临时 PostgreSQL 18.4 集群内自行创建两个唯一测试库，种两个用户的合成 SQL 数据，以 `pg_dump 18.6 --format=custom` 备份，再 `pg_restore 18.6 --exit-on-error` 到自身创建的空目标库。12 张表记录数量及 checksum 一致，6 张业务表 FORCE RLS 定义一致；恢复后的 NOSUPERUSER/NOBYPASSRLS 应用角色无 scope 读 0 条、跨用户读 0 条、跨用户写入以 42501 拒绝。写入探针回滚后再次确认 checksum 未变。27,889 字节 dump 只含合成数据，源/目标临时库均已删除且残留复查为 0。
 
-报告为 `.test-data/saas/logical-recovery/531dd8d17ea94a7face0aeaf68e80753/report.json`，dump SHA256 为 `d28521b0b2271c65f0ed15a5f63fc91270a73334503cd02d646cfc981726a5cf`。这里证明 SQL/策略恢复，不代表恢复后真实用户登录、有效 AI 结果质量、云端/PITR 或生产 RPO/RTO。客户端来自 [PostgreSQL 官方 Windows 页](https://www.postgresql.org/download/windows/)指向的 [EDB 便携包](https://www.enterprisedb.com/download-postgresql-binaries)，仅解压到 TEMP，未安装服务。新增逻辑恢复 CI 步骤的实际 Linux 结果须查看当前 PR checks。
+报告为 `.test-data/saas/logical-recovery/531dd8d17ea94a7face0aeaf68e80753/report.json`，dump SHA256 为 `d28521b0b2271c65f0ed15a5f63fc91270a73334503cd02d646cfc981726a5cf`。这里证明 SQL/策略恢复，不代表恢复后真实用户登录、有效 AI 结果质量、云端/PITR 或生产 RPO/RTO。Windows 客户端来自 [PostgreSQL 官方 Windows 页](https://www.postgresql.org/download/windows/)指向的 [EDB 便携包](https://www.enterprisedb.com/download-postgresql-binaries)，仅解压到 TEMP，未安装服务。Linux 恢复于上述 `6436dd9` CI 实际通过，使用官方 PGDG 的 17.11 客户端，没有降级服务器或跳过检查。
 
 ## PR 订阅流程复核
 

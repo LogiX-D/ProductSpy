@@ -80,6 +80,15 @@ jobs:
       - run: node scripts/saas/verify-standalone.mjs
         env:
           PRODUCTSPY_TEST_DATABASE_URL: postgresql://productspy_app:synthetic-ci-app@127.0.0.1:5432/productspy_test
+      - name: Build local web and worker test images
+        run: |
+          docker build --target runtime --label org.opencontainers.image.revision="$GITHUB_SHA" -t productspy-web:ci .
+          docker build --target worker --label org.opencontainers.image.revision="$GITHUB_SHA" -t productspy-worker:ci .
+      - name: Verify actual web and worker containers
+        run: node scripts/saas/verify-containers.mjs
+        env:
+          PRODUCTSPY_CONTAINER_VERIFY: '1'
+          PRODUCTSPY_TEST_DATABASE_URL: postgresql://productspy_app:synthetic-ci-app@127.0.0.1:5432/productspy_test
       - run: node scripts/saas/build-test-extension.mjs
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:saas:e2e
