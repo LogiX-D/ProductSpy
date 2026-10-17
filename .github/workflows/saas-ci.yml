@@ -2,6 +2,9 @@ name: ProductSpy SaaS checks
 on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
+concurrency:
+  group: productspy-saas-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
 jobs:
   quality:
     runs-on: ubuntu-latest
@@ -39,6 +42,9 @@ jobs:
         env:
           PRODUCTSPY_TEST_DATABASE_URL: postgresql://productspy_app:synthetic-ci-app@127.0.0.1:5432/productspy_test
       - run: pnpm build
+      - run: node scripts/saas/verify-standalone.mjs
+        env:
+          PRODUCTSPY_TEST_DATABASE_URL: postgresql://productspy_app:synthetic-ci-app@127.0.0.1:5432/productspy_test
       - run: node scripts/saas/build-test-extension.mjs
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:saas:e2e

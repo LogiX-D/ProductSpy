@@ -78,5 +78,20 @@
       "sha256": "c8aa585b1c5e856d63a5a0602b7356358fd7ff659d6aa391739401e429465cc1",
       "path": "docs/screenshots/saas/saved-mock-analysis.png"
     }
-  ]
+  ],
+  "standalone": {
+    "tls": "private Host/Origin forwarding simulation only",
+    "status": "PASS",
+    "artifact": "actual standalone server.js",
+    "ai": "Mock",
+    "worker": "independent Node process",
+    "database": "local network PostgreSQL, restricted role"
+  },
+  "remoteCI": {
+    "laterCommits": "Inspect PR #1 checks for current state",
+    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39002060537",
+    "platform": "GitHub Ubuntu + PostgreSQL 17 + Chromium",
+    "conclusion": "success",
+    "commit": "99ea4680b60bd3117048465ac6ef0ff7865b6f93"
+  }
 }

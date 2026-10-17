@@ -31,6 +31,12 @@ PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、�
 
 截图仅为合成商品/测试账户，商品图用 fixture 占位；不是实际素材质量证明。实时 Amazon 原始 HTML、浏览器 profile、追踪与数据库均留在忽略的测试目录，不公开账户 token 或正文证据包。
 
+## standalone 产物与远端 CI
+
+`node scripts/saas/verify-standalone.mjs` 已在本机直接启动构建产物的 `server.js`，使用临时真实 PostgreSQL 的受限角色，验证健康、注册、Secure/HttpOnly Cookie、商品保存与持久化、队列、独立 worker、Mock 结果及退出。内网请求使用 Node HTTP 模拟边缘代理的 Host/Origin；不是公网 HTTPS/TLS 或 Docker 运行证明。最初 fetch 忽略自定义 Host 导致 403，改用可控制 Host 的 HTTP 测试客户端后通过，没有放宽服务器来源校验。
+
+提交 `99ea468` 的 [GitHub Linux / PostgreSQL CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39002060537) 已实际成功，包含 typecheck、lint、format、unit、真实 PostgreSQL、构建及 MV3 E2E。后续提交的状态以 [PR #1 checks](https://github.com/LogiX-D/ProductSpy/pull/1/checks) 为准，不把旧提交绿灯套用到新提交。
+
 ## 失败记录与修复
 
 - 迁移前旧基线 744/745，portable guide 拒绝版本点号文件名；最小修复后完整回归通过。
