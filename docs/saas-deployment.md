@@ -11,7 +11,7 @@
 | 预发布   | 独立 PostgreSQL、HTTPS            | 真扩展构建 origin，AI 经授权，Stripe test | 与生产分离的库、Key、Webhook、备份与审计                  |
 | 生产     | PostgreSQL 17+                    | HTTPS 域名/反向代理，服务端 AI/支付       | `.env.production` 注入，应用角色无 BYPASSRLS，禁止 PGlite |
 
-PostgreSQL 18.4 Windows 临时实例用于本轮真实网络回归；Linux CI 使用 PostgreSQL 17.11 并已通过实际逻辑备份恢复及 Web/Worker 容器检查。Compose 示例使用 17；Compose 编排与公网环境仍需分别验证。
+PostgreSQL 18.4 Windows 临时实例用于本轮真实网络回归；Linux CI 使用 PostgreSQL 17.11 并已通过实际逻辑备份恢复及 Web/Worker 容器检查。Compose 示例使用 17；原编排的临时 Linux CI 已通过，公网环境仍待验。
 
 ## 数据库初始化
 
@@ -88,6 +88,6 @@ pnpm db:import-legacy <business-backup.json> <existing-saas-user-id> --commit
 
 `node scripts/saas/verify-containers.mjs` 仅用于 GitHub Actions Linux 的独立测试数据库。CI 先构建带当前 GITHUB_SHA revision label 的 `productspy-web:ci` / `productspy-worker:ci`，再设置 `PRODUCTSPY_CONTAINER_VERIFY=1` 与受限应用角色的 `PRODUCTSPY_TEST_DATABASE_URL`。脚本拒绝远程数据库、连接 URL 参数和非默认 Docker endpoint；只消费显式测试库，开始前要求无其他 queued 任务。容器名/label 唯一、镜像禁止拉取，数据库配置由进程环境传递；只清理自身容器和合成账号。脚本强制 Mock AI、禁用支付，未触发收费调用或发布镜像。
 
-`node scripts/saas/verify-compose.mjs` 另需 `PRODUCTSPY_COMPOSE_VERIFY=1`，只运行于 GitHub Linux 的本机 daemon，要求 Compose 2.24.4+。使用原 `compose.yaml` 的服务/网络/依赖/数据库卷/worker 命令，以 `!override` 替换生产 env_file 和 Web 端口为本次私有合成文件及 loopback 随机端口，不读取 `.env.production`。数据库无主机端口，业务镜像只用同 job 已构建镜像；临时项目验证内部 db DNS、角色、Mock Worker、Web/DB 容器重建后的同卷数据。清理前核对项目和本次 marker，只删除自己创建的资源和精确临时文件。该脚本边界测试已通过，实际运行结果以新 CI 为准，不把此命令视为部署授权。
+`node scripts/saas/verify-compose.mjs` 另需 `PRODUCTSPY_COMPOSE_VERIFY=1`，只运行于 GitHub Linux 的本机 daemon，要求 Compose 2.24.4+。使用原 `compose.yaml` 的服务/网络/依赖/数据库卷/worker 命令，以 `!override` 替换生产 env_file 和 Web 端口为本次私有合成文件及 loopback 随机端口，不读取 `.env.production`。数据库无主机端口，业务镜像只用同 job 已构建镜像；临时项目验证内部 db DNS、角色、Mock Worker、Web/DB 容器重建后的同卷数据。清理前核对项目和本次 marker，只删除自己创建的资源和精确临时文件。该脚本 10 项边界测试及 `881c3ec` 的 [实际 Linux CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39015571302) 均通过；3 容器、1 网络、1 卷和私有环境文件清理成功。不把此命令视为部署授权。
 
-实际容器、Linux PostgreSQL 逻辑恢复、真实 Amazon 本机串联已有本轮证据，详见 [验证记录](saas-validation.md)。真实 HTTPS 预发布、Compose 编排、正式隐私联系人/保留期限/账户注销、邮件核验/找回、独立 worker 的云端运维、支付沙盒、跨物理设备、真实 AI 及生产恢复演练仍须分别记录结果。用户当前指示暂不部署；未通过的项目不标为最终验收完成。
+实际容器、Linux PostgreSQL 逻辑恢复、真实 Amazon 本机串联已有本轮证据，详见 [验证记录](saas-validation.md)。真实 HTTPS 预发布、正式隐私联系人/保留期限/账户注销、邮件核验/找回、独立 worker 的云端运维、支付沙盒、跨物理设备、真实 AI 及生产恢复演练仍须分别记录结果。用户当前指示暂不部署；未通过的项目不标为最终验收完成。

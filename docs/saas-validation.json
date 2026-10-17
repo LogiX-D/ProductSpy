@@ -60,7 +60,7 @@
     "lint": "PASS",
     "build": "PASS",
     "docker": "PASS: actual Linux runtime and worker image builds, Docker health, independent worker, web recreation, persistence and tenant isolation",
-    "remoteCI": "Last verified head d56d14c passed; enhanced packaging, route recovery and Compose require current-head CI"
+    "remoteCI": "Verified source 881c3ec passed including enhanced app recovery, actual SaaS ZIP and original Compose; inspect PR checks for subsequent commits"
   },
   "privateLegacyData": {
     "migrated": false,
@@ -95,11 +95,11 @@
   },
   "remoteCI": {
     "laterCommits": "Inspect PR #1 checks for current state",
-    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39014465083",
-    "platform": "GitHub Ubuntu + PostgreSQL 17.11 + actual Docker web/worker + Chromium",
+    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39015571302",
+    "platform": "GitHub Ubuntu 24.04 + PostgreSQL 17.11 + actual Docker/Compose + cross-platform ZIP + Chromium",
     "conclusion": "success",
-    "commit": "d56d14c14312f49ba3a8a93df44a39a564f77043",
-    "unitPassed": 846,
+    "commit": "881c3ec2f6f2fff4823d57babe19ac5f5ebc3347",
+    "unitPassed": 872,
     "unitSkipped": 14,
     "skipScope": "Three network PostgreSQL cases run separately; ten Windows-only tests skipped on Linux"
   },
@@ -159,11 +159,11 @@
     "restoredApplicationLogin": "PASS: actual in-process Next route handlers and restricted PostgreSQL; no HTTP/cloud/TLS",
     "cloudPITR": "NOT_TESTED",
     "linuxCI": {
-      "status": "PASS",
+      "status": "PASS_SQL_AND_APP_ROUTES",
       "server": "17.11",
       "pgDump": "17.11 Ubuntu PGDG",
       "pgRestore": "17.11 Ubuntu PGDG",
-      "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39005647343"
+      "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39015571302"
     },
     "applicationRecovery": {
       "status": "PASS_LOCAL",
@@ -177,7 +177,7 @@
         "authAndApiRateLimitsUpdated": true,
         "allOtherTablesUnchanged": true
       },
-      "linux": "PENDING_CURRENT_HEAD_CI"
+      "linux": "PASS_CI_39015571302"
     }
   },
   "ciFailures": [
@@ -236,16 +236,38 @@
       "origin": "https://productspy-preview.example.invalid",
       "bytes": 430871
     },
-    "linux": "PENDING_CURRENT_HEAD_CI",
+    "linux": "PASS_CI_39015571302",
     "publication": "NOT_SUBMITTED_NOT_PUBLISHED",
     "preservedStableArtifacts": {
       "extension": "e6e1a24e76f6b3d3d1608901582aff3ce66c549f4a0edb79bf9c09aa370a2e70",
       "windows": "b0f3bdf2a2ccdd2b9e10d0970434b6e6c10e77171c4eefd6f9ccb56bfc4e3fa0"
+    },
+    "linuxArchives": {
+      "sourceCommit": "881c3ec2f6f2fff4823d57babe19ac5f5ebc3347",
+      "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39015571302",
+      "developmentSha256": "60790244a01861d68c99881b68e04c70ebef4f74bd4d37490ac57a0961fcb606",
+      "productionConfigurationPreviewSha256": "11efb686442f523b20423e31e70c661e93eabf8352472ac50d01c0c699fe3fa0",
+      "filesPerArchive": 243
     }
   },
   "compose": {
-    "status": "PENDING_REAL_CI_EXECUTION",
+    "status": "PASS_CI",
     "guardTests": 10,
-    "scope": "Original compose.yaml with isolated private environment, original service network/volume/worker and loopback random web port; no deployment"
+    "scope": "Original compose.yaml with isolated private environment, original service network/volume/worker and loopback random web port; no deployment",
+    "commit": "881c3ec2f6f2fff4823d57babe19ac5f5ebc3347",
+    "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39015571302",
+    "checks": [
+      "Original Compose model with private test env, no production env_file or host DB port",
+      "Internal db DNS/network, migrations, restricted role and six FORCE RLS tables",
+      "Queued job before continuous independent worker starts, saved Mock analysis/history",
+      "Web and database containers recreated on original volume, fresh login and identical checksums",
+      "Other account empty library and product/history/job HTTP 404"
+    ],
+    "cleanup": {
+      "privateEnvironment": true,
+      "networks": 1,
+      "containers": 3,
+      "volumes": 1
+    }
   }
 }

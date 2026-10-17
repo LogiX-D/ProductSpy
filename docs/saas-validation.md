@@ -80,13 +80,13 @@ PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、�
 
 增强逻辑恢复已在同一本机临时 PG18.4 + 客户端18.6 通过：源库由真实应用路由生成合法注册密码、商品、模板、竞品、内容、Mock 分析与任务；custom dump 恢复后先核对 12 表 SQL/checksum/RLS，再调用进程内实际 Next 路由，验证两账号正确密码登录、错误密码拒绝、商品/历史/合法导出业务 checksum 一致及跨用户 404。登录预期新增 2 条会话、更新限流；原会话及其他表不变。该过程是 Request/Response + 真实 PG，不是网络 HTTP、公网、真实 AI 或物理设备。报告 `.test-data/saas/logical-recovery/ddc59902c3f74ace85b41c2e23f3b8e4/report.json`，dump 37,368 字节、SHA256 `1a843b55012ee6b062ef2ad2637067a7a33f6d5fc3ff746b3a51484c30600ecb`；自建两库已删除并复查无残留。
 
-`scripts/saas/verify-compose.mjs` 的 10 项边界测试通过；实际 Compose 编排验证加入 CI，目前尚未执行成功，不能当成已部署。它只在临时 Linux CI 验证原服务网络、db DNS、受限角色、独立 worker 和命名卷重建，采用本次合成环境，不读取生产 `.env.production`。本轮 ZIP、增强恢复及 Compose 的 Linux 结果须等待新提交 CI。
+`scripts/saas/verify-compose.mjs` 的 10 项边界测试通过；实际 Compose 编排已在提交 `881c3ec` 的 [完整 Linux CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39015571302) 通过；它是临时 CI 验证，不是已部署。它只在临时 Linux CI 验证原服务网络、db DNS、受限角色、独立 worker 和命名卷重建，采用本次合成环境，不读取生产 `.env.production`。同一次 CI 的增强业务恢复、两种配置 preview ZIP、Docker 和 MV3 E2E 全部通过：Linux 单测 872 PASS / 14 SKIP（含 10 项 Windows 专属）、实际 PG 44/44、浏览器 2/2。Compose 成功核对内部数据库、原持续 Worker、Web/数据库容器重建后的原卷和业务 checksum、双用户 404；结束清理 3 容器、1 网络、1 卷及私有测试环境文件。
 
 ## 尚未证明的要求
 
 | 项目                             | 状态 / 需要的证据                                                           |
 | -------------------------------- | --------------------------------------------------------------------------- |
-| HTTPS 云部署、正式 origin 扩展包 | 用户已指示暂不部署；实际 Docker Web/Worker 已通过 CI；Compose/公网 TLS 未验 |
+| HTTPS 云部署、正式 origin 扩展包 | 用户已指示暂不部署；实际 Docker/原 Compose 已通过临时 CI；公网 TLS 未验     |
 | 完整真实链路                     | 未完成：实际 Amazon→MV3→本机 PG→Mock→重启/另会话已通过；云端与真 AI 未验    |
 | 真实 AI                          | 未调用；需服务端凭据与明确测试预算/授权，另做内容质量核验                   |
 | 跨物理设备                       | 未完成；同机独立浏览器只证明会话与服务端持久化                              |
@@ -95,6 +95,6 @@ PostgreSQL 专属回归包括账户/持久会话、同 ASIN 跨用户隔离、�
 | 真实私人数据迁移                 | 源目录未改动；应先指定真实 SaaS 归属账号，再预览/提交，不导入测试账号       |
 | 生产恢复/PITR                    | 本机物理/逻辑与合成账号恢复后业务通过；云端/PITR/生产 RPO/RTO 待验收        |
 | 公开运营资料                     | 需经营者/隐私联系人/保留期限、邮件核验/找回、账户注销；商店材料旧版已标历史 |
-| 远端 CI                          | d56d14c 完整 CI 已通过；本轮打包/恢复/Compose 须看新 head checks            |
+| 远端 CI                          | 881c3ec 的打包/恢复/Compose 完整 CI 通过；后续看 PR 当前 checks             |
 
 未购买资源、未公开插件、未部署/修改生产、未合并主分支、未改动旧 Release。外部验收缺口仍在原始目标内，不能将本轮实现定义为全目标完成。
