@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
-import { createHash, randomUUID } from 'node:crypto';
+import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { chmod, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { promisify } from 'node:util';
 import pg from '../../apps/web/node_modules/pg/lib/index.js';
 
 // This verifier never dumps the database supplied in the environment. It creates two
-// empty, uniquely named databases, seeds only synthetic records, and owns their cleanup.
+// empty, uniquely named databases, seeds synthetic data through real application routes,
+// and owns their cleanup. Application verification uses in-process handlers, not HTTP.
 const execute = promisify(execFile);
 const identifier = (value) => `"${value.replaceAll('"', '""')}"`;
 const hash = (value) => createHash('sha256').update(value).digest('hex');
@@ -101,110 +102,45 @@ async function policies(client) {
   ).rows;
 }
 
-async function seed(client, users) {
-  for (const [index, user] of users.entries()) {
-    await client.query('INSERT INTO users(id,email,password_hash,name) VALUES($1,$2,$3,$4)', [
-      user,
-      `${user}@logical-recovery.example.invalid`,
-      hash(`synthetic-not-a-login-password-${user}`),
-      `Synthetic recovery tenant ${index + 1}`,
-    ]);
-    for (const kind of ['web', 'extension']) {
-      await client.query(
-        "INSERT INTO sessions(token_hash,user_id,kind,extension_origin,expires_at) VALUES($1,$2,$3,$4,now()+interval '7 days')",
-        [
-          hash(`synthetic-${kind}-${user}`),
-          user,
-          kind,
-          kind === 'extension' ? `chrome-extension://${'a'.repeat(32)}` : null,
-        ],
-      );
-    }
-    await client.query(
-      "INSERT INTO extension_codes(code_hash,user_id,origin,expires_at) VALUES($1,$2,$3,now()+interval '2 minutes')",
-      [hash(`synthetic-code-${user}`), user, `chrome-extension://${'a'.repeat(32)}`],
-    );
-    const product = {
-      id: 'amazon:B011111111',
-      source: 'amazon',
-      sourceId: 'B011111111',
-      url: 'https://www.amazon.com/dp/B011111111',
-      title: `Synthetic logical recovery product for tenant ${index + 1}`,
-      images: [],
-      videos: [],
-      bulletPoints: ['Synthetic SQL recovery fixture; no Amazon request or AI provider call'],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      analysisHistory: [{ requestId: `analysis-${user}`, result: { fixture: 'synthetic Mock' } }],
-    };
-    const documents = {
-      'products.json': [product],
-      'templates.json': { templates: [{ id: `template-${user}`, name: 'Synthetic recovery' }] },
-      'comparisons.json': { comparisons: [{ id: `comparison-${user}`, productIds: [product.id] }] },
-      'content-plans.json': {
-        plans: [{ id: `content-${user}`, content: 'Synthetic saved content, not real AI output' }],
-      },
-      'analysis-usage.json': { requests: [{ requestId: `analysis-${user}`, status: 'succeeded' }] },
-    };
-    for (const [name, payload] of Object.entries(documents))
-      await client.query(
-        'INSERT INTO workspace_documents(user_id,name,payload) VALUES($1,$2,$3::jsonb)',
-        [user, name, JSON.stringify(payload)],
-      );
-    await client.query(
-      `INSERT INTO subscriptions(user_id,plan,status,customer_id,subscription_id,current_period_end,
-         checkout_attempt_id,checkout_started_at,checkout_session_id,checkout_request)
-       VALUES($1,$2,'active',$3,$4,now()+interval '30 days',$5,now(),$6,$7::jsonb)`,
-      [
-        user,
-        index ? 'pro' : 'free',
-        `cus_synthetic_${user}`,
-        `sub_synthetic_${user}`,
-        randomUUID(),
-        `cs_synthetic_${user}`,
-        JSON.stringify({ fixture: true, client_reference_id: user }),
-      ],
-    );
-    await client.query(
-      "INSERT INTO usage_events(user_id,id,kind,period,quantity) VALUES($1,$2,'analysis','2026-10',1)",
-      [user, `usage-${user}`],
-    );
-    for (const status of ['succeeded', 'queued']) {
-      const id = `${status}-${user}`;
-      await client.query(
-        'INSERT INTO jobs(user_id,id,kind,status,payload,result,attempts) VALUES($1,$2,$3,$4,$5::jsonb,$6::jsonb,$7)',
-        [
-          user,
-          id,
-          'product-analysis',
-          status,
-          JSON.stringify({ endpoint: '/api/analyze-product', input: { requestId: id, product } }),
-          status === 'succeeded' ? JSON.stringify({ synthetic: true, saved: true }) : null,
-          status === 'succeeded' ? 1 : 0,
-        ],
-      );
-      if (status === 'queued')
-        await client.query('INSERT INTO job_dispatch(user_id,id) VALUES($1,$2)', [user, id]);
-    }
-    await client.query(
-      'INSERT INTO capture_events(user_id,id,payload_hash,product_id) VALUES($1,$2,$3,$4)',
-      [user, `capture-${user}`, hash(JSON.stringify(product)), product.id],
-    );
-    await client.query('INSERT INTO audit_events(id,user_id,action) VALUES($1,$2,$3)', [
-      randomUUID(),
-      user,
-      'synthetic.logical-recovery',
-    ]);
-  }
-  await client.query('INSERT INTO webhook_events(id) VALUES($1)', [
-    `evt_synthetic_${randomUUID()}`,
-  ]);
-  await client.query('INSERT INTO api_rate_limits(key,window_start,count) VALUES($1,now(),2)', [
-    `synthetic:${randomUUID()}`,
-  ]);
+async function verifyApplication(url, action, credentials, expected) {
+  const result = await run(
+    process.execPath,
+    [resolve('node_modules/tsx/dist/cli.mjs'), resolve('scripts/saas/verify-restored-app.ts')],
+    {
+      ...childEnvironment(url),
+      DATABASE_URL: url.href,
+      PRODUCTSPY_RESTORED_APP_VERIFY: '1',
+      PRODUCTSPY_RECOVERY_ACTION: action,
+      PRODUCTSPY_RECOVERY_CREDENTIALS: JSON.stringify(credentials),
+      PRODUCTSPY_RECOVERY_EXPECTED: JSON.stringify(expected ?? []),
+      AI_MODE: 'mock',
+      AI_API_KEY: '',
+      STRIPE_SECRET_KEY: '',
+      STRIPE_PRICE_PRO: '',
+      STRIPE_WEBHOOK_SECRET: '',
+      PRODUCTSPY_ENABLE_LIVE_BILLING: '0',
+    },
+  );
+  return JSON.parse(result.stdout);
 }
 
-async function verifyRLS(client, users) {
+async function tenantCounts(client, users) {
+  const counts = {};
+  for (const user of users) {
+    counts[user] = {};
+    for (const table of tenantTables) {
+      const result = await client.query(
+        `SELECT count(*)::integer AS count FROM ${identifier(table)} WHERE user_id=$1`,
+        [user],
+      );
+      counts[user][table] = result.rows[0].count;
+      assert(counts[user][table] > 0, `The source application did not exercise ${table}.`);
+    }
+  }
+  return counts;
+}
+
+async function verifyRLS(client, users, expectedCounts) {
   const counts = {};
   for (const table of tenantTables) {
     assert.equal(
@@ -219,7 +155,7 @@ async function verifyRLS(client, users) {
     counts[user] = {};
     for (const table of tenantTables) {
       const rows = (await client.query(`SELECT user_id FROM ${identifier(table)}`)).rows;
-      const expected = table === 'workspace_documents' ? 5 : table === 'jobs' ? 2 : 1;
+      const expected = expectedCounts[user][table];
       assert.equal(rows.length, expected, `Missing restored rows in ${table}.`);
       assert(
         rows.every((row) => row.user_id === user),
@@ -300,7 +236,8 @@ async function main() {
   const report = {
     status: 'FAIL',
     runId,
-    fixture: 'Synthetic SQL records only; no real user data or AI/payment provider call',
+    fixture:
+      'Synthetic accounts and valid business models created through actual application routes; Mock only, no real user data or external AI/payment calls',
     scope: 'Local loopback logical backup/restore; no cloud, TLS, PITR, or production verification',
     sourceDatabase: sourceName,
     targetDatabase: targetName,
@@ -366,8 +303,20 @@ async function main() {
       0,
       'Restore target is not empty.',
     );
-    const users = [randomUUID(), randomUUID()];
-    await seed(source, users);
+    await source.query(`GRANT USAGE ON SCHEMA public TO ${identifier(appRole)}`);
+    await source.query(
+      `GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO ${identifier(appRole)}`,
+    );
+    const sourceAppURL = new URL(appURL);
+    sourceAppURL.pathname = `/${sourceName}`;
+    const credentials = [0, 1].map((index) => ({
+      email: `logical-recovery-${index}-${runId}@example.invalid`,
+      password: `Synthetic-recovery-${randomBytes(32).toString('hex')}`,
+    }));
+    const sourceApplication = await verifyApplication(sourceAppURL, 'seed', credentials);
+    const users = sourceApplication.accounts.map((account) => account.userId);
+    assert.equal(users.length, 2, 'The source application did not create two synthetic users.');
+    const expectedCounts = await tenantCounts(source, users);
     const before = await snapshot(source);
     const beforePolicies = await policies(source);
     for (const table of tenantTables) {
@@ -411,10 +360,61 @@ async function main() {
       )
     ).rows[0];
     assert.notEqual(owner.role, owner.owner, 'Restricted app role must not own restored tables.');
-    report.rls = await verifyRLS(restoredApp, users);
+    report.rls = await verifyRLS(restoredApp, users, expectedCounts);
     // Re-run checksums after the rejected-write probe, proving it left restored data unchanged.
     assert.deepEqual(await snapshot(target), before);
+    const originalSessions = (await target.query('SELECT * FROM sessions ORDER BY token_hash'))
+      .rows;
+    const restoredApplication = await verifyApplication(
+      restoredAppURL,
+      'read',
+      credentials,
+      sourceApplication.accounts,
+    );
+    const afterApplication = await snapshot(target);
+    for (const table of Object.keys(before)) {
+      if (table !== 'sessions' && table !== 'api_rate_limits')
+        assert.deepEqual(
+          afterApplication[table],
+          before[table],
+          `Application reads mutated ${table}.`,
+        );
+    }
+    assert.equal(
+      afterApplication.sessions.rows,
+      before.sessions.rows + 2,
+      'Restored logins must add exactly two sessions.',
+    );
+    assert.notEqual(
+      afterApplication.api_rate_limits.sha256,
+      before.api_rate_limits.sha256,
+      'Application authentication must update rate-limit counters.',
+    );
+    const preservedSessions = (
+      await target.query(
+        'SELECT * FROM sessions WHERE token_hash=ANY($1::text[]) ORDER BY token_hash',
+        [originalSessions.map((session) => session.token_hash)],
+      )
+    ).rows;
+    assert.deepEqual(
+      preservedSessions,
+      originalSessions,
+      'Existing restored sessions were changed.',
+    );
+    report.applicationRecovery = {
+      source: sourceApplication,
+      restored: restoredApplication,
+      sqlChecksumVerifiedBeforeApplicationWrites: true,
+      postApplicationWrites: {
+        sessionsAdded: 2,
+        originalSessionsUnchanged: true,
+        authAndApiRateLimitsUpdated: true,
+        allOtherTablesUnchanged: true,
+      },
+    };
     report.tables = restored;
+    report.tablesSnapshot =
+      'After SQL restore and rolled-back RLS write probe, before restored-application login writes';
     report.rlsPolicySha256 = hash(JSON.stringify(beforePolicies));
     report.dumpSha256 = hash(dump);
     report.dumpBytes = dump.length;
