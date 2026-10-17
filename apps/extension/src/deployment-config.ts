@@ -3,8 +3,15 @@ export function extensionConfig(
   mode = 'saas',
   environment = 'development',
 ) {
+  if (!['saas', 'legacy'].includes(mode)) throw new Error('Unknown ProductSpy deployment mode.');
+  if (!['development', 'test', 'production'].includes(environment))
+    throw new Error('Unknown ProductSpy deployment environment.');
   const url = new URL(rawUrl);
-  const loopback = ['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname);
+  const hostname = url.hostname.replace(/\.$/, '');
+  const loopback =
+    ['localhost', '[::1]'].includes(hostname) ||
+    /^127\./.test(hostname) ||
+    /^\[::ffff:7f[0-9a-f]{2}:[0-9a-f]{1,4}\]$/i.test(hostname);
   if (
     url.username ||
     url.password ||

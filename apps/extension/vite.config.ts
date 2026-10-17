@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { build, defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { extensionConfig } from './src/deployment-config';
+import { writeExtensionBuildMetadata } from '../../scripts/saas/package-extension-validation.mjs';
 
 const directory = fileURLToPath(new URL('.', import.meta.url));
 
@@ -59,6 +60,15 @@ export default defineConfig(({ mode }) => {
           await writeFile(
             resolve(outputDirectory, 'manifest.json'),
             JSON.stringify(manifest, null, 2),
+          );
+          await writeExtensionBuildMetadata(
+            outputDirectory,
+            {
+              origin: target.appUrl,
+              mode: target.legacy ? 'legacy' : 'saas',
+              environment: env.VITE_PRODUCTSPY_ENV ?? 'development',
+            },
+            resolve(directory, '../..'),
           );
         },
       },

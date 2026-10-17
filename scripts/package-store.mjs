@@ -2,6 +2,9 @@ import { cp, readFile, rm, writeFile } from 'node:fs/promises';
 import { resolve, sep } from 'node:path';
 import { createRequire } from 'node:module';
 import { artifactPath, digest, inventory, zipDirectory, workspace } from './packaging/files.mjs';
+import { assertLegacyPackaging } from './saas/package-extension-legacy-guard.mjs';
+
+assertLegacyPackaging();
 
 const { version } = JSON.parse(await readFile(resolve(workspace, 'package.json'), 'utf8'));
 const directory = artifactPath('store');
