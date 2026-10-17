@@ -9,12 +9,15 @@ import type { AccountJob, AccountSession } from './saas-types';
 export async function signIn(input: { email: string; password: string }) {
   clearAccountSession(true);
   await accountRequestRaw('/api/auth/login', { method: 'POST', body: JSON.stringify(input) });
+  // Another tab may have verified the old cookie during the authentication request.
+  clearAccountSession(true);
   return refreshAccountSession(true);
 }
 
 export async function registerAccount(input: { email: string; password: string; name: string }) {
   clearAccountSession(true);
   await accountRequestRaw('/api/auth/register', { method: 'POST', body: JSON.stringify(input) });
+  clearAccountSession(true);
   return refreshAccountSession(true);
 }
 

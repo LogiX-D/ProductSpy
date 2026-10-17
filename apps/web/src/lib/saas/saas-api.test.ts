@@ -12,6 +12,7 @@ import {
   type WorkspaceBackup,
 } from '@productspy/shared';
 import { closeDatabase, dbTransaction, ensureDatabase, query } from './database';
+import * as database from './database';
 import { withTenant, withTenantRead } from './context';
 import * as security from './security';
 import { POST as register } from '../../app/api/auth/register/route';
@@ -778,6 +779,147 @@ describe('SaaS real route handlers with PostgreSQL', () => {
       ),
     ).toBe(0);
   });
+  it('does not issue a usable browser session from credentials read before a password change', async () => {
+    const owner = await newAccount('login-password-race');
+    const original = database.query;
+    let identified!: () => void, release!: () => void;
+    const ready = new Promise<void>((resolve) => {
+      identified = resolve;
+    });
+    const resume = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    let first = true;
+    // Pause after the real email lookup, outside any tenant lock or transaction.
+    const spy = vi
+      .spyOn(database, 'query')
+      .mockImplementation(
+        async <T = Record<string, unknown>>(sql: string, params: unknown[] = []) => {
+          const result = await original<T>(sql, params);
+          if (
+            first &&
+            sql.includes('FROM users WHERE email=$1') &&
+            params[0] === owner.user.email
+          ) {
+            first = false;
+            identified();
+            await resume;
+          }
+          return result;
+        },
+      );
+    const pending = call(login, '/api/auth/login', 'POST', {
+      email: owner.user.email,
+      password: initialPassword,
+    });
+    try {
+      await ready;
+      expect(
+        (
+          await call(
+            password,
+            '/api/auth/password',
+            'POST',
+            { currentPassword: initialPassword, password: 'Login-race-new-password-2026' },
+            owner.cookie,
+          )
+        ).status,
+      ).toBe(200);
+    } finally {
+      release();
+    }
+    const response = await pending;
+    spy.mockRestore();
+    if (response.status === 200) {
+      const staleCookie = response.headers.get('set-cookie')!.split(';')[0];
+      expect((await call(me, '/api/auth/me', 'GET', undefined, staleCookie)).status).toBe(401);
+    }
+    expect(response.status).toBe(401);
+  });
+  it.skipIf(!process.env.PRODUCTSPY_TEST_DATABASE_URL)(
+    'does not mint an extension session while password revocation is between sessions and codes',
+    async () => {
+      const owner = await newAccount('pair-password-race');
+      const authorization = await data<{ code: string }>(
+        await call(code, '/api/bridge/code', 'POST', { extensionOrigin: extension }, owner.cookie),
+      );
+      const original = database.query;
+      let revoked!: () => void, release!: () => void, pairingIdentified!: () => void;
+      const sessionsRevoked = new Promise<void>((resolve) => {
+        revoked = resolve;
+      });
+      const resume = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      const pairReady = new Promise<void>((resolve) => {
+        pairingIdentified = resolve;
+      });
+      const spy = vi
+        .spyOn(database, 'query')
+        .mockImplementation(
+          async <T = Record<string, unknown>>(sql: string, params: unknown[] = []) => {
+            const result = await original<T>(sql, params);
+            if (
+              sql === 'UPDATE sessions SET revoked_at=now() WHERE user_id=$1' &&
+              params[0] === owner.user.id
+            ) {
+              revoked();
+              await resume;
+            }
+            if (
+              (sql.includes('FROM extension_codes') || sql.startsWith('UPDATE extension_codes')) &&
+              sql.includes('code_hash=$1') &&
+              params[0] === security.tokenHash(authorization.code)
+            )
+              pairingIdentified();
+            return result;
+          },
+        );
+      const changing = call(
+        password,
+        '/api/auth/password',
+        'POST',
+        { currentPassword: initialPassword, password: 'Pair-race-new-password-2026' },
+        owner.cookie,
+      );
+      let pairing: Promise<Response> | undefined;
+      try {
+        await sessionsRevoked;
+        pairing = call(
+          pair,
+          '/api/bridge/pair',
+          'POST',
+          { code: authorization.code },
+          '',
+          extensionHeaders(''),
+        );
+        // The fixed path identifies the code owner before waiting for the same tenant lock.
+        // The old path has already claimed the code inside its independent transaction.
+        await pairReady;
+      } finally {
+        release();
+      }
+      const [changed, paired] = await Promise.all([changing, pairing!]);
+      spy.mockRestore();
+      expect(changed.status).toBe(200);
+      if (paired.status === 200) {
+        const result = await data<{ token: string }>(paired);
+        expect(
+          (
+            await call(
+              bridgeStatus,
+              '/api/bridge/status',
+              'GET',
+              undefined,
+              '',
+              extensionHeaders(result.token),
+            )
+          ).status,
+        ).toBe(401);
+      }
+      expect(paired.status).toBe(401);
+    },
+  );
   it('persists queued AI jobs, reserves quota once, deduplicates and isolates results', async () => {
     const owner = await newAccount('queued-worker');
     const product = await data<Product>(

@@ -108,6 +108,103 @@ describe('SaaS session and browser data isolation', () => {
     expect(sessionStorage.getItem('productspy:draft-owner')).toBe('bob');
   });
 
+  it.each(['login', 'register'] as const)(
+    'notifies another tab after %s changes the shared cookie, even if its earlier session check read the old account',
+    async (kind) => {
+      let cookieUser = 'alice';
+      let completeAuthentication!: () => void;
+      const authentication = new Promise<void>((resolve) => {
+        completeAuthentication = resolve;
+      });
+      const fetch = vi.fn(async (path: string) => {
+        if (path === `/api/auth/${kind}`) {
+          await authentication;
+          cookieUser = 'bob';
+          return success({});
+        }
+        return success(account(cookieUser));
+      });
+      vi.stubGlobal('fetch', fetch);
+      const otherTab = await import('./session');
+      await otherTab.refreshAccountSession();
+      vi.resetModules();
+      const currentTab = await import('./saas-api');
+      const checks: Promise<unknown>[] = [];
+      const setItem = Storage.prototype.setItem;
+      vi.spyOn(Storage.prototype, 'setItem').mockImplementation(function (
+        this: Storage,
+        key,
+        value,
+      ) {
+        setItem.call(this, key, value);
+        if (this === localStorage && key === otherTab.ACCOUNT_STORAGE_EVENT) {
+          // Browser storage events reach the other document, not the writer.
+          otherTab.clearAccountSession();
+          checks.push(otherTab.refreshAccountSession(true));
+        }
+      });
+      const input = { email: 'bob@example.test', password: 'synthetic-password', name: 'Bob' };
+      const signingIn =
+        kind === 'login' ? currentTab.signIn(input) : currentTab.registerAccount(input);
+      await Promise.all(checks);
+      expect(otherTab.getAccountSession()?.user.id).toBe('alice');
+      completeAuthentication();
+      await signingIn;
+      await Promise.all(checks);
+      expect(otherTab.getAccountSession()?.user.id).toBe('bob');
+    },
+  );
+
+  it('invalidates an old-cookie session response still pending in another tab when login succeeds', async () => {
+    let cookieUser = 'alice';
+    let holdOldSession = false;
+    let finishOldSession!: (value: Response) => void;
+    let completeAuthentication!: () => void;
+    const authentication = new Promise<void>((resolve) => {
+      completeAuthentication = resolve;
+    });
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (path: string) => {
+        if (path === '/api/auth/login') {
+          await authentication;
+          cookieUser = 'bob';
+          return success({});
+        }
+        if (cookieUser === 'alice' && holdOldSession)
+          return new Promise<Response>((resolve) => {
+            finishOldSession = resolve;
+          });
+        return success(account(cookieUser));
+      }),
+    );
+    const otherTab = await import('./session');
+    await otherTab.refreshAccountSession();
+    vi.resetModules();
+    const currentTab = await import('./saas-api');
+    const checks: Promise<unknown>[] = [];
+    const setItem = Storage.prototype.setItem;
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(function (this: Storage, key, value) {
+      setItem.call(this, key, value);
+      if (this === localStorage && key === otherTab.ACCOUNT_STORAGE_EVENT) {
+        otherTab.clearAccountSession();
+        // The component catches an obsolete verification rather than adopting it.
+        checks.push(otherTab.refreshAccountSession(true).catch((error: unknown) => error));
+      }
+    });
+    holdOldSession = true;
+    const signingIn = currentTab.signIn({
+      email: 'bob@example.test',
+      password: 'synthetic-password',
+    });
+    completeAuthentication();
+    await signingIn;
+    finishOldSession(success(account('alice')));
+    const results = await Promise.all(checks);
+    expect(results.some((result) => result instanceof Error)).toBe(true);
+    expect(otherTab.getAccountSession()?.user.id).toBe('bob');
+  });
+
   it('never persists or returns a shared IndexedDB business cache in SaaS', async () => {
     const { webCache } = await import('./storage/web-storage');
     await webCache.replace([{ title: 'Do not cache' }] as never[]);

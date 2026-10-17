@@ -2,7 +2,7 @@ import { randomBytes, randomUUID, scrypt as scryptCallback, timingSafeEqual } fr
 import { promisify } from 'node:util';
 import { z } from 'zod';
 import { query, dbTransaction } from './database';
-import { currentUserId } from './context';
+import { currentUserId, withTenant } from './context';
 import { accountCookie, extensionOriginPattern } from './config';
 import { rateLimit, requestToken, tokenHash, type AccountUser } from './security';
 import { AppError } from '../server/errors';
@@ -56,15 +56,16 @@ export async function signIn(
   const input = parsed.data;
   await rateLimit(`login:${input.email}`, 10, 900);
   await rateLimit('account-auth-global', 200, 60);
-  let user: AccountUser;
+  let userId: string | undefined;
   if (register) {
     const encoded = await passwordHash(input.password);
-    user = {
+    const user: AccountUser = {
       id: randomUUID(),
       email: input.email,
       name: input.name ?? input.email.split('@')[0],
       createdAt: new Date().toISOString(),
     };
+    userId = user.id;
     try {
       await dbTransaction(async () => {
         await query(
@@ -83,25 +84,37 @@ export async function signIn(
       throw error;
     }
   } else {
+    // Identify the lock owner only. Credentials must be read again after acquiring it.
+    const { rows } = await query<{ id: string }>('SELECT id FROM users WHERE email=$1', [
+      input.email,
+    ]);
+    userId = rows[0]?.id;
+  }
+  if (!userId) {
+    await passwordMatches(input.password, '');
+    throw new AppError(401, '邮箱或密码不正确');
+  }
+  return withTenant(userId, async () => {
     const { rows } = await query<{
       id: string;
       email: string;
       name: string;
       password_hash: string;
       created_at: string | Date;
-    }>('SELECT * FROM users WHERE email=$1', [input.email]);
+    }>('SELECT id,email,name,password_hash,created_at FROM users WHERE id=$1', [userId]);
     const row = rows[0];
     const matches = await passwordMatches(input.password, row?.password_hash ?? '');
     if (!row || !matches) throw new AppError(401, '邮箱或密码不正确');
-    user = {
+    const user: AccountUser = {
       id: row.id,
       email: row.email,
       name: row.name,
       createdAt: new Date(row.created_at).toISOString(),
     };
-  }
-  const session = await issueSession(user.id, 'web');
-  return { user, cookie: accountCookie(session.token) };
+    // Password changes hold the same tenant lock, so verification and issuance are indivisible.
+    const session = await issueSession(user.id, 'web');
+    return { user, cookie: accountCookie(session.token) };
+  });
 }
 export async function signOut(request: Request): Promise<void> {
   await query('UPDATE sessions SET revoked_at=now() WHERE token_hash=$1 AND user_id=$2', [
@@ -157,28 +170,39 @@ export async function cloudPair(
   if (!parsed.success) throw new AppError(400, '请输入 SaaS 工作台生成的授权码');
   const origin = request.headers.get('origin') ?? '';
   await rateLimit(`pair:${origin}`, 20);
-  return dbTransaction(async () => {
-    const { rows } = await query<{ user_id: string }>(
-      'UPDATE extension_codes SET used_at=now() WHERE code_hash=$1 AND origin=$2 AND expires_at>now() AND used_at IS NULL RETURNING user_id',
-      [tokenHash(parsed.data.code), origin],
-    );
-    if (!rows[0]) throw new AppError(401, '授权码无效、已使用、已过期或扩展 ID 不匹配');
-    const result = await query<{
-      id: string;
-      email: string;
-      name: string;
-      created_at: string | Date;
-    }>('SELECT id,email,name,created_at FROM users WHERE id=$1', [rows[0].user_id]);
-    const row = result.rows[0];
-    const session = await issueSession(row.id, 'extension', origin);
-    return {
-      ...session,
-      user: {
-        id: row.id,
-        email: row.email,
-        name: row.name,
-        createdAt: new Date(row.created_at).toISOString(),
-      },
-    };
-  });
+  const codeHash = tokenHash(parsed.data.code);
+  const candidates = await query<{ user_id: string }>(
+    'SELECT user_id FROM extension_codes WHERE code_hash=$1 AND origin=$2 AND expires_at>now() AND used_at IS NULL',
+    [codeHash, origin],
+  );
+  const userId = candidates.rows[0]?.user_id;
+  if (!userId) throw new AppError(401, '授权码无效、已使用、已过期或扩展 ID 不匹配');
+  // Acquire the tenant lock before any transaction/code row lock, matching password changes.
+  return withTenant(userId, () =>
+    dbTransaction(async () => {
+      const { rows } = await query<{ user_id: string }>(
+        'UPDATE extension_codes SET used_at=now() WHERE code_hash=$1 AND origin=$2 AND expires_at>now() AND used_at IS NULL RETURNING user_id',
+        [codeHash, origin],
+      );
+      if (!rows[0] || rows[0].user_id !== userId)
+        throw new AppError(401, '授权码无效、已使用、已过期或扩展 ID 不匹配');
+      const result = await query<{
+        id: string;
+        email: string;
+        name: string;
+        created_at: string | Date;
+      }>('SELECT id,email,name,created_at FROM users WHERE id=$1', [rows[0].user_id]);
+      const row = result.rows[0];
+      const session = await issueSession(row.id, 'extension', origin);
+      return {
+        ...session,
+        user: {
+          id: row.id,
+          email: row.email,
+          name: row.name,
+          createdAt: new Date(row.created_at).toISOString(),
+        },
+      };
+    }),
+  );
 }
