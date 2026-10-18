@@ -23,7 +23,7 @@
 | 旧数据迁移、备份恢复                              | 原子业务备份/CLI dry-run+commit、源 checksum；物理/custom dump/RLS；Windows/Linux 恢复后实际路由登录/商品历史/合法导出 checksum 通过 | 私人旧数据未迁入测试账号；需实际归属账号；真实私人资料与云端恢复仍未验        |
 | 开发、测试、生产环境配置                          | PGlite 开发、受限 PG 测试、生产 PG17+ 模板；Docker Web/Worker 和原 Compose 实际 CI 通过                                              | 真实 HTTPS、生产备份/PITR/RPO/RTO 和切换演练未验                              |
 | 自动构建、测试及部署准备                          | 当前完整静态/单元/PG/构建/standalone/Docker/MV3 CI；无部署、发布或主分支合并步骤                                                     | 881c3ec 的打包/增强恢复/Compose 已全部通过；后续查看 PR 当前检查              |
-| 不依赖 Windows 的正式使用                         | 线上代码路径默认 SaaS；Linux 实际 standalone 与 Docker Web/Worker 已运行；旧桌面仅显式 legacy                                        | 用户尚未授权部署，普通用户的真实公网使用仍未证明                              |
+| 不依赖 Windows 的正式使用                         | 线上代码路径默认 SaaS；Linux 实际 standalone 与 Docker Web/Worker 已运行；旧桌面仅显式 legacy                                        | 尚未指定可操作的预发布目标及访问范围，普通用户的真实公网使用仍未证明          |
 
 ## 最终真实业务链路
 

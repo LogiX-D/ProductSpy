@@ -46,7 +46,10 @@ export function getJobs(
   if (options.cursor !== undefined) parameters.set('cursor', options.cursor);
   if (options.limit !== undefined) parameters.set('limit', String(options.limit));
   const search = parameters.toString();
-  return webRequest(`/api/jobs${search ? `?${search}` : ''}`, { signal: options.signal });
+  // A page's cancellation signal must not replace the normal network deadline.
+  const deadline = AbortSignal.timeout(20_000);
+  const signal = options.signal ? AbortSignal.any([options.signal, deadline]) : deadline;
+  return webRequest(`/api/jobs${search ? `?${search}` : ''}`, { signal });
 }
 
 export async function openBilling(kind: 'checkout' | 'portal'): Promise<string> {

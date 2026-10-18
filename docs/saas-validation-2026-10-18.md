@@ -39,6 +39,8 @@ Chrome 测试包为锁定 Playwright 下载的 Chrome for Testing 156.0.8078.4�
 
 另新增一项浏览器任务分页/375px 用例：真实注册、退出、登录，只有任务列表 GET 使用 57 条明确标注的合成响应，实际点击下一页/刷新/上一页并核对请求游标和布局，不写入任务或触发 AI。这项只证明界面，不替代 SQL/隔离测试；本机未再次启动已知受阻的 Chrome，执行结果以新提交 Linux CI 为准。
 
+分页终审另发现调用方取消信号覆盖了普通请求的 20 秒截止，挂起连接可能使任务页一直加载。任务列表 GET 现合并取消与超时，不改变 AI 的 5 分钟轮询期限。4 项挂起请求/取消/恢复回归在旧代码中有 1 项失败，修复后通过；最终本机全量为 **975 PASS / 4 SKIP，96 文件、979 项**，全仓 TypeScript/ESLint/Prettier 与 MV3/Next Webpack 生产构建通过。浏览器刷新请求与后台轮询使用相同 URL，因此浏览器证据仅表述为分页交互/游标/375px 布局；手动刷新与请求恢复分别引用 React 和请求层单元测试。
+
 ## CI、部署与验收边界
 
 提交 `3b3f697` 的 [Linux CI run 39114813829](https://github.com/LogiX-D/ProductSpy/actions/runs/39114813829) 已实际全部 success。日志核对：933 PASS / 15 SKIP（948 项，含 11 项 Windows 专属跳过），受限 TCP PostgreSQL 44/44，PG/pg_dump/pg_restore 17.11 增强恢复、完整生产构建、两种 preview ZIP、实际 standalone、Docker Web/Worker、原 Compose、MV3/SaaS E2E 2/2 全部通过。实际 checkout 的 PR merge `4aa5d53` 与分支 head 的 tree 相同，均为 `2cde1e608e2b4c6477071062a844f870f47c9972`；不是将旧绿灯套给当前代码。

@@ -115,4 +115,4 @@ pnpm db:import-legacy <business-backup.json> <existing-saas-user-id> --commit
 
 `node scripts/saas/verify-compose.mjs` 另需 `PRODUCTSPY_COMPOSE_VERIFY=1`，只运行于 GitHub Linux 的本机 daemon，要求 Compose 2.24.4+。使用原 `compose.yaml` 的服务/网络/依赖/数据库卷/worker 命令，以 `!override` 替换生产 env_file 和 Web 端口为本次私有合成文件及 loopback 随机端口，不读取 `.env.production`。数据库无主机端口，业务镜像只用同 job 已构建镜像；临时项目验证内部 db DNS、角色、Mock Worker、Web/DB 容器重建后的同卷数据。清理前核对项目和本次 marker，只删除自己创建的资源和精确临时文件。该脚本 10 项边界测试及 `881c3ec` 的 [实际 Linux CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39015571302) 均通过；3 容器、1 网络、1 卷和私有环境文件清理成功。不把此命令视为部署授权。
 
-实际容器、Linux PostgreSQL 逻辑恢复、真实 Amazon 本机串联已有本轮证据，详见 [验证记录](saas-validation.md)。真实 HTTPS 预发布、正式隐私联系人/保留期限/账户注销、邮件核验/找回、独立 worker 的云端运维、支付沙盒、跨物理设备、真实 AI 及生产恢复演练仍须分别记录结果。用户当前指示暂不部署；未通过的项目不标为最终验收完成。
+实际容器、Linux PostgreSQL 逻辑恢复、真实 Amazon 本机串联已有证据，详见 [验证记录](saas-validation.md)。真实 HTTPS 预发布、正式隐私联系人/保留期限/账户注销、邮件核验/找回、独立 worker 的云端运维、支付沙盒、跨物理设备、真实 AI 及生产恢复演练仍须分别记录结果。2026-10-18 的持续开发指令允许自主推进，但尚未指定可操作的预发布目标及访问范围；正式域名、付费资源、生产服务与公开发布仍需单独授权。未通过的项目不标为最终验收完成。

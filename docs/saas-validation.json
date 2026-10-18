@@ -372,6 +372,22 @@
         "reactUI": 4
       },
       "scope": "241 synthetic tasks; owner-bound keyset cursor preserving microseconds; same timestamp and same millisecond boundaries; stale response cancellation; PostgreSQL network suite wired but awaiting current commit CI"
+    },
+    "taskHistoryDeadline": {
+      "status": "FIXED_LOCAL_TESTS_PASSED_LINUX_PENDING",
+      "unit": {
+        "files": 96,
+        "passed": 975,
+        "skipped": 4,
+        "total": 979
+      },
+      "focused": {
+        "passed": 4,
+        "failedBeforeFix": 1
+      },
+      "static": "PASS",
+      "webpackBuild": "PASS",
+      "scope": "Task list GET retains 20000ms deadline with caller cancellation; hanging fetch timeout, immediate cancellation, preserved abort reason and fresh read; AI job polling unchanged"
     }
   }
 }
