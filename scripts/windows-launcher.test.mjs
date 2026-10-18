@@ -127,9 +127,9 @@ describe('Windows portable launcher lifecycle guards', () => {
     }
   });
 
-  it.runIf(windows)(
-    'checks real directory writability without changing existing data or ACLs',
-    async () => {
+  it.runIf(windows).each(['original', 'auto-inherited'])(
+    'checks real directory writability without changing existing data or ACLs (ACL: %s)',
+    async (aclMode) => {
       const directory = await mkdtemp(join(tmpdir(), 'productspy-writable-'));
       const powershell = `
 $ErrorActionPreference = 'Stop'
@@ -144,27 +144,46 @@ Invoke-Expression $guard.Extent.Text
 $path = $env:PRODUCTSPY_TEST_DIRECTORY
 $sentinel = Join-Path $path 'existing-product.txt'
 [IO.File]::WriteAllText($sentinel, 'retain-existing-data')
+if ($env:PRODUCTSPY_TEST_ACL_MODE -eq 'auto-inherited') {
+  # Exercise an already canonicalized D:AI descriptor as well as Node's original D:.
+  [IO.Directory]::SetAccessControl($path, [IO.Directory]::GetAccessControl($path))
+}
+$originalSddl = [IO.Directory]::GetAccessControl($path).GetSecurityDescriptorSddlForm([Security.AccessControl.AccessControlSections]::Access)
 Assert-WritableDirectory $path '用户数据'
 if ([IO.File]::ReadAllText($sentinel) -ne 'retain-existing-data') { throw 'Existing data changed' }
-$originalSddl = [IO.Directory]::GetAccessControl($path).GetSecurityDescriptorSddlForm([Security.AccessControl.AccessControlSections]::Access)
+if ([IO.Directory]::GetAccessControl($path).GetSecurityDescriptorSddlForm([Security.AccessControl.AccessControlSections]::Access) -ne $originalSddl) { throw 'Writable-directory guard changed the original ACL' }
 $acl = [IO.Directory]::GetAccessControl($path)
 $sid = [Security.Principal.WindowsIdentity]::GetCurrent().User
 $deny = New-Object Security.AccessControl.FileSystemAccessRule($sid, [Security.AccessControl.FileSystemRights]::CreateFiles, [Security.AccessControl.AccessControlType]::Deny)
 $acl.AddAccessRule($deny)
 try {
   [IO.Directory]::SetAccessControl($path, $acl)
+  $deniedSddl = [IO.Directory]::GetAccessControl($path).GetSecurityDescriptorSddlForm([Security.AccessControl.AccessControlSections]::Access)
   $blocked = $false
   try { Assert-WritableDirectory $path '用户数据' } catch {
     $blocked = $_.Exception.Message.Contains('用户数据') -and $_.Exception.Message.Contains('无法写入') -and $_.Exception.Message.Contains($path)
   }
   if (-not $blocked) { throw 'Actual denied ACL must produce a clear writable-directory error' }
   if ([IO.File]::ReadAllText($sentinel) -ne 'retain-existing-data') { throw 'Existing data changed after failure' }
+  if ([IO.Directory]::GetAccessControl($path).GetSecurityDescriptorSddlForm([Security.AccessControl.AccessControlSections]::Access) -ne $deniedSddl) { throw 'Writable-directory guard changed the denied ACL' }
 } finally {
-  $restoredAcl = [IO.Directory]::GetAccessControl($path)
-  $restoredAcl.SetSecurityDescriptorSddlForm($originalSddl, [Security.AccessControl.AccessControlSections]::Access)
-  [IO.Directory]::SetAccessControl($path, $restoredAcl)
+  # Match the portable fixture's exact restore: .NET adds AI to original D:
+  # descriptors, while native DACL-only restoration does not preserve existing AI.
+  $descriptor = New-Object Security.AccessControl.RawSecurityDescriptor($originalSddl)
+  if (($descriptor.ControlFlags -band [Security.AccessControl.ControlFlags]::DiscretionaryAclAutoInherited) -ne 0) {
+    $restoredAcl = [IO.Directory]::GetAccessControl($path)
+    $restoredAcl.SetSecurityDescriptorSddlForm($originalSddl, [Security.AccessControl.AccessControlSections]::Access)
+    [IO.Directory]::SetAccessControl($path, $restoredAcl)
+  } else {
+    Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public static class ProductSpyWritableFixtureDacl { [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)] [return: MarshalAs(UnmanagedType.Bool)] public static extern bool SetFileSecurity(string path, uint information, byte[] descriptor); }'
+    $binary = New-Object byte[] $descriptor.BinaryLength
+    $descriptor.GetBinaryForm($binary, 0)
+    if (-not [ProductSpyWritableFixtureDacl]::SetFileSecurity($path, 4, $binary)) { throw (New-Object ComponentModel.Win32Exception([Runtime.InteropServices.Marshal]::GetLastWin32Error())) }
+  }
 }
 if ([IO.Directory]::GetAccessControl($path).GetSecurityDescriptorSddlForm([Security.AccessControl.AccessControlSections]::Access) -ne $originalSddl) { throw 'The test must restore the original ACL' }
+Assert-WritableDirectory $path '用户数据'
+if ([IO.File]::ReadAllText($sentinel) -ne 'retain-existing-data') { throw 'Existing data changed after ACL restore' }
 if (@(Get-ChildItem -LiteralPath $path -Filter '.productspy-write-*.tmp').Count -gt 0) { throw 'Probe residue remained' }
 $occupied = Join-Path $path 'occupied-file'
 [IO.File]::WriteAllText($occupied, 'preserve-file')
@@ -185,6 +204,7 @@ if (-not $blockedFile -or [IO.File]::ReadAllText($occupied) -ne 'preserve-file')
               ...process.env,
               PRODUCTSPY_TEST_SOURCE: launcherSource,
               PRODUCTSPY_TEST_DIRECTORY: directory,
+              PRODUCTSPY_TEST_ACL_MODE: aclMode,
             },
           },
         );

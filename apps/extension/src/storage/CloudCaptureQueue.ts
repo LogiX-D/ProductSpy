@@ -26,8 +26,18 @@ const keyFor = (userId?: string) =>
 
 export class CloudCaptureQueue {
   private readonly key: string;
-  constructor(userId?: string) {
+  constructor(private readonly userId?: string) {
     this.key = keyFor(userId);
+  }
+
+  private discardConfirmedCopies(state: QueueState): void {
+    // This is an upload outbox, not an offline product library. A bound account's
+    // product without a pending capture was already acknowledged by the server.
+    // Keep pending metadata, and never reinterpret or trim unassigned records.
+    if (!this.userId) return;
+    for (const [id, product] of Object.entries(state.products)) {
+      if (!state.pending[productKey(product)]) delete state.products[id];
+    }
   }
 
   private async read(): Promise<QueueState> {
@@ -63,6 +73,9 @@ export class CloudCaptureQueue {
   private transaction<T>(operation: (state: QueueState) => T): Promise<T> {
     const result = (locks.get(this.key) ?? Promise.resolve()).then(async () => {
       const state = await this.read();
+      // Compact older versions' acknowledged copies in the same atomic write as
+      // this operation, before a recapture can inherit their analysis/history.
+      this.discardConfirmedCopies(state);
       const value = operation(state);
       await chrome.storage.local.set({ [this.key]: state });
       return value;
@@ -103,6 +116,7 @@ export class CloudCaptureQueue {
   }
 
   async acknowledge(capture: QueuedCapture, product: Product): Promise<boolean> {
+    if (!this.userId) throw new Error('未归属采集不能确认云端同步。');
     const validated = productSchema.parse(product);
     if (productKey(validated) !== productKey(capture.draft))
       throw new Error('云端确认的商品与采集记录不匹配。');
@@ -111,7 +125,8 @@ export class CloudCaptureQueue {
       if (state.pending[key]?.captureId !== capture.captureId) return false;
       for (const [id, previous] of Object.entries(state.products))
         if (productKey(previous) === key) delete state.products[id];
-      state.products[validated.id] = validated;
+      // The caller already has the server product for its success response. Do
+      // not persist its full analysis/history after the outbox item is complete.
       delete state.pending[key];
       return true;
     });

@@ -1,5 +1,9 @@
 # 版本更新记录
 
+## SaaS 迁移开发分支 — 未发布
+
+正式架构为 Chrome MV3 + 在线 SaaS + PostgreSQL 云端后端，复用原采集器、Next.js/React 与业务模型。已有账号、租户/RLS、持久任务与 Worker、Free/Pro、订阅接口、导入恢复及容器准备；旧 v1.0.0 与 Windows 兼容源码保留在回退基线。2026-10-18 复审补上扩展成功同步副本清理、任务限流后安全轮询、生产连接权限保护及专用事务迁移。真实云端、真 AI、物理跨设备与支付沙盒/真实交易分别保持待验收，详见 [SaaS 验证记录](docs/saas-validation.md)。以下版本记录为历史本地发行证据。
+
 ## 1.0.0 — 正式交付草稿
 
 基于 rc.2，无新增业务模块。2026-10-16 维护者在原故障电脑、正式 Google Chrome 中确认工具栏 Popup 正常，`PAIRING-SMALL-WINDOW` 记为 fixed + manually verified；仅 C07 通过，其余 52 项人工验收保留 pending。应用版本 1.0.0，Chrome 数字版本 1.0.0.3 高于 rc.2，显示名 1.0.0。重新执行工程回归、旧包升级和独立打包，保留所有候选包及草稿。实际结果见 [正式交付报告](docs/stable-release-validation.md)。Release 不公开、不提交 Chrome Web Store，真实付费 AI 质量仍待授权验收。

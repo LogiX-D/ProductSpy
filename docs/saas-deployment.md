@@ -35,6 +35,10 @@ SSH 隧道到 loopback 的开发联调可作临时诊断，但不是公网 HTTPS
 3. 应用 DATABASE_URL 改用 productspy_app，`PRODUCTSPY_AUTO_MIGRATE=0`。不要给应用 DDL、SUPERUSER、BYPASSRLS。启动时不自动扩权。
 4. RLS 强制 workspace_documents、subscriptions、usage_events、jobs、capture_events、audit_events 的 user_id；认证/平台表仅由受信服务器代码访问。每租户连接设置 scope，finally 清理，清理失败销毁连接。
 
+生产初始化现在会查询实际 PostgreSQL 角色，拒绝 SUPERUSER、BYPASSRLS 或可切换到这些特权角色的成员身份；不会只信任连接用户名。`PRODUCTSPY_ENV=production` 对独立 Worker 同样生效。生产不能用 `PRODUCTSPY_ALLOW_PGLITE=1` 绕过 PostgreSQL 要求；显式本机 test/development 的构建产物回归仍可使用开发数据库。
+
+`pnpm db:migrate` 使用专用、短生命周期的管理连接，在同一事务及事务级迁移锁内执行 schema；失败回滚，不向应用全局连接池注册该连接。生产 Web/Worker 始终使用受限角色，设置迁移环境开关也不能绕过角色保护。
+
 ## 构建和启动
 
 生产模板 `.env.production.example` 复制到 Git 忽略的 `.env.production`；由部署平台注入真实值，绝不提交秘密。`PRODUCTSPY_APP_URL` 必须是精确 HTTPS origin（无路径/参数），与反向代理 Host、扩展构建地址一致。`PRODUCTSPY_ARCHIVE_SECRET` 至少 32 随机字符，用于跨实例历史清理凭证。

@@ -41,11 +41,44 @@ function state(): DatabaseState {
     throw new Error('Close the database before changing database configuration.');
   return (globals.__productspyDatabase ??= { key, tail: Promise.resolve() });
 }
+/** Dedicated CLI path. Its administrative connection never enters the application pool. */
+export async function migrateDatabase(): Promise<void> {
+  if (!process.env.DATABASE_URL) throw new Error('db:migrate requires a PostgreSQL DATABASE_URL.');
+  const { Pool: PostgresPool } = await import('pg');
+  const pool = new PostgresPool({
+    connectionString: process.env.DATABASE_URL,
+    max: 1,
+    connectionTimeoutMillis: 10000,
+  });
+  try {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      await client.query('SELECT pg_advisory_xact_lock(761993482)');
+      await client.query(migrationSQL);
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  } finally {
+    await pool.end();
+  }
+}
 export async function ensureDatabase(): Promise<void> {
   const database = state();
   database.ready ??= (async () => {
+    const production =
+      process.env.PRODUCTSPY_ENV === 'production' ||
+      (process.env.NODE_ENV === 'production' &&
+        !['test', 'development'].includes(process.env.PRODUCTSPY_ENV ?? ''));
     if (database.key.startsWith('pglite:')) {
-      if (process.env.NODE_ENV === 'production' && process.env.PRODUCTSPY_ALLOW_PGLITE !== '1')
+      if (
+        production ||
+        (process.env.NODE_ENV === 'production' && process.env.PRODUCTSPY_ALLOW_PGLITE !== '1')
+      )
         throw new Error(
           'Production requires PostgreSQL; PGlite is a single-process development database.',
         );
@@ -65,8 +98,23 @@ export async function ensureDatabase(): Promise<void> {
         connectionTimeoutMillis: 10000,
       });
       const client = await database.pool.connect();
+      let locked = false;
       try {
+        if (production) {
+          // Inspect both identities: a privileged login can start with SET ROLE to
+          // conceal its session_user, then recover privileges with RESET ROLE.
+          const role = await client.query<{ unsafe: boolean }>(
+            `SELECT EXISTS (SELECT 1 FROM pg_roles
+             WHERE (rolsuper OR rolbypassrls) AND
+             (pg_has_role(current_user,oid,'MEMBER') OR pg_has_role(session_user,oid,'MEMBER'))) AS unsafe`,
+          );
+          if (role.rows[0]?.unsafe !== false)
+            throw new Error(
+              'Production application requires a NOSUPERUSER/NOBYPASSRLS role without privileged memberships; use the separate db:migrate command for schema administration.',
+            );
+        }
         await client.query('SELECT pg_advisory_lock(761993482)');
+        locked = true;
         // Deployments can apply migrationSQL separately and disable automatic DDL for the app role.
         const autoMigrate =
           process.env.PRODUCTSPY_AUTO_MIGRATE === '1' ||
@@ -74,8 +122,12 @@ export async function ensureDatabase(): Promise<void> {
           (process.env.NODE_ENV !== 'production' && process.env.PRODUCTSPY_AUTO_MIGRATE !== '0');
         if (autoMigrate) await client.query(migrationSQL);
       } finally {
-        await client.query('SELECT pg_advisory_unlock(761993482)').catch(() => undefined);
-        client.release();
+        let discard = false;
+        if (locked)
+          await client.query('SELECT pg_advisory_unlock(761993482)').catch(() => {
+            discard = true;
+          });
+        client.release(discard);
       }
     }
   })();

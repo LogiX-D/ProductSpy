@@ -9,6 +9,117 @@ let session: Promise<void> | undefined;
 let account: AccountSession | undefined;
 let accountRequest: Promise<AccountSession> | undefined;
 let accountRevision = 0;
+let accountChange = new AbortController();
+
+function advanceAccountRevision(): void {
+  accountRevision += 1;
+  accountChange.abort();
+  accountChange = new AbortController();
+}
+
+class AccountRequestError extends ApiRequestError {
+  constructor(
+    message: string,
+    status: number,
+    readonly retryAfterMs?: number,
+  ) {
+    super(message, status);
+  }
+}
+
+function retryAfter(response: Response): number | undefined {
+  const value = response.headers.get('retry-after')?.trim();
+  if (!value) return undefined;
+  const delay = /^\d+$/.test(value) ? Number(value) * 1000 : Date.parse(value) - Date.now();
+  return Number.isFinite(delay) ? Math.max(0, delay) : undefined;
+}
+
+function pauseJobPolling(milliseconds: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal.aborted) {
+      reject(signal.reason);
+      return;
+    }
+    const finish = () => {
+      clearTimeout(timer);
+      signal.removeEventListener('abort', cancel);
+    };
+    const cancel = () => {
+      finish();
+      reject(signal.reason);
+    };
+    const timer = setTimeout(() => {
+      finish();
+      resolve();
+    }, milliseconds);
+    signal.addEventListener('abort', cancel, { once: true });
+  });
+}
+
+async function pollAIJob<T>(
+  id: string,
+  revision: number,
+  userSignal?: AbortSignal | null,
+): Promise<T> {
+  const deadline = Date.now() + 300_000;
+  const signal = AbortSignal.any([accountChange.signal, ...(userSignal ? [userSignal] : [])]);
+  let rateLimitRetries = 0;
+  const check = () => {
+    if (revision !== accountRevision) throw new ApiRequestError('账号已切换，请重新加载。', 401);
+    if (userSignal?.aborted)
+      throw new DOMException('Request aborted; server task may continue', 'AbortError');
+    if (Date.now() >= deadline)
+      throw new Error('任务仍在服务端处理，请稍后查看任务和已保存结果；不会自动重发');
+  };
+  try {
+    for (;;) {
+      check();
+      let result: {
+        status: string;
+        error?: string;
+        result?: { status: number; body: { ok: boolean; data: T; error?: string } };
+      };
+      try {
+        result = await accountRequestRaw(`/api/jobs/${encodeURIComponent(id)}`, {
+          signal: AbortSignal.any([
+            signal,
+            AbortSignal.timeout(Math.max(1, Math.min(20_000, deadline - Date.now()))),
+          ]),
+        });
+      } catch (error) {
+        check();
+        if (!(error instanceof ApiRequestError) || error.status !== 429 || rateLimitRetries >= 5)
+          throw error;
+        const fallback = Math.min(30_000, 3000 * 2 ** rateLimitRetries++);
+        const delay = Math.max(
+          fallback,
+          error instanceof AccountRequestError ? (error.retryAfterMs ?? 0) : 0,
+        );
+        // Only the read is retried. The accepted AI job is never submitted again.
+        await pauseJobPolling(Math.min(delay, Math.max(0, deadline - Date.now())), signal);
+        continue;
+      }
+      check();
+      rateLimitRetries = 0;
+      if (result.result) {
+        if (!result.result.body.ok)
+          throw new ApiRequestError(
+            result.result.body.error ?? '后台任务失败',
+            result.result.status,
+          );
+        return result.result.body.data;
+      }
+      if (['failed', 'interrupted', 'succeeded'].includes(result.status))
+        throw new Error(
+          result.error ?? '任务已结束，请在任务和业务历史中检查已保存结果；不会自动重发',
+        );
+      await pauseJobPolling(Math.min(1500, Math.max(0, deadline - Date.now())), signal);
+    }
+  } catch (error) {
+    check();
+    throw error;
+  }
+}
 
 function clearPrivateDrafts(): void {
   if (typeof window === 'undefined') return;
@@ -57,7 +168,7 @@ export function getAccountSession(): AccountSession | undefined {
 
 /** Invalidate pending responses as well as private drafts when identity changes. */
 export function clearAccountSession(broadcast = false): void {
-  accountRevision += 1;
+  advanceAccountRevision();
   account = undefined;
   accountRequest = undefined;
   clearPrivateDrafts();
@@ -85,9 +196,13 @@ export async function accountRequestRaw<T>(path: string, init: RequestInit = {})
   if (body && typeof body === 'object' && 'ok' in body) {
     if (body.ok === true && response.ok && 'data' in body) return body.data as T;
     if ('error' in body && typeof body.error === 'string')
-      throw new ApiRequestError(body.error, response.status);
+      throw new AccountRequestError(body.error, response.status, retryAfter(response));
   }
-  throw new ApiRequestError(`ProductSpy 返回了无效响应 (${response.status})`, response.status);
+  throw new AccountRequestError(
+    `ProductSpy 返回了无效响应 (${response.status})`,
+    response.status,
+    retryAfter(response),
+  );
 }
 
 export async function refreshAccountSession(force = false): Promise<AccountSession> {
@@ -101,7 +216,7 @@ export async function refreshAccountSession(force = false): Promise<AccountSessi
         throw new Error('账号资料无效，请重新登录。');
       if (account?.user.id !== next.user.id) {
         adoptDraftIdentity(next.user.id);
-        accountRevision += 1;
+        advanceAccountRevision();
       }
       account = next;
       notifyAccountChange();
@@ -153,34 +268,7 @@ export async function webRequest<T>(path: string, init: RequestInit = {}): Promi
           ...init,
           body: JSON.stringify({ endpoint: path, input: JSON.parse(init.body) }),
         });
-        const deadline = Date.now() + 150_000;
-        for (;;) {
-          if (revision !== accountRevision)
-            throw new ApiRequestError('账号已切换，请重新加载。', 401);
-          if (init.signal?.aborted)
-            throw new DOMException('Request aborted; server task may continue', 'AbortError');
-          const result = await accountRequestRaw<{
-            status: string;
-            error?: string;
-            result?: { status: number; body: { ok: boolean; data: T; error?: string } };
-          }>(`/api/jobs/${encodeURIComponent(job.id)}`);
-          if (result.result) {
-            if (!result.result.body.ok)
-              throw new ApiRequestError(
-                result.result.body.error ?? '后台任务失败',
-                result.result.status,
-              );
-            data = result.result.body.data;
-            break;
-          }
-          if (['failed', 'interrupted', 'succeeded'].includes(result.status))
-            throw new Error(
-              result.error ?? '任务已结束，请在任务和业务历史中检查已保存结果；不会自动重发',
-            );
-          if (Date.now() > deadline)
-            throw new Error('任务仍在服务端处理，请稍后查看任务和已保存结果；不会自动重发');
-          await new Promise((resolve) => setTimeout(resolve, 750));
-        }
+        data = await pollAIJob<T>(job.id, revision, init.signal);
       } else data = await accountRequestRaw<T>(path, init);
       if (revision !== accountRevision) throw new ApiRequestError('账号已切换，请重新加载。', 401);
       return data;

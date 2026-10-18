@@ -62,6 +62,8 @@ SaaS E2E 使用 3100 端口、独立数据库、真实 MV3 和 HTTP；Amazon fix
 
 AI 已接入持久后台队列。生产设置 `PRODUCTSPY_JOB_RUNNER=external` 并运行 `pnpm worker`；开发 PGlite 使用同进程 runner。独立 Node worker 的实际 PostgreSQL 回归与 Mock 结果分开记录，详情见部署文档。
 
+`pnpm build:webpack` 使用 Next.js 支持的 Webpack 构建同一 SaaS 和扩展，供默认 Turbopack 在特定环境停滞时交叉验证；不增加依赖、不改变业务接口。2026-10-18 本机 Turbopack 停在 compile，Webpack 已完成产物构建，具体限制和本轮结果见验证记录。
+
 ## 历史回退
 
 原本地 v1.0.0 基线为 `b83027a`，独立分支 `codex/baseline-v1-before-saas`；[历史 README](docs/legacy-v1-readme.md)、Windows 源码和旧发行证据保留。`pnpm dev:legacy` 供开发兼容回归；生产产品目标始终是在线 SaaS。完整 legacy 业务备份可用 `pnpm db:import-legacy <backup.json> <user-id>` 预览，显式 `--commit` 才导入，不修改源文件或覆盖已有资料。

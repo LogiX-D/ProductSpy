@@ -43,3 +43,11 @@
 PGlite 只供无数据库的本机开发及确定性 SQL 测试；不作为生产、多实例或网络 PostgreSQL 的证明。AI 执行复用原业务 pipeline，通过 PostgreSQL 持久队列和独立 Node worker 调度；额度在入队时预留，requestId 重放不重复消费。中断可查看且不自动收费重试。邮件验证/找回、正式隐私联系人及生产运维仍需继续完成/验收。
 
 参考：[Chrome MV3 要求](https://developer.chrome.com/docs/webstore/program-policies/mv3-requirements)、[Chrome 商店政策](https://developer.chrome.com/docs/webstore/program-policies/policies)、[Stripe Webhook](https://docs.stripe.com/webhooks)。政策审查是代码依据，不代表商店或支付平台已批准。
+
+## 2026-10-18 接续审计
+
+本轮工作目录最初仍在 `codex/commercialization-system` / `b3d2f56`，fetch 后确认远端 main 为 `b83027a`，SaaS 开发分支已有 15 项提交至 `8d7709b`，Draft PR #1 未合并。工作区无原始未提交变更，接续同名开发分支；未从旧目录另起重复迁移，未改主分支或基线。
+
+复审确认原先的本机匿名认证、单例 JSON、localhost 通信和共享 Dexie 等缺口已在 SaaS 分支解决。新增具体发现：成功同步商品完整副本无限增长会耗尽扩展存储；多个标签页 750ms 任务轮询可超出每用户 180/min 限流并错误终止等候；生产数据库的受限角色要求此前主要依赖运维配置，应用未强制拒绝绕过 RLS 的连接。这三项均有针对性修复和测试，实际运行记录持续补入验证文档。
+
+本轮重新阅读 Chrome 官方 MV3 和用户数据政策，确认代码自包含、按用户触发采集、精确服务 origin、显式云端采集同意与凭证最小权限仍适用；正式隐私披露、基础设施保护和商店审查未因代码审计自动通过。[官方用户数据说明](https://developer.chrome.com/docs/webstore/program-policies/user-data-faq)。

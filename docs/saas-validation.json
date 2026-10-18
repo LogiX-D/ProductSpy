@@ -269,5 +269,58 @@
       "containers": 3,
       "volumes": 1
     }
+  },
+  "followUp20261018": {
+    "date": "2026-10-18",
+    "timezone": "Asia/Shanghai",
+    "branch": "codex/saas-migration",
+    "auditedBase": "8d7709b",
+    "status": "ENGINEERING_CHECKS_PARTIAL_ENVIRONMENT_BLOCKED",
+    "unit": {
+      "files": 93,
+      "passed": 944,
+      "skipped": 4,
+      "failed": 0,
+      "total": 948
+    },
+    "static": {
+      "typecheck": "PASS",
+      "lint": "PASS",
+      "prettier": "PASS"
+    },
+    "build": {
+      "extension": "PASS",
+      "webpack": "PASS",
+      "turbopack": "COMPILE_STALLED_TERMINATED"
+    },
+    "browser": {
+      "passed": 0,
+      "failed": 2,
+      "failures": [
+        "MV3 persistent Chromium spawn UNKNOWN",
+        "workspace register navigation 90000ms timeout"
+      ]
+    },
+    "networkPostgres": {
+      "status": "BLOCKED_BEFORE_MIGRATION",
+      "server": "PostgreSQL 17.11 Windows x64",
+      "authentication": "scram-sha-256",
+      "attempts": 3,
+      "ownClustersStoppedAndRemoved": true,
+      "passwordsRemoved": true
+    },
+    "runtimeProbes": {
+      "versions": ["24.19.0 bundled", "24.14.0 official checksum verified"],
+      "loopback": ["127.0.0.1", "127.0.0.2", "::1"],
+      "outcome": "FIRST_EXCHANGE_ONLY_SECOND_EXCHANGE_AND_FIN_STALLED",
+      "rootCause": "UNKNOWN"
+    },
+    "cloudDeployed": false,
+    "realAI": false,
+    "stripeSandbox": false,
+    "realPayment": false,
+    "crossPhysicalDevice": false,
+    "notes": "Historical successful Linux CI is not a result for current changes. See matching PR checks. No production, public release, private data migration, paid resources, or protected-branch merge.",
+    "report": "docs/saas-validation-2026-10-18.md"
   }
 }

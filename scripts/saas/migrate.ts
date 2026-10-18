@@ -1,12 +1,7 @@
-import { ensureDatabase, closeDatabase } from '../../apps/web/src/lib/saas/database';
+import { migrateDatabase } from '../../apps/web/src/lib/saas/database';
 async function main() {
-  process.env.DB_MIGRATE_ON_START = '1';
-  try {
-    await ensureDatabase();
-    console.log('ProductSpy database schema is ready.');
-  } finally {
-    await closeDatabase();
-  }
+  await migrateDatabase();
+  console.log('ProductSpy database schema is ready.');
 }
 void main().catch((error) => {
   console.error(error instanceof Error ? error.message : 'Migration failed');
