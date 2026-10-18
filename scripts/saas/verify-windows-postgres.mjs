@@ -307,6 +307,7 @@ try {
       'apps/web/src/lib/saas/saas-api.test.ts',
       'apps/web/src/lib/saas/billing.test.ts',
       'apps/web/src/lib/saas/billing-checkout.test.ts',
+      'apps/web/src/lib/saas/jobs-pagination.test.ts',
     ],
     { ...env, DATABASE_URL: appURL },
     300_000,

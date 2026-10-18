@@ -321,6 +321,57 @@
     "realPayment": false,
     "crossPhysicalDevice": false,
     "notes": "Historical successful Linux CI is not a result for current changes. See matching PR checks. No production, public release, private data migration, paid resources, or protected-branch merge.",
-    "report": "docs/saas-validation-2026-10-18.md"
+    "report": "docs/saas-validation-2026-10-18.md",
+    "ci": {
+      "commit": "3b3f697f3e1cbbc0dc7b1b8073caeb9f5563bc78",
+      "mergeCommit": "4aa5d53c0a03dd112b7cdbc6e1f6a4510ad6b60f",
+      "tree": "2cde1e608e2b4c6477071062a844f870f47c9972",
+      "run": 39114813829,
+      "status": "SUCCESS",
+      "unit": {
+        "passed": 933,
+        "skipped": 15,
+        "total": 948
+      },
+      "postgres": {
+        "passed": 44,
+        "total": 44
+      },
+      "browser": {
+        "passed": 2,
+        "total": 2,
+        "scope": "Amazon HTML fixture, Mock AI, single CI host"
+      },
+      "logicalRecovery": "PASS",
+      "standalone": "PASS",
+      "docker": "PASS",
+      "compose": "PASS",
+      "publicDeployment": false
+    },
+    "extensionPreviews": {
+      "revision": "3b3f697f3e1cbbc0dc7b1b8073caeb9f5563bc78",
+      "dirty": false,
+      "filesPerArchive": 243,
+      "independentWindowsUnpackAndChecksums": "PASS",
+      "developmentSha256": "01bf4cc1cd7ea58ea0eb7073edfaa0d50db9d224d47cd962c7906e1b09406428",
+      "productionConfigurationSha256": "c81a2660632fdbf45d61b351c97a685c714831cc084aac016eff4ac51416e884",
+      "productionOrigin": "https://productspy-preview.example.invalid",
+      "published": false
+    },
+    "taskHistoryPagination": {
+      "status": "IMPLEMENTED_LOCAL_TESTS_PASSED_LINUX_PENDING",
+      "unit": {
+        "files": 95,
+        "passed": 971,
+        "skipped": 4,
+        "total": 975
+      },
+      "focused": {
+        "passed": 27,
+        "sqlAndRoute": 23,
+        "reactUI": 4
+      },
+      "scope": "241 synthetic tasks; owner-bound keyset cursor preserving microseconds; same timestamp and same millisecond boundaries; stale response cancellation; PostgreSQL network suite wired but awaiting current commit CI"
+    }
   }
 }

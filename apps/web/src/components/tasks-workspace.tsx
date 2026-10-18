@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { getJobs } from '../lib/saas-api';
 import type { AccountJob } from '../lib/saas-types';
 import { Button, EmptyState, ErrorNotice, LoadingState, PageHeading } from './ui';
@@ -28,31 +28,60 @@ export function TasksWorkspace() {
   const [jobs, setJobs] = useState<AccountJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const reload = useCallback(async (signal?: AbortSignal) => {
-    try {
-      const result = await getJobs();
-      if (!signal?.aborted) {
-        setJobs(result.jobs);
-        setError('');
+  const [cursors, setCursors] = useState<(string | undefined)[]>([undefined]);
+  const [nextCursor, setNextCursor] = useState<string | undefined>();
+  const requestSequence = useRef(0);
+  const activeRequest = useRef<AbortController | undefined>(undefined);
+  const cursor = cursors.at(-1);
+  const reload = useCallback(
+    async (background = false) => {
+      if (background && activeRequest.current) return;
+      activeRequest.current?.abort();
+      const controller = new AbortController();
+      activeRequest.current = controller;
+      const sequence = ++requestSequence.current;
+      if (!background) setLoading(true);
+      try {
+        const result = await getJobs({ cursor, limit: 50, signal: controller.signal });
+        if (!controller.signal.aborted && sequence === requestSequence.current) {
+          setJobs(result.jobs);
+          setNextCursor(result.nextCursor ?? undefined);
+          setError('');
+        }
+      } catch (cause) {
+        if (!controller.signal.aborted && sequence === requestSequence.current)
+          setError(cause instanceof Error ? cause.message : '任务记录暂时不可用。');
+      } finally {
+        if (!controller.signal.aborted && sequence === requestSequence.current) {
+          setLoading(false);
+          activeRequest.current = undefined;
+        }
       }
-    } catch (cause) {
-      if (!signal?.aborted)
-        setError(cause instanceof Error ? cause.message : '任务记录暂时不可用。');
-    } finally {
-      if (!signal?.aborted) setLoading(false);
-    }
-  }, []);
+    },
+    [cursor],
+  );
   useEffect(() => {
-    const controller = new AbortController();
-    void reload(controller.signal);
+    void reload();
     const timer = window.setInterval(() => {
-      if (document.visibilityState === 'visible') void reload(controller.signal);
+      if (document.visibilityState === 'visible') void reload(true);
     }, 5000);
     return () => {
-      controller.abort();
+      requestSequence.current += 1;
+      activeRequest.current?.abort();
+      activeRequest.current = undefined;
       window.clearInterval(timer);
     };
   }, [reload]);
+  function changePage(next: (string | undefined)[]) {
+    requestSequence.current += 1;
+    activeRequest.current?.abort();
+    activeRequest.current = undefined;
+    setJobs([]);
+    setNextCursor(undefined);
+    setError('');
+    setLoading(true);
+    setCursors(next);
+  }
   return (
     <div className="ws-page">
       <PageHeading title="任务记录" description="查看商品分析、对比和内容创作请求的执行状态。" />
@@ -101,6 +130,25 @@ export function TasksWorkspace() {
           </table>
         </div>
       )}
+      <nav aria-label="任务分页" className="saas-task-pagination">
+        <Button
+          variant="secondary"
+          disabled={loading || cursors.length === 1}
+          onClick={() => changePage(cursors.slice(0, -1))}
+        >
+          上一页
+        </Button>
+        <span role="status">
+          第 {cursors.length} 页 · 本页 {jobs.length} 条
+        </span>
+        <Button
+          variant="secondary"
+          disabled={loading || !nextCursor}
+          onClick={() => nextCursor && changePage([...cursors, nextCursor])}
+        >
+          下一页
+        </Button>
+      </nav>
     </div>
   );
 }

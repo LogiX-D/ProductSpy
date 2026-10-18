@@ -4,7 +4,7 @@ import {
   refreshAccountSession,
   webRequest,
 } from './session';
-import type { AccountJob, AccountSession } from './saas-types';
+import type { AccountJobsPage, AccountSession } from './saas-types';
 
 export async function signIn(input: { email: string; password: string }) {
   clearAccountSession(true);
@@ -39,8 +39,14 @@ export async function changePassword(currentPassword: string, password: string):
   clearAccountSession(true);
 }
 
-export function getJobs(): Promise<{ jobs: AccountJob[] }> {
-  return webRequest('/api/jobs');
+export function getJobs(
+  options: { cursor?: string; limit?: number; signal?: AbortSignal } = {},
+): Promise<AccountJobsPage> {
+  const parameters = new URLSearchParams();
+  if (options.cursor !== undefined) parameters.set('cursor', options.cursor);
+  if (options.limit !== undefined) parameters.set('limit', String(options.limit));
+  const search = parameters.toString();
+  return webRequest(`/api/jobs${search ? `?${search}` : ''}`, { signal: options.signal });
 }
 
 export async function openBilling(kind: 'checkout' | 'portal'): Promise<string> {

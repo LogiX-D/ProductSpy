@@ -21,3 +21,8 @@ export interface AccountJob {
   updatedAt: string;
   error?: string;
 }
+
+export interface AccountJobsPage {
+  jobs: AccountJob[];
+  nextCursor?: string | null;
+}

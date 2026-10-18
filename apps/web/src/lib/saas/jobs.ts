@@ -78,24 +78,71 @@ export async function finishAIJob(id: string, status: string, errorCode?: number
     ],
   );
 }
-export async function listJobs() {
+const historyPageSchema = z
+  .object({
+    cursor: z
+      .string()
+      .min(1)
+      .max(1024)
+      .regex(/^[A-Za-z0-9_-]+$/)
+      .optional(),
+    limit: z.number().int().min(1).max(200).default(200),
+  })
+  .strict();
+const historyCursorSchema = z
+  .object({
+    version: z.literal(1),
+    userId: z.string().min(1).max(200),
+    createdAt: z.string().datetime({ precision: 6 }),
+    id: z
+      .string()
+      .min(1)
+      .max(200)
+      .refine((id) => !id.includes('\0')),
+  })
+  .strict();
+
+export async function listJobs(options: { cursor?: string; limit?: number } = {}) {
+  const parsed = historyPageSchema.safeParse(options);
+  if (!parsed.success) throw new AppError(400, '任务分页参数无效，每页可查看 1–200 条');
+  const { cursor, limit } = parsed.data;
+  const userId = currentUserId();
+  let anchor: z.infer<typeof historyCursorSchema> | undefined;
+  if (cursor) {
+    try {
+      const text = Buffer.from(cursor, 'base64url').toString('utf8');
+      if (Buffer.from(text, 'utf8').toString('base64url') !== cursor)
+        throw new Error('Invalid encoding');
+      anchor = historyCursorSchema.parse(JSON.parse(text));
+      if (anchor.userId !== userId) throw new Error('Cursor belongs to a different account');
+    } catch {
+      throw new AppError(400, '任务分页游标无效，请刷新任务记录');
+    }
+  }
   await query(
     "UPDATE jobs SET status='interrupted',error='服务中断，结果和费用可能未知；不会自动重新调用 AI',updated_at=now() WHERE user_id=$1 AND status='running' AND updated_at<now()-interval '10 minutes'",
-    [currentUserId()],
+    [userId],
   );
   const { rows } = await query<{
     id: string;
     kind: string;
     status: string;
     created_at: string | Date;
+    cursor_created_at: string;
     updated_at: string | Date;
     error: string | null;
   }>(
-    'SELECT id,kind,status,created_at,updated_at,error FROM jobs WHERE user_id=$1 ORDER BY created_at DESC LIMIT 200',
-    [currentUserId()],
+    `SELECT id,kind,status,created_at,updated_at,error,
+      to_char(created_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS cursor_created_at
+      FROM jobs WHERE user_id=$1
+      ${anchor ? 'AND (created_at,id)<($2::timestamptz,$3::text)' : ''}
+      ORDER BY created_at DESC,id DESC LIMIT ${anchor ? '$4' : '$2'}`,
+    anchor ? [userId, anchor.createdAt, anchor.id, limit + 1] : [userId, limit + 1],
   );
+  const page = rows.slice(0, limit);
+  const last = page.at(-1);
   return {
-    jobs: rows.map((row) => ({
+    jobs: page.map((row) => ({
       id: row.id,
       kind: row.kind,
       status: row.status,
@@ -103,5 +150,17 @@ export async function listJobs() {
       updatedAt: new Date(row.updated_at).toISOString(),
       ...(row.error ? { error: row.error } : {}),
     })),
+    nextCursor:
+      rows.length > limit && last
+        ? Buffer.from(
+            JSON.stringify({
+              version: 1,
+              userId,
+              // Preserve PostgreSQL microseconds; a JavaScript Date would lose the boundary.
+              createdAt: last.cursor_created_at,
+              id: last.id,
+            }),
+          ).toString('base64url')
+        : null,
   };
 }

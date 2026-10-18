@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS jobs (
   updated_at timestamptz NOT NULL DEFAULT now(), error text, PRIMARY KEY(user_id,id)
 );
 CREATE INDEX IF NOT EXISTS jobs_status_idx ON jobs(user_id,status,created_at);
+CREATE INDEX IF NOT EXISTS jobs_history_idx ON jobs(user_id,created_at DESC,id DESC);
 CREATE TABLE IF NOT EXISTS job_dispatch (
   user_id text NOT NULL REFERENCES users(id) ON DELETE CASCADE,id text NOT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),PRIMARY KEY(user_id,id)

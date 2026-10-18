@@ -112,6 +112,17 @@
   font-size: 11px;
   color: var(--muted);
 }
+.saas-task-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+.saas-task-pagination > [role='status'] {
+  font-size: 13px;
+  color: var(--muted);
+}
 .saas-extension-field {
   display: grid;
   gap: 6px;
