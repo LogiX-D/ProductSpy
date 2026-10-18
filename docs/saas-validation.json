@@ -359,7 +359,7 @@
       "published": false
     },
     "taskHistoryPagination": {
-      "status": "IMPLEMENTED_LOCAL_TESTS_PASSED_LINUX_PENDING",
+      "status": "PASS_LOCAL_AND_LINUX_CI",
       "unit": {
         "files": 95,
         "passed": 971,
@@ -371,10 +371,10 @@
         "sqlAndRoute": 23,
         "reactUI": 4
       },
-      "scope": "241 synthetic tasks; owner-bound keyset cursor preserving microseconds; same timestamp and same millisecond boundaries; stale response cancellation; PostgreSQL network suite wired but awaiting current commit CI"
+      "scope": "241 synthetic tasks; owner-bound keyset cursor preserving microseconds; same timestamp and same millisecond boundaries; stale response cancellation; 23 network PostgreSQL pagination tests passed in finalBusinessCi"
     },
     "taskHistoryDeadline": {
-      "status": "FIXED_LOCAL_TESTS_PASSED_LINUX_PENDING",
+      "status": "PASS_LOCAL_AND_LINUX_CI",
       "unit": {
         "files": 96,
         "passed": 975,
@@ -388,6 +388,43 @@
       "static": "PASS",
       "webpackBuild": "PASS",
       "scope": "Task list GET retains 20000ms deadline with caller cancellation; hanging fetch timeout, immediate cancellation, preserved abort reason and fresh read; AI job polling unchanged"
+    },
+    "finalBusinessCi": {
+      "commit": "abc58f8e6a4ded138e0143c991f12a7770309c17",
+      "mergeCommit": "851beeabd406b95246c1b745ff4f30139592b1c2",
+      "tree": "f8ab4fdadab6e9c6dfed0fbf3c398d52ba8fd414",
+      "run": 39116442362,
+      "url": "https://github.com/LogiX-D/ProductSpy/actions/runs/39116442362",
+      "status": "SUCCESS",
+      "unit": {
+        "passed": 964,
+        "skipped": 15,
+        "total": 979,
+        "filesPassed": 94,
+        "filesSkipped": 2
+      },
+      "postgres": {
+        "passed": 67,
+        "total": 67,
+        "pagination": 23
+      },
+      "browser": {
+        "passed": 3,
+        "total": 3,
+        "scope": "Actual MV3 and HTTP on single Linux CI host, Amazon HTML fixture, Mock AI; separate pagination UI test uses 57 synthetic GET rows"
+      },
+      "migration": "PASS",
+      "logicalRecovery": "PASS",
+      "defaultBuild": "PASS",
+      "extensionPreviewZips": "PASS",
+      "standalone": "PASS",
+      "docker": "PASS",
+      "compose": "PASS",
+      "publicDeployment": false,
+      "realAI": false,
+      "stripeSandbox": false,
+      "realPayment": false,
+      "crossPhysicalDevice": false
     }
   }
 }

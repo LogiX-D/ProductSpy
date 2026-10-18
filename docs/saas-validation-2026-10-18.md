@@ -43,6 +43,10 @@ Chrome 测试包为锁定 Playwright 下载的 Chrome for Testing 156.0.8078.4�
 
 ## CI、部署与验收边界
 
+最终业务代码 `abc58f8` 的 [Linux CI run 39116442362](https://github.com/LogiX-D/ProductSpy/actions/runs/39116442362) 已全部 success：964 PASS / 15 SKIP（979 项）；受限 TCP PostgreSQL 67/67（含历史分页 23 项）；浏览器 3/3；专用迁移、增强逻辑恢复、默认 Turbopack 生产构建、两种 preview ZIP、standalone、Docker Web/Worker 与原 Compose 全部通过。实际 checkout merge `851beea` 的 tree 与 `abc58f8` 相同，为 `f8ab4fdadab6e9c6dfed0fbf3c398d52ba8fd414`。最终报告提交只更新文档，业务验收证据明确绑定 `abc58f8`，不冒称测试过后来提交的代码。
+
+上一分页版本 `6e1985d` 的 [CI run 39116064553](https://github.com/LogiX-D/ProductSpy/actions/runs/39116064553) 也已完整通过：960 PASS / 15 SKIP、PG 67/67、浏览器 3/3，实际 merge tree 精确匹配 `f55d44d3bafcd5c057d9c7757731717d2fb5772f`。
+
 提交 `3b3f697` 的 [Linux CI run 39114813829](https://github.com/LogiX-D/ProductSpy/actions/runs/39114813829) 已实际全部 success。日志核对：933 PASS / 15 SKIP（948 项，含 11 项 Windows 专属跳过），受限 TCP PostgreSQL 44/44，PG/pg_dump/pg_restore 17.11 增强恢复、完整生产构建、两种 preview ZIP、实际 standalone、Docker Web/Worker、原 Compose、MV3/SaaS E2E 2/2 全部通过。实际 checkout 的 PR merge `4aa5d53` 与分支 head 的 tree 相同，均为 `2cde1e608e2b4c6477071062a844f870f47c9972`；不是将旧绿灯套给当前代码。
 
 生产应用以受限角色在真实 PG 中实际启动；管理员/成员拒绝的新增 10 项包括连接 mock 与实际 PGlite 角色 SQL 语义，不能将其扩大为本机 TCP 管理员拒绝验收。本机网络/浏览器失败保持原记录；Linux 通过不表示已经修复当前 Windows 环境。MV3 E2E 仍为 fixture Amazon、Mock AI 和同一 CI 主机上的独立浏览器。
