@@ -47,3 +47,13 @@
 公网更新后 9 项检查于 16:37:15 UTC 完成 PASS：可信 HTTPS 新隐私页面及官方链接、静态保护待验说明、服务器仍为 Mock、原双账号登录/Secure Cookie、原两版内容及历史 checksum、跨用户隔离、新镜像 Worker 完成一次新 Mock 任务、用量仅加一、商品分析不改写既存内容快照。此次仅一个 AI POST，authorizeReal=false，没有自动重放。更新前页面没有 Limited Use，SHA256 `122aeae33d7b2daa5cfabe5f1f47f0db3fb739f449b2781ee7041bf0b443361b`；更新后包含该声明，HTTP 200、TLS 1.3 校验成功，SHA256 `00c2504d4e13e5f16580b3bbce663478dea37a715d837354964a95ab8168a7d1`。这组云端页面验证是实际 HTTP，不声称已经完成人用 Chrome/跨物理设备验收。
 
 更新后一次采样：Web 103MiB、Worker 85.36MiB、DB 36.75MiB，主机 available 342MiB、swap 已用 132MiB、根盘剩余 17GiB；两应用容器 OOM=false。此采样不代表峰值、负载容量或 SLA。备份与证书 timer 均 active。镜像导出标签已移除，避免后续仅文档提交重复上传大包。
+
+## 扩展凭证会话存储与重启恢复
+
+审计发现旧扩展将 bearer token 存于 local。现改为仅写入受限 `chrome.storage.session`，session/local 均限制为 TRUSTED_CONTEXTS；初始化失败不会回退到持久凭证写入。旧认证键仅在内存写入成功后移除，已有内存账号优先；pending/unassigned/legacy 队列保留原样。浏览器重启或扩展更新、禁用、重新加载后需要重新配对，service worker 暂停仍可读取会话内存。生命周期与 [Chrome 官方文档](https://developer.chrome.com/docs/extensions/reference/api/storage) 核对一致；此改动不等于队列或数据库卷已加密，也不承诺旧磁盘残留已安全擦除。
+
+独立只读复核还复现了旧实现已有的认证竞态：实际存储 set 等待期间取消旧登录，旧写入仍可成功。已增加写入完成后的 revision 检查，并在同一个串行操作内恢复旧身份或清除认证键，使后续登出可以撤销正确账号。恢复失败则清键，双失败则触发扩展 reload 清空会话；后续认证读取在恢复完成前拒绝，队列不清除。复核确认较新排队账号不会被旧回滚覆盖。
+
+本机 Node 24 当前结果：认证迁移/取消/失败封闭与队列恢复定向 34/34；全量 99 文件、1015 PASS/4 SKIP（1019）；typecheck、lint、format、默认 MV3/Next 生产构建通过。新增 18 项测试，不把模拟 storage 或模块重载称为实际浏览器重启。首轮定向检查曾因未登录 syncPending 的拒绝契约断言错误失败，已修正断言并通过；test mock 的 Promise<void> 类型错误已修正。首次完整 lint 发现云端 worker.evaluate 回调的 chrome 全局未声明，补充作用域声明后通过；这些首次失败未计为成功。
+
+真实 MV3 E2E 已增加：同一持久 profile 的浏览器进程关闭/重开，验证内存凭证消失、local 没有凭证、原待上传 captureId 保留，重新授权后仅用该幂等键上传一次，另一隔离会话可见结果。云端脚本也增加实际 session/local 存储布尔断言；工作流在扩展变更时触发。这些新增浏览器路径在提交时仍待 Linux CI 实际执行，不以本机单测代替。本机浏览器工具设置限制继续遵守。支付关闭、Mock 保持；真人 Amazon、物理设备、真实 AI 与 Stripe 沙盒继续按用户决定留待稍后。

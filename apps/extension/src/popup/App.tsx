@@ -481,6 +481,10 @@ export function App() {
                 {!LEGACY_MODE && user && <p className="break-all">当前账号：{user.email}</p>}
                 {!LEGACY_MODE && (
                   <>
+                    <p>
+                      登录信息仅在当前浏览器会话内保留。重启
+                      Chrome、更新或重新加载扩展后需重新授权；原账号待同步资料仍会保留。
+                    </p>
                     <p className="mt-2 break-all select-text">插件 ID：{chrome.runtime.id}</p>
                     <a
                       className="text-button mt-2"

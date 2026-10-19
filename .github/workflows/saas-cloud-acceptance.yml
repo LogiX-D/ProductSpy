@@ -6,6 +6,11 @@ on:
       - .github/workflows/saas-cloud-acceptance.yml
       - scripts/saas/verify-cloud-browser.mjs
       - scripts/saas/verify-cloud-browser.test.mjs
+      - apps/extension/src/**
+      - apps/extension/manifest.json
+      - apps/extension/vite.config.ts
+      - apps/extension/tests/fixtures/**
+      - e2e/saas/extension.spec.ts
 permissions:
   contents: read
 concurrency:

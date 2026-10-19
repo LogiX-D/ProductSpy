@@ -31,7 +31,12 @@ async function login(page: Page, email: string) {
   await expect(page).toHaveURL(`${BASE}/`);
 }
 
-async function openCapture(context: BrowserContext, worker: Worker, amazon: Page): Promise<Page> {
+async function openCapture(
+  context: BrowserContext,
+  worker: Worker,
+  amazon: Page,
+  needsConsent = true,
+): Promise<Page> {
   const id = new URL(worker.url()).hostname;
   await amazon.bringToFront();
   const cdp = await context.browser()!.newBrowserCDPSession();
@@ -47,7 +52,8 @@ async function openCapture(context: BrowserContext, worker: Worker, amazon: Page
   await popup.goto(`chrome-extension://${id}/popup.html`);
   await amazon.bringToFront();
   await popup.reload();
-  await popup.getByRole('button', { name: '同意并开始采集', exact: true }).click();
+  if (needsConsent)
+    await popup.getByRole('button', { name: '同意并开始采集', exact: true }).click();
   await expect(
     popup.getByRole('heading', { name: 'Portable Coffee Grinder', exact: true }),
   ).toBeVisible();
@@ -63,16 +69,18 @@ test('real MV3 + Amazon HTML fixture + real SaaS HTTP → saved Mock AI → isol
   expect(manifest.manifest_version).toBe(3);
   expect(manifest.host_permissions).toEqual([`${BASE}/*`]);
   expect(manifest.permissions).toContain('alarms');
-  const context = await chromium.launchPersistentContext(testInfo.outputPath('extension-profile'), {
-    channel: 'chromium',
-    headless: true,
-    args: [
-      '--enable-unsafe-extension-debugging',
-      `--disable-extensions-except=${dist}`,
-      `--load-extension=${dist}`,
-    ],
-    viewport: { width: 1360, height: 950 },
-  });
+  const launch = () =>
+    chromium.launchPersistentContext(testInfo.outputPath('extension-profile'), {
+      channel: 'chromium',
+      headless: true,
+      args: [
+        '--enable-unsafe-extension-debugging',
+        `--disable-extensions-except=${dist}`,
+        `--load-extension=${dist}`,
+      ],
+      viewport: { width: 1360, height: 950 },
+    });
+  let context = await launch();
   const second = await browser.newContext();
   const other = await browser.newContext();
   const email = `mv3-${randomUUID()}@example.test`;
@@ -112,6 +120,15 @@ test('real MV3 + Amazon HTML fixture + real SaaS HTTP → saved Mock AI → isol
     await popup.getByLabel('一次性登录授权码', { exact: true }).fill(code);
     await popup.getByRole('button', { name: '登录插件', exact: true }).click();
     await expect(popup.getByText(`当前账号：${email}`, { exact: true })).toBeVisible();
+    expect(
+      await worker.evaluate(async () => {
+        const key = 'productspy.cloud-session.v1';
+        return {
+          memory: Boolean((await chrome.storage.session.get(key))[key]),
+          disk: Boolean((await chrome.storage.local.get(key))[key]),
+        };
+      }),
+    ).toEqual({ memory: true, disk: false });
     await popup.getByRole('button', { name: '保存到素材库', exact: true }).click();
     await expect(popup.getByRole('status').filter({ hasText: '已保存到素材库' })).toBeVisible();
     await popup.screenshot({ path: testInfo.outputPath('saas-extension-captured.png') });
@@ -161,6 +178,89 @@ test('real MV3 + Amazon HTML fixture + real SaaS HTTP → saved Mock AI → isol
     await expect(
       another.getByRole('link', { name: 'Offline Updated Grinder', exact: true }),
     ).toBeVisible();
+
+    // Browser restart clears only the in-memory credential. Keep the same real
+    // profile/outbox, reauthorize, and recover the original idempotency key.
+    await amazon.evaluate(() => {
+      document.querySelector('#productTitle')!.textContent = 'Restart Pending Grinder';
+    });
+    await amazon.bringToFront();
+    await popup.reload();
+    await expect(
+      popup.getByRole('heading', { name: 'Restart Pending Grinder', exact: true }),
+    ).toBeVisible();
+    await context.setOffline(true);
+    await popup.getByRole('button', { name: '保存到素材库', exact: true }).click();
+    await expect(popup.getByText('1 件商品待同步', { exact: true })).toBeVisible();
+    const pending = await worker.evaluate(async () => {
+      const value = (await chrome.storage.session.get('productspy.cloud-session.v1'))[
+        'productspy.cloud-session.v1'
+      ] as { user: { id: string } };
+      const queueKey = `productspy.cloud-queue.v1.user.${encodeURIComponent(value.user.id)}`;
+      const data = (await chrome.storage.local.get(queueKey))[queueKey] as {
+        pending: Record<string, { captureId: string }>;
+      };
+      return { queueKey, captureId: Object.values(data.pending)[0].captureId };
+    });
+    await context.close();
+    context = await launch();
+    const restartedWorker =
+      context.serviceWorkers()[0] ??
+      (await context.waitForEvent('serviceworker', { timeout: 45000 }));
+    expect(new URL(restartedWorker.url()).hostname).toBe(extensionId);
+    expect(
+      await restartedWorker.evaluate(async ({ queueKey }) => {
+        const key = 'productspy.cloud-session.v1';
+        const data = (await chrome.storage.local.get(queueKey))[queueKey] as {
+          pending: Record<string, { captureId: string }>;
+        };
+        return {
+          memory: Boolean((await chrome.storage.session.get(key))[key]),
+          disk: Boolean((await chrome.storage.local.get(key))[key]),
+          captureIds: Object.values(data.pending).map((item) => item.captureId),
+        };
+      }, pending),
+    ).toEqual({ memory: false, disk: false, captureIds: [pending.captureId] });
+    await context.route('https://www.amazon.com/**', (route) =>
+      route.fulfill({ status: 200, contentType: 'text/html', body: html }),
+    );
+    await context.route('https://m.media-amazon.com/**', (route) => route.abort());
+    await context.route('https://media.example.com/**', (route) => route.abort());
+    const restartedWeb = context.pages()[0];
+    await login(restartedWeb, email);
+    await restartedWeb.goto(`${BASE}/settings?extensionId=${extensionId}`);
+    const restartedDialog = restartedWeb.getByRole('dialog');
+    await restartedDialog.getByRole('button', { name: '生成配对码', exact: true }).click();
+    const restartedCode = await restartedDialog
+      .getByLabel('扩展配对码', { exact: true })
+      .inputValue();
+    const restartedAmazon = await context.newPage();
+    await restartedAmazon.goto(`https://www.amazon.com/dp/${ASIN}`);
+    const restartedPopup = await openCapture(context, restartedWorker, restartedAmazon, false);
+    await restartedPopup.locator('.connection-panel > summary').click();
+    await restartedPopup.getByLabel('一次性登录授权码', { exact: true }).fill(restartedCode);
+    const uploadedIds: string[] = [];
+    context.on('request', (request) => {
+      if (request.url() === `${BASE}/api/products` && request.method() === 'POST')
+        uploadedIds.push(request.headers()['idempotency-key']);
+    });
+    await restartedPopup.getByRole('button', { name: '登录插件', exact: true }).click();
+    await expect(restartedPopup.getByText(`当前账号：${email}`, { exact: true })).toBeVisible();
+    await expect.poll(() => uploadedIds).toEqual([pending.captureId]);
+    await expect
+      .poll(() =>
+        restartedWorker.evaluate(async (queueKey) => {
+          const data = (await chrome.storage.local.get(queueKey))[queueKey] as {
+            pending: Record<string, unknown>;
+          };
+          return Object.keys(data.pending).length;
+        }, pending.queueKey),
+      )
+      .toBe(0);
+    await another.goto(`${BASE}/products`);
+    await expect(
+      another.getByRole('link', { name: 'Restart Pending Grinder', exact: true }),
+    ).toBeVisible();
     await testInfo.attach('verification-scope', {
       contentType: 'application/json',
       body: Buffer.from(
@@ -171,6 +271,8 @@ test('real MV3 + Amazon HTML fixture + real SaaS HTTP → saved Mock AI → isol
             network: 'real HTTP to local SaaS backend',
             ai: 'Mock, no external provider',
             sessions: 'two isolated browser contexts, not two physical devices',
+            credentialStorage:
+              'actual session memory, browser process restart clears auth; durable outbox recovers after reauthorization',
             payment: 'not exercised',
             production: 'not deployed',
           },
@@ -180,7 +282,7 @@ test('real MV3 + Amazon HTML fixture + real SaaS HTTP → saved Mock AI → isol
       ),
     });
   } finally {
-    await context.setOffline(false);
+    await context.setOffline(false).catch(() => undefined);
     await context.close();
     await second.close();
     await other.close();

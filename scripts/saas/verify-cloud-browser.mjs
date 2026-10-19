@@ -3,6 +3,7 @@ import { randomUUID, createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { packageSaasExtension } from './package-extension.mjs';
+/* global chrome */
 
 export const authorizedOrigin = 'https://203.88.118.240:8443';
 // This function is serialized into the test page. Only bounded categories and
@@ -233,6 +234,18 @@ async function main() {
     await popup.getByLabel('一次性登录授权码', { exact: true }).fill(code);
     await popup.getByRole('button', { name: '登录插件', exact: true }).click();
     await expect(popup.getByText(`当前账号：${email}`, { exact: true })).toBeVisible();
+    assert.deepEqual(
+      await worker.evaluate(async () => {
+        const key = 'productspy.cloud-session.v1';
+        return {
+          memory: Boolean((await chrome.storage.session.get(key))[key]),
+          disk: Boolean((await chrome.storage.local.get(key))[key]),
+        };
+      }),
+      { memory: true, disk: false },
+      'Extension credential must use trusted session memory.',
+    );
+    report.checks.push('credential-in-session-memory-not-local-storage');
     await popup.getByRole('button', { name: '保存到素材库', exact: true }).click();
     await expect(popup.getByRole('status').filter({ hasText: '已保存到素材库' })).toBeVisible();
     const listed = await web.request.get(`${base}/api/products`);

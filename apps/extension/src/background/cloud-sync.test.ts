@@ -40,13 +40,15 @@ function deferredSignal() {
 
 describe('SaaS capture ownership and durable recovery (local HTTP mocks)', () => {
   let records: Record<string, unknown>;
+  let sessionRecords: Record<string, unknown>;
   const fetch = vi.fn<typeof globalThis.fetch>();
   const createAlarm = vi.fn();
   const clearAlarm = vi.fn();
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime('2026-10-17T00:00:00.000Z');
-    records = { [CLOUD_SESSION_KEY]: structuredClone(sessionA) };
+    records = {};
+    sessionRecords = { [CLOUD_SESSION_KEY]: structuredClone(sessionA) };
     fetch.mockReset();
     createAlarm.mockReset();
     clearAlarm.mockReset();
@@ -54,12 +56,23 @@ describe('SaaS capture ownership and durable recovery (local HTTP mocks)', () =>
     vi.stubGlobal('chrome', {
       storage: {
         local: {
+          setAccessLevel: vi.fn(async () => undefined),
           get: vi.fn(async (key: string) => structuredClone({ [key]: records[key] })),
           set: vi.fn(async (value: Record<string, unknown>) => {
             records = { ...records, ...structuredClone(value) };
           }),
           remove: vi.fn(async (key: string) => {
             delete records[key];
+          }),
+        },
+        session: {
+          setAccessLevel: vi.fn(async () => undefined),
+          get: vi.fn(async (key: string) => structuredClone({ [key]: sessionRecords[key] })),
+          set: vi.fn(async (value: Record<string, unknown>) => {
+            sessionRecords = { ...sessionRecords, ...structuredClone(value) };
+          }),
+          remove: vi.fn(async (key: string) => {
+            delete sessionRecords[key];
           }),
         },
       },
@@ -110,6 +123,31 @@ describe('SaaS capture ownership and durable recovery (local HTTP mocks)', () =>
     expect(await controller.syncPending(true)).toBe(1);
     expect(await own.pending()).toHaveLength(0);
     expect(await new CloudCaptureQueue().pending()).toHaveLength(1);
+  });
+
+  it('retains the original outbox through browser-memory loss and only resumes under its reauthorized account', async () => {
+    const queue = new CloudCaptureQueue(sessionA.user.id);
+    const { capture } = await queue.enqueue(draft);
+    delete sessionRecords[CLOUD_SESSION_KEY];
+    const controller = new CloudSyncController();
+    await expect(controller.syncPending(false)).rejects.toThrow('重新登录');
+    expect(await controller.count()).toMatchObject({ count: 0 });
+    expect(await queue.pending()).toHaveLength(1);
+    await rememberCloudSession(sessionB);
+    expect(await controller.syncPending(true)).toBe(0);
+    expect(await queue.pending()).toHaveLength(1);
+    expect(fetch).not.toHaveBeenCalled();
+    await rememberCloudSession(sessionA);
+    fetch.mockResolvedValueOnce(ok(mergeProduct(draft)));
+    expect(await controller.syncPending(true)).toBe(1);
+    expect(new Headers(fetch.mock.calls[0][1]?.headers).get('Idempotency-Key')).toBe(
+      capture.captureId,
+    );
+    expect(new Headers(fetch.mock.calls[0][1]?.headers).get('Authorization')).toBe(
+      `Bearer ${sessionA.token}`,
+    );
+    expect(records[CLOUD_SESSION_KEY]).toBeUndefined();
+    expect(JSON.stringify(records)).not.toContain(sessionA.token);
   });
 
   it('does not clear a newer same-ASIN capture when an older upload finishes', async () => {
@@ -238,7 +276,7 @@ describe('SaaS capture ownership and durable recovery (local HTTP mocks)', () =>
   });
 
   it('does not restore a pending sign-in after the user explicitly logs out', async () => {
-    delete records[CLOUD_SESSION_KEY];
+    delete sessionRecords[CLOUD_SESSION_KEY];
     let finish!: (response: Response) => void;
     const started = deferredSignal();
     fetch.mockImplementationOnce(async () => {
