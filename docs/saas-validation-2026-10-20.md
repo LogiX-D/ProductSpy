@@ -65,3 +65,11 @@
 同 run 的 live job 118253633981 于 19:15:03 UTC 再次在实际 Amazon 采集前失败：HTTP 200，document complete，标准/备用标题不存在，captchaFormPresent=true，错误类别 TimeoutError。只完成云端注册，未完成真实采集、上传或 AI；没有 fixture 回退、验证码绕过或 AI POST 重放。该 live 失败独立于 fixture 成功，仍保留为未通过证据。
 
 [完整 CI run 39309068615](https://github.com/LogiX-D/ProductSpy/actions/runs/39309068615) / job 118253692956 已确认 success（19:17:36 UTC）：Python 6/6、Linux 全量 1004 PASS/15 SKIP（1019）、受限 PG 67/67、实际浏览器 3/3、逻辑恢复、默认构建、两配置 ZIP、standalone、Docker 和原 Compose 全部通过。实际 checkout `e090f185ab8de72226b5a6f7d4991eb729cbfcb5` 的 tree 与实现提交一致。MV3 测试 9.4 秒完成，实际包含关闭/重开同一持久 profile、凭证清空、captureId 保留和重新授权后单次上传断言；这是同一 CI 主机上的实际浏览器进程重启，不是跨物理设备。没有导出/部署新后端镜像。
+
+## 原始验收范围再核对
+
+后续自动接续先确认上一轮为实际进展：`05cf4d3` 改变实现并取得上述运行证据；`1db583e` 归档结果。重新读取正式要求、AGENTS、计划及验收矩阵，独立只读复核未定位新的核心 MV3/Web 功能遗漏。发现矩阵仍写“尚无获准目标、未验证 HTTPS/云部署”，与 10-19/20 的实际授权及结果冲突；已更新 [逐项矩阵](saas-acceptance-matrix.md)，分别列出历史本机实页、当前云端 fixture 和真实进程重启，保留真实 AI/真人/物理设备/支付缺口，没有缩小原始验收标准。
+
+2026-10-19 19:21 UTC 的只读复核确认：三服务 running，Web/PG healthy、OOM=false，Web/Worker 为原 `72ac8db7` 镜像，AI_MODE=mock，无 AI/Stripe 密钥。公网 health/status/privacy 均 HTTP 200，TLS 1.3 校验成功，状态明确 mock、Limited Use 页面可见。探针初稿分别遇到本地语法错误和结束事件时 response.socket 已释放的问题；改为在 response 到达时记录 TLS 后实际复跑通过，未将初稿失败计为服务器故障或成功。未发出 AI/支付调用、注册账号或改动服务器。远端 main 与 baseline 的 GitHub ref 再次核对均为 `b83027aacd9716862df813850b215df2066139a1`。
+
+`1db583e` 的后续 [完整 CI run 39310016781](https://github.com/LogiX-D/ProductSpy/actions/runs/39310016781) 已取得完整 job 118256887870 日志，Linux 1004 PASS/15 SKIP、PG 67/67、浏览器 3/3 及构建/恢复/容器流程均通过；它不增加新的真实 AI 或支付证据。当前真实链路的同一外部条件仍未变化：真人/物理设备与 AI/Stripe 配置由用户明确留待稍后，当前不能完成最终验收；目标不标 complete。
