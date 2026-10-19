@@ -1,6 +1,6 @@
 # SaaS 开发、测试、生产与恢复
 
-本文件是部署准备方案，不是已部署证明。正式域名、付费资源、生产变更、真实支付和公开上架需另行授权。
+本文件提供部署与恢复方法；获授权测试主机已部署，实际通过和未通过范围见 [2026-10-19 记录](saas-validation-2026-10-19.md)，不等于正式产品最终验收。正式域名、付费资源、生产变更、真实支付和公开上架需另行授权。
 
 ## 环境
 
@@ -164,4 +164,14 @@ pnpm db:import-legacy <business-backup.json> <existing-saas-user-id> --commit
 
 `node scripts/saas/verify-compose.mjs` 另需 `PRODUCTSPY_COMPOSE_VERIFY=1`，只运行于 GitHub Linux 的本机 daemon，要求 Compose 2.24.4+。使用原 `compose.yaml` 的服务/网络/依赖/数据库卷/worker 命令，以 `!override` 替换生产 env_file 和 Web 端口为本次私有合成文件及 loopback 随机端口，不读取 `.env.production`。数据库无主机端口，业务镜像只用同 job 已构建镜像；临时项目验证内部 db DNS、角色、Mock Worker、Web/DB 容器重建后的同卷数据。清理前核对项目和本次 marker，只删除自己创建的资源和精确临时文件。该脚本 10 项边界测试及 `881c3ec` 的 [实际 Linux CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39015571302) 均通过；3 容器、1 网络、1 卷和私有环境文件清理成功。不把此命令视为部署授权。
 
-实际容器、Linux PostgreSQL 逻辑恢复、真实 Amazon 本机串联已有证据，详见 [验证记录](saas-validation.md)。真实 HTTPS 预发布、正式隐私联系人/保留期限/账户注销、邮件核验/找回、独立 worker 的云端运维、支付沙盒、跨物理设备、真实 AI 及生产恢复演练仍须分别记录结果。2026-10-19 已取得指定 CloudCone 测试主机及容器/数据库/HTTPS 操作授权，实际 SSH、安装与 IP TLS 进展见 [测试部署记录](saas-validation-2026-10-19.md)；正式域名、付费资源、生产服务与公开发布仍需单独授权。未通过的项目不标为最终验收完成。
+实际容器、Linux PostgreSQL 逻辑恢复、真实 Amazon 本机串联已有历史证据，详见 [验证记录](saas-validation.md)。2026-10-19 获授权测试主机的可信 HTTPS、独立 Worker、云端额度及恢复结果见 [测试部署记录](saas-validation-2026-10-19.md)。正式隐私联系人/保留期限/账户注销、邮件核验/找回、支付沙盒、跨物理设备、真实 AI 及生产恢复演练仍须分别验证；当前真实 Amazon 云端 CI 未取得采集成功证据。正式域名、付费资源、生产服务与公开发布仍需单独授权，未通过的项目不标为最终验收完成。
+
+## 已部署测试主机的加密备份
+
+测试主机目录 /opt/productspy-staging 包含私有环境、独立 Compose、ACME 配置、镜像 manifest 与备份；生产域名、外部服务密钥和正式发布不在本轮授权内。证书 timer 每小时检查并在成功续期后校验/reload Nginx，已做 dry-run 与 hook 验证；80 留给 HTTP-01，应用只监听受信任 HTTPS 8443，Host 保留端口。
+
+`scripts/saas/backup-staging-encrypted.sh` 是本次专属 staging 脚本，须复制到 /opt/productspy-staging/backup-staging-encrypted.sh。它要求 root、已有部署 marker、本机 default Docker 和私有 backup-recipient.pub。仅放接收者公钥；先核对指纹并验证用仓库外私钥实际解密，再启用 deploy/staging/productspy-backup.service 与 timer。无需将解密私钥传上服务器。Ubuntu 签名仓库提供 age；[官方说明](https://github.com/FiloSottile/age#ssh-keys)支持 SSH 公钥接收者，密钥轮换时须保留能解开历史备份的旧私钥。
+
+复制两个 unit 到 /etc/systemd/system 后，执行 systemctl daemon-reload、systemctl enable --now productspy-backup.timer，并手工启动 productspy-backup.service 验证结果。每天 UTC 03:20 附加最多 15 分钟随机延迟；输出 root 私有加密 custom dump 与 SHA256，完整管线错误向上传播，失败 partial 不冒充完成。文件唯一、不覆盖，不自动清理备份或数据。磁盘不足 1GiB 会失败并留 systemd 日志；应另配置失败告警和经确认的保留策略。
+
+已实际把一份加密副本经 SCP 拉到本机私有目录，解密 checksum 与已成功恢复的 dump 一致；目前每日异地复制尚未自动调度。不要把服务器本地加密副本称为异地备份，也不要把私钥/数据库 dump 上传到公开 GitHub、Actions 或普通共享文档。恢复总是创建新隔离库，先比较同一导出 snapshot 的 12 表及 RLS，再验证登录与业务；绝不直接覆盖原库。

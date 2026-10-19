@@ -1,6 +1,6 @@
 # 2026-10-19 授权测试部署记录
 
-本次接续已完成的 SaaS 迁移，不从零重写。用户指定 CloudCone 测试主机并允许专属容器、数据库和 HTTPS；生产/付费/正式域名/公开发布仍未授权。此页随实际验证更新，不能将准备工作写成已部署。
+本次接续已有 SaaS 实现，不从零重写。用户指定 CloudCone 测试主机并允许专属容器、数据库和 HTTPS；生产/付费/正式域名/公开发布仍未授权。此页保留过程中的失败和后续验证，当前状态见下方“最终实测状态”。
 
 ## 已确认
 
@@ -15,17 +15,17 @@
 | -------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------------- |
 | Typecheck / lint / format / diff | PASS                      | 新增脚本及全仓静态检查                                                                              |
 | 镜像交付边界测试                 | 17/17 PASS                | 真实加解密流、篡改密文/tag/来源拒绝、GCM 前不发布、输出不覆盖、失败清理；Docker producer 为模拟     |
-| Node 24.14 全量单测              | 992 PASS / 4 SKIP，996 项 | 与 Docker/CI 相同主版本，97 文件通过                                                                |
+| Node 24.14 全量单测              | 994 PASS / 4 SKIP，998 项 | 与 Docker/CI 相同主版本，扩充后的 98 文件通过                                                       |
 | Certbot HTTP-01 dry-run          | PASS                      | 目标 IP 控制权、外部 80 验证                                                                        |
 | 受信任 IP TLS                    | PASS                      | Let's Encrypt YE2，IP SAN；有效期至 2026-10-26；外部 curl 未跳过验证，TLS_VERIFY=0                  |
-| HTTPS 应用健康                   | 未就绪                    | 当前 502，尚未加载应用镜像，不计为部署成功                                                          |
+| HTTPS 应用健康                   | PASS                      | 公网 200、TLS_VERIFY=0，Web/数据库健康，Worker 实际处理任务                                         |
 | 独立 PostgreSQL                  | PASS 启动                 | 实际 17.11 容器、独立命名卷、未发布数据库端口；后续迁移与应用角色初始化成功，公网业务路由已实际使用 |
 
 第一次全量命令误用系统 Node 26.12，17 项 DOM localStorage 测试失败；改用项目 Docker/CI 的 Node 24.14 后完整 992/996 通过，未修改产品或跳过失败测试。首次续期演练与刚启用的 timer 并发，Certbot 拒绝锁；timer 本身退出 0。随后单独 dry-run + run-deploy-hooks 全部成功，nginx -t 与 reload 成功。timer 每小时并在开机后检查；没有强制重复签发。
 
 ## 进行中与验收边界
 
-云端业务迁移/受限角色/Worker、网络业务链路与备份恢复仍在执行中。拟先用明确标注的 fixture 商品与 Mock AI；它们不能证明当前真实 Amazon 提取或真实模型质量。独立客户端会话不能当作跨物理设备；没有进行 Stripe 沙盒或真实交易。
+云端业务迁移、受限角色、Worker、网络业务链路与备份恢复现已取得下列实际证据；真人/真实服务项仍分开保留。测试使用明确标注的 fixture 商品与 Mock AI；它们不能证明当前真实 Amazon 提取或真实模型质量。独立客户端会话不能当作跨物理设备；没有进行 Stripe 沙盒或真实交易。
 
 上一版实际 CI 为提交 e5b3d3b 的 [run 39116884780](https://github.com/LogiX-D/ProductSpy/actions/runs/39116884780)，它通过静态、单元、真实受限 PG、构建、恢复、容器/Compose 与浏览器验证；不替代本次新增交付脚本或目标服务器的运行证据。
 
@@ -45,10 +45,22 @@
 
 首次加载校验因 Docker 29 containerd 的 manifest ID/Size 与 classic config ID/Size 不同而停止；没有继续启动未验证镜像。随后新增只读验证器，核对内容寻址 manifest SHA256、指向的 CI config digest、config 内容 SHA256、实际 rootfs diff IDs、架构和 revision，两镜像全通过后才迁移启动。6 项边界测试通过。文件大小差异只作存储诊断，不替代摘要身份。
 
-本机浏览器工具提示 Work settings 禁用了 local browser use，因此未绕过设置或改用本机隐藏浏览器。专用 Linux CI 云端浏览器验收分别运行 fixture/live Amazon，目标限定获授权 HTTPS，强制 TLS 校验、Mock，禁止静默 fallback；新脚本静态及 2 项护栏测试通过，扩充后 Node 24 全量 994 PASS/4 SKIP（998）。该云端浏览器运行结果仍待实测。
+本机浏览器工具提示 Work settings 禁用了 local browser use，因此未绕过设置或改用本机隐藏浏览器。专用 Linux CI 云端浏览器验收分别运行 fixture/live Amazon，目标限定获授权 HTTPS，强制 TLS 校验、Mock，禁止静默 fallback；新脚本静态及 2 项护栏测试通过，扩充后 Node 24 全量 994 PASS/4 SKIP（998）。实际云端运行结果见下方最终状态。
 
 ## 后续验收修正
 
 提交 46874f1 的 [完整 Linux CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39274458052) 已成功，包含新增 Python 身份边界测试。首次 [云端浏览器 run 39274446341](https://github.com/LogiX-D/ProductSpy/actions/runs/39274446341) 的 fixture/live 均在预检失败，Nginx 证明确有 200 状态请求。原因是验收脚本误将 Fetch Response.ok 布尔属性当成 Playwright APIResponse.ok() 方法；已修正并细分阶段/安全错误码诊断，未改应用或降低 TLS/Mock 要求。重跑结果另记。
 
-真实云端额度测试已确认 Free 第 51 商品返回 403，第 11 个 AI 任务返回 429，累计用量 50 商品/10 AI。测试中第二次复用旧商品版本产生 409 失败，该已接受任务仍计入额度；没有重新提交它，而是保留失败，后续新的合成 Mock 额度任务读取最新版本后单次提交。无真实模型调用。合成 Pro 权益及恢复 Free 仍在单独验证，不视为 Stripe 付款。
+真实云端额度测试已确认 Free 第 51 商品返回 403，第 11 个 AI 任务返回 429，累计用量 50 商品/10 AI。测试中第二次复用旧商品版本产生 409 失败，该已接受任务仍计入额度；没有重新提交它，而是保留失败，后续新的合成 Mock 额度任务读取最新版本后单次提交。无真实模型调用。合成 Pro 权益及恢复 Free 的实际结果见下方，不视为 Stripe 付款。
+
+## 最终实测状态（本轮测试部署）
+
+- [52ff575 的完整 Linux CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39275477294) 成功：Python 6/6，单测 983 PASS/15 SKIP（998），受限 PG 67/67，浏览器 3/3；静态、逻辑恢复、默认构建、两配置 ZIP、standalone、镜像及原 Compose 全通过。本机 Node 24 为 994 PASS/4 SKIP；不是把 Windows/Linux 专属 skip 当作通过。部署运行时仍为已验证 fdf16b9 / checkout c640249d；后续提交仅增加验收/运维脚本、CI 和文档，apps、packages、Dockerfile、compose.yaml 无差异。
+- [云端浏览器 run 39275446582](https://github.com/LogiX-D/ProductSpy/actions/runs/39275446582)：fixture job 118138449418 成功，10 项包括真实 MV3、正式 HTTPS origin、网页注册/扩展配对、扩展上传云端、独立 Worker 保存 Mock 分析、另一浏览器会话查看、跨用户 404、实际浏览器断网/队列恢复。live job 118138449705 在 live-amazon 阶段失败，记录 HTTP 200，但未取得真实商品采集成功证据；未绕过页面或改成 fixture，整体该 run 为 failure。
+- Free 第 51 商品 403、第 11 AI 429；失败的已接受版本冲突任务计数。仅对唯一合成额度账号在服务器租户上下文内临时设置 Pro，实际 API 可保存第 51 商品、执行第 11 Mock AI，读取 5000/500 上限；随后恢复 Free，原 51 商品保留、新商品继续 403。该步骤没有 Stripe 调用或付款。
+- Web/Worker/PostgreSQL 三项实际停启（原命名卷），启动时间均改变，健康重新 200、OOM=false。随后外部可信 HTTPS 重新登录两个原账号，核对保存分析 checksum、历史、成功任务状态及跨用户 404，全通过。重启后空闲采样 Web 68.55MiB、Worker 50.34MiB、DB 31.66MiB、主机 available 373MiB；不代表负载峰值、长期稳定性或 SLA。
+- 云端 pg_dump 使用仍打开的 REPEATABLE READ 导出 snapshot；12 表 checksum/count 取自同一 snapshot，避免活跃服务导致假比较。68,061 字节 custom dump 恢复到唯一独立数据库，12 表全一致；无 scope/跨用户读 0，跨用户写由 RLS 拒绝，探针后校验未变。再以恢复库的受限应用连接执行实际 Request/Response 登录/商品/历史路由：正确及错误密码、Secure/HttpOnly Cookie、原 Mock 分析 checksum、历史、另一用户 404 共 6 项通过。这一恢复业务验证是路由加真实 PG，不冒称恢复库的网络 HTTP/浏览器。原数据库未替换或清空。
+- 上述 dump SHA256 为 5b262f76e0e4f9000a7dd8a4aae1207e5c942e0b57e21ff9f2453f894e2627c3。使用 Ubuntu age 1.1.1 加密给本机 SSH 公钥，经已认证 SCP 存到本机用户专属 ACL 的私有目录；官方 Windows age 1.3.2 ZIP 的 GitHub release digest 已验证，仓库外 SSH 私钥实际解密，恢复出的 dump checksum 一致。加密副本已离开服务器故障域，未公开上传。
+- 已安装每日 UTC 03:20（随机延迟 ≤15min）的 encrypted backup timer，手工启动同一 oneshot 实际退出 0，生成约束路径下的加密 custom dump。脚本先加密再写入备份目录、flock 防并发、低于 1GiB 可用空间即失败，不自动删除旧备份/数据。服务器自动加密备份已配置；自动异地复制、保留期限、告警投递、生产 PITR/RPO/RTO 仍是运维继续项，不把一次人工异地副本当作已实现每日异地调度。
+
+用户于本轮明确选择“稍后再做人工验收”以及“稍后配置，当前保留 Mock 和关闭支付”。因此真实 Amazon 的用户 Chrome 全链、用户跨物理设备浏览器查看、真实 AI、Stripe 沙盒/真实交易均未最终验收。真实历史业务数据迁移仍须指定目标账号归属，现有数据与稳定版本没有删除。阶段 10 保持未完成，不把测试站上线缩小为完整产品最终验收。

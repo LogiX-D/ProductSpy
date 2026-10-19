@@ -1,0 +1,8 @@
+[Unit]
+Description=Encrypted ProductSpy staging database backup
+After=docker.service
+Requires=docker.service
+[Service]
+Type=oneshot
+UMask=0077
+ExecStart=/bin/bash /opt/productspy-staging/backup-staging-encrypted.sh

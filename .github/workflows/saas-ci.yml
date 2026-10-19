@@ -31,7 +31,9 @@ jobs:
       - run: pnpm lint
       - run: pnpm format:check
       - name: Verify loaded-image identity compatibility boundaries
-        run: python3 scripts/saas/verify_loaded_images_test.py
+        run: |
+          python3 scripts/saas/verify_loaded_images_test.py
+          bash -n scripts/saas/backup-staging-encrypted.sh
         env:
           PYTHONDONTWRITEBYTECODE: '1'
       - run: pnpm test
