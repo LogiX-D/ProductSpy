@@ -102,3 +102,23 @@ jobs:
       - run: node scripts/saas/build-test-extension.mjs
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:saas:e2e
+      - name: Export verified staging images
+        id: deployment-images
+        if: >-
+          ${{ success() && github.event_name == 'pull_request' &&
+          contains(github.event.pull_request.labels.*.name, 'productspy-staging-package') }}
+        run: node scripts/saas/export-deployment-images.mjs
+      - name: Upload encrypted staging image package
+        if: >-
+          ${{ success() && github.event_name == 'pull_request' &&
+          contains(github.event.pull_request.labels.*.name, 'productspy-staging-package') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.deployment-images.outputs.artifact-name }}
+          path: |
+            ${{ steps.deployment-images.outputs.directory }}/productspy-images.tar.gz.enc
+            ${{ steps.deployment-images.outputs.directory }}/deployment-manifest.json
+            ${{ steps.deployment-images.outputs.directory }}/SHA256SUMS
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0

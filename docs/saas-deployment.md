@@ -28,6 +28,65 @@ PostgreSQL 18.4 Windows 临时实例用于本轮真实网络回归；Linux CI �
 
 SSH 隧道到 loopback 的开发联调可作临时诊断，但不是公网 HTTPS 或跨物理设备最终验收。任何服务器安装、证书签发、端口或代理修改仍遵循已获授权范围，不接管现有服务。
 
+### 从 CI 取得预构建镜像
+
+获授权的 Ubuntu 24.04 amd64 小内存预发布可使用 CI 镜像包，无须在服务器构建。先给 PR 添加 `productspy-staging-package` label，再 push 触发现有 `synchronize`；仅该 PR 的所有静态、单元、PostgreSQL、恢复、构建、容器、Compose 和浏览器检查成功后，才导出同一 job 已验证的 Web/Worker 镜像。push、手动运行、无 label 或失败的 PR 不产生该包，也不构建额外镜像或推送 registry。
+
+`export-deployment-images.mjs` 只允许 GitHub Linux/default Docker，拒绝错误 revision/平台；以流式 `docker save` → gzip → AES-256-GCM 输出唯一目录，CI 不落盘明文归档、不覆盖旧包。随机 AES 密钥由专用 RSA-4096 公钥以 OAEP-SHA256 包装；公钥位于 `.github/staging-artifact-recipient.pem`，对应私钥须留在仓库/CI/服务器外。artifact `productspy-staging-<run>-<attempt>-<checkout SHA>` 仅保留 1 天，内含密文 `productspy-images.tar.gz.enc`、`deployment-manifest.json` 和 `SHA256SUMS`。manifest 分别记录实际 checkout SHA/tree 与 PR source head，及 Linux/amd64、两镜像 ID/size/revision 和密文 bytes/checksum、加密 envelope 与接收者公钥指纹；GCM AAD 绑定 checkout/tree/head、镜像身份和 envelope。PR merge SHA 可能不同于 head。包不包含环境文件、数据库卷、测试目录或凭据文件，仓库为 public，不能承诺 artifact 私有，只有公钥对应私钥持有者能够认证解密。此为加密测试交付，不推送 registry、不生成 Release，也不是已部署证明。
+
+从可信成功 run 下载并核对 manifest 对应的 checkout/head 后，先在私有本机目录校验密文并认证解密。SHA256 用于传输完整性，不替代来源核验。解密命令只读显式绝对路径私钥，拒绝仓库内密钥、已有输出和不匹配身份；明文只在独立私有临时目录产生，通过 GCM 后才独占创建目标，失败删除自身临时目录。Windows 临时目录设当前用户 SID ACL，POSIX 设 0700/0600。私钥自身也应由持有者保护。
+
+```text
+node scripts/saas/decrypt-deployment-images.mjs -i <absolute-private-key.pem> -a <productspy-images.tar.gz.enc> -m <deployment-manifest.json> -o <new-productspy-images.tar.gz>
+```
+
+通过已认证 SSH/SCP 向获授权服务器的私有部署目录传输已解密归档和原 manifest，不上传私钥；在同目录保留对应版本 compose.yaml、scripts/saas/app-role.sql 和私有环境文件。服务器加载前检查传输 checksum；SHA256SUMS 对应密文，不能拿它校验解密后归档。随后验证加载的镜像身份：
+
+```bash
+set -euo pipefail
+# 这里的文件由私有本机通过已认证 SSH/SCP 传输。
+docker --context default image load --input productspy-images.tar.gz
+python3 - <<'PY'
+import json, subprocess
+m = json.load(open('deployment-manifest.json'))
+assert m['platform'] == {'os': 'linux', 'architecture': 'amd64'}
+for image in m['images']:
+    actual = json.loads(subprocess.check_output(['docker', '--context', 'default', 'image', 'inspect', image['tag']]))[0]
+    assert actual['Id'] == image['imageId']
+    assert actual['Size'] == image['size']
+    assert actual['Os'] == image['os'] == 'linux'
+    assert actual['Architecture'] == image['architecture'] == 'amd64'
+    assert actual['Config']['Labels']['org.opencontainers.image.revision'] == image['revision'] == m['checkout']['sha']
+print('Loaded image identities match manifest')
+PY
+export PRODUCTSPY_IMAGE_REVISION="$(python3 -c "import json; print(json.load(open('deployment-manifest.json'))['checkout']['sha'])")"
+```
+
+私有 `compose.images.yaml` 使用以下覆盖（Compose 2.24.4+），移除现场构建配置；`up` 另加 `--no-build --pull never`，一次性 `run` 使用 `--pull never`，禁止隐式重建/换镜像。数据库镜像未打包，先显式取得并核对 `postgres:17-bookworm`；数据库不暴露宿主端口。`.env.compose` 仅含管理员 `POSTGRES_PASSWORD` 供 Compose 插值，`.env.production` 仅含受限应用连接及业务配置，`.env.migrate` 仅含管理连接 `DATABASE_URL`；均设私有权限，不能上传 artifact。小规模配置使用每进程连接池 3、Worker 并发 1，并先用明确标注的 Mock AI 验证资源占用。
+
+```yaml
+services:
+  web:
+    image: productspy-web:${PRODUCTSPY_IMAGE_REVISION:?set revision}
+    build: !reset null
+  worker:
+    image: productspy-worker:${PRODUCTSPY_IMAGE_REVISION:?set revision}
+    build: !reset null
+```
+
+```bash
+set -euo pipefail
+docker --context default compose --env-file .env.compose -p productspy-staging -f compose.yaml -f compose.images.yaml up -d --no-build --pull never --wait --wait-timeout 120 db
+(
+  set -a; . ./.env.migrate; set +a
+  docker --context default compose --env-file .env.compose -p productspy-staging -f compose.yaml -f compose.images.yaml run --rm --no-deps --pull never -e DATABASE_URL worker node node_modules/tsx/dist/cli.mjs scripts/saas/migrate.ts
+)
+# 管理员随后按下节初始化 app-role.sql 并交互设定 app 密码；业务环境只保留受限连接。
+docker --context default compose --env-file .env.compose -p productspy-staging -f compose.yaml -f compose.images.yaml up -d --no-build --pull never --wait
+```
+
+迁移管理员连接只注入一次性迁移容器，不进入常驻 Web/Worker。以上为交付/消费方法，需服务器实际资源、HTTPS、备份和业务链路检查后才能记录部署成功；归档大小不代表运行内存，现有 Worker 镜像含构建依赖，需预留加载时磁盘峰值。
+
 ## 数据库初始化
 
 1. PostgreSQL 准备专用数据库与迁移用户。以迁移连接设置 DATABASE_URL 后执行 `pnpm db:migrate`，此命令幂等建表/索引/RLS；源为 `lib/saas/migrations.ts`。
@@ -115,4 +174,4 @@ pnpm db:import-legacy <business-backup.json> <existing-saas-user-id> --commit
 
 `node scripts/saas/verify-compose.mjs` 另需 `PRODUCTSPY_COMPOSE_VERIFY=1`，只运行于 GitHub Linux 的本机 daemon，要求 Compose 2.24.4+。使用原 `compose.yaml` 的服务/网络/依赖/数据库卷/worker 命令，以 `!override` 替换生产 env_file 和 Web 端口为本次私有合成文件及 loopback 随机端口，不读取 `.env.production`。数据库无主机端口，业务镜像只用同 job 已构建镜像；临时项目验证内部 db DNS、角色、Mock Worker、Web/DB 容器重建后的同卷数据。清理前核对项目和本次 marker，只删除自己创建的资源和精确临时文件。该脚本 10 项边界测试及 `881c3ec` 的 [实际 Linux CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39015571302) 均通过；3 容器、1 网络、1 卷和私有环境文件清理成功。不把此命令视为部署授权。
 
-实际容器、Linux PostgreSQL 逻辑恢复、真实 Amazon 本机串联已有证据，详见 [验证记录](saas-validation.md)。真实 HTTPS 预发布、正式隐私联系人/保留期限/账户注销、邮件核验/找回、独立 worker 的云端运维、支付沙盒、跨物理设备、真实 AI 及生产恢复演练仍须分别记录结果。2026-10-18 的持续开发指令允许自主推进，但尚未指定可操作的预发布目标及访问范围；正式域名、付费资源、生产服务与公开发布仍需单独授权。未通过的项目不标为最终验收完成。
+实际容器、Linux PostgreSQL 逻辑恢复、真实 Amazon 本机串联已有证据，详见 [验证记录](saas-validation.md)。真实 HTTPS 预发布、正式隐私联系人/保留期限/账户注销、邮件核验/找回、独立 worker 的云端运维、支付沙盒、跨物理设备、真实 AI 及生产恢复演练仍须分别记录结果。2026-10-19 已取得指定 CloudCone 测试主机及容器/数据库/HTTPS 操作授权，实际 SSH、安装与 IP TLS 进展见 [测试部署记录](saas-validation-2026-10-19.md)；正式域名、付费资源、生产服务与公开发布仍需单独授权。未通过的项目不标为最终验收完成。
