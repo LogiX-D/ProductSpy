@@ -35,4 +35,4 @@ pnpm package:saas:extension --environment development --origin http://127.0.0.1:
 
 2026-10-17 已核对官方 [最小权限要求](https://developer.chrome.com/docs/webstore/program-policies/permissions)、[MV3 代码要求](https://developer.chrome.com/docs/webstore/program-policies/mv3-requirements)、[用户数据披露 FAQ](https://developer.chrome.com/docs/webstore/program-policies/user-data-faq)、[Limited Use](https://developer.chrome.com/docs/webstore/program-policies/limited-use) 和 [提交流程](https://developer.chrome.com/docs/webstore/publish)。本项目的实现核对不代表平台批准；真正提交前应再次核对届时政策和实际行为。
 
-2026-10-20 再次核对前四项政策及现有 HTTPS 预览包。隐私页源码已补充明确的 Limited Use 用途承诺，以及桌面/移动工作台直接入口；新页面须在新镜像构建、测试及测试部署后验证，不能把源码更新写成运行站点已更新。
+2026-10-20 再次核对前四项政策及现有 HTTPS 预览包。隐私页已补充明确的 Limited Use 用途承诺，以及桌面/移动工作台直接入口；c481268 的完整 Linux CI、加密镜像交付与实际测试站更新已通过，公网新页面已核对。完整静态加密及运营/正式审核资料仍未全部完成，详见 [当日记录](../saas-validation-2026-10-20.md)。
