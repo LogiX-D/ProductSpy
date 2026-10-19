@@ -57,3 +57,11 @@
 本机 Node 24 当前结果：认证迁移/取消/失败封闭与队列恢复定向 34/34；全量 99 文件、1015 PASS/4 SKIP（1019）；typecheck、lint、format、默认 MV3/Next 生产构建通过。新增 18 项测试，不把模拟 storage 或模块重载称为实际浏览器重启。首轮定向检查曾因未登录 syncPending 的拒绝契约断言错误失败，已修正断言并通过；test mock 的 Promise<void> 类型错误已修正。首次完整 lint 发现云端 worker.evaluate 回调的 chrome 全局未声明，补充作用域声明后通过；这些首次失败未计为成功。
 
 真实 MV3 E2E 已增加：同一持久 profile 的浏览器进程关闭/重开，验证内存凭证消失、local 没有凭证、原待上传 captureId 保留，重新授权后仅用该幂等键上传一次，另一隔离会话可见结果。云端脚本也增加实际 session/local 存储布尔断言；工作流在扩展变更时触发。这些新增浏览器路径在提交时仍待 Linux CI 实际执行，不以本机单测代替。本机浏览器工具设置限制继续遵守。支付关闭、Mock 保持；真人 Amazon、物理设备、真实 AI 与 Stripe 沙盒继续按用户决定留待稍后。
+
+扩展实现提交为 `05cf4d32dfde055ab3f2a7abdd42707bc3a964be`，tree `21ea3ae73c4261d0ae3f8dcd59129d2eb80a5cb2`。已从该干净提交生成精确 HTTPS 测试 origin 的新预览 ZIP（dirty=false），目录 `artifacts/saas/extension-production-6e554b13-ec7e-442f-b1cd-44e188d373bb/`，431,326 字节、243 文件，SHA256 `b1f31fbaf4ed159ce9f1d5b6e3bb6de1c07514da5281d09aa2118587e91085c1`。打包时 CRC、逐项 checksum、Manifest/CSP/权限/秘密检查通过；旧 ZIP 保留。production 指编译配置，仍是未公开测试包，不代表生产发布。
+
+[云端 run 39309061740](https://github.com/LogiX-D/ProductSpy/actions/runs/39309061740) 的 fixture job 118253634582 已取得 19:13:52 UTC 实际 PASS 报告：11 项，新增实际 worker 读取的 memory=true/disk=false 布尔断言，其余包含真实 MV3/HTTPS 上传、一次 Mock 任务、隔离会话读取、跨账号 404 及真实断网队列恢复。Amazon 页面为明确 fixture；该组未包含浏览器重启或跨物理设备。后端保持原 c481268 镜像，无需为扩展变更重建数据库或替换服务。
+
+同 run 的 live job 118253633981 于 19:15:03 UTC 再次在实际 Amazon 采集前失败：HTTP 200，document complete，标准/备用标题不存在，captchaFormPresent=true，错误类别 TimeoutError。只完成云端注册，未完成真实采集、上传或 AI；没有 fixture 回退、验证码绕过或 AI POST 重放。该 live 失败独立于 fixture 成功，仍保留为未通过证据。
+
+[完整 CI run 39309068615](https://github.com/LogiX-D/ProductSpy/actions/runs/39309068615) / job 118253692956 已确认 success（19:17:36 UTC）：Python 6/6、Linux 全量 1004 PASS/15 SKIP（1019）、受限 PG 67/67、实际浏览器 3/3、逻辑恢复、默认构建、两配置 ZIP、standalone、Docker 和原 Compose 全部通过。实际 checkout `e090f185ab8de72226b5a6f7d4991eb729cbfcb5` 的 tree 与实现提交一致。MV3 测试 9.4 秒完成，实际包含关闭/重开同一持久 profile、凭证清空、captureId 保留和重新授权后单次上传断言；这是同一 CI 主机上的实际浏览器进程重启，不是跨物理设备。没有导出/部署新后端镜像。

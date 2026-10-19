@@ -36,3 +36,5 @@ pnpm package:saas:extension --environment development --origin http://127.0.0.1:
 2026-10-17 已核对官方 [最小权限要求](https://developer.chrome.com/docs/webstore/program-policies/permissions)、[MV3 代码要求](https://developer.chrome.com/docs/webstore/program-policies/mv3-requirements)、[用户数据披露 FAQ](https://developer.chrome.com/docs/webstore/program-policies/user-data-faq)、[Limited Use](https://developer.chrome.com/docs/webstore/program-policies/limited-use) 和 [提交流程](https://developer.chrome.com/docs/webstore/publish)。本项目的实现核对不代表平台批准；真正提交前应再次核对届时政策和实际行为。
 
 2026-10-20 再次核对前四项政策及现有 HTTPS 预览包。隐私页已补充明确的 Limited Use 用途承诺，以及桌面/移动工作台直接入口；c481268 的完整 Linux CI、加密镜像交付与实际测试站更新已通过，公网新页面已核对。完整静态加密及运营/正式审核资料仍未全部完成，详见 [当日记录](../saas-validation-2026-10-20.md)。
+
+随后扩展 `05cf4d3` 将凭证改为受限 session 内存，Chrome 重启或扩展更新后需重新配对；原账号待上传资料保留。完整 CI 的真实浏览器进程重启恢复及云端 fixture 的内存/local 存储断言已通过。新版 HTTPS 预览包位于 `artifacts/saas/extension-production-6e554b13-ec7e-442f-b1cd-44e188d373bb/`，SHA256 `b1f31fbaf4ed159ce9f1d5b6e3bb6de1c07514da5281d09aa2118587e91085c1`；dirty=false，旧包保留。用户之后做人工验收时应使用此新版，不能把旧 local 凭证实现当成当前版本。此包仍未发布，真实 Amazon CI 本轮仍因验证码未通过。
