@@ -67,11 +67,14 @@ async function main() {
     await expect(page).toHaveURL(`${base}/`);
   }
   try {
+    report.stage = 'remote-status-api';
     const status = await fetch(`${base}/api/status`, { signal: AbortSignal.timeout(20_000) });
+    report.statusHTTP = status.status;
     assert(
-      status.ok() && (await status.json()).data?.mode === 'mock',
+      status.ok && (await status.json()).data?.mode === 'mock',
       'Remote server must explicitly use Mock AI.',
     );
+    report.stage = 'production-extension-package';
     const pkg = await packageSaasExtension({ environment: 'production', origin: base });
     const dist = resolve(dirname(pkg.receiptPath), 'extension');
     const manifest = JSON.parse(await readFile(resolve(dist, 'manifest.json'), 'utf8'));
@@ -81,6 +84,7 @@ async function main() {
       'Production extension origin mismatch.',
     );
     report.extensionArchiveSha256 = pkg.receipt.archive.sha256;
+    report.stage = 'launch-chromium';
     context = await chromium.launchPersistentContext(resolve(output, 'profile'), {
       channel: 'chromium',
       headless: true,
@@ -256,7 +260,10 @@ async function main() {
     }
     report.stage = 'complete';
     report.outcome = 'PASS';
-  } catch {
+  } catch (error) {
+    const safeCode = (value) =>
+      typeof value === 'string' && /^[A-Z][A-Z0-9_]{1,63}$/.test(value) ? value : undefined;
+    report.failure = { code: safeCode(error?.code), causeCode: safeCode(error?.cause?.code) };
     report.outcome = 'FAILED_OR_BLOCKED';
     report.reason =
       'Verification did not pass at the recorded stage; no fixture fallback or automatic AI resubmission.';

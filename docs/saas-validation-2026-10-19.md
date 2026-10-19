@@ -46,3 +46,9 @@
 首次加载校验因 Docker 29 containerd 的 manifest ID/Size 与 classic config ID/Size 不同而停止；没有继续启动未验证镜像。随后新增只读验证器，核对内容寻址 manifest SHA256、指向的 CI config digest、config 内容 SHA256、实际 rootfs diff IDs、架构和 revision，两镜像全通过后才迁移启动。6 项边界测试通过。文件大小差异只作存储诊断，不替代摘要身份。
 
 本机浏览器工具提示 Work settings 禁用了 local browser use，因此未绕过设置或改用本机隐藏浏览器。专用 Linux CI 云端浏览器验收分别运行 fixture/live Amazon，目标限定获授权 HTTPS，强制 TLS 校验、Mock，禁止静默 fallback；新脚本静态及 2 项护栏测试通过，扩充后 Node 24 全量 994 PASS/4 SKIP（998）。该云端浏览器运行结果仍待实测。
+
+## 后续验收修正
+
+提交 46874f1 的 [完整 Linux CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39274458052) 已成功，包含新增 Python 身份边界测试。首次 [云端浏览器 run 39274446341](https://github.com/LogiX-D/ProductSpy/actions/runs/39274446341) 的 fixture/live 均在预检失败，Nginx 证明确有 200 状态请求。原因是验收脚本误将 Fetch Response.ok 布尔属性当成 Playwright APIResponse.ok() 方法；已修正并细分阶段/安全错误码诊断，未改应用或降低 TLS/Mock 要求。重跑结果另记。
+
+真实云端额度测试已确认 Free 第 51 商品返回 403，第 11 个 AI 任务返回 429，累计用量 50 商品/10 AI。测试中第二次复用旧商品版本产生 409 失败，该已接受任务仍计入额度；没有重新提交它，而是保留失败，后续新的合成 Mock 额度任务读取最新版本后单次提交。无真实模型调用。合成 Pro 权益及恢复 Free 仍在单独验证，不视为 Stripe 付款。
