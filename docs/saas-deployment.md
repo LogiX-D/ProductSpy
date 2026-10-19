@@ -11,7 +11,7 @@
 | 预发布   | 独立 PostgreSQL、HTTPS            | 真扩展构建 origin，AI 经授权，Stripe test | 与生产分离的库、Key、Webhook、备份与审计                  |
 | 生产     | PostgreSQL 17+                    | HTTPS 域名/反向代理，服务端 AI/支付       | `.env.production` 注入，应用角色无 BYPASSRLS，禁止 PGlite |
 
-PostgreSQL 18.4 Windows 临时实例用于本轮真实网络回归；Linux CI 使用 PostgreSQL 17.11 并已通过实际逻辑备份恢复及 Web/Worker 容器检查。Compose 示例使用 17；原编排的临时 Linux CI 已通过，公网环境仍待验。
+PostgreSQL 18.4 Windows 临时实例用于历史真实网络回归；Linux CI 使用 PostgreSQL 17.11 并已通过实际逻辑备份恢复及 Web/Worker 容器检查。Compose 示例使用 17；获授权公网测试主机也已运行 PostgreSQL 17.11，实际隔离、持久化与恢复结果见 [测试部署记录](saas-validation-2026-10-19.md)。
 
 ## 小内存预发布与无域名 HTTPS
 

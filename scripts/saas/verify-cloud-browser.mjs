@@ -5,6 +5,76 @@ import { dirname, resolve } from 'node:path';
 import { packageSaasExtension } from './package-extension.mjs';
 
 export const authorizedOrigin = 'https://203.88.118.240:8443';
+// This function is serialized into the test page. Only bounded categories and
+// booleans may leave the page; never return its URL, text, form values or HTML.
+export function readAmazonPageIndicators() {
+  const path = location.pathname;
+  const urlKind = /\/errors\/validateCaptcha/i.test(path)
+    ? 'captcha'
+    : /\/ap\/signin(?:\/|$)/i.test(path)
+      ? 'sign-in'
+      : /\/(?:dp|gp\/product)\/[A-Z0-9]{10}(?:\/|$)/i.test(path)
+        ? 'product'
+        : 'other';
+  return {
+    expectedHost: location.hostname === 'www.amazon.com' || location.hostname === 'amazon.com',
+    urlKind,
+    readyState: ['loading', 'interactive', 'complete'].includes(document.readyState)
+      ? document.readyState
+      : 'other',
+    productTitlePresent: Boolean(document.querySelector('#productTitle')?.textContent?.trim()),
+    alternativeTitlePresent: Boolean(
+      document.querySelector('#title_feature_div h1, h1.a-size-large')?.textContent?.trim(),
+    ),
+    captchaFormPresent: Boolean(
+      document.querySelector('form[action*="validateCaptcha" i], #captchacharacters'),
+    ),
+    robotPromptPresent:
+      /make sure you(?:'|’)re not a robot|enter the characters you see below/i.test(
+        document.body?.textContent ?? '',
+      ),
+    signInFormPresent: Boolean(document.querySelector('form[name="signIn"], #ap_password')),
+  };
+}
+
+export function safeFailure(error) {
+  const codes = new Set([
+    'ERR_ASSERTION',
+    'ETIMEDOUT',
+    'ECONNRESET',
+    'ECONNREFUSED',
+    'ENOTFOUND',
+    'EAI_AGAIN',
+    'ERR_TLS_CERT_ALTNAME_INVALID',
+    'CERT_HAS_EXPIRED',
+    'UNABLE_TO_VERIFY_LEAF_SIGNATURE',
+    'DEPTH_ZERO_SELF_SIGNED_CERT',
+    'SELF_SIGNED_CERT_IN_CHAIN',
+    'ABORT_ERR',
+    'ERR_INVALID_URL',
+    'UND_ERR_CONNECT_TIMEOUT',
+    'UND_ERR_SOCKET',
+    'UND_ERR_HEADERS_TIMEOUT',
+    'UND_ERR_BODY_TIMEOUT',
+  ]);
+  const safeCode = (value) => (codes.has(value) ? value : undefined);
+  const names = new Set(['TimeoutError', 'AssertionError', 'TypeError', 'Error', 'AbortError']);
+  return {
+    kind: names.has(error?.name) ? error.name : 'OtherError',
+    code: safeCode(error?.code),
+    causeCode: safeCode(error?.cause?.code),
+  };
+}
+
+async function amazonPageEvidence(page) {
+  return {
+    ...(await page.evaluate(readAmazonPageIndicators)),
+    htmlSha256: createHash('sha256')
+      .update(await page.content())
+      .digest('hex'),
+  };
+}
+
 export function cloudConfiguration(env, platform = process.platform) {
   assert(env.PRODUCTSPY_CLOUD_VERIFY === '1', 'Explicit cloud verification opt-in required.');
   assert(
@@ -50,7 +120,7 @@ async function main() {
   const email = `cloud-${mode}-${runId}@example.invalid`;
   const otherEmail = `cloud-other-${mode}-${runId}@example.invalid`;
   const password = `Synthetic-cloud-${randomUUID()}`;
-  let context, browser;
+  let context, browser, amazonPage;
   async function register(page, account) {
     await page.goto(`${base}/register`);
     await page.getByLabel('姓名', { exact: true }).fill('Synthetic Cloud Acceptance');
@@ -124,6 +194,7 @@ async function main() {
     }
     report.stage = `${mode}-amazon`;
     const amazon = await context.newPage();
+    amazonPage = amazon;
     const response = await amazon.goto(`https://www.amazon.com/dp/${asin}`, {
       waitUntil: 'domcontentloaded',
       timeout: 45_000,
@@ -261,9 +332,11 @@ async function main() {
     report.stage = 'complete';
     report.outcome = 'PASS';
   } catch (error) {
-    const safeCode = (value) =>
-      typeof value === 'string' && /^[A-Z][A-Z0-9_]{1,63}$/.test(value) ? value : undefined;
-    report.failure = { code: safeCode(error?.code), causeCode: safeCode(error?.cause?.code) };
+    report.failure = safeFailure(error);
+    if (amazonPage)
+      report.amazonPage = await amazonPageEvidence(amazonPage).catch(() => ({
+        observation: 'unavailable',
+      }));
     report.outcome = 'FAILED_OR_BLOCKED';
     report.reason =
       'Verification did not pass at the recorded stage; no fixture fallback or automatic AI resubmission.';
