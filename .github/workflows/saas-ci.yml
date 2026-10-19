@@ -30,6 +30,10 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm format:check
+      - name: Verify loaded-image identity compatibility boundaries
+        run: python3 scripts/saas/verify_loaded_images_test.py
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
       - run: pnpm test
       - run: pnpm db:migrate
         env:

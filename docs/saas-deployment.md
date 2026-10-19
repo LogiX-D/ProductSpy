@@ -40,25 +40,13 @@ SSH 隧道到 loopback 的开发联调可作临时诊断，但不是公网 HTTPS
 node scripts/saas/decrypt-deployment-images.mjs -i <absolute-private-key.pem> -a <productspy-images.tar.gz.enc> -m <deployment-manifest.json> -o <new-productspy-images.tar.gz>
 ```
 
-通过已认证 SSH/SCP 向获授权服务器的私有部署目录传输已解密归档和原 manifest，不上传私钥；在同目录保留对应版本 compose.yaml、scripts/saas/app-role.sql 和私有环境文件。服务器加载前检查传输 checksum；SHA256SUMS 对应密文，不能拿它校验解密后归档。随后验证加载的镜像身份：
+通过已认证 SSH/SCP 向获授权服务器的私有部署目录传输已解密归档和原 manifest，不上传私钥；在同目录保留对应版本 compose.yaml、scripts/saas/app-role.sql、scripts/saas/verify-loaded-images.py 和私有环境文件。服务器加载前检查传输 checksum；SHA256SUMS 对应密文，不能拿它校验解密后归档。随后验证加载的镜像身份：
 
 ```bash
 set -euo pipefail
 # 这里的文件由私有本机通过已认证 SSH/SCP 传输。
 docker --context default image load --input productspy-images.tar.gz
-python3 - <<'PY'
-import json, subprocess
-m = json.load(open('deployment-manifest.json'))
-assert m['platform'] == {'os': 'linux', 'architecture': 'amd64'}
-for image in m['images']:
-    actual = json.loads(subprocess.check_output(['docker', '--context', 'default', 'image', 'inspect', image['tag']]))[0]
-    assert actual['Id'] == image['imageId']
-    assert actual['Size'] == image['size']
-    assert actual['Os'] == image['os'] == 'linux'
-    assert actual['Architecture'] == image['architecture'] == 'amd64'
-    assert actual['Config']['Labels']['org.opencontainers.image.revision'] == image['revision'] == m['checkout']['sha']
-print('Loaded image identities match manifest')
-PY
+python3 verify-loaded-images.py --manifest deployment-manifest.json --source-head <approved-PR-head-SHA> --tree <approved-tree-SHA>
 export PRODUCTSPY_IMAGE_REVISION="$(python3 -c "import json; print(json.load(open('deployment-manifest.json'))['checkout']['sha'])")"
 ```
 
@@ -84,6 +72,8 @@ docker --context default compose --env-file .env.compose -p productspy-staging -
 # 管理员随后按下节初始化 app-role.sql 并交互设定 app 密码；业务环境只保留受限连接。
 docker --context default compose --env-file .env.compose -p productspy-staging -f compose.yaml -f compose.images.yaml up -d --no-build --pull never --wait
 ```
+
+Docker 29 新装默认使用 containerd image store，其 inspect ID 是 manifest digest，Size 也包括不同存储开销；不能直接把 CI classic config ID/Size 相等当成跨存储验证。验证器在 ID 相同的内容寻址路径外，还支持读取本机 containerd moby 内容，逐层验证 manifest 的 SHA256 → CI config digest → config 自身 SHA256 → 实际 rootfs diff IDs，另核对架构与 revision；任一不同即拒绝。不同 size 仅记录，不作为内容身份。[Docker 存储说明](https://docs.docker.com/engine/storage/containerd/)、[Moby inspect 实现](https://github.com/moby/moby/blob/v29.1.3/daemon/containerd/image_inspect.go)。此兼容路径已在获授权 Docker 29 主机验证；其他反向/多架构转换不作支持承诺。
 
 迁移管理员连接只注入一次性迁移容器，不进入常驻 Web/Worker。以上为交付/消费方法，需服务器实际资源、HTTPS、备份和业务链路检查后才能记录部署成功；归档大小不代表运行内存，现有 Worker 镜像含构建依赖，需预留加载时磁盘峰值。
 

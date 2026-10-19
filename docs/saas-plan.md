@@ -30,3 +30,5 @@
 主机约 1GB RAM、1GB swap、24GB 可用磁盘，443 已有代理。因此先保留该服务，使用精确 HTTPS IPv4:8443，80 留给 ACME HTTP-01。应用与 Worker 使用池 3 / 并发 1、真实受限 PostgreSQL、Mock AI，支付关闭；小内存实际运行、恢复及峰值仍需测量。
 
 下一步连续执行：通过全部 Linux CI 后导出加密镜像包 → 校验来源与镜像身份 → 部署独立 Compose 项目和数据库 → 签发并验证受信任 IP TLS 与自动续期 → 公网注册、隔离、采集同步、Mock 任务、重启持久化和备份恢复 → 真实 MV3/真实 Amazon 及跨物理设备分别验收。仓库为 public，CI 部署包必须流式加密给仓库外私钥持有者，不能把 Actions artifact 称为私有。
+
+测试主机已实际启动 PostgreSQL/Web/Worker，公网可信 TLS 健康 200，17 项网络 API 链路通过；Docker 29 内容摘要兼容检查已补齐。下一步为 Linux CI 的实际 MV3/fixture 与实际 Amazon 分开验证，以及额度、重启与备份恢复。真实 AI、支付沙盒及物理终端浏览器体验仍未验收。
