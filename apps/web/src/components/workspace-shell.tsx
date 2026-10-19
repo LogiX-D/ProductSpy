@@ -139,6 +139,11 @@ function WorkspaceLayout({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <div className="ws-sidebar-footer">
+            {!isLegacyMode && (
+              <p>
+                <Link href="/privacy">隐私说明</Link>
+              </p>
+            )}
             {account && (
               <>
                 <Link href="/account" className="saas-user-link">
@@ -217,6 +222,7 @@ function WorkspaceLayout({ children }: { children: ReactNode }) {
                 {label}
               </Link>
             ))}
+            {!isLegacyMode && <Link href="/privacy">隐私说明</Link>}
           </nav>
           <main id="workspace-content" tabIndex={-1} className="ws-main-content">
             {children}

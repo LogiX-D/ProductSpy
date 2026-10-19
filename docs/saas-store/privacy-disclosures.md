@@ -27,6 +27,8 @@
 
 Remote code：当前实现的可执行逻辑随包交付，远端 API 返回账号/商品状态数据；未使用远端脚本、远端字符串执行或远端指令解释器。[MV3 要求](https://developer.chrome.com/docs/webstore/program-policies/mv3-requirements)允许账户数据同步，但外部数据不能携带执行逻辑。自动扫描只能提供有限静态证据，不能声称平台已完成审核。
 
-经营者、有效联系方式、供应商清单、地域、保留/删除期限、静态加密及真实 HTTPS 仍待实际环境确认，见 [隐私开发预览](../../PRIVACY.md)。这些内容未完成前不将本草案标为正式可提交资料。
+经营者、有效联系方式、正式供应商清单、地域、保留/删除期限和完整静态加密保护仍待确认，见 [隐私开发预览](../../PRIVACY.md)。测试主机可信 HTTPS、受限 PostgreSQL/RLS 与加密备份已取得 [实际证据](../saas-validation-2026-10-19.md)；正式生产的安全要求仍须另行验证，未完成前不将本草案标为正式可提交资料。
 
 当前扩展授权信息保存于 `chrome.storage.local`，`TRUSTED_CONTEXTS` 限制内容脚本访问；该访问隔离本身不是静态加密证明。正式环境须核对浏览器敏感存储、数据库和备份的实际保护，不能只凭存储 API 或部署模板作合规认证。
+
+[Limited Use](https://developer.chrome.com/docs/webstore/program-policies/limited-use) 要求在扩展所属网站明确说明数据用途承诺。[隐私源码](../../apps/web/src/app/privacy/page.tsx) 和仓库隐私说明已补充该声明，覆盖用途、必要转移、广告限制及人工读取限制；工作台提供直接入口。源码/文档核对不表示新页面已部署、静态加密已完成或商店已批准。

@@ -1,6 +1,6 @@
 # SaaS Chrome 扩展发布准备
 
-适用于当前迁移分支，替代旧 `docs/store/` 的 Windows 商店材料。这里只准备本机可审阅的 preview 包和文案；没有提交、发布、注册付费开发者账户或部署服务。用户当前指示“先审阅 PR，暂不部署”。
+适用于当前迁移分支，替代旧 `docs/store/` 的 Windows 商店材料。用户已授权并完成专属 HTTPS 测试部署，实际范围见 [测试部署记录](../saas-validation-2026-10-19.md)。本目录提供可审阅的 preview 包和文案；没有提交商店、公开发布插件或注册付费开发者账户。正式生产服务、域名及公开发布仍需单独授权。
 
 ## 单一用途
 
@@ -31,6 +31,8 @@ pnpm package:saas:extension --environment development --origin http://127.0.0.1:
 
 ## 当前发布限制
 
-正式 origin 与部署尚未获准执行；公开隐私联系人、保留期限/注销流程、审核环境及账号、正式 Chrome 稳定版、真实 AI 与跨设备证据仍须补齐。HTTPS 和数据库/备份静态加密、访问控制须在实际基础设施上验证，不能用本机明文临时库代替。沙盒支付和真实付款分别验收。
+当前 production 配置的扩展预览包已绑定获授权 HTTPS 测试 origin，并完成 ZIP/来源/权限及云端 MV3 fixture 核验。公开隐私联系人、保留期限/注销流程、正式审核账号、Chrome 稳定版人工链路、真实 AI 与跨物理设备证据仍须补齐。测试主机的可信 HTTPS、访问控制及备份加密已有实测；浏览器与数据库卷的完整静态加密尚未取得充分证据，须按官方安全要求完成发布前验收。沙盒支付和真实付款分别验收。
 
 2026-10-17 已核对官方 [最小权限要求](https://developer.chrome.com/docs/webstore/program-policies/permissions)、[MV3 代码要求](https://developer.chrome.com/docs/webstore/program-policies/mv3-requirements)、[用户数据披露 FAQ](https://developer.chrome.com/docs/webstore/program-policies/user-data-faq)、[Limited Use](https://developer.chrome.com/docs/webstore/program-policies/limited-use) 和 [提交流程](https://developer.chrome.com/docs/webstore/publish)。本项目的实现核对不代表平台批准；真正提交前应再次核对届时政策和实际行为。
+
+2026-10-20 再次核对前四项政策及现有 HTTPS 预览包。隐私页源码已补充明确的 Limited Use 用途承诺，以及桌面/移动工作台直接入口；新页面须在新镜像构建、测试及测试部署后验证，不能把源码更新写成运行站点已更新。

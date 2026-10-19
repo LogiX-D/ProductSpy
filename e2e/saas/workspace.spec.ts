@@ -17,6 +17,22 @@ test('SaaS UI account, product, content, tasks, billing, mobile, and cross-accou
 }, info) => {
   const email = `workspace-${randomUUID()}@example.test`;
   await register(page, email);
+  await page.setViewportSize({ width: 1280, height: 600 });
+  await page
+    .locator('.ws-sidebar-footer')
+    .getByRole('link', { name: '隐私说明', exact: true })
+    .click();
+  await expect(page).toHaveURL(`${BASE}/privacy`);
+  await expect(page.getByRole('heading', { name: '扩展数据用途限制', exact: true })).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: 'Chrome Web Store 用户数据政策', exact: true }),
+  ).toHaveAttribute(
+    'href',
+    'https://developer.chrome.com/docs/webstore/program-policies/limited-use',
+  );
+  await page.getByRole('link', { name: 'ProductSpy', exact: true }).click();
+  await expect(page).toHaveURL(`${BASE}/`);
+  await page.setViewportSize({ width: 1280, height: 900 });
   const draft = {
     source: 'amazon',
     sourceId: 'B098765432',
@@ -63,6 +79,11 @@ test('SaaS UI account, product, content, tasks, billing, mobile, and cross-accou
     true,
   );
   await page.screenshot({ path: info.outputPath('saas-account-mobile.png'), fullPage: true });
+  await page.locator('.ws-mobile-nav').getByRole('link', { name: '隐私说明', exact: true }).click();
+  await expect(page).toHaveURL(`${BASE}/privacy`);
+  await expect(page.getByRole('heading', { name: '扩展数据用途限制', exact: true })).toBeVisible();
+  await page.goto('/account');
+  await expect(page.getByLabel('邮箱', { exact: true })).toHaveValue(email);
   const second = await browser.newContext();
   try {
     const another = await second.newPage();

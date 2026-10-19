@@ -8,7 +8,7 @@ export default function PrivacyPage() {
         ProductSpy
       </Link>
       <h1>隐私与数据处理说明</h1>
-      <p className="muted">适用范围：Chrome 扩展与在线 SaaS 工作台预览版。更新日期：2026-10-17。</p>
+      <p className="muted">适用范围：Chrome 扩展与在线 SaaS 工作台预览版。更新日期：2026-10-20。</p>
       <section>
         <h2>账号与商品数据</h2>
         <p>
@@ -23,6 +23,20 @@ export default function PrivacyPage() {
         </p>
       </section>
       <section>
+        <h2>扩展数据用途限制</h2>
+        <p>
+          我们对通过扩展获得的信息的使用遵守{' '}
+          <a href="https://developer.chrome.com/docs/webstore/program-policies/limited-use">
+            Chrome Web Store 用户数据政策
+          </a>
+          中的 Limited Use
+          要求。数据仅用于已披露的商品采集、账号同步、分析、创作，以及必要的安全和可靠性处理，不出售或用于定向广告。
+        </p>
+        <p>
+          向第三方传输仅限于提供上述功能、必要的安全处理或法律要求。人工读取仅限于你明确同意的支持、必要的安全调查或法律要求。
+        </p>
+      </section>
+      <section>
         <h2>同步与设备存储</h2>
         <p>
           未同步商品和授权信息保存在扩展的本机存储中。队列按账号隔离；退出或切换账号后不会把上一账号的待同步数据发送给另一账号。网络异常后会在后台重试采集同步，也可手动重试。卸载扩展可能删除未同步数据。
@@ -30,6 +44,10 @@ export default function PrivacyPage() {
         <p>
           在线工作台不把商品正文持久缓存在共享 IndexedDB 中。浏览器偏好保存在
           localStorage，未保存的创作草稿在当前标签页临时保存；退出、会话失效或切换账号时会清理私有草稿。
+        </p>
+        <p>
+          测试环境已验证 HTTPS
+          和备份加密；浏览器本机数据与数据库卷的完整静态加密保护仍待发布前验证。
         </p>
       </section>
       <section>
@@ -68,7 +86,7 @@ export default function PrivacyPage() {
       <section>
         <h2>预览状态与联系渠道</h2>
         <p>
-          当前版本尚未公开上线。运营主体、隐私联系邮箱、服务提供商名单及具体保留期限尚待发布方补全；本预览版本不提供虚构联系方式。公开发布前必须更新此说明及
+          当前版本用于获授权的测试预览，尚未正式公开运营。运营主体、隐私联系邮箱、服务提供商名单及具体保留期限尚待发布方补全；本预览版本不提供虚构联系方式。公开发布前必须更新此说明及
           Chrome Web Store 数据披露，并提供有效的隐私请求渠道。
         </p>
       </section>
