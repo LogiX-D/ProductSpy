@@ -232,6 +232,54 @@ describe('SaaS real route handlers with PostgreSQL', () => {
     await ensureDatabase();
     expect((await call(me, '/api/auth/me', 'GET', undefined, alice.cookie)).status).toBe(200);
   }, 30000);
+  it('rejects new-email logins and registrations at the global limit without growing account limiter records', async () => {
+    const attempts = [login, register, login, register].map((handler, index) => ({
+      handler,
+      path: handler === login ? '/api/auth/login' : '/api/auth/register',
+      email: `global-limit-${index}-${runId}@example.invalid`,
+    }));
+    const emailKeys = attempts.map(({ email }) => security.tokenHash(`login:${email}`));
+    const rollback = new Error('Rollback the synthetic global authentication limit');
+    vi.useFakeTimers({ toFake: ['Date'] });
+    try {
+      // Hold and roll back this shared counter so other PostgreSQL suites can
+      // authenticate normally after the test's short transaction completes.
+      await dbTransaction(async () => {
+        const window = new Date(Math.floor(Date.now() / 60000) * 60000).toISOString();
+        await query(
+          `INSERT INTO api_rate_limits(key,window_start,count) VALUES($1,$2,200)
+           ON CONFLICT(key) DO UPDATE SET window_start=$2,count=200`,
+          [security.tokenHash('account-auth-global'), window],
+        );
+        for (const { handler, path, email } of attempts) {
+          const response = await call(handler, path, 'POST', {
+            email,
+            password: initialPassword,
+          });
+          expect(response.status).toBe(429);
+          expect(Number(response.headers.get('retry-after'))).toBeGreaterThan(0);
+          expect(Number(response.headers.get('retry-after'))).toBeLessThanOrEqual(60);
+          expect(response.headers.has('set-cookie')).toBe(false);
+        }
+        expect(
+          (await query('SELECT key FROM api_rate_limits WHERE key=ANY($1::text[])', [emailKeys]))
+            .rows,
+        ).toEqual([]);
+        expect(
+          (
+            await query('SELECT id FROM users WHERE email=ANY($1::text[])', [
+              attempts.map(({ email }) => email),
+            ])
+          ).rows,
+        ).toEqual([]);
+        throw rollback;
+      });
+    } catch (error) {
+      if (error !== rollback) throw error;
+    } finally {
+      vi.useRealTimers();
+    }
+  });
   it('rejects hostile origins, forged hosts, cross-site reads and cookie-to-bearer substitution', async () => {
     expect(
       (

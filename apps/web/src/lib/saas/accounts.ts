@@ -54,8 +54,9 @@ export async function signIn(
   const parsed = credentialsSchema.safeParse(body);
   if (!parsed.success) throw new AppError(400, '请输入有效邮箱、12–256 位密码和姓名');
   const input = parsed.data;
-  await rateLimit(`login:${input.email}`, 10, 900);
+  // Reject globally throttled traffic before creating caller-selected email keys.
   await rateLimit('account-auth-global', 200, 60);
+  await rateLimit(`login:${input.email}`, 10, 900);
   let userId: string | undefined;
   if (register) {
     const encoded = await passwordHash(input.password);
