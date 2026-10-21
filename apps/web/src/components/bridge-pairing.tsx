@@ -10,6 +10,71 @@ export function pairingSecondsLeft(expiresAt: string, now = Date.now()): number 
 }
 
 export function BridgePairing() {
+  return isLegacyMode ? <LegacyBridgePairing /> : <CloudExtensionConnection />;
+}
+
+function CloudExtensionConnection() {
+  const [paired, setPaired] = useState<boolean>();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+  useEffect(() => {
+    const controller = new AbortController();
+    void webRequest<{ paired: boolean }>('/api/bridge/status', { signal: controller.signal })
+      .then((result) => {
+        if (!controller.signal.aborted) setPaired(result.paired);
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setError('暂时无法读取扩展连接状态。请检查网络后重试。');
+      });
+    return () => controller.abort();
+  }, []);
+  async function revoke() {
+    setBusy(true);
+    setError('');
+    setNotice('');
+    try {
+      await webRequest('/api/bridge/revoke', { method: 'POST', body: '{}' });
+      setPaired(false);
+      setNotice(
+        '已撤销现有扩展连接。网页保持登录时，下次打开扩展会自动连接；如需停止连接，请在扩展退出账号或退出网页登录。',
+      );
+    } catch (failure) {
+      setError(errorMessage(failure));
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <div className="mt-4 border-t border-slate-200 pt-4">
+      <h3 className="text-sm font-semibold">Chrome 扩展连接</h3>
+      <p className="mt-2 text-xs leading-5 text-slate-500">
+        安装扩展后即可使用。扩展会自动连接当前浏览器已登录的 ProductSpy
+        账号；未登录时，只需在网页登录账号，再回到扩展继续。
+      </p>
+      <p role="status" className="mt-2 text-xs text-slate-600">
+        {paired === undefined
+          ? error
+            ? '连接状态暂不可用。'
+            : '正在读取连接状态…'
+          : paired
+            ? '当前账号有有效的扩展连接。'
+            : '当前账号暂无有效的扩展连接。'}
+      </p>
+      <Button onClick={() => void revoke()} disabled={busy || !paired} variant="secondary">
+        {busy ? '正在撤销…' : '撤销扩展连接'}
+      </Button>
+      {notice && (
+        <p role="status" className="mt-2 text-xs text-teal-700">
+          {notice}
+        </p>
+      )}
+      {error && <ErrorNotice message={error} />}
+    </div>
+  );
+}
+
+function LegacyBridgePairing() {
   const [code, setCode] = useState<{ code: string; expiresAt: string }>();
   const [paired, setPaired] = useState(false);
   const [busy, setBusy] = useState(false);

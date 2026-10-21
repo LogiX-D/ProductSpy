@@ -4,7 +4,7 @@
 
 用户点击并同意后，扩展读取当前 Amazon 商品页的 ASIN、URL、标题、价格、货币、品牌、商品图片/可靠匹配的公开视频 URL、描述、卖点、评分和评分数。用途是建立当前用户商品库、分析与内容创作。不会批量读取浏览历史、Cookie、Amazon 登录凭据、支付卡、配送地址或评论正文。
 
-注册保存邮箱、姓名、带随机 salt 的 scrypt 密码哈希和时间；服务器保存会话 token 哈希，浏览器使用 HttpOnly/SameSite Cookie，HTTPS 生产附 Secure。Chrome 扩展通过一次性授权码连接账户，得到可撤销且绑定扩展 origin 的 token，只保存于受限 `chrome.storage.session` 内存；扩展不保存 AI 或支付服务端密钥。重启 Chrome、更新、禁用或重新加载扩展后需重新授权，待同步资料仍按原账号保留。[Chrome 存储文档](https://developer.chrome.com/docs/extensions/reference/api/storage) 说明了这类会话存储的生命周期。
+注册保存邮箱、姓名、带随机 salt 的 scrypt 密码哈希和时间；服务器保存会话 token 哈希，浏览器使用 HttpOnly/SameSite Cookie，HTTPS 生产附 Secure。Chrome 扩展自动连接同一浏览器中已登录的 ProductSpy 账号，无需配对码；仅连接端点由浏览器携带工作台 Cookie，扩展不读取 Cookie 内容、不申请 cookies 权限。服务器校验可信扩展来源和网页会话后返回可撤销、绑定扩展 origin 的 token，仅保存于受限 `chrome.storage.session` 内存；扩展不保存 AI 或支付服务端密钥。Chrome 重启清空会话后可自动连接已登录网页，待同步资料按原账号保留。[Chrome 存储文档](https://developer.chrome.com/docs/extensions/reference/api/storage) 说明了会话存储生命周期。
 
 采集数据、商品/分析/创作/模板/竞品及其历史、任务、额度、套餐和必要操作日志保存于服务端 PostgreSQL，按用户隔离。Chrome 离线队列持久保存在受限 `chrome.storage.local`，按账户分区，网络失败有限退避重试；退出不删除未同步队列，同一账号再次授权可恢复。旧版无 owner 队列不会静默上传给新账号。旧扩展的本机认证键在成功迁移到会话内存后移除，其他队列不受影响；逻辑移除不保证历史磁盘残留已安全擦除。SaaS 不使用共享 IndexedDB 存储业务正文；编辑草稿可能在当前浏览器临时保存，账户切换会清理/隔离。
 

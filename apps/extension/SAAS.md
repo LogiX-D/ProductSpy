@@ -28,14 +28,16 @@ pnpm package:saas:extension --environment development --origin http://127.0.0.1:
 
 ## 登录与上传
 
-1. 用户打开弹窗中的「打开网页登录与授权」，工作台地址包含当前插件 ID。
-2. 在已登录工作台生成 120 秒内有效的一次性授权码，并粘贴到插件。
-3. 扩展向 `/api/bridge/pair` 交换绑定当前扩展 origin 的 30 天可撤销凭证和用户身份。凭证仅存于 extension-owned storage，设置 `TRUSTED_CONTEXTS`。
+1. 安装后打开扩展，自动连接同一浏览器中已登录的 ProductSpy 网页账号，无需生成配对码或输入扩展 ID。
+2. 尚未登录时，打开「登录 ProductSpy」完成网页登录，再打开扩展即可。浏览器若阻止工作台 Cookie，请检查站点 Cookie 设置；不读取 Amazon Cookie，也不申请 cookies 权限。
+3. 仅 `/api/bridge/connect` 请求携带工作台 HttpOnly/SameSite=Strict 登录 Cookie；服务器校验固定 ProductSpy 扩展来源及有效网页会话，返回同一用户、绑定扩展 origin 的可撤销凭证。业务上传仍只使用 bearer，不携带 Cookie。凭证仅存于受限 `storage.session`，浏览器重启后可自动重新连接已登录网页，所有账号队列保留。
 4. 采集后先保存当前用户的本地队列，再 POST `/api/products`，使用 `Idempotency-Key: captureId`。不向 API 传入可覆盖账号归属的 userId。
 5. 收到匹配商品且队列修订仍相同时确认完成。请求前后均重新校验当前凭证，账号切换不会将原账号的在途结果写入新账号队列。
 6. 退出调用 `/api/auth/logout` 撤销凭证后清除登录，保留原账号队列；相同账号再次授权后恢复。撤销失败时保留登录并提示重试，不声称已退出。
 
-`GET /api/bridge/status` 验证已授权账号；公开 `/api/status` 仅验证健康与版本。扩展不读取用户全库、分析记录或备份。分析及账单由在线工作台提供。
+旧 code/pair API 暂保留兼容历史预览包，不再在 SaaS 界面使用。公开 `/api/status` 仅验证健康与版本。扩展不读取用户全库、分析记录或备份。分析及账单由在线工作台提供。
+
+SaaS 预览包用公开 manifest key 固定 ID `jhbdenjnkollamkdlombhjdhldciabpg`，服务端自动连接只接受精确可信 ID；`PRODUCTSPY_EXTENSION_IDS` 可显式配置正式商店 ID，不能设通配符。公开 key 不是服务器秘密或包签名证明；正式商店身份需在单独发布授权时核对。首次更换到固定 ID 的新包会被 Chrome 视为另一扩展，旧扩展队列不迁移、不删除；有待同步资料应先保留旧扩展和原账号完成同步，不得直接卸载。
 
 ## 恢复与历史记录
 

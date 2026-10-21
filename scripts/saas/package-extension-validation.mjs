@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { lstat, readFile, readdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { validateExtensionRelease } from '../packaging/release-version.mjs';
+import { PRODUCTSPY_EXTENSION_PUBLIC_KEY } from '../../packages/shared/src/extension-identity.ts';
 
 export const metadataName = 'productspy-build.json';
 export const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
@@ -196,11 +197,13 @@ export async function validateCompiledExtension(directory, expected, version, en
     'commands',
     'background',
     'content_security_policy',
+    'key',
   ]);
   assert(
     Object.keys(manifest).every((key) => allowedManifestFields.has(key)),
     'Unexpected SaaS extension manifest capability.',
   );
+  assert.equal(manifest.key, PRODUCTSPY_EXTENSION_PUBLIC_KEY, 'Unexpected extension identity.');
   assert(
     manifest.content_security_policy &&
       Object.keys(manifest.content_security_policy).length === 1 &&

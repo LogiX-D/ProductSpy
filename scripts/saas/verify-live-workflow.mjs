@@ -192,16 +192,9 @@ try {
   report.checks.push('live-amazon-mv3-capture');
 
   report.stage = 'extension-login-and-upload';
-  await web.goto(`${base}/settings?extensionId=${extensionId}`);
-  const dialog = web.getByRole('dialog');
-  await dialog.getByRole('button', { name: '生成配对码', exact: true }).click();
-  const code = await dialog.getByLabel('扩展配对码', { exact: true }).inputValue();
-  assert(/^[a-f0-9]{32}$/.test(code), 'Authorization code was not issued.');
-  await amazon.bringToFront();
   await popup.locator('.connection-panel > summary').click();
-  await popup.getByLabel('一次性登录授权码', { exact: true }).fill(code);
-  await popup.getByRole('button', { name: '登录插件', exact: true }).click();
   await expect(popup.getByText(`当前账号：${email}`, { exact: true })).toBeVisible();
+  await expect(popup.getByLabel('一次性登录授权码', { exact: true })).toHaveCount(0);
   report.checks.push('extension-account-login');
   await popup.getByRole('button', { name: '保存到素材库', exact: true }).click();
   await expect(popup.getByRole('status').filter({ hasText: '已保存到素材库' })).toBeVisible();

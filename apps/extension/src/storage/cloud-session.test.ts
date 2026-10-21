@@ -255,4 +255,18 @@ describe('trusted memory credentials, legacy auth migration and queue preservati
     expect(session.set).not.toHaveBeenCalled();
     expect(disk).toEqual(queues);
   });
+  it('keeps logout pause in trusted memory across worker restarts and forgets it with browser memory', async () => {
+    await auth.setCloudAutoConnectPaused(true, auth.beginCloudAuthChange());
+    expect(await auth.cloudAutoConnectPaused()).toBe(true);
+    expect(memory[auth.CLOUD_AUTO_CONNECT_PAUSED_KEY]).toBe(true);
+    expect(disk[auth.CLOUD_AUTO_CONNECT_PAUSED_KEY]).toBeUndefined();
+    vi.resetModules();
+    const worker = await import('./cloud-session');
+    expect(await worker.cloudAutoConnectPaused()).toBe(true);
+    delete memory[auth.CLOUD_AUTO_CONNECT_PAUSED_KEY];
+    vi.resetModules();
+    expect(await (await import('./cloud-session')).cloudAutoConnectPaused()).toBe(false);
+    expect(disk[ownQueue]).toBeDefined();
+    expect(disk[unassigned]).toBeDefined();
+  });
 });

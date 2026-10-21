@@ -22,7 +22,7 @@ import { LEGACY_MODE, extensionLoginUrl } from '../config';
 import type { CloudUser } from '../storage/cloud-session';
 
 type CaptureState = 'loading' | 'captured' | 'unsupported' | 'error';
-type Action = 'consent' | 'save' | 'analysis' | 'sync' | 'pair' | 'logout';
+type Action = 'consent' | 'save' | 'analysis' | 'sync' | 'pair' | 'connect' | 'logout';
 
 export function App() {
   const lifecycle = useRef<AbortController | undefined>(undefined);
@@ -42,6 +42,7 @@ export function App() {
   const [user, setUser] = useState<CloudUser>();
   const [unassignedCount, setUnassignedCount] = useState(0);
   const account = useRef<string | undefined>(undefined);
+  const connectionRevision = useRef(0);
   const [pairCode, setPairCode] = useState('');
   const [workspace, setWorkspace] = useState<'checking' | 'online' | 'offline'>('checking');
   const [aiMode, setAiMode] = useState<'mock' | 'real'>();
@@ -95,16 +96,17 @@ export function App() {
   const refreshPending = useCallback(async () => {
     const signal = lifecycle.current?.signal;
     if (!signal || signal.aborted) return;
+    const revision = ++connectionRevision.current;
     try {
       const result = await extensionRequest({ type: 'PRODUCTSPY_PENDING_COUNT' });
-      if (signal.aborted) return;
+      if (signal.aborted || revision !== connectionRevision.current) return;
       if (result.status === 'pending-count') {
         setPendingCount(result.count);
         setUnassignedCount(result.unassignedCount ?? 0);
         setQueueError(result.error ?? '');
       }
       const bridge = await extensionRequest({ type: 'PRODUCTSPY_BRIDGE_STATE' });
-      if (signal.aborted) return;
+      if (signal.aborted || revision !== connectionRevision.current) return;
       if (bridge.status === 'bridge-state') {
         setPaired(bridge.paired);
         setUser(bridge.user);
@@ -283,7 +285,28 @@ export function App() {
     }
   }
 
+  async function connectWorkspace() {
+    const signal = lifecycle.current?.signal;
+    if (!signal || signal.aborted) return;
+    connectionRevision.current += 1;
+    setAction('connect');
+    setError('');
+    setNotice('');
+    try {
+      const result = await extensionRequest({ type: 'PRODUCTSPY_CONNECT' });
+      if (signal.aborted) return;
+      if (result.status === 'error') setError(result.error);
+      await checkWorkspace();
+      await refreshPending();
+    } catch (failure) {
+      if (!signal.aborted) setError(errorMessage(failure));
+    } finally {
+      if (!signal.aborted) setAction(undefined);
+    }
+  }
+
   async function logout() {
+    connectionRevision.current += 1;
     setAction('logout');
     setError('');
     try {
@@ -482,23 +505,27 @@ export function App() {
                 {!LEGACY_MODE && (
                   <>
                     <p>
-                      登录信息仅在当前浏览器会话内保留。重启
-                      Chrome、更新或重新加载扩展后需重新授权；原账号待同步资料仍会保留。
+                      扩展自动连接当前浏览器已登录的 ProductSpy
+                      账号。重启浏览器后会重新连接，原账号的待同步资料仍保留。
                     </p>
-                    <p className="mt-2 break-all select-text">插件 ID：{chrome.runtime.id}</p>
-                    <a
-                      className="text-button mt-2"
-                      href={extensionLoginUrl()}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      打开网页登录与授权
-                    </a>
+                    {!paired && (
+                      <>
+                        <a
+                          className="text-button mt-2"
+                          href={extensionLoginUrl()}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          登录 ProductSpy
+                        </a>
+                        <p className="mt-2">{popupCopy.workspace.pairHint}</p>
+                      </>
+                    )}
                   </>
                 )}
                 {workspace === 'offline' && <p>{popupCopy.workspace.offlineHint}</p>}
                 {paired && workspace === 'online' && <p>{popupCopy.workspace.connectedHint}</p>}
-                {!paired && (
+                {LEGACY_MODE && !paired && (
                   <>
                     <p className={workspace === 'offline' ? 'mt-2' : ''}>
                       {popupCopy.workspace.pairHint}
@@ -543,13 +570,15 @@ export function App() {
                   type="button"
                   disabled={busy}
                   onClick={() => {
-                    void checkWorkspace();
-                    void refreshPending();
+                    if (LEGACY_MODE) {
+                      void checkWorkspace();
+                      void refreshPending();
+                    } else void connectWorkspace();
                   }}
                   className="text-button mt-3"
                 >
                   <RefreshCw size={13} aria-hidden="true" />
-                  {popupCopy.workspace.recheck}
+                  {action === 'connect' ? '正在连接…' : popupCopy.workspace.recheck}
                 </button>
               </div>
             </details>

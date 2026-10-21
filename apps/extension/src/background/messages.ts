@@ -10,6 +10,7 @@ export type ExtensionRequest =
   | { type: 'PRODUCTSPY_PENDING_COUNT' }
   | { type: 'PRODUCTSPY_SYNC_PENDING' }
   | { type: 'PRODUCTSPY_BRIDGE_STATE' }
+  | { type: 'PRODUCTSPY_CONNECT' }
   | { type: 'PRODUCTSPY_LOGOUT' }
   | { type: 'PRODUCTSPY_PAIR'; code: string };
 

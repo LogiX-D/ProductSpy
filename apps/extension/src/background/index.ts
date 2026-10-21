@@ -78,9 +78,13 @@ export async function handleRequest(request: ExtensionRequest): Promise<Extensio
       return { status: 'bridge-state', paired: await sync.isPaired() };
     case 'PRODUCTSPY_PAIR':
       if (typeof request.code !== 'string') return { status: 'error', error: '请输入有效配对码。' };
-      if (!LEGACY_MODE) return cloud.pair(request.code);
+      if (!LEGACY_MODE)
+        return { status: 'error', error: '请登录 SaaS 网页，插件会自动连接，无需配对码。' };
       await sync.pair(request.code);
       return { status: 'paired' };
+    case 'PRODUCTSPY_CONNECT':
+      if (!LEGACY_MODE) return cloud.connect();
+      return { status: 'error', error: '本地兼容模式请使用工作台配对码。' };
     case 'PRODUCTSPY_SAVE':
       return save(request);
     case 'PRODUCTSPY_PENDING_COUNT':
@@ -113,6 +117,7 @@ chrome.runtime.onMessage.addListener(
         'PRODUCTSPY_PENDING_COUNT',
         'PRODUCTSPY_SYNC_PENDING',
         'PRODUCTSPY_BRIDGE_STATE',
+        'PRODUCTSPY_CONNECT',
         'PRODUCTSPY_PAIR',
         'PRODUCTSPY_LOGOUT',
       ].includes(request.type)
@@ -135,7 +140,7 @@ if (!LEGACY_MODE) {
     if (alarm.name === CLOUD_SYNC_ALARM) void cloud.syncPending(false).catch(() => undefined);
   });
   const resume = () => {
-    void cloud.schedule().catch(() => undefined);
+    void cloud.connect(false).catch(() => undefined);
   };
   chrome.runtime.onStartup.addListener(resume);
   chrome.runtime.onInstalled.addListener(resume);

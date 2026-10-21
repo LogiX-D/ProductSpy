@@ -91,12 +91,6 @@ test('real MV3 + Amazon HTML fixture + real SaaS HTTP → saved Mock AI → isol
     const extensionId = new URL(worker.url()).hostname;
     const web = context.pages()[0];
     await register(web, email, 'Extension Fixture Owner');
-    await web.goto(`${BASE}/settings?extensionId=${extensionId}`);
-    const dialog = web.getByRole('dialog');
-    await expect(dialog.getByLabel('Chrome 扩展 ID', { exact: true })).toHaveValue(extensionId);
-    await dialog.getByRole('button', { name: '生成配对码', exact: true }).click();
-    const code = await dialog.getByLabel('扩展配对码', { exact: true }).inputValue();
-    expect(code).toMatch(/^[a-f0-9]{32}$/);
 
     const html = await readFile(
       resolve('apps/extension/tests/fixtures/jsonld-product.html'),
@@ -117,9 +111,8 @@ test('real MV3 + Amazon HTML fixture + real SaaS HTTP → saved Mock AI → isol
     await amazon.goto(`https://www.amazon.com/dp/${ASIN}`);
     const popup = await openCapture(context, worker, amazon);
     await popup.locator('.connection-panel > summary').click();
-    await popup.getByLabel('一次性登录授权码', { exact: true }).fill(code);
-    await popup.getByRole('button', { name: '登录插件', exact: true }).click();
     await expect(popup.getByText(`当前账号：${email}`, { exact: true })).toBeVisible();
+    await expect(popup.getByLabel('一次性登录授权码', { exact: true })).toHaveCount(0);
     expect(
       await worker.evaluate(async () => {
         const key = 'productspy.cloud-session.v1';
@@ -202,6 +195,9 @@ test('real MV3 + Amazon HTML fixture + real SaaS HTTP → saved Mock AI → isol
       };
       return { queueKey, captureId: Object.values(data.pending)[0].captureId };
     });
+    // Also remove the website cookie, so startup cannot automatically reconnect
+    // before the persisted outbox/cleared-memory boundary has been observed.
+    await context.clearCookies();
     await context.close();
     context = await launch();
     const restartedWorker =
@@ -228,23 +224,15 @@ test('real MV3 + Amazon HTML fixture + real SaaS HTTP → saved Mock AI → isol
     await context.route('https://media.example.com/**', (route) => route.abort());
     const restartedWeb = context.pages()[0];
     await login(restartedWeb, email);
-    await restartedWeb.goto(`${BASE}/settings?extensionId=${extensionId}`);
-    const restartedDialog = restartedWeb.getByRole('dialog');
-    await restartedDialog.getByRole('button', { name: '生成配对码', exact: true }).click();
-    const restartedCode = await restartedDialog
-      .getByLabel('扩展配对码', { exact: true })
-      .inputValue();
     const restartedAmazon = await context.newPage();
     await restartedAmazon.goto(`https://www.amazon.com/dp/${ASIN}`);
-    const restartedPopup = await openCapture(context, restartedWorker, restartedAmazon, false);
-    await restartedPopup.locator('.connection-panel > summary').click();
-    await restartedPopup.getByLabel('一次性登录授权码', { exact: true }).fill(restartedCode);
     const uploadedIds: string[] = [];
     context.on('request', (request) => {
       if (request.url() === `${BASE}/api/products` && request.method() === 'POST')
         uploadedIds.push(request.headers()['idempotency-key']);
     });
-    await restartedPopup.getByRole('button', { name: '登录插件', exact: true }).click();
+    const restartedPopup = await openCapture(context, restartedWorker, restartedAmazon, false);
+    await restartedPopup.locator('.connection-panel > summary').click();
     await expect(restartedPopup.getByText(`当前账号：${email}`, { exact: true })).toBeVisible();
     await expect.poll(() => uploadedIds).toEqual([pending.captureId]);
     await expect
@@ -272,7 +260,7 @@ test('real MV3 + Amazon HTML fixture + real SaaS HTTP → saved Mock AI → isol
             ai: 'Mock, no external provider',
             sessions: 'two isolated browser contexts, not two physical devices',
             credentialStorage:
-              'actual session memory, browser process restart clears auth; durable outbox recovers after reauthorization',
+              'actual session memory; browser restart with website cookie removed clears auth; logging into the website automatically restores the original outbox',
             payment: 'not exercised',
             production: 'not deployed',
           },

@@ -1,4 +1,5 @@
 export const CLOUD_SESSION_KEY = 'productspy.cloud-session.v1';
+export const CLOUD_AUTO_CONNECT_PAUSED_KEY = 'productspy.cloud-auto-connect-paused.v1';
 export interface CloudUser {
   id: string;
   email: string;
@@ -56,6 +57,12 @@ async function privateSessionArea(): Promise<chrome.storage.StorageArea> {
 export function beginCloudAuthChange(): number {
   return ++authRevision;
 }
+export function isCurrentCloudAuthChange(revision: number): boolean {
+  return revision === authRevision;
+}
+export function currentCloudAuthRevision(): number {
+  return authRevision;
+}
 function mutate<T>(operation: () => Promise<T>): Promise<T> {
   const result = changes.then(operation);
   changes = result.catch(() => undefined);
@@ -86,6 +93,25 @@ export async function cloudSession(includeExpired = false): Promise<CloudSession
       (includeExpired || Date.parse(session.expiresAt) > Date.now())
       ? session
       : undefined;
+  });
+}
+
+export function cloudAutoConnectPaused(): Promise<boolean> {
+  return mutate(async () => {
+    const area = await privateSessionArea();
+    return (await area.get(CLOUD_AUTO_CONNECT_PAUSED_KEY))[CLOUD_AUTO_CONNECT_PAUSED_KEY] === true;
+  });
+}
+
+export function setCloudAutoConnectPaused(
+  paused: boolean,
+  expectedRevision: number,
+): Promise<void> {
+  return mutate(async () => {
+    const area = await privateSessionArea();
+    if (!isCurrentCloudAuthChange(expectedRevision))
+      throw new Error('登录操作已被更新的登录或退出操作取消，请重试。');
+    await area.set({ [CLOUD_AUTO_CONNECT_PAUSED_KEY]: paused });
   });
 }
 
@@ -141,7 +167,11 @@ export function forgetCloudSession(expectedToken: string): Promise<void> {
   });
 }
 
-export async function stillCloudSession(expected: CloudSession): Promise<boolean> {
+export async function stillCloudSession(
+  expected: CloudSession,
+  allowPaused = false,
+): Promise<boolean> {
+  if (!allowPaused && (await cloudAutoConnectPaused())) return false;
   const current = await cloudSession();
   return current?.token === expected.token && current.user.id === expected.user.id;
 }

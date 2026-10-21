@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import { build, defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
+import { PRODUCTSPY_EXTENSION_PUBLIC_KEY } from '../../packages/shared/src/extension-identity';
 import { extensionConfig } from './src/deployment-config';
 import { writeExtensionBuildMetadata } from '../../scripts/saas/package-extension-validation.mjs';
 
@@ -48,6 +49,8 @@ export default defineConfig(({ mode }) => {
             },
           });
           const manifest = JSON.parse(await readFile(resolve(directory, 'manifest.json'), 'utf8'));
+          if (target.legacy) delete manifest.key;
+          else manifest.key = PRODUCTSPY_EXTENSION_PUBLIC_KEY;
           manifest.host_permissions = target.legacy
             ? ['http://localhost/*', 'http://127.0.0.1/*']
             : [`${target.appUrl}/*`];

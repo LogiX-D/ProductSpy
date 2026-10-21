@@ -10,5 +10,5 @@ export const APP_URL = config.appUrl;
 export const LEGACY_MODE = config.legacy;
 
 export function extensionLoginUrl(): string {
-  return `${APP_URL}/settings?extensionId=${encodeURIComponent(chrome.runtime.id)}`;
+  return `${APP_URL}/login?next=/settings`;
 }

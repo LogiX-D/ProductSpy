@@ -110,20 +110,17 @@ export const popupCopy = LEGACY_MODE
         ...legacyCopy.workspace,
         connected: 'SaaS 账号已登录',
         pairedOffline: '已登录 · 云端暂不可用',
-        unpaired: '请登录并授权插件',
+        unpaired: '请登录 ProductSpy',
         offline: '云端暂不可用 · 未登录',
         checking: '正在检查云端连接…',
         setup: '账号与连接',
         pairHint:
-          '打开在线工作台并登录，在设置中输入下方插件 ID 生成一次性授权码，再粘贴到这里。授权码 2 分钟内有效且仅可使用一次。',
+          '未登录时只需完成网页登录，再回到扩展继续。若已登录仍无法连接，请检查浏览器是否允许 ProductSpy 的 Cookie，然后点击「刷新连接」。',
         offlineHint:
           '请检查网络后重试。当前账号的待同步商品会保留，并在恢复网络后重试；最多自动重试 8 次。',
         connectedHint:
-          '商品同步至此账号。登录授权最长有效 30 天，到期或撤销后需重新授权。退出会保留此账号的离线队列。',
-        pairLabel: '一次性登录授权码',
-        pairPlaceholder: '粘贴网页生成的授权码',
-        pair: '登录插件',
-        pairing: '正在授权…',
+          '商品同步至此账号。退出会保留此账号的离线队列；需要再次连接时，请点击「刷新连接」。',
+        recheck: '刷新连接',
       },
       analysis: {
         mock: '在在线工作台发起分析；演示与真实 AI 结果会明确标识。',
@@ -133,7 +130,7 @@ export const popupCopy = LEGACY_MODE
       feedback: {
         ...legacyCopy.feedback,
         pending: '商品已暂存在插件队列中，登录并连接云端后可同步。',
-        paired: '登录授权成功，当前账号的队列将恢复同步。',
+        paired: '账号已连接，当前账号的队列将恢复同步。',
       },
       privacy: {
         ...legacyCopy.privacy,

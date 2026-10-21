@@ -192,7 +192,7 @@ export const workspaceCopy = isLegacyMode
       shell: {
         ...legacyWorkspaceCopy.shell,
         local: '账号数据 · 云端同步',
-        setup: '连接 Chrome 扩展',
-        setupLabel: '查看扩展安装与授权说明',
+        setup: '安装 Chrome 扩展',
+        setupLabel: '查看扩展安装与连接说明',
       },
     };

@@ -413,7 +413,7 @@ export function BackupWorkspace() {
           variant="secondary"
           onClick={() => window.dispatchEvent(new Event(OPEN_SETUP_EVENT))}
         >
-          {isLegacyMode ? '打开安装与安全配对' : '安装与授权 Chrome 扩展'}
+          {isLegacyMode ? '打开安装与安全配对' : '安装与连接 Chrome 扩展'}
         </Button>
       </section>
       {confirm && (

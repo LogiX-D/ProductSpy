@@ -50,13 +50,6 @@ function WorkspaceLayout({ children }: { children: ReactNode }) {
     setShowHelp(true);
   }, []);
   useEffect(() => {
-    if (
-      !isLegacyMode &&
-      /^[a-p]{32}$/.test(new URLSearchParams(window.location.search).get('extensionId') ?? '')
-    )
-      openHelp();
-  }, [pathname, openHelp]);
-  useEffect(() => {
     window.addEventListener(OPEN_SETUP_EVENT, openHelp);
     return () => window.removeEventListener(OPEN_SETUP_EVENT, openHelp);
   }, [openHelp]);

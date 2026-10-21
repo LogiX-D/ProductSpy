@@ -1,7 +1,12 @@
 import { errorMessage, type ProductDraft } from '@productspy/shared';
 import { CloudCaptureQueue } from '../storage/CloudCaptureQueue';
 import { CloudProductSyncAdapter, CloudSyncError } from '../storage/CloudProductSyncAdapter';
-import { cloudSession, stillCloudSession, type CloudSession } from '../storage/cloud-session';
+import {
+  cloudAutoConnectPaused,
+  cloudSession,
+  stillCloudSession,
+  type CloudSession,
+} from '../storage/cloud-session';
 import type { ExtensionResponse, SaveResult } from './messages';
 
 export const CLOUD_SYNC_ALARM = 'productspy.cloud-sync.v1';
@@ -20,7 +25,7 @@ export class CloudSyncController {
 
   private async scheduleCurrent(): Promise<void> {
     const session = await cloudSession();
-    if (!session) {
+    if (!session || (await cloudAutoConnectPaused())) {
       await chrome.alarms.clear(CLOUD_SYNC_ALARM);
       return;
     }
@@ -36,12 +41,26 @@ export class CloudSyncController {
     });
   }
 
-  async pair(code: string): Promise<ExtensionResponse> {
-    const session = await this.remote.pair(code);
-    await new CloudCaptureQueue(session.user.id).retryBlocked();
+  private async verifiedSession(explicit = false): Promise<CloudSession | undefined> {
+    const verification = explicit ? this.remote.connect(true) : this.remote.status();
+    void verification.catch(() => undefined);
+    const previous = await cloudSession();
+    const session = await verification;
+    if (session && (explicit || previous?.token !== session.token))
+      await new CloudCaptureQueue(session.user.id).retryBlocked();
+    return session;
+  }
+
+  async connect(explicit = true): Promise<ExtensionResponse> {
+    const session = await this.verifiedSession(explicit);
     await this.schedule();
-    void this.syncPending(false).catch(() => undefined);
-    return { status: 'paired' };
+    if (session) void this.syncPending(false).catch(() => undefined);
+    return {
+      status: 'bridge-state',
+      paired: Boolean(session),
+      user: session?.user,
+      expiresAt: session?.expiresAt,
+    };
   }
 
   async logout(): Promise<ExtensionResponse> {
@@ -52,7 +71,15 @@ export class CloudSyncController {
 
   async state(): Promise<ExtensionResponse> {
     try {
-      const session = await this.remote.status();
+      const session = await this.verifiedSession();
+      await this.schedule();
+      if (
+        session &&
+        (await new CloudCaptureQueue(session.user.id).pending()).some(
+          (capture) => !capture.blocked && capture.nextAttemptAt <= Date.now(),
+        )
+      )
+        void this.syncPending(false).catch(() => undefined);
       return {
         status: 'bridge-state',
         paired: Boolean(session),
@@ -60,19 +87,22 @@ export class CloudSyncController {
         expiresAt: session?.expiresAt,
       };
     } catch (error) {
-      const session = await cloudSession();
       return {
         status: 'bridge-state',
-        paired: Boolean(session),
-        user: session?.user,
-        expiresAt: session?.expiresAt,
+        paired: false,
         error: errorMessage(error),
       };
     }
   }
 
   async count(): Promise<ExtensionResponse> {
-    const session = await cloudSession(true);
+    let session: CloudSession | undefined;
+    let connectionError: string | undefined;
+    try {
+      session = await this.verifiedSession();
+    } catch (error) {
+      connectionError = errorMessage(error);
+    }
     const pending = session ? await new CloudCaptureQueue(session.user.id).pending() : [];
     const unassigned = await new CloudCaptureQueue().pending();
     // Legacy records have no trustworthy account owner and are never adopted automatically.
@@ -83,19 +113,31 @@ export class CloudSyncController {
       status: 'pending-count',
       count: pending.length,
       unassignedCount: unassigned.length + Object.keys(legacy?.pending ?? {}).length,
-      error: pending.find((capture) => capture.error)?.error,
+      error: connectionError ?? pending.find((capture) => capture.error)?.error,
     };
   }
 
   async save(draft: ProductDraft): Promise<SaveResult> {
-    const session = await cloudSession();
+    let session: CloudSession | undefined;
+    try {
+      session = await this.verifiedSession();
+    } catch (error) {
+      // An offline capture may stay with the previously known account, but a
+      // cached bearer alone is never permission to upload or display its queue.
+      const known = (await cloudAutoConnectPaused()) ? undefined : await cloudSession();
+      const queue = new CloudCaptureQueue(known?.user.id);
+      const { capture, product } = await queue.enqueue(draft);
+      await this.recordFailure(queue, capture, error);
+      await this.schedule();
+      return { status: 'pending', product, error: errorMessage(error) };
+    }
     const queue = new CloudCaptureQueue(session?.user.id);
     const { capture, product: local } = await queue.enqueue(draft);
     if (!session)
       return {
         status: 'pending',
         product: local,
-        error: '请先登录 SaaS 网页并授权插件。此未归属记录不会自动上传；登录后请重新点击保存。',
+        error: '请先登录 SaaS 网页后重新打开插件。此未归属记录不会自动上传；登录后请重新点击保存。',
       };
     if (capture.nextAttemptAt > Date.now()) {
       await this.schedule();
@@ -176,8 +218,22 @@ export class CloudSyncController {
   }
 
   private async drain(manual: boolean): Promise<number> {
-    const session: CloudSession | undefined = await cloudSession();
-    if (!session) throw new Error('请先重新登录授权；各账号的待同步记录会独立保留。');
+    let session: CloudSession | undefined;
+    try {
+      session = await this.verifiedSession();
+    } catch (error) {
+      const known = (await cloudAutoConnectPaused()) ? undefined : await cloudSession();
+      if (known) {
+        const queue = new CloudCaptureQueue(known.user.id);
+        const capture = (await queue.pending()).find(
+          (item) => !item.blocked && item.nextAttemptAt <= Date.now(),
+        );
+        if (capture) await this.recordFailure(queue, capture, error);
+      }
+      if (manual) throw error;
+      return 0;
+    }
+    if (!session) throw new Error('请先重新登录 SaaS 网页；各账号的待同步记录会独立保留。');
     const queue = new CloudCaptureQueue(session.user.id);
     if (manual) await queue.retryBlocked();
     let count = 0;

@@ -34,9 +34,10 @@ export function FirstUseGuide() {
             </p>
           </li>
           <li>
-            <strong>授权当前账号</strong>
+            <strong>登录 ProductSpy 账号</strong>
             <p>
-              从扩展打开此工作台并登录。核对下方扩展 ID，生成一次性授权码后粘贴回扩展，完成登录。
+              安装后即可打开扩展使用。扩展自动连接当前浏览器已登录的账号；未登录时，点击扩展中的「登录
+              ProductSpy」，完成网页登录后回到扩展继续。
             </p>
           </li>
           <li>
@@ -56,7 +57,7 @@ export function FirstUseGuide() {
         </ol>
         <p className="small muted">
           使用在线工作台无需启动 Windows
-          程序。授权码两分钟有效；修改密码后扩展需重新授权。采集与隐私说明见{' '}
+          程序。重启浏览器后会重新连接已登录账号，原账号的待同步资料仍会保留。采集与隐私说明见{' '}
           <a className="ws-text-link" href="/privacy" target="_blank" rel="noreferrer">
             隐私说明
           </a>

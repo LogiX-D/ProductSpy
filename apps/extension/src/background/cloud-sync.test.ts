@@ -6,7 +6,8 @@ import { CloudProductSyncAdapter } from '../storage/CloudProductSyncAdapter';
 import {
   CLOUD_SESSION_KEY,
   cloudSession,
-  rememberCloudSession,
+  cloudAutoConnectPaused,
+  rememberCloudSession as storeCloudSession,
   type CloudSession,
 } from '../storage/cloud-session';
 
@@ -41,7 +42,13 @@ function deferredSignal() {
 describe('SaaS capture ownership and durable recovery (local HTTP mocks)', () => {
   let records: Record<string, unknown>;
   let sessionRecords: Record<string, unknown>;
+  let webAccount: CloudSession | undefined;
+  async function rememberCloudSession(value: CloudSession) {
+    webAccount = value;
+    await storeCloudSession(value);
+  }
   const fetch = vi.fn<typeof globalThis.fetch>();
+  const connectFetch = vi.fn<typeof globalThis.fetch>();
   const createAlarm = vi.fn();
   const clearAlarm = vi.fn();
   beforeEach(() => {
@@ -49,10 +56,21 @@ describe('SaaS capture ownership and durable recovery (local HTTP mocks)', () =>
     vi.setSystemTime('2026-10-17T00:00:00.000Z');
     records = {};
     sessionRecords = { [CLOUD_SESSION_KEY]: structuredClone(sessionA) };
+    webAccount = sessionA;
     fetch.mockReset();
+    connectFetch.mockReset();
+    connectFetch.mockImplementation(async () =>
+      webAccount
+        ? ok(webAccount)
+        : Response.json({ ok: false, error: '请登录 SaaS 网页' }, { status: 401 }),
+    );
     createAlarm.mockReset();
     clearAlarm.mockReset();
-    vi.stubGlobal('fetch', fetch);
+    vi.stubGlobal('fetch', (input: RequestInfo | URL, init?: RequestInit) =>
+      String(input).endsWith('/api/bridge/connect')
+        ? connectFetch(input, init)
+        : fetch(input, init),
+    );
     vi.stubGlobal('chrome', {
       storage: {
         local: {
@@ -129,6 +147,7 @@ describe('SaaS capture ownership and durable recovery (local HTTP mocks)', () =>
     const queue = new CloudCaptureQueue(sessionA.user.id);
     const { capture } = await queue.enqueue(draft);
     delete sessionRecords[CLOUD_SESSION_KEY];
+    webAccount = undefined;
     const controller = new CloudSyncController();
     await expect(controller.syncPending(false)).rejects.toThrow('重新登录');
     expect(await controller.count()).toMatchObject({ count: 0 });
@@ -207,6 +226,7 @@ describe('SaaS capture ownership and durable recovery (local HTTP mocks)', () =>
     });
     expect(await cloudSession()).toBeUndefined();
     expect(await new CloudCaptureQueue(sessionA.user.id).pending()).toHaveLength(1);
+    webAccount = undefined;
     await expect(controller.syncPending(false)).rejects.toThrow('重新登录');
     expect(fetch).toHaveBeenCalledOnce();
     expect(clearAlarm).toHaveBeenCalledWith(CLOUD_SYNC_ALARM);
@@ -279,14 +299,14 @@ describe('SaaS capture ownership and durable recovery (local HTTP mocks)', () =>
     delete sessionRecords[CLOUD_SESSION_KEY];
     let finish!: (response: Response) => void;
     const started = deferredSignal();
-    fetch.mockImplementationOnce(async () => {
+    connectFetch.mockImplementationOnce(async () => {
       started.resolve();
       return new Promise((resolve) => {
         finish = resolve;
       });
     });
     const adapter = new CloudProductSyncAdapter();
-    const pairing = adapter.pair('d'.repeat(32));
+    const pairing = adapter.connect(true);
     await started.promise;
     await adapter.logout();
     finish(ok(sessionA));
@@ -354,16 +374,133 @@ describe('SaaS capture ownership and durable recovery (local HTTP mocks)', () =>
     expect(fetch).toHaveBeenCalledOnce();
   });
 
-  it('rejects invalid pairing data without replacing an existing account', async () => {
-    fetch.mockResolvedValueOnce(
+  it('rejects invalid connection data without replacing an existing account', async () => {
+    connectFetch.mockResolvedValueOnce(
       ok({ token: 'c'.repeat(64), user: sessionB.user, expiresAt: 'invalid' }),
     );
-    await expect(new CloudProductSyncAdapter().pair('d'.repeat(32))).rejects.toThrow('无效');
+    await expect(new CloudProductSyncAdapter().connect(true)).rejects.toThrow('无效');
     expect(await cloudSession()).toEqual(sessionA);
   });
 
-  it('validates server account identity rather than trusting a locally stored user label', async () => {
-    fetch.mockResolvedValueOnce(ok({ paired: true, user: sessionB.user }));
-    await expect(new CloudProductSyncAdapter().status()).rejects.toThrow('登录状态无效');
+  it('adopts the authenticated webpage account instead of trusting a cached user label', async () => {
+    webAccount = sessionB;
+    expect(await new CloudProductSyncAdapter().status()).toEqual(sessionB);
+    expect(await cloudSession()).toEqual(sessionB);
+  });
+
+  it('silently connects an existing webpage login and sends cookies only to the dedicated endpoint', async () => {
+    delete sessionRecords[CLOUD_SESSION_KEY];
+    const adapter = new CloudProductSyncAdapter();
+    expect(await adapter.status()).toEqual(sessionA);
+    const first = connectFetch.mock.calls[0];
+    expect(first[0]).toMatch(/\/api\/bridge\/connect$/);
+    expect(first[1]).toMatchObject({ method: 'POST', credentials: 'include', body: '{}' });
+    expect(new Headers(first[1]?.headers).get('X-ProductSpy-Client')).toBe('extension');
+    expect(new Headers(first[1]?.headers).get('Authorization')).toBeNull();
+    fetch.mockResolvedValueOnce(ok(mergeProduct(draft)));
+    await adapter.save(draft, crypto.randomUUID(), sessionA);
+    expect(fetch.mock.calls[0][1]?.credentials).toBe('omit');
+    expect(new Headers(fetch.mock.calls[0][1]?.headers).get('Authorization')).toBe(
+      `Bearer ${sessionA.token}`,
+    );
+    expect(new Headers(connectFetch.mock.calls[1][1]?.headers).get('Authorization')).toBe(
+      `Bearer ${sessionA.token}`,
+    );
+    expect(records[CLOUD_SESSION_KEY]).toBeUndefined();
+  });
+
+  it('refreshes the webpage account before reading a queue or uploading a new capture', async () => {
+    const original = new CloudCaptureQueue(sessionA.user.id);
+    await original.enqueue({ ...draft, title: 'A private pending capture' });
+    webAccount = sessionB;
+    const controller = new CloudSyncController();
+    expect(await controller.count()).toMatchObject({ count: 0 });
+    expect(await controller.syncPending(false)).toBe(0);
+    fetch.mockResolvedValueOnce(ok(mergeProduct(draft)));
+    expect((await controller.save(draft)).status).toBe('saved');
+    expect(new Headers(fetch.mock.calls[0][1]?.headers).get('Authorization')).toBe(
+      `Bearer ${sessionB.token}`,
+    );
+    expect(await original.pending()).toHaveLength(1);
+    expect(await new CloudCaptureQueue(sessionB.user.id).pending()).toEqual([]);
+  });
+
+  it('clears a cached bearer when the webpage cookie is absent and never falls back to the previous account', async () => {
+    await new CloudCaptureQueue(sessionA.user.id).enqueue(draft);
+    webAccount = undefined;
+    const controller = new CloudSyncController();
+    expect(await controller.state()).toMatchObject({ status: 'bridge-state', paired: false });
+    expect(await cloudSession()).toBeUndefined();
+    expect(await controller.count()).toMatchObject({ count: 0 });
+    expect(await controller.save({ ...draft, title: 'Signed-out capture' })).toMatchObject({
+      status: 'pending',
+      error: expect.stringContaining('登录 SaaS 网页'),
+    });
+    expect(fetch).not.toHaveBeenCalled();
+    expect(await new CloudCaptureQueue(sessionA.user.id).pending()).toHaveLength(1);
+    expect(await new CloudCaptureQueue().pending()).toHaveLength(1);
+  });
+
+  it('keeps offline captures with the known account but requires cookie verification before uploading or showing its queue', async () => {
+    connectFetch.mockRejectedValue(new TypeError('offline'));
+    const controller = new CloudSyncController();
+    expect(await controller.state()).toMatchObject({ paired: false, error: expect.any(String) });
+    expect((await controller.save(draft)).status).toBe('pending');
+    const [capture] = await new CloudCaptureQueue(sessionA.user.id).pending();
+    expect(await controller.count()).toMatchObject({ count: 0, error: expect.any(String) });
+    expect(await cloudSession()).toEqual(sessionA);
+    expect(fetch).not.toHaveBeenCalled();
+    connectFetch.mockImplementation(async () => ok(sessionA));
+    fetch.mockResolvedValueOnce(ok(mergeProduct(draft)));
+    vi.setSystemTime(capture.nextAttemptAt + 1);
+    expect(await controller.syncPending(false)).toBe(1);
+    expect(new Headers(fetch.mock.calls[0][1]?.headers).get('Idempotency-Key')).toBe(
+      capture.captureId,
+    );
+  });
+
+  it('persists an explicit logout pause in session memory until an explicit reconnect', async () => {
+    const adapter = new CloudProductSyncAdapter();
+    fetch.mockResolvedValueOnce(ok({ loggedOut: true }));
+    await adapter.logout();
+    expect(await cloudAutoConnectPaused()).toBe(true);
+    expect(await adapter.status()).toBeUndefined();
+    expect(await new CloudProductSyncAdapter().status()).toBeUndefined();
+    expect(connectFetch).not.toHaveBeenCalled();
+    expect(fetch.mock.calls[0][1]?.credentials).toBe('omit');
+    expect(await adapter.connect(true)).toEqual(sessionA);
+    expect(await cloudAutoConnectPaused()).toBe(false);
+    expect(JSON.stringify(records)).not.toContain('paused');
+  });
+
+  it('does not let a simultaneous automatic status cancel an explicit logout', async () => {
+    const adapter = new CloudProductSyncAdapter();
+    fetch.mockResolvedValueOnce(ok({ loggedOut: true }));
+    const logout = adapter.logout();
+    const automatic = adapter.status();
+    await logout;
+    expect(await automatic).toBeUndefined();
+    expect(await cloudSession()).toBeUndefined();
+    expect(await cloudAutoConnectPaused()).toBe(true);
+    expect(connectFetch).not.toHaveBeenCalled();
+  });
+
+  it('does not let a late cookie 401 clear a newer explicit connection', async () => {
+    let finish!: (response: Response) => void;
+    const started = deferredSignal();
+    connectFetch.mockImplementationOnce(async () => {
+      started.resolve();
+      return new Promise((resolve) => {
+        finish = resolve;
+      });
+    });
+    const adapter = new CloudProductSyncAdapter();
+    const old = adapter.status();
+    await started.promise;
+    webAccount = sessionB;
+    expect(await adapter.connect(true)).toEqual(sessionB);
+    finish(Response.json({ ok: false, error: 'old cookie' }, { status: 401 }));
+    await expect(old).rejects.toThrow('取消');
+    expect(await cloudSession()).toEqual(sessionB);
   });
 });

@@ -15,6 +15,11 @@ import {
 } from './package-extension-validation.mjs';
 import { verifySaasArchive } from './package-extension.mjs';
 import { createRequire } from 'node:module';
+import {
+  PRODUCTSPY_EXTENSION_PUBLIC_KEY,
+  PRODUCTSPY_EXTENSION_ID,
+} from '../../packages/shared/src/extension-identity.ts';
+import { createHash } from 'node:crypto';
 
 const execute = promisify(execFile);
 const JSZip = createRequire(resolve(workspace, 'apps/web/package.json'))('jszip');
@@ -24,6 +29,7 @@ async function fixture(run, target = development) {
   try {
     const manifest = {
       manifest_version: 3,
+      key: PRODUCTSPY_EXTENSION_PUBLIC_KEY,
       name: 'ProductSpy',
       version: '1.0.0.3',
       version_name: '1.0.0',
@@ -50,6 +56,22 @@ async function fixture(run, target = development) {
 }
 
 describe('SaaS extension package trust boundaries', () => {
+  it('pins the public preview identity and refuses a changed key', async () => {
+    const id = createHash('sha256')
+      .update(Buffer.from(PRODUCTSPY_EXTENSION_PUBLIC_KEY, 'base64'))
+      .digest('hex')
+      .slice(0, 32)
+      .replace(/[0-9a-f]/g, (value) => String.fromCharCode(97 + Number.parseInt(value, 16)));
+    expect(id).toBe(PRODUCTSPY_EXTENSION_ID);
+    await fixture(async (root, manifest) => {
+      manifest.key = 'untrusted-key';
+      await writeFile(resolve(root, 'manifest.json'), JSON.stringify(manifest));
+      await writeExtensionBuildMetadata(root, development, workspace);
+      await expect(validateCompiledExtension(root, development, '1.0.0', {})).rejects.toThrow(
+        'identity',
+      );
+    });
+  });
   it('requires explicit exact deployment settings and rejects production loopback or legacy', () => {
     for (const target of [
       {},
