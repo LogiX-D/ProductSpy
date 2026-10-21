@@ -163,10 +163,33 @@ test('real MV3 + Amazon HTML fixture + real SaaS HTTP → saved Mock AI → isol
     ).toBeVisible();
     await context.setOffline(true);
     await popup.getByRole('button', { name: '保存到素材库', exact: true }).click();
-    await expect(popup.getByText('1 件商品待同步', { exact: true })).toBeVisible();
+    await expect(
+      popup.getByRole('status').filter({ hasText: '商品已暂存在插件队列中' }),
+    ).toBeVisible();
+    const offlineQueue = await worker.evaluate(async () => {
+      const value = (await chrome.storage.session.get('productspy.cloud-session.v1'))[
+        'productspy.cloud-session.v1'
+      ] as { user: { id: string } };
+      const key = `productspy.cloud-queue.v1.user.${encodeURIComponent(value.user.id)}`;
+      const data = (await chrome.storage.local.get(key))[key] as {
+        pending: Record<string, unknown>;
+      };
+      return { key, count: Object.keys(data.pending).length };
+    });
+    expect(offlineQueue.count).toBe(1);
     await context.setOffline(false);
-    await popup.getByRole('button', { name: '重试同步', exact: true }).click();
-    await expect(popup.getByRole('status').filter({ hasText: '已同步 1 件商品' })).toBeVisible();
+    await popup.locator('.connection-panel > summary').click();
+    await popup.getByRole('button', { name: '刷新连接', exact: true }).click();
+    await expect
+      .poll(() =>
+        worker.evaluate(async (key) => {
+          const data = (await chrome.storage.local.get(key))[key] as {
+            pending: Record<string, unknown>;
+          };
+          return Object.keys(data.pending).length;
+        }, offlineQueue.key),
+      )
+      .toBe(0);
     await another.goto(`${BASE}/products`);
     await expect(
       another.getByRole('link', { name: 'Offline Updated Grinder', exact: true }),
@@ -184,7 +207,9 @@ test('real MV3 + Amazon HTML fixture + real SaaS HTTP → saved Mock AI → isol
     ).toBeVisible();
     await context.setOffline(true);
     await popup.getByRole('button', { name: '保存到素材库', exact: true }).click();
-    await expect(popup.getByText('1 件商品待同步', { exact: true })).toBeVisible();
+    await expect(
+      popup.getByRole('status').filter({ hasText: '商品已暂存在插件队列中' }),
+    ).toBeVisible();
     const pending = await worker.evaluate(async () => {
       const value = (await chrome.storage.session.get('productspy.cloud-session.v1'))[
         'productspy.cloud-session.v1'
@@ -200,6 +225,11 @@ test('real MV3 + Amazon HTML fixture + real SaaS HTTP → saved Mock AI → isol
     await context.clearCookies();
     await context.close();
     context = await launch();
+    const uploadedIds: string[] = [];
+    context.on('request', (request) => {
+      if (request.url() === `${BASE}/api/products` && request.method() === 'POST')
+        uploadedIds.push(request.headers()['idempotency-key']);
+    });
     const restartedWorker =
       context.serviceWorkers()[0] ??
       (await context.waitForEvent('serviceworker', { timeout: 45000 }));
@@ -226,11 +256,6 @@ test('real MV3 + Amazon HTML fixture + real SaaS HTTP → saved Mock AI → isol
     await login(restartedWeb, email);
     const restartedAmazon = await context.newPage();
     await restartedAmazon.goto(`https://www.amazon.com/dp/${ASIN}`);
-    const uploadedIds: string[] = [];
-    context.on('request', (request) => {
-      if (request.url() === `${BASE}/api/products` && request.method() === 'POST')
-        uploadedIds.push(request.headers()['idempotency-key']);
-    });
     const restartedPopup = await openCapture(context, restartedWorker, restartedAmazon, false);
     await restartedPopup.locator('.connection-panel > summary').click();
     await expect(restartedPopup.getByText(`当前账号：${email}`, { exact: true })).toBeVisible();

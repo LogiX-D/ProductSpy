@@ -17,6 +17,7 @@ async function popup(context: BrowserContext) {
   const page = await context.newPage();
   await page.goto(`chrome-extension://${PRODUCTSPY_EXTENSION_ID}/popup.html`);
   const consent = page.getByRole('button', { name: '同意并开始采集', exact: true });
+  await expect(consent.or(page.locator('.connection-panel > summary'))).toBeVisible();
   if (await consent.isVisible()) await consent.click();
   await page.locator('.connection-panel > summary').click();
   return page;

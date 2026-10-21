@@ -326,10 +326,29 @@ async function main() {
       ).toBeVisible();
       await context.setOffline(true);
       await popup.getByRole('button', { name: '保存到素材库', exact: true }).click();
-      await expect(popup.getByText('1 件商品待同步', { exact: true })).toBeVisible();
+      await expect(
+        popup.getByRole('status').filter({ hasText: '商品已暂存在插件队列中' }),
+      ).toBeVisible();
+      const queueKey = await worker.evaluate(async () => {
+        const key = 'productspy.cloud-session.v1';
+        const value = (await chrome.storage.session.get(key))[key];
+        const queueKey = `productspy.cloud-queue.v1.user.${encodeURIComponent(value.user.id)}`;
+        const queue = (await chrome.storage.local.get(queueKey))[queueKey];
+        if (Object.keys(queue.pending).length !== 1)
+          throw new Error('Offline outbox was not preserved.');
+        return queueKey;
+      });
       await context.setOffline(false);
-      await popup.getByRole('button', { name: '重试同步', exact: true }).click();
-      await expect(popup.getByRole('status').filter({ hasText: '已同步 1 件商品' })).toBeVisible();
+      await popup.locator('.connection-panel > summary').click();
+      await popup.getByRole('button', { name: '刷新连接', exact: true }).click();
+      await expect
+        .poll(() =>
+          worker.evaluate(async (queueKey) => {
+            const queue = (await chrome.storage.local.get(queueKey))[queueKey];
+            return Object.keys(queue.pending).length;
+          }, queueKey),
+        )
+        .toBe(0);
       await another.goto(`${base}/products`);
       await expect(
         another.getByRole('link', { name: 'Cloud Offline Fixture Grinder', exact: true }),
