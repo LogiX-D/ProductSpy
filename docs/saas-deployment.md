@@ -2,6 +2,8 @@
 
 本文件提供部署与恢复方法；获授权测试主机已部署，实际通过和未通过范围见 [2026-10-19 记录](saas-validation-2026-10-19.md)，不等于正式产品最终验收。正式域名、付费资源、生产变更、真实支付和公开上架需另行授权。
 
+2026-10-22（本地时间）获授权测试 Web/Worker 已更新为自动连接后端 `e8fafa0`（CI checkout `11dbae2`），无需数据库迁移或重建。SaaS 扩展默认 ID 为 `jhbdenjnkollamkdlombhjdhldciabpg`；`PRODUCTSPY_EXTENSION_IDS` 可显式配置已核实 ID 名单，错误配置拒绝。同一浏览器网页登录后自动连接，无需配对码；正式商店身份应在发布前单独核验，不能认为公开 manifest key 等于签名证明。当前验证和新预览包见 [自动连接记录](saas-validation-2026-10-21.md)。
+
 ## 环境
 
 | 环境     | 数据库                            | 服务地址与 AI                             | 约束                                                      |

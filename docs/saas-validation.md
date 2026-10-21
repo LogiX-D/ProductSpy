@@ -2,6 +2,8 @@
 
 2026-10-21 用户要求取消配对码：已改为连接当前浏览器的 ProductSpy 网页账号，SaaS 不再输入扩展 ID 或复制授权码。实现、安全边界及本轮实际测试见 [当日记录](saas-validation-2026-10-21.md)；真实 MV3/HTTPS 结果单独记录，不把单测当作浏览器 Cookie 验收。
 
+2026-10-22 本地时间已更新获授权 HTTPS 测试站 Web/Worker，无迁移或数据库重建，六表 checksum 保留；源码 e8fafa0。最终扩展 dfb5c43 的完整 Linux CI 实际通过：1056 PASS/15 SKIP、受限 PG 98/98、浏览器 4/4、全部静态/恢复/构建/容器/Compose；云端实际 MV3 fixture job 12 项通过，包含无码自动连接和离线恢复。干净来源的最终预览包和 SHA256 见上述当日记录。独立真实 Amazon CI 仍 CAPTCHA 失败；Mock/关闭支付和用户推迟的真人、真 AI、物理设备验收保持。
+
 2026-10-20 的扩展包权限、官方政策、Limited Use 披露及桌面/移动隐私入口复核见 [当日记录](saas-validation-2026-10-20.md)；新增入口已通过 Linux CI，页面已通过加密镜像更新测试站并完成 9 项公网检查。随后将扩展凭证迁至 session 内存、保留 outbox 并修复取消登录竞态；当前本机 1015 PASS/4 SKIP，完整 CI success（Linux 1004 PASS/15 SKIP、PG 67/67、浏览器 3/3 含实际进程重启恢复），云端 fixture 11 项通过，新干净源码 HTTPS 扩展包已生成。live Amazon 遇到验证码失败；真人、真实 AI、支付及完整发布安全要求仍未最终验收。
 
 2026-10-19 获授权测试服务器已运行可信 HTTPS、Web/Worker/PostgreSQL，云端 API、MV3 fixture、额度、重启及备份恢复已有实际证据，见 [测试部署记录](saas-validation-2026-10-19.md)。真实 Amazon、真实 AI、支付与物理设备项仍单独列明。

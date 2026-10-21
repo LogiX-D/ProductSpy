@@ -30,3 +30,19 @@ Mock 和关闭支付保持不变；真实 Amazon、物理设备、真实 AI 与 
 独立干净 Git worktree 的全仓 format:check 也通过。首次在 worktree 直接打包因依赖 junction 的真实路径越出该工作树而被第三方 notice 路径门禁拒绝；保留该门禁，改用干净编译产物作为 `--source`、由原工作树的正常依赖目录生成 notices，243 文件 ZIP 校验通过，来源 e8fafa0/dirty=false。最终交付包会包含随后复核的扩展账号计数修复，不能将此中间包当最终包。
 
 只读安全复核还发现既有 popup 两次异步读取之间可换账号：A 的 pending-count/error 先应用、B 的 bridge-state 后返回，会在 B 下暂留 A 的队列元数据。本轮自动账号切换扩大了触发机会，因此增加 verified userId 关联，SaaS 在同轮核对身份后一起应用，不匹配即清零；legacy 行为保留。deferred 回归证明 B 不显示 A 的计数/错误，随后可正确显示 B 的队列；该项是额外扩展修复，不改变已通过 CI 的 Web/Worker 源码。
+
+## 获授权测试站更新（2026-10-22 本地时间）
+
+上述成功 CI 的加密 artifact `12359778813` 已校验 ZIP SHA256 `9298ada1a3f83eaf59da5c227f3cb2ad4b3041dd413cb74980178a54bb577f43`、源 head/tree/checkout、Linux amd64 与专用接收者指纹。RSA 私钥留在本机，通过已认证 SSH stdin 仅传递一次性 AES 密钥及 manifest AAD；GCM 认证完成后才加载归档。已按 CI config/rootfs 摘要验证 Docker 29 containerd 的两个加载镜像身份。
+
+服务器先执行 age 加密备份，再停止 Web 接受任务，由旧 Worker 排空 queued/running 后更新 Web/Worker；16:26:31 UTC 两服务启动成功，Web healthy，无 OOM。数据库容器 ID 和 2026-10-19 启动时间均未改变，没有执行迁移。更新前后 users、workspace_documents、subscriptions、usage_events、jobs、capture_events 六表计数及 checksum 完全一致；20 个既有账号、14 个工作区文档保留。旧镜像、私有配置和新加密备份保留供回退。
+
+更新后实际公网 HTTPS 六项检查通过：健康与隐私页 200、可信扩展匿名连接 401、精确 credentialed preflight 204、陌生网页来源及陌生扩展拒绝 403 且不返回允许来源。证书验证未绕过；这是 HTTP/API 检查，实际 Chrome Cookie 自动连接另由下述云端 MV3 作证。
+
+最终扩展源码 `dfb5c43`，干净工作树来源 dirty=false，完整本机 1067 PASS/4 SKIP（1071），全仓 typecheck/lint 和干净源码 format:check 通过。最终 HTTPS 预览包位于 `artifacts/saas/extension-production-7bcc737c-d105-45bb-86a7-3f2fc6029ead/ProductSpy-1.0.0-saas-production-preview-extension.zip`，432,150 字节、243 文件，SHA256 `169e70a4fb119ad0fdaa2dfcfa2956cdaf79e1a8cff1299c716b06e79334f36e`；CRC/逐文件清单与安全校验通过。一次从错误 cwd 构建产生 Tailwind content 警告的中间产物未打包；从实际 apps/extension cwd 重建后没有该警告，正确样式产物才进入最终 ZIP。旧包未覆盖。
+
+`dfb5c43` 的初次云 fixture 运行在 Web 切换窗口内，于 16:26:03 UTC 在连接阶段失败；服务器新服务 16:26:31 才健康。保留失败，并仅在更新完成后重跑该 fixture job。独立 live job 已对真实 Amazon 返回 HTTP 200 后明确检测 CAPTCHA、在 live-amazon 阶段失败，未绕过或改用 fixture，不将取消配对码当作实时 Amazon 通过证明。
+
+更新后的 [cloud fixture job 119342841700](https://github.com/LogiX-D/ProductSpy/actions/runs/39634589746/job/119342841700) 实际 success，12 项通过：注册、实际 MV3 fixture 提取、无代码自动连接网页账号、session 内存与 local 无凭证断言、实际 HTTPS 上传、商品库、单次 AI POST、独立 Worker 保存 Mock、另一独立会话读取、另一账号 404、真实浏览器断网队列及 HTTPS 恢复。这里证明新的浏览器 Cookie/扩展/云后端联通；fixture、Mock、同一 Linux runner 上第二会话分别保留标识。整个 workflow 仍因独立 live job 的 CAPTCHA 失败而非全绿，不能把 fixture job success 写成真实 Amazon 或物理设备成功。
+
+最终应用提交 `dfb5c43` 的 [完整 CI 39634596583](https://github.com/LogiX-D/ProductSpy/actions/runs/39634596583) 实际 success：Linux 1056 PASS/15 SKIP（1071）、受限 PostgreSQL 98/98、真实浏览器/MV3 4/4，全部静态检查、构建、ZIP、恢复、standalone、镜像/容器及原 Compose 均通过。该提交只修改扩展及记录，Web/Worker 与已部署 e8fafa0 相同；不为扩展文档更新重新交付业务镜像。`productspy-staging-package` label 已移除。服务器后续再核验 productspy_app 无 superuser/BYPASSRLS/createRole/createDb、六表 FORCE RLS、Web/Worker 均 Mock、没有 AI/Stripe 密钥、自动迁移关闭、重启数和 OOM 均为 0。
