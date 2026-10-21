@@ -4,6 +4,8 @@
 
 2026-10-22（本地时间）获授权测试 Web/Worker 已更新为自动连接后端 `e8fafa0`（CI checkout `11dbae2`），无需数据库迁移或重建。SaaS 扩展默认 ID 为 `jhbdenjnkollamkdlombhjdhldciabpg`；`PRODUCTSPY_EXTENSION_IDS` 可显式配置已核实 ID 名单，错误配置拒绝。同一浏览器网页登录后自动连接，无需配对码；正式商店身份应在发布前单独核验，不能认为公开 manifest key 等于签名证明。当前验证和新预览包见 [自动连接记录](saas-validation-2026-10-21.md)。
 
+后续登录限流修复已通过完整 CI 并更新测试 Web/Worker：当前源码 `e545783`、镜像 checkout `8718b91`。仍采用先加密备份、停止 Web 接单、旧 Worker 排空后切换镜像；数据库未重建/迁移，六表 count/checksum 一致，旧镜像和配置保留。现有 dfb5c43 扩展包源码兼容且无需更换。更新、受限 PG 99/99 和公网复验见 [10-22 记录](saas-validation-2026-10-22.md)。
+
 ## 环境
 
 | 环境     | 数据库                            | 服务地址与 AI                             | 约束                                                      |

@@ -4,7 +4,9 @@
 
 2026-10-20 的历史实现证据为扩展提交 `05cf4d3` 的 [完整 CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39309068615)：success，Linux 1004 PASS/15 SKIP、受限 PG 67/67、浏览器 3/3，及恢复、默认构建、ZIP、standalone、Docker、原 Compose；实际 CI checkout 的 tree 与该提交一致。`1db583e` 只更新记录，没有修改已验证的应用源码。当时测试站后端为 `c481268` / 镜像 checkout `72ac8db7`，不是将全部后续提交都称为已部署。
 
-当前扩展源码 `dfb5c43` 的 [完整 CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39634596583) 实际 success：Linux 1056 PASS/15 SKIP、受限 PG 98/98、浏览器 4/4，及全部静态、恢复、构建、ZIP、standalone、容器和原 Compose。获授权 HTTPS 测试站 Web/Worker 已更新自动连接后端 `e8fafa0`，镜像 checkout `11dbae2e8f20e0780128c5de64cbf565ecbedc97`。更新前先加密备份、排空任务，数据库未迁移/重建，六表 count/checksum 保留；云端真实 MV3 fixture 自动连接 12 项已通过。最终干净来源 ZIP 为 dfb5c43/243 文件，SHA256 `169e70a4fb119ad0fdaa2dfcfa2956cdaf79e1a8cff1299c716b06e79334f36e`。详见 [自动连接与更新记录](saas-validation-2026-10-21.md)。
+当前扩展源码 `dfb5c43` 的 [完整 CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39634596583) 实际 success：Linux 1056 PASS/15 SKIP、受限 PG 98/98、浏览器 4/4，及全部静态、恢复、构建、ZIP、standalone、容器和原 Compose。自动连接更新时，获授权 HTTPS 测试站 Web/Worker 使用后端 `e8fafa0`，镜像 checkout `11dbae2e8f20e0780128c5de64cbf565ecbedc97`。更新前先加密备份、排空任务，数据库未迁移/重建，六表 count/checksum 保留；云端真实 MV3 fixture 自动连接 12 项已通过。最终干净来源 ZIP 为 dfb5c43/243 文件，SHA256 `169e70a4fb119ad0fdaa2dfcfa2956cdaf79e1a8cff1299c716b06e79334f36e`。详见 [自动连接与更新记录](saas-validation-2026-10-21.md)。
+
+后续登录限流修复 `e545783` 的 [完整 CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39637407458) 已 success：Linux 1057 PASS/15 SKIP、受限 PG 99/99、浏览器 4/4 与所有构建/恢复/容器/Compose。当前获授权测试 Web/Worker 为该源码，镜像 checkout `8718b91cb61d2c7af523cc995c59c5739ad9af59`；加密产物来源和加载镜像身份已核验，备份/排空后更新，数据库未重建或迁移，六表 count/checksum 保留。扩展与 shared 源码和已交付 dfb5c43 包一致。详见 [10-22 运行及云端复验](saas-validation-2026-10-22.md)。
 
 此前 2026-10-17/18 的本机及 Linux 证据见 [原验证记录](saas-validation.md)、[10-18 记录](saas-validation-2026-10-18.md)；云端部署与恢复见 [10-19 记录](saas-validation-2026-10-19.md)，最新凭证/隐私/CI/云端结果见 [10-20 记录](saas-validation-2026-10-20.md)。下表按原要求逐项保留验证边界。
 
