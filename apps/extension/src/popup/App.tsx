@@ -100,7 +100,7 @@ export function App() {
     try {
       const result = await extensionRequest({ type: 'PRODUCTSPY_PENDING_COUNT' });
       if (signal.aborted || revision !== connectionRevision.current) return;
-      if (result.status === 'pending-count') {
+      if (LEGACY_MODE && result.status === 'pending-count') {
         setPendingCount(result.count);
         setUnassignedCount(result.unassignedCount ?? 0);
         setQueueError(result.error ?? '');
@@ -108,6 +108,15 @@ export function App() {
       const bridge = await extensionRequest({ type: 'PRODUCTSPY_BRIDGE_STATE' });
       if (signal.aborted || revision !== connectionRevision.current) return;
       if (bridge.status === 'bridge-state') {
+        if (!LEGACY_MODE && result.status === 'pending-count') {
+          // Account verification may change between the two background calls.
+          // Apply the queue and identity together, never A's metadata under B.
+          const sameAccount =
+            bridge.paired && result.userId !== undefined && result.userId === bridge.user?.id;
+          setPendingCount(sameAccount ? result.count : 0);
+          setUnassignedCount(result.unassignedCount ?? 0);
+          setQueueError(sameAccount ? (result.error ?? '') : '');
+        }
         setPaired(bridge.paired);
         setUser(bridge.user);
         if (account.current !== bridge.user?.id) setSavedProduct(undefined);

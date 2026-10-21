@@ -414,7 +414,7 @@ describe('SaaS capture ownership and durable recovery (local HTTP mocks)', () =>
     await original.enqueue({ ...draft, title: 'A private pending capture' });
     webAccount = sessionB;
     const controller = new CloudSyncController();
-    expect(await controller.count()).toMatchObject({ count: 0 });
+    expect(await controller.count()).toMatchObject({ count: 0, userId: sessionB.user.id });
     expect(await controller.syncPending(false)).toBe(0);
     fetch.mockResolvedValueOnce(ok(mergeProduct(draft)));
     expect((await controller.save(draft)).status).toBe('saved');
@@ -447,7 +447,11 @@ describe('SaaS capture ownership and durable recovery (local HTTP mocks)', () =>
     expect(await controller.state()).toMatchObject({ paired: false, error: expect.any(String) });
     expect((await controller.save(draft)).status).toBe('pending');
     const [capture] = await new CloudCaptureQueue(sessionA.user.id).pending();
-    expect(await controller.count()).toMatchObject({ count: 0, error: expect.any(String) });
+    expect(await controller.count()).toMatchObject({
+      count: 0,
+      userId: undefined,
+      error: expect.any(String),
+    });
     expect(await cloudSession()).toEqual(sessionA);
     expect(fetch).not.toHaveBeenCalled();
     connectFetch.mockImplementation(async () => ok(sessionA));

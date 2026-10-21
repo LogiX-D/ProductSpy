@@ -24,3 +24,9 @@ Mock 和关闭支付保持不变；真实 Amazon、物理设备、真实 AI 与 
 初次实现 `1e32c80` 的 [完整 CI 39629589431](https://github.com/LogiX-D/ProductSpy/actions/runs/39629589431) 已实际运行：新自动账号浏览器测试通过（已有网页登录、A→B、保留网页登录的真实浏览器重启、Cookie丢失）；其他UI两项也通过，原扩展链路在离线保存后的旧“1件待同步”显示断言失败。新的安全逻辑离线不展示未经确认的旧账号队列，因此改为明确暂存反馈 + 真实storage outbox数量，恢复后仍要求上传并清空队列；没有放宽身份校验。另修复首次consent初始化观察竞态、将重启后网络监听提前到网页登录之前，保留原captureId只上传一次的断言。
 
 初次云端 [39629579731](https://github.com/LogiX-D/ProductSpy/actions/runs/39629579731) fixture 在自动连接阶段未通过：服务器仍运行旧后端，尚不提供新connect端点。该失败保留，不当成新云端已验收；待完整CI通过并更新获授权测试服务后，复跑同一云端检查。真实Amazon仍独立记录，不能以fixture替代。
+
+后续实现 `e8fafa0` 的 [完整 Linux CI 39632477534](https://github.com/LogiX-D/ProductSpy/actions/runs/39632477534) 实际 success：Linux 单测 1055 PASS/15 SKIP（1070）、受限 PostgreSQL 98/98、浏览器 4/4，包含完整自动连接、账号切换、真实进程重启、Cookie 丢失和离线原 captureId 恢复；typecheck/lint/format、备份恢复、默认构建、隔离 ZIP、standalone、实际镜像/容器及原 Compose 全部通过。实际 CI checkout `11dbae2e8f20e0780128c5de64cbf565ecbedc97`，tree `90c5f86e6b6318509eaf1210b4280837f13af55f` 与源提交一致。
+
+独立干净 Git worktree 的全仓 format:check 也通过。首次在 worktree 直接打包因依赖 junction 的真实路径越出该工作树而被第三方 notice 路径门禁拒绝；保留该门禁，改用干净编译产物作为 `--source`、由原工作树的正常依赖目录生成 notices，243 文件 ZIP 校验通过，来源 e8fafa0/dirty=false。最终交付包会包含随后复核的扩展账号计数修复，不能将此中间包当最终包。
+
+只读安全复核还发现既有 popup 两次异步读取之间可换账号：A 的 pending-count/error 先应用、B 的 bridge-state 后返回，会在 B 下暂留 A 的队列元数据。本轮自动账号切换扩大了触发机会，因此增加 verified userId 关联，SaaS 在同轮核对身份后一起应用，不匹配即清零；legacy 行为保留。deferred 回归证明 B 不显示 A 的计数/错误，随后可正确显示 B 的队列；该项是额外扩展修复，不改变已通过 CI 的 Web/Worker 源码。

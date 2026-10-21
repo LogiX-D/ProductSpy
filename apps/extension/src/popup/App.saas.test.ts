@@ -60,7 +60,12 @@ describe('SaaS popup account flow (mocked background, not native browser accepta
         case 'PRODUCTSPY_CAPTURE':
           return { status: 'captured', draft };
         case 'PRODUCTSPY_PENDING_COUNT':
-          return { status: 'pending-count', count: 0, unassignedCount: 2 };
+          return {
+            status: 'pending-count',
+            count: 0,
+            userId: signedIn ? user.id : undefined,
+            unassignedCount: 2,
+          };
         case 'PRODUCTSPY_CONNECT':
           signedIn = true;
           return { status: 'bridge-state', paired: true, user };
@@ -168,12 +173,50 @@ describe('SaaS popup account flow (mocked background, not native browser accepta
     const base = vi.mocked(extensionRequest).getMockImplementation()!;
     vi.mocked(extensionRequest).mockImplementation(async (request) =>
       request.type === 'PRODUCTSPY_PENDING_COUNT'
-        ? { status: 'pending-count', count: 1, error: '额度不足，请到工作台查看' }
+        ? { status: 'pending-count', count: 1, userId: user.id, error: '额度不足，请到工作台查看' }
         : base(request),
     );
     await act(async () => root.render(createElement(App)));
     expect(container.querySelector('[role="alert"]')?.textContent).toContain('额度不足');
     expect(container.textContent).toContain('先保存商品，再到在线工作台发起分析');
     expect(button(popupCopy.actions.sync)).toBeDefined();
+  });
+
+  it('never displays A queue metadata while a deferred verification switches to B, then recovers B counts', async () => {
+    const other = { id: 'b', email: 'b@example.test', name: 'B' };
+    const privateError = 'A private pending failure';
+    let finishBridge!: (response: ExtensionResponse) => void;
+    let matching = false;
+    let firstBridge = true;
+    const base = vi.mocked(extensionRequest).getMockImplementation()!;
+    vi.mocked(extensionRequest).mockImplementation(async (request) => {
+      if (request.type === 'PRODUCTSPY_PENDING_COUNT')
+        return matching
+          ? { status: 'pending-count', count: 2, userId: other.id, error: 'B pending failure' }
+          : { status: 'pending-count', count: 7, userId: user.id, error: privateError };
+      if (request.type === 'PRODUCTSPY_BRIDGE_STATE') {
+        if (firstBridge) {
+          firstBridge = false;
+          return new Promise<ExtensionResponse>((resolve) => {
+            finishBridge = resolve;
+          });
+        }
+        return { status: 'bridge-state', paired: true, user: other };
+      }
+      return base(request);
+    });
+    await act(async () => root.render(createElement(App)));
+    expect(container.textContent).not.toContain(privateError);
+    expect(container.textContent).not.toContain('7 件商品待同步');
+    await act(async () => finishBridge({ status: 'bridge-state', paired: true, user: other }));
+    expect(container.textContent).toContain(other.email);
+    expect(container.textContent).not.toContain(privateError);
+    expect(container.textContent).not.toContain('7 件商品待同步');
+    matching = true;
+    await act(async () => vi.advanceTimersByTimeAsync(8000));
+    expect(container.textContent).toContain(other.email);
+    expect(container.textContent).toContain('2 件商品待同步');
+    expect(container.textContent).toContain('B pending failure');
+    expect(container.textContent).not.toContain(privateError);
   });
 });

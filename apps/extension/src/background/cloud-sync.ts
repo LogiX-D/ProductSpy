@@ -112,6 +112,7 @@ export class CloudSyncController {
     return {
       status: 'pending-count',
       count: pending.length,
+      userId: session?.user.id,
       unassignedCount: unassigned.length + Object.keys(legacy?.pending ?? {}).length,
       error: connectionError ?? pending.find((capture) => capture.error)?.error,
     };

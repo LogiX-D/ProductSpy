@@ -27,7 +27,13 @@ export type SaveResult =
 export type ExtensionResponse =
   | CaptureResult
   | SaveResult
-  | { status: 'pending-count'; count: number; unassignedCount?: number; error?: string }
+  | {
+      status: 'pending-count';
+      count: number;
+      userId?: string;
+      unassignedCount?: number;
+      error?: string;
+    }
   | { status: 'synced'; count: number }
   | {
       status: 'bridge-state';
