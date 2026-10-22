@@ -12,6 +12,7 @@
 - 扩展队列仅为上传 outbox，成功确认后不持久缓存完整云端商品；不得自动丢弃 pending 或未归属资料。已接受 AI 任务的 GET 轮询可按 Retry-After 有限退避，禁止因此重新提交 AI POST。
 - 历史任务不能因最近记录上限而失去入口。按用户作用域进行稳定游标分页，保留 PostgreSQL 微秒时间，覆盖同时间/不同微秒、跨用户游标和翻页旧响应竞态。
 - AI 调用前提交额度、任务和用量预留，失败/中断也计数；禁止自动重新发起可能收费的调用。Mock、fixture 和签名模拟都必须标注。
+- AI 渠道由服务器 UUID 白名单管理员统一配置，密钥仅服务端加密保存且不回显；普通用户只能选择已启用渠道及模型。任务与幂等重放固定原渠道/模型/配置摘要，执行时配置漂移应失败，禁止自动改道或额外调用。全局 Mock 开关优先于渠道设置。
 - 正式域名、付费资源、生产服务、真实支付、Chrome Web Store 和公开发布需要用户另行授权。允许本机可回退测试、修复和开发分支提交。
 - 修改 Next 代码前读 `apps/web/AGENTS.md` 和已安装 Next 文档；遵循当前版本 API。
 - 完成检查：typecheck、lint、format、unit/integration、build、SaaS browser/MV3 E2E、受限角色 PostgreSQL、多用户/额度/恢复。运行记录写 `docs/saas-validation.md`，保留失败与验证边界。
