@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Download, Pencil, Save, Sparkles } from 'lucide-react';
 import {
   ApiRequestError,
-  apiRequest,
   COMPARISON_FIELDS,
   comparisonAnalysisSchema,
   comparisonFieldLabels,
@@ -37,6 +36,15 @@ import { LibraryDialog } from './library-dialog';
 import { HistoryManager } from './history-manager';
 import { Badge, Button, CopyButton, EmptyState, ErrorNotice } from './ui';
 import { comparisonTimestamp } from './comparison-table';
+import {
+  AIChannelSelector,
+  aiSelectionInput,
+  aiSourceLabel,
+  useAIChannels,
+  type PreparedAISelection,
+} from './ai-channel-selector';
+
+type PreparedComparisonRequest = ComparisonGenerationRequest & { ai: PreparedAISelection };
 
 type Draft = Record<ComparisonField, string>;
 const draftKey = (id: string) => `productspy:comparison-draft:v1:${id}`;
@@ -69,8 +77,9 @@ export function ComparisonAnalysisPanel({
   onUpdate: (plan: ComparisonPlan) => void;
   onEditing: (editing: boolean) => void;
 }) {
-  const [mode, setMode] = useState<'mock' | 'real'>();
-  const [modeError, setModeError] = useState('');
+  const channels = useAIChannels();
+  const mode = channels.mode;
+  const modeError = channels.error;
   const [options, setOptions] = useState<AnalysisOptions>({ ...DEFAULT_ANALYSIS_OPTIONS });
   const [pricing, setPricing] = useState<AnalysisPricingPreference>({});
   const [preferenceMessage, setPreferenceMessage] = useState('');
@@ -79,7 +88,7 @@ export function ComparisonAnalysisPanel({
   const [message, setMessage] = useState('');
   const [editor, setEditor] = useState<{ draft: Draft; baseline: ComparisonPlan }>();
   const [retained, setRetained] = useState<{ draft: Draft; baselineUpdatedAt: string }>();
-  const [pending, setPending] = useState<ComparisonGenerationRequest>();
+  const [pending, setPending] = useState<PreparedComparisonRequest>();
   const [unconfirmed, setUnconfirmed] = useState<ComparisonGenerationRequest>();
   const [dialog, setDialog] = useState<
     'authorize' | 'regenerate' | 'discard' | 'restore' | 'abandon-request'
@@ -91,13 +100,7 @@ export function ComparisonAnalysisPanel({
   const inFlight = useRef(false);
 
   async function loadMode() {
-    setModeError('');
-    try {
-      const status = await apiRequest<{ mode: 'mock' | 'real' }>('/api/status');
-      setMode(status.mode);
-    } catch (cause) {
-      setModeError(`AI 模式读取失败：${errorMessage(cause)}。请重新连接工作台后重试。`);
-    }
+    await channels.reload();
   }
   async function loadUsage() {
     setUsageLoading(true);
@@ -111,7 +114,6 @@ export function ComparisonAnalysisPanel({
     }
   }
   useEffect(() => {
-    void loadMode();
     void loadUsage();
     try {
       const stored = restoreAnalysisPreferences(localStorage.getItem(ANALYSIS_PREFERENCES_KEY));
@@ -261,33 +263,44 @@ export function ComparisonAnalysisPanel({
   }
   function requestGeneration(request?: ComparisonGenerationRequest) {
     if (busy || !mode || editor) return;
-    const prepared = request ?? {
-      comparisonId: plan.id,
-      expectedUpdatedAt: plan.updatedAt,
-      requestId: crypto.randomUUID(),
-      options: { ...options },
-      ...(pricing.inputUsdPerMillion !== undefined && pricing.outputUsdPerMillion !== undefined
-        ? {
-            pricing: {
-              inputUsdPerMillion: pricing.inputUsdPerMillion,
-              outputUsdPerMillion: pricing.outputUsdPerMillion,
-            },
-          }
-        : {}),
+    const ai = channels.freeze();
+    if (!ai || (request && !isLegacyMode)) return;
+    const prepared: PreparedComparisonRequest = {
+      ...(request ?? {
+        comparisonId: plan.id,
+        expectedUpdatedAt: plan.updatedAt,
+        requestId: crypto.randomUUID(),
+        options: { ...options },
+        ...(pricing.inputUsdPerMillion !== undefined && pricing.outputUsdPerMillion !== undefined
+          ? {
+              pricing: {
+                inputUsdPerMillion: pricing.inputUsdPerMillion,
+                outputUsdPerMillion: pricing.outputUsdPerMillion,
+              },
+            }
+          : {}),
+      }),
+      ai,
     };
     setPending(prepared);
     if (!request && (plan.analysis || retained || unconfirmed)) setDialog('regenerate');
-    else if (mode === 'real') setDialog('authorize');
+    else if (prepared.ai.mode === 'real') setDialog('authorize');
     else void generate(prepared);
   }
-  async function generate(request: ComparisonGenerationRequest, authorizeReal = false) {
-    if (inFlight.current || busy || !mode || (mode === 'real' && !authorizeReal)) return;
+  async function generate(request: PreparedComparisonRequest, authorizeReal = false) {
+    if (inFlight.current || busy || (request.ai.mode === 'real' && !authorizeReal)) return;
+    if (!channels.isCurrent(request.ai)) {
+      setError('账号已切换，请重新选择渠道并发起请求。');
+      setDialog(undefined);
+      return;
+    }
     inFlight.current = true;
     setBusy(true);
     setDialog(undefined);
     setError('');
     setMessage('');
-    const safe = { ...request, authorizeReal: undefined };
+    const { ai, ...input } = request;
+    const safe = { ...input, ...aiSelectionInput(ai), authorizeReal: undefined };
     setUnconfirmed(safe);
     try {
       sessionStorage.setItem(recoveryKey(plan.id), JSON.stringify(safe));
@@ -295,7 +308,7 @@ export function ComparisonAnalysisPanel({
       /* Never trigger a paid retry because storage failed. */
     }
     try {
-      onUpdate(await analyzeComparison({ ...request, authorizeReal }));
+      onUpdate(await analyzeComparison({ ...safe, authorizeReal }));
       setUnconfirmed(undefined);
       setPending(undefined);
       try {
@@ -304,7 +317,7 @@ export function ComparisonAnalysisPanel({
         /* No external retry. */
       }
       setMessage(
-        mode === 'mock'
+        ai.mode === 'mock'
           ? 'Mock 对比完成；这是工作流示例，不代表真实模型质量。'
           : '真实 AI 对比已保存，请核对事实和推断。',
       );
@@ -401,7 +414,10 @@ export function ComparisonAnalysisPanel({
           {busy ? '正在处理…' : analysis ? '重新生成对比分析' : '开始 AI 对比分析'}
         </Button>
       </div>
-      {modeError && <ErrorNotice message={modeError} onRetry={() => void loadMode()} />}
+      <AIChannelSelector controller={channels} disabled={busy || Boolean(editor)} />
+      {isLegacyMode && modeError && (
+        <ErrorNotice message={modeError} onRetry={() => void loadMode()} />
+      )}
       {error && <ErrorNotice message={error} />}
       {message && (
         <p role="status" className="comparison-notice">
@@ -451,13 +467,15 @@ export function ComparisonAnalysisPanel({
             <Button variant="secondary" disabled={busy} onClick={() => void checkResult()}>
               检查已保存结果
             </Button>
-            <Button
-              variant="ghost"
-              disabled={busy || !mode || Boolean(editor)}
-              onClick={() => requestGeneration(unconfirmed)}
-            >
-              继续同一次请求
-            </Button>
+            {isLegacyMode && (
+              <Button
+                variant="ghost"
+                disabled={busy || !mode || Boolean(editor)}
+                onClick={() => requestGeneration(unconfirmed)}
+              >
+                继续同一次请求
+              </Button>
+            )}
             <Button variant="ghost" disabled={busy} onClick={() => setDialog('abandon-request')}>
               结束本次请求记录
             </Button>
@@ -480,6 +498,7 @@ export function ComparisonAnalysisPanel({
               {metadata
                 ? `${comparisonTimestamp(metadata.generatedAt)} · ${analysisOptionsSummary(metadata.options)}`
                 : '人工保存的分析'}
+              {metadata && aiSourceLabel(metadata) && <span> · {aiSourceLabel(metadata)}</span>}
               {metadata &&
                 metadata.sourceUpdatedAt !== (plan.snapshotUpdatedAt ?? plan.createdAt) && (
                   <span> · 商品快照已变化，请按新资料重新核查分析。</span>
@@ -604,6 +623,7 @@ export function ComparisonAnalysisPanel({
                 {comparisonTimestamp(version.createdAt)} ·{' '}
                 {{ generated: 'AI 生成', edited: '人工编辑', restored: '历史恢复' }[version.kind]} ·{' '}
                 {version.metadata?.mode === 'real' ? '真实 AI' : 'Mock / 人工编辑'}
+                {aiSourceLabel(version.metadata) && ` · ${aiSourceLabel(version.metadata)}`}
               </summary>
               <div className="ws-inline">
                 <CopyButton
@@ -673,6 +693,11 @@ export function ComparisonAnalysisPanel({
           </p>
           {dialog === 'authorize' && (
             <p className="muted">
+              {!isLegacyMode && pending && (
+                <span>
+                  本次渠道：{pending.ai.channelLabel} · {pending.ai.model}。{' '}
+                </span>
+              )}
               本次为 {plan.products.length} 个商品的 1 次模型请求 ·{' '}
               {analysisOptionsSummary(pending?.options ?? options)}
               。费用以服务商账单为准，未知费用不代表免费。
@@ -684,7 +709,7 @@ export function ComparisonAnalysisPanel({
               onClick={() => {
                 if (dialog === 'authorize' && pending) void generate(pending, true);
                 else if (dialog === 'regenerate' && pending) {
-                  if (mode === 'real') setDialog('authorize');
+                  if (pending.ai.mode === 'real') setDialog('authorize');
                   else void generate(pending);
                 } else if (dialog === 'restore') void restoreVersion();
                 else if (dialog === 'abandon-request') {

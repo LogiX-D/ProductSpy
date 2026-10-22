@@ -60,6 +60,21 @@ CREATE TABLE IF NOT EXISTS audit_events (
 CREATE INDEX IF NOT EXISTS audit_user_idx ON audit_events(user_id,created_at);
 CREATE TABLE IF NOT EXISTS webhook_events (id text PRIMARY KEY, created_at timestamptz NOT NULL DEFAULT now());
 CREATE TABLE IF NOT EXISTS api_rate_limits (key text PRIMARY KEY, window_start timestamptz NOT NULL, count integer NOT NULL);
+CREATE TABLE IF NOT EXISTS ai_channel_settings (
+  id text PRIMARY KEY CHECK(id='global'), revision bigint NOT NULL CHECK(revision>0),
+  encrypted_payload text NOT NULL, updated_by text NOT NULL REFERENCES users(id),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+ALTER TABLE ai_channel_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ai_channel_settings FORCE ROW LEVEL SECURITY;
+DO $ai_channels$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname=current_schema() AND tablename='ai_channel_settings' AND policyname='ai_configuration_scope') THEN
+    CREATE POLICY ai_configuration_scope ON ai_channel_settings
+      USING (current_setting('app.ai_configuration_access',true)='trusted-server')
+      WITH CHECK (current_setting('app.ai_configuration_access',true)='trusted-server');
+  END IF;
+END $ai_channels$;
 DO $migration$
 DECLARE tenant_table text;
 BEGIN

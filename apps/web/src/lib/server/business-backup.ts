@@ -29,9 +29,12 @@ import {
 import { dataDirectory } from './product-repository';
 import { saasEnabled } from '../saas/context';
 import { readWorkspaceDocument } from '../saas/workspace-storage';
+import { parseStoredAnalysisUsage, type UsageRecord } from './analysis-usage';
 
 interface State {
   backup: WorkspaceBackup;
+  // Server-only decisions never enter the portable, client-controlled backup format.
+  internalUsage: UsageRecord[];
   revision: string;
   bytes: number;
 }
@@ -65,6 +68,10 @@ async function readState(directory: string): Promise<State> {
       : Array.isArray(rawLibrary)
         ? { products: productSchema.strict().array().parse(rawLibrary), groups: [], tags: [] }
         : libraryFileSchema.parse(rawLibrary);
+  const internalUsage =
+    source['analysis-usage.json'] === undefined
+      ? []
+      : parseStoredAnalysisUsage(value('analysis-usage.json'));
   const backup = parseWorkspaceBackup({
     format: 'productspy-workspace',
     schemaVersion: 1,
@@ -82,16 +89,20 @@ async function readState(directory: string): Promise<State> {
       source['content-plans.json'] === undefined
         ? []
         : contentFileSchema.parse(value('content-plans.json')).plans,
-    usage:
-      source['analysis-usage.json'] === undefined
-        ? []
-        : workspaceUsageSchema.parse(value('analysis-usage.json')),
+    usage: workspaceUsageSchema.parse(
+      internalUsage.map((record) => {
+        const portable = { ...record };
+        delete portable.execution;
+        return portable;
+      }),
+    ),
   });
   const revision = createHash('sha256')
     .update(JSON.stringify(BUSINESS_FILES.map((name) => [name, source[name] ?? null])))
     .digest('hex');
   return {
     backup,
+    internalUsage,
     revision,
     bytes: Object.values(source).reduce((sum, text) => sum + Buffer.byteLength(text), 0),
   };
@@ -269,6 +280,26 @@ export class WorkspaceBackupService {
       // Validate the merged counts, bytes and cross-file references during preview as well.
       if (!options.commit) return { preview: result, committed: false };
       const files = workspaceFileContents(combined) as Record<BusinessFile, string>;
+      // Preserve only decisions already held by this server for the exact same
+      // request. Imported records cannot supply an execution or create a new call.
+      const originalUsage = new Map(
+        current.internalUsage.map((record) => [record.requestId, record]),
+      );
+      files['analysis-usage.json'] = JSON.stringify(
+        combined.usage.map((record) => {
+          const original = originalUsage.get(record.requestId);
+          return original?.execution &&
+            original.fingerprint === record.fingerprint &&
+            original.productId === record.productId &&
+            original.mode === record.mode
+            ? { ...record, execution: original.execution }
+            : record;
+        }),
+        null,
+        2,
+      );
+      if (Buffer.byteLength(files['analysis-usage.json']) > MAX_WORKSPACE_FILE_BYTES)
+        throw new AppError(409, '恢复后的用量及内部防重复记录超过容量；原资料未覆盖。');
       try {
         await commitBusinessFiles(this.directory, files);
       } catch (error) {

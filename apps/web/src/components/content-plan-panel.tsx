@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Download, History, Pencil, Save, Sparkles } from 'lucide-react';
 import {
-  apiRequest,
   CONTENT_FIELDS,
   contentFieldLabels,
   contentOptionsSchema,
@@ -35,6 +34,15 @@ import { ContentReferences } from './content-references';
 import { HistoryManager } from './history-manager';
 import { ContentMediaSelection } from './content-media-selection';
 import { Badge, Button, CopyButton, EmptyState, ErrorNotice } from './ui';
+import {
+  AIChannelSelector,
+  aiSelectionInput,
+  aiSourceLabel,
+  useAIChannels,
+  type PreparedAISelection,
+} from './ai-channel-selector';
+
+type PreparedContentRequest = ContentGenerationRequest & { ai: PreparedAISelection };
 
 type Draft = Record<ContentField, string>;
 const draftKey = (id: string) => `productspy:content-draft:v1:${id}`;
@@ -75,8 +83,9 @@ export function ContentPlanPanel({
   onBusy: (value: boolean) => void;
   onRenew: (plan: ContentPlan) => Promise<void>;
 }) {
-  const [mode, setMode] = useState<'mock' | 'real'>();
-  const [modeError, setModeError] = useState('');
+  const channels = useAIChannels();
+  const mode = channels.mode;
+  const modeError = channels.error;
   const [options, setOptions] = useState<ContentOptions>(plan.options);
   const [pricing, setPricing] = useState<AnalysisPricingPreference>({});
   const [preferenceMessage, setPreferenceMessage] = useState('');
@@ -91,7 +100,7 @@ export function ContentPlanPanel({
   const [message, setMessage] = useState('');
   const [editor, setEditor] = useState<{ draft: Draft; baseline: ContentPlan }>();
   const [retained, setRetained] = useState<{ draft: Draft; baselineUpdatedAt: string }>();
-  const [pending, setPending] = useState<ContentGenerationRequest>();
+  const [pending, setPending] = useState<PreparedContentRequest>();
   const [unconfirmed, setUnconfirmed] = useState<{ requestId: string; mode: 'mock' | 'real' }>();
   const [recoveryRequest, setRecoveryRequest] = useState<ContentGenerationRequest>();
   const [dialog, setDialog] = useState<'authorize' | 'restore' | 'adopt' | 'abandon'>();
@@ -112,12 +121,7 @@ export function ContentPlanPanel({
   );
 
   async function loadMode() {
-    setModeError('');
-    try {
-      setMode((await apiRequest<{ mode: 'mock' | 'real' }>('/api/status')).mode);
-    } catch (cause) {
-      setModeError(`AI 服务状态读取失败：${errorMessage(cause)}。请连接工作台后重试。`);
-    }
+    await channels.reload();
   }
   async function loadUsage() {
     setUsageLoading(true);
@@ -131,7 +135,6 @@ export function ContentPlanPanel({
     }
   }
   useEffect(() => {
-    void loadMode();
     void loadUsage();
     try {
       const raw = sessionStorage.getItem(draftKey(plan.id));
@@ -289,14 +292,17 @@ export function ContentPlanPanel({
   }
   function startGeneration(fields = selectedFields) {
     if (!mode || busy || inFlight.current || editing || unconfirmed) return;
+    const ai = channels.freeze();
+    if (!ai) return;
     try {
       const safe = contentOptionsSchema.parse(options);
       if (!fields.length) throw new Error('请至少选择一项生成内容。');
-      const request: ContentGenerationRequest = {
+      const request: PreparedContentRequest = {
+        ai,
         planId: plan.id,
         expectedUpdatedAt: plan.updatedAt,
         options: safe,
-        selectedFields: fields,
+        selectedFields: [...fields],
         requestId: crypto.randomUUID(),
         ...(pricing.inputUsdPerMillion !== undefined && pricing.outputUsdPerMillion !== undefined
           ? {
@@ -308,30 +314,37 @@ export function ContentPlanPanel({
           : {}),
       };
       setPending(request);
-      if (mode === 'real') setDialog('authorize');
+      if (request.ai.mode === 'real') setDialog('authorize');
       else void runGeneration(request);
     } catch (cause) {
       setError(errorMessage(cause));
     }
   }
-  async function runGeneration(request: ContentGenerationRequest, authorized = false) {
-    if (inFlight.current || (mode === 'real' && !authorized)) return;
+  async function runGeneration(request: PreparedContentRequest, authorized = false) {
+    if (inFlight.current || (request.ai.mode === 'real' && !authorized)) return;
+    if (!channels.isCurrent(request.ai)) {
+      setError('账号已切换，请重新选择渠道并发起请求。');
+      setDialog(undefined);
+      return;
+    }
     inFlight.current = true;
     setBusy(true);
     setError('');
     setDialog(undefined);
-    const recovery = { requestId: request.requestId, mode: mode ?? 'mock' };
-    setRecoveryRequest(request);
+    const recovery = { requestId: request.requestId, mode: request.ai.mode };
+    const { ai, ...input } = request;
+    const submission = { ...input, ...aiSelectionInput(ai) };
+    setRecoveryRequest(submission);
     try {
       sessionStorage.setItem(
         requestKey(plan.id),
-        JSON.stringify({ ...recovery, request: { ...request, authorizeReal: undefined } }),
+        JSON.stringify({ ...recovery, request: { ...submission, authorizeReal: undefined } }),
       );
     } catch {
       setPreferenceMessage('请求记录暂存失败；若连接中断，请先检查历史版本和请求用量。');
     }
     try {
-      const result = await generateContent({ ...request, authorizeReal: authorized });
+      const result = await generateContent({ ...submission, authorizeReal: authorized });
       onUpdate(result.plan);
       setCompareId(version ? result.version.id : '');
       setMessage(
@@ -476,7 +489,9 @@ export function ContentPlanPanel({
             每次生成前都需要你确认发送文字资料并承担可能产生的费用。不会自动重试或批量调用。
           </p>
         )}
-        {modeError && <ErrorNotice message={modeError} onRetry={() => void loadMode()} />}
+        {isLegacyMode && modeError && (
+          <ErrorNotice message={modeError} onRetry={() => void loadMode()} />
+        )}
         <ContentReferences plan={plan} disabled={busy || editing} onRenew={onRenew} />
         <ContentMediaSelection
           plan={plan}
@@ -498,6 +513,7 @@ export function ContentPlanPanel({
           />
         )}
       </section>
+      <AIChannelSelector controller={channels} disabled={busy || editing} />
       <ContentOptionsPanel
         options={options}
         pricing={pricing}
@@ -529,6 +545,7 @@ export function ContentPlanPanel({
                     ? '真实 AI 生成版本'
                     : 'Mock 示例版本'}{' '}
                 · {new Date(version.createdAt).toLocaleString('zh-CN')}
+                {aiSourceLabel(version.metadata) && ` · ${aiSourceLabel(version.metadata)}`}
               </p>
             )}
           </div>
@@ -632,19 +649,24 @@ export function ContentPlanPanel({
               <Button variant="secondary" disabled={busy} onClick={() => void recover()}>
                 检查上次结果与用量
               </Button>
-              <Button
-                variant="secondary"
-                disabled={busy || !recoveryRequest || !mode}
-                onClick={() => {
-                  if (recoveryRequest) {
-                    setPending(recoveryRequest);
-                    if (mode === 'real') setDialog('authorize');
-                    else void runGeneration(recoveryRequest);
-                  }
-                }}
-              >
-                恢复同一请求（不换编号）
-              </Button>
+              {isLegacyMode && (
+                <Button
+                  variant="secondary"
+                  disabled={busy || !recoveryRequest || !mode}
+                  onClick={() => {
+                    if (recoveryRequest) {
+                      const ai = channels.freeze();
+                      if (!ai) return;
+                      const prepared = { ...recoveryRequest, ai };
+                      setPending(prepared);
+                      if (prepared.ai.mode === 'real') setDialog('authorize');
+                      else void runGeneration(prepared);
+                    }
+                  }}
+                >
+                  恢复同一请求（不换编号）
+                </Button>
+              )}
               <Button variant="ghost" disabled={busy} onClick={() => setDialog('abandon')}>
                 已核对，允许新请求
               </Button>
@@ -788,6 +810,7 @@ export function ContentPlanPanel({
                       : item.metadata?.mode === 'real'
                         ? '真实 AI'
                         : 'Mock'}
+                  {aiSourceLabel(item.metadata) && ` · ${aiSourceLabel(item.metadata)}`}
                   {item.id === plan.currentVersionId ? ' · 当前采用' : ''}
                 </option>
               ))}
@@ -885,6 +908,11 @@ export function ContentPlanPanel({
           </p>
           {dialog === 'authorize' && (
             <p className="creation-note">
+              {!isLegacyMode && pending && (
+                <span>
+                  本次渠道：{pending.ai.channelLabel} · {pending.ai.model}。{' '}
+                </span>
+              )}
               {pending?.pricing
                 ? `你填写的输入 / 输出单价：$${pending.pricing.inputUsdPerMillion} / $${pending.pricing.outputUsdPerMillion}（每百万 Token）。实际用量尚未知。`
                 : '未设置完整单价，费用未知；继续不代表免费。'}

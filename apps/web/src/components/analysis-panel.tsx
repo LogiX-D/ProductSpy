@@ -6,7 +6,6 @@ import {
   ApiRequestError,
   analysisSchema,
   analysisMetadataSchema,
-  apiRequest,
   errorMessage,
   productSchema,
   type AnalysisField,
@@ -51,6 +50,12 @@ import {
   type AnalysisSessionDraft,
 } from './analysis-utils';
 import { Badge, Button, CopyButton, EmptyState, ErrorNotice } from './ui';
+import {
+  AIChannelSelector,
+  aiSelectionInput,
+  useAIChannels,
+  type PreparedAISelection,
+} from './ai-channel-selector';
 
 export { parseScript } from './analysis-utils';
 
@@ -154,6 +159,7 @@ type EditorState = {
   mockPrefix: string;
 };
 type GenerationPlan = {
+  ai: PreparedAISelection;
   requestId: string;
   product: Product;
   options: AnalysisOptions;
@@ -170,11 +176,12 @@ function AnalysisContent({
   product: Product;
   onUpdate: (product: Product) => void;
 }) {
-  const [mode, setMode] = useState<'mock' | 'real'>();
+  const channels = useAIChannels();
+  const mode = channels.mode;
   const privateDraftId = isLegacyMode
     ? product.id
     : `${getAccountSession()?.user.id ?? 'unverified'}:${product.id}`;
-  const [modeFailed, setModeFailed] = useState(false);
+  const modeFailed = Boolean(channels.error);
   const [options, setOptions] = useState<AnalysisOptions>({ ...DEFAULT_ANALYSIS_OPTIONS });
   const [pricing, setPricing] = useState<AnalysisPricingPreference>({});
   const [fields, setFields] = useState<AnalysisField[]>(
@@ -226,13 +233,7 @@ function AnalysisContent({
   const controlsDisabled = busy || saving || checkingResult;
 
   async function checkMode() {
-    setModeFailed(false);
-    try {
-      const status = await apiRequest<{ mode: 'mock' | 'real' }>('/api/status');
-      if (mounted.current) setMode(status.mode);
-    } catch {
-      if (mounted.current) setModeFailed(true);
-    }
+    await channels.reload();
   }
 
   async function loadUsage() {
@@ -311,14 +312,6 @@ function AnalysisContent({
 
   useEffect(() => {
     mounted.current = true;
-    let active = true;
-    void apiRequest<{ mode: 'mock' | 'real' }>('/api/status')
-      .then((status) => {
-        if (active) setMode(status.mode);
-      })
-      .catch(() => {
-        if (active) setModeFailed(true);
-      });
     const volatile = volatileDrafts.get(privateDraftId);
     if (volatile) {
       setRetained(volatile);
@@ -335,7 +328,6 @@ function AnalysisContent({
       setStorageFailed(true);
     }
     return () => {
-      active = false;
       mounted.current = false;
     };
   }, [product.id, product.updatedAt, privateDraftId]);
@@ -487,11 +479,14 @@ function AnalysisContent({
 
   function prepareGeneration() {
     if (controlsDisabled || !mode) return;
+    const ai = channels.freeze();
+    if (!ai) return;
     if (analysis && fields.length === 0) {
       setError('请在分析设置中选择至少一项重新生成的内容。');
       return;
     }
     const plan: GenerationPlan = {
+      ai,
       requestId: crypto.randomUUID(),
       product,
       options: { ...options },
@@ -506,20 +501,25 @@ function AnalysisContent({
     };
     setPendingGeneration(plan);
     if (analysis || retained || editor || unconfirmedRequest) setDialog('regenerate');
-    else if (mode === 'real') setDialog('authorize');
+    else if (plan.ai.mode === 'real') setDialog('authorize');
     else void analyze(plan);
   }
 
   function confirmGeneration() {
     if (!pendingGeneration || controlsDisabled) return;
     if (editor && dirty) persistDraft(editor);
-    if (mode === 'real') setDialog('authorize');
+    if (pendingGeneration.ai.mode === 'real') setDialog('authorize');
     else void analyze(pendingGeneration);
   }
 
   async function analyze(plan: GenerationPlan, authorizeReal = false) {
     if (controlsDisabled || generationInFlight.current) return;
-    if (mode === 'real' && !authorizeReal) return;
+    if (!channels.isCurrent(plan.ai)) {
+      setError('账号已切换，请重新选择渠道并发起请求。');
+      hideDialog();
+      return;
+    }
+    if (plan.ai.mode === 'real' && !authorizeReal) return;
     generationInFlight.current = true;
     hideDialog();
     setBusy(true);
@@ -527,7 +527,7 @@ function AnalysisContent({
     setMessage('');
     const attemptedRequest: UnconfirmedRequest = {
       requestId: plan.requestId,
-      mode: mode ?? 'mock',
+      mode: plan.ai.mode,
       createdAt: new Date().toISOString(),
     };
     try {
@@ -555,6 +555,7 @@ function AnalysisContent({
           pricing: plan.pricing,
           requestId: plan.requestId,
           authorizeReal,
+          ...aiSelectionInput(plan.ai),
         }),
         signal: AbortSignal.timeout(130000),
       });
@@ -765,7 +766,8 @@ function AnalysisContent({
           </Button>
         </div>
       </div>
-      {modeFailed && (
+      <AIChannelSelector controller={channels} disabled={controlsDisabled} />
+      {isLegacyMode && modeFailed && (
         <ErrorNotice
           message="无法确认工作台的 AI 模式，暂未发起生成。已保存的内容仍可编辑与导出。"
           onRetry={() => void checkMode()}
@@ -1005,6 +1007,11 @@ function AnalysisContent({
           </p>
           {(dialog === 'regenerate' || dialog === 'authorize') && pendingGeneration && (
             <div className="analysis-generation-confirmation">
+              {!isLegacyMode && (
+                <p>
+                  本次渠道：{pendingGeneration.ai.channelLabel} · {pendingGeneration.ai.model}
+                </p>
+              )}
               <p>{analysisOptionsSummary(pendingGeneration.options)}</p>
               <p>
                 本次生成：

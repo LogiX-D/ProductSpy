@@ -103,6 +103,9 @@ export const contentMetadataSchema = z
   .object({
     mode: z.enum(['mock', 'real']),
     model: z.string().max(200).optional(),
+    channelId: z.string().min(1).max(64).optional(),
+    channelLabel: z.string().min(1).max(80).optional(),
+    provider: z.string().min(1).max(64).optional(),
     options: contentOptionsSchema,
     generatedAt: z.string().datetime(),
     sourceUpdatedAt: z.string().datetime(),

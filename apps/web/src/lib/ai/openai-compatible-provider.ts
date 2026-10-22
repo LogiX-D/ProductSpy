@@ -13,6 +13,8 @@ import {
   type ContentOptions,
   type ContentField,
   type ContentGenerationResult,
+  type AIProtocol,
+  type AIProviderId,
 } from '@productspy/shared';
 import { AppError } from '../server/errors';
 import { capturedEvidence, productFacts } from './generation';
@@ -42,6 +44,8 @@ evidence 包含 facts:string[]（仅引用提供页面资料）、inferences:str
 
 export interface OpenAICompatibleConfig {
   apiKey: string;
+  protocol?: AIProtocol;
+  providerId?: AIProviderId;
   baseUrl?: string;
   model?: string;
   timeoutMs?: number;
@@ -61,7 +65,7 @@ export class AIProviderError extends AppError {
     this.name = 'AIProviderError';
   }
 }
-function endpoint(baseUrl: string): string {
+function endpoint(baseUrl: string, protocol: AIProtocol, providerId?: AIProviderId): string {
   try {
     const url = new URL(baseUrl);
     if (
@@ -78,13 +82,14 @@ function endpoint(baseUrl: string): string {
         'AI_BASE_URL：远程 AI 服务必须使用 HTTPS；HTTP 仅限 localhost、127.0.0.1 或 [::1] 本机服务',
       );
     const basePath = url.pathname.replace(/\/+$/, '');
-    url.pathname = basePath.endsWith('/chat/completions')
+    const suffix = protocol === 'anthropic' ? '/messages' : '/chat/completions';
+    url.pathname = basePath.endsWith(suffix)
       ? basePath
-      : `${basePath || '/v1'}/chat/completions`;
+      : `${basePath || (providerId === 'deepseek' ? '' : '/v1')}${suffix}`;
     return url.toString();
   } catch (error) {
     if (error instanceof AppError) throw error;
-    throw new AppError(503, 'AI_BASE_URL 配置无效，请设置 OpenAI-compatible API 地址并重启工作台');
+    throw new AppError(503, 'AI_BASE_URL 配置无效，请设置与渠道协议匹配的 API 地址并重启工作台');
   }
 }
 async function boundedJson(response: Response): Promise<unknown> {
@@ -150,6 +155,51 @@ function tokenCount(value: unknown): number | undefined {
     value <= 1_000_000_000
     ? value
     : undefined;
+}
+function anthropicCompletion(body: unknown, schemaName: string): unknown {
+  if (!object(body) || body.type !== 'message' || body.role !== 'assistant')
+    throw new AppError(502, 'Claude 接口返回格式不受支持，请检查渠道协议');
+  if (body.stop_reason === 'max_tokens' || body.stop_reason === 'model_context_window_exceeded')
+    throw new AppError(502, 'Claude 输出达到长度上限，结果不完整；没有自动重试');
+  if (body.stop_reason === 'refusal')
+    throw new AppError(502, 'Claude 拒绝了此次请求，请调整要求；没有自动重试');
+  if (body.stop_reason !== 'tool_use' || !Array.isArray(body.content) || body.content.length !== 1)
+    throw new AppError(502, 'Claude 未返回唯一完整的结构化结果；没有自动重试');
+  const tool: unknown = body.content[0];
+  if (
+    !object(tool) ||
+    tool.type !== 'tool_use' ||
+    tool.name !== schemaName ||
+    typeof tool.id !== 'string' ||
+    !tool.id.trim() ||
+    tool.id.length > 256 ||
+    !object(tool.input)
+  )
+    throw new AppError(502, 'Claude 返回的结构化工具结果不匹配；没有自动重试');
+  if (!object(body.usage)) throw new AppError(502, 'Claude 未返回有效用量信息；没有自动重试');
+  const input = tokenCount(body.usage.input_tokens);
+  const output = tokenCount(body.usage.output_tokens);
+  const cacheCreation = tokenCount(
+    body.usage.cache_creation_input_tokens === undefined
+      ? 0
+      : body.usage.cache_creation_input_tokens,
+  );
+  const cacheRead = tokenCount(
+    body.usage.cache_read_input_tokens === undefined ? 0 : body.usage.cache_read_input_tokens,
+  );
+  if (
+    input === undefined ||
+    output === undefined ||
+    cacheCreation === undefined ||
+    cacheRead === undefined
+  )
+    throw new AppError(502, 'Claude 未返回有效用量信息；没有自动重试');
+  const totalInput = tokenCount(input + cacheCreation + cacheRead);
+  if (totalInput === undefined) throw new AppError(502, 'Claude 未返回有效用量信息；没有自动重试');
+  return {
+    choices: [{ message: { content: JSON.stringify(tool.input) }, finish_reason: 'stop' }],
+    usage: { prompt_tokens: totalInput, completion_tokens: output },
+  };
 }
 function evidenceItems(value: unknown): string[] | undefined {
   if (
@@ -300,12 +350,25 @@ function retryAfter(value: string | null): number | undefined {
 export class OpenAICompatibleProvider implements AIProvider {
   private readonly url: string;
   private readonly model: string;
+  private readonly protocol: AIProtocol;
   constructor(private readonly config: OpenAICompatibleConfig) {
     if (!config.apiKey.trim())
       throw new AppError(503, '真实 AI 模式需要 AI_API_KEY，请配置后重启工作台');
     if (config.apiKey.length > 8192 || /[\r\n]/.test(config.apiKey))
       throw new AppError(503, 'AI_API_KEY 格式不受支持，请检查设置');
-    this.url = endpoint(config.baseUrl ?? 'https://api.openai.com/v1');
+    this.protocol = config.protocol ?? 'openai-compatible';
+    if (!['openai-compatible', 'anthropic'].includes(this.protocol))
+      throw new AppError(503, 'AI 渠道协议不受支持');
+    if (this.protocol === 'anthropic' && !config.model?.trim())
+      throw new AppError(503, 'Claude 渠道必须配置已开通的模型 ID');
+    this.url = endpoint(
+      config.baseUrl ??
+        (this.protocol === 'anthropic'
+          ? 'https://api.anthropic.com/v1'
+          : 'https://api.openai.com/v1'),
+      this.protocol,
+      config.providerId,
+    );
     this.model = config.model?.trim() || 'gpt-4o-mini';
     if (this.model.length > 200 || /[\r\n]/.test(this.model))
       throw new AppError(503, 'AI_MODEL 需要不超过 200 字的模型名称，且不能包含换行');
@@ -338,6 +401,16 @@ export class OpenAICompatibleProvider implements AIProvider {
       throw new AppError(503, 'AI_TEMPERATURE 需要 omit 或 0 至 2 的数值');
     if (config.thinking !== undefined && !['disabled', 'enabled'].includes(config.thinking))
       throw new AppError(503, 'AI_THINKING 需要 disabled 或 enabled');
+    if (this.protocol === 'anthropic') {
+      if (config.thinking !== undefined)
+        throw new AppError(503, 'Claude 结构化工具输出暂不支持 thinking 配置，请选择省略');
+      if (config.tokenParameter === 'max_completion_tokens')
+        throw new AppError(503, 'Claude Messages 需要 max_tokens，不能使用 max_completion_tokens');
+      if (config.responseFormat === 'text')
+        throw new AppError(503, 'Claude 渠道需要结构化工具输出，请选择 JSON 输出模式');
+      if (config.temperature !== undefined && config.temperature > 1)
+        throw new AppError(503, 'Claude temperature 需要省略或 0 至 1 的数值');
+    }
   }
   async analyze(product: Product, options?: AnalysisOptions): Promise<ProductAnalysis> {
     return (await this.generate(product, options)).analysis;
@@ -400,34 +473,60 @@ export class OpenAICompatibleProvider implements AIProvider {
       controller.abort();
     }, this.config.timeoutMs ?? 60000);
     const format = this.config.responseFormat ?? 'json_object';
-    const request: Record<string, unknown> = {
-      model: this.model,
-      [this.config.tokenParameter ?? 'max_tokens']: this.config.maxOutputTokens ?? 8192,
-      ...(this.config.temperature === undefined ? {} : { temperature: this.config.temperature }),
-      ...(this.config.thinking === undefined ? {} : { thinking: { type: this.config.thinking } }),
-      ...(format === 'text'
-        ? {}
+    const request: Record<string, unknown> =
+      this.protocol === 'anthropic'
+        ? {
+            model: this.model,
+            max_tokens: this.config.maxOutputTokens ?? 8192,
+            ...(this.config.temperature === undefined
+              ? {}
+              : { temperature: this.config.temperature }),
+            system,
+            messages: [{ role: 'user', content: user }],
+            tools: [
+              {
+                name: schemaName,
+                description: 'Return the complete requested ProductSpy structured result.',
+                input_schema: schema,
+              },
+            ],
+            tool_choice: { type: 'tool', name: schemaName, disable_parallel_tool_use: true },
+          }
         : {
-            response_format:
-              format === 'json_schema'
-                ? {
-                    type: 'json_schema',
-                    json_schema: {
-                      name: schemaName,
-                      strict: true,
-                      schema,
-                    },
-                  }
-                : { type: 'json_object' },
-          }),
-      messages: [
-        { role: 'system', content: system },
-        {
-          role: 'user',
-          content: user,
-        },
-      ],
-    };
+            model: this.model,
+            [this.config.tokenParameter ?? 'max_tokens']: this.config.maxOutputTokens ?? 8192,
+            ...(this.config.temperature === undefined
+              ? {}
+              : { temperature: this.config.temperature }),
+            ...(this.config.thinking === undefined
+              ? {}
+              : { thinking: { type: this.config.thinking } }),
+            ...(this.config.providerId === 'openrouter'
+              ? { provider: { allow_fallbacks: false, require_parameters: true } }
+              : {}),
+            ...(format === 'text'
+              ? {}
+              : {
+                  response_format:
+                    format === 'json_schema'
+                      ? {
+                          type: 'json_schema',
+                          json_schema: {
+                            name: schemaName,
+                            strict: true,
+                            schema,
+                          },
+                        }
+                      : { type: 'json_object' },
+                }),
+            messages: [
+              { role: 'system', content: system },
+              {
+                role: 'user',
+                content: user,
+              },
+            ],
+          };
     try {
       const response = await fetch(this.url, {
         method: 'POST',
@@ -436,7 +535,12 @@ export class OpenAICompatibleProvider implements AIProvider {
         signal: controller.signal,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.config.apiKey.trim()}`,
+          ...(this.protocol === 'anthropic'
+            ? {
+                'x-api-key': this.config.apiKey.trim(),
+                'anthropic-version': '2023-06-01',
+              }
+            : { Authorization: `Bearer ${this.config.apiKey.trim()}` }),
         },
         body: JSON.stringify(request),
       });
@@ -461,7 +565,8 @@ export class OpenAICompatibleProvider implements AIProvider {
           `AI 平台请求失败（HTTP ${response.status}），请检查模型和接口配置后手动重试`,
         );
       }
-      return await boundedJson(response);
+      const body = await boundedJson(response);
+      return this.protocol === 'anthropic' ? anthropicCompletion(body, schemaName) : body;
     } catch (error) {
       if (timedOut)
         throw new AppError(

@@ -7,6 +7,9 @@ import { appOrigin } from './config';
 import { withTaskIdentity } from './task-identity';
 import type { AccountUser } from './security';
 import { workerConcurrency } from './runtime-limits';
+import { resolvedAIExecutionSchema } from './job-input';
+import { verifyAIExecution, withAIExecution } from '../ai/channels';
+import { AppError } from '../server/errors';
 
 const handlers = {
   '/api/analyze-product': analyzeProduct,
@@ -16,7 +19,7 @@ const handlers = {
 export async function runAIJob(userId: string, id: string): Promise<boolean> {
   return withTenant(userId, async () => {
     const jobs = await query<{
-      payload: { endpoint: keyof typeof handlers; input: unknown };
+      payload: { endpoint: keyof typeof handlers; input: unknown; execution?: unknown };
       status: string;
     }>('SELECT payload,status FROM jobs WHERE user_id=$1 AND id=$2', [userId, id]);
     const job = jobs.rows[0];
@@ -47,19 +50,25 @@ export async function runAIJob(userId: string, id: string): Promise<boolean> {
         endpoint = job.payload.endpoint;
       const handler = handlers[endpoint];
       if (!handler) throw new Error('Invalid persisted task endpoint');
-      const response = await withTaskIdentity(user, id, () =>
-        handler(
-          new Request(`${origin}${endpoint}`, {
-            method: 'POST',
-            headers: {
-              Host: new URL(origin).host,
-              Origin: origin,
-              'Content-Type': 'application/json',
-              'X-ProductSpy-Client': 'web',
-              'Sec-Fetch-Site': 'same-origin',
-            },
-            body: JSON.stringify(job.payload.input),
-          }),
+      const execution = resolvedAIExecutionSchema.safeParse(job.payload.execution);
+      if (!execution.success)
+        throw new AppError(503, '历史任务缺少已确认的 AI 渠道快照，请核对用量后手动新建请求。');
+      await verifyAIExecution(execution.data);
+      const response = await withAIExecution(execution.data, () =>
+        withTaskIdentity(user, id, () =>
+          handler(
+            new Request(`${origin}${endpoint}`, {
+              method: 'POST',
+              headers: {
+                Host: new URL(origin).host,
+                Origin: origin,
+                'Content-Type': 'application/json',
+                'X-ProductSpy-Client': 'web',
+                'Sec-Fetch-Site': 'same-origin',
+              },
+              body: JSON.stringify(job.payload.input),
+            }),
+          ),
         ),
       );
       const body: unknown = await response.json();
@@ -73,10 +82,16 @@ export async function runAIJob(userId: string, id: string): Promise<boolean> {
           id,
         ],
       );
-    } catch {
+    } catch (error) {
       await query(
-        "UPDATE jobs SET status='failed',error='执行异常，结果或费用可能未知；请核对已保存结果，不会自动重试',updated_at=now() WHERE user_id=$1 AND id=$2",
-        [userId, id],
+        "UPDATE jobs SET status='failed',error=$1,updated_at=now() WHERE user_id=$2 AND id=$3",
+        [
+          error instanceof AppError && error.status === 503
+            ? 'AI 渠道配置已变更、停用或缺少历史执行快照；未调用 AI，不会自动切换渠道，请核对用量后手动新建请求'
+            : '执行异常，结果或费用可能未知；请核对已保存结果，不会自动重试',
+          userId,
+          id,
+        ],
       );
     }
     return true;

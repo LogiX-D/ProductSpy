@@ -16,6 +16,7 @@ import {
 import { analysisOptionsSummary } from './analysis-preferences';
 import { Button, CopyButton } from './ui';
 import { isLegacyMode } from '../lib/session';
+import { aiSourceLabel } from './ai-channel-selector';
 
 const versionKinds: Record<AnalysisVersion['kind'], string> = {
   legacy: '旧版分析',
@@ -33,7 +34,7 @@ export function analysisProvenance(metadata?: AnalysisMetadata): string {
     metadata.mode === 'mock'
       ? `${isLegacyMode ? '本机演示' : 'Mock 演示'} · 未调用外部模型`
       : metadata.mode === 'real'
-        ? `真实 AI · ${metadata.model ?? '模型未记录'}`
+        ? `真实 AI · ${aiSourceLabel(metadata) || '渠道和模型未记录'}`
         : '旧版分析',
     analysisOptionsSummary(metadata.options),
     ...(metadata.options.customInstructions
@@ -129,7 +130,7 @@ export function AnalysisHistory({
                         ? '本机演示'
                         : 'Mock 演示'
                       : version.metadata?.mode === 'real'
-                        ? `真实 AI · ${version.metadata.model ?? '模型未记录'}`
+                        ? `真实 AI · ${aiSourceLabel(version.metadata) || '渠道和模型未记录'}`
                         : '来源未完整记录'}
                   </small>
                 </div>

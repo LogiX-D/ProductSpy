@@ -1,10 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { z } from 'zod';
 import {
-  CONTENT_FIELDS,
-  DEFAULT_CONTENT_OPTIONS,
-  analysisPricingSchema,
-  contentOptionsSchema,
   contentGenerationSchema,
   estimateContentDuration,
   productAnalysisReference,
@@ -14,8 +9,15 @@ import {
   type GenerationTokenUsage,
   type AnalysisPricing,
 } from '@productspy/shared';
-import { createAIProvider, withProductAnalysisLock } from '../../../lib/ai';
-import { getAnalysisUsageLedger, requestFingerprint } from '../../../lib/server/analysis-usage';
+import { withProductAnalysisLock } from '../../../lib/ai';
+import { createAIProviderForExecution } from '../../../lib/ai/channels';
+import {
+  executionUsageMetadata,
+  getAnalysisUsageLedger,
+  requestFingerprint,
+  resolveUsageExecution,
+} from '../../../lib/server/analysis-usage';
+import { contentGenerationInputSchema } from '../../../lib/saas/job-input';
 import { getContentRepository } from '../../../lib/server/content-repository';
 import { AppError } from '../../../lib/server/errors';
 import { preflight, readJsonBody, withApiRequest } from '../../../lib/server/http';
@@ -26,22 +28,6 @@ import {
 } from '../../../lib/ai/content-generation';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-const envelopeSchema = z
-  .object({
-    planId: z.string().uuid(),
-    expectedUpdatedAt: z.string().datetime(),
-    options: contentOptionsSchema.default(DEFAULT_CONTENT_OPTIONS),
-    selectedFields: z
-      .array(z.enum(CONTENT_FIELDS))
-      .min(1)
-      .max(9)
-      .refine((fields) => new Set(fields).size === fields.length)
-      .optional(),
-    requestId: z.string().uuid().optional(),
-    authorizeReal: z.boolean().optional(),
-    pricing: analysisPricingSchema.optional(),
-  })
-  .strict();
 function calculateUsage(
   mode: 'mock' | 'real',
   usage?: GenerationTokenUsage,
@@ -66,35 +52,27 @@ export function POST(request: Request): Promise<Response> {
   return withApiRequest(
     request,
     async () => {
-      const input = envelopeSchema.safeParse(await readJsonBody(request));
+      const input = contentGenerationInputSchema.safeParse(await readJsonBody(request));
       if (!input.success) throw new AppError(400, '内容方案或生成参数无效，请刷新后重试。');
-      const mode =
-        process.env.AI_MODE === 'mock' ||
-        (!process.env.AI_API_KEY?.trim() && process.env.AI_MODE !== 'real')
-          ? 'mock'
-          : 'real';
-      if (mode === 'real' && input.data.authorizeReal !== true)
-        throw new AppError(
-          428,
-          '真实 AI 内容生成可能产生费用，请明确授权此次请求和预算；尚未调用服务。',
-        );
       const repository = getContentRepository(),
         ledger = getAnalysisUsageLedger();
       const requestId = input.data.requestId ?? randomUUID();
-      const model = mode === 'real' ? process.env.AI_MODEL || 'gpt-4o-mini' : undefined;
-      const fingerprint = requestFingerprint({
-        planId: input.data.planId,
-        updatedAt: input.data.expectedUpdatedAt,
-        options: input.data.options,
-        selectedFields: input.data.selectedFields,
-        pricing: input.data.pricing,
-        mode,
-        model,
-      });
       return withProductAnalysisLock(`${repository.filePath}:${input.data.planId}`, async () => {
         const plan = await repository.get(input.data.planId);
         if (!plan) throw new AppError(404, '内容方案已删除或不存在。');
         const prior = await ledger.get(requestId);
+        const execution = await resolveUsageExecution(prior, input.data);
+        const { mode } = execution;
+        const fingerprint = requestFingerprint({
+          planId: input.data.planId,
+          updatedAt: input.data.expectedUpdatedAt,
+          options: input.data.options,
+          selectedFields: input.data.selectedFields,
+          pricing: input.data.pricing,
+          mode,
+          model: mode === 'real' ? execution.model : undefined,
+          ...(!prior || prior.execution ? { execution } : {}),
+        });
         if (prior) {
           if (prior.fingerprint !== fingerprint)
             throw new AppError(409, '请求编号已用于不同内容，请刷新后重新操作。');
@@ -108,6 +86,11 @@ export function POST(request: Request): Promise<Response> {
             '该生成请求已经发起或中断，请检查已保存内容和用量。为避免重复费用，不会再次调用服务。',
           );
         }
+        if (mode === 'real' && input.data.authorizeReal !== true)
+          throw new AppError(
+            428,
+            '真实 AI 内容生成可能产生费用，请明确授权此次请求和预算；尚未调用服务。',
+          );
         if (plan.updatedAt !== input.data.expectedUpdatedAt)
           throw new AppError(409, '内容方案已更新，请刷新；人工修改和历史未覆盖。');
         if (
@@ -119,17 +102,17 @@ export function POST(request: Request): Promise<Response> {
         await repository.assertCapacity(plan.id, plan.updatedAt);
         // Validate expanded prompt before reserving usage or making a potentially paid request.
         contentRequestData(plan, input.data.options, input.data.selectedFields);
-        const provider = createAIProvider();
+        const provider = await createAIProviderForExecution(execution);
         if (!provider.createContent)
           throw new AppError(503, '当前 AI Provider 不支持内容创作，请检查配置。');
         await ledger.begin({
           requestId,
           productId: `content:${plan.id}`,
           fingerprint,
-          mode,
+          ...executionUsageMetadata(execution),
+          execution,
           contentOptions: input.data.options,
           ...(input.data.selectedFields ? { contentFields: input.data.selectedFields } : {}),
-          ...(model ? { model } : {}),
         });
         let usage: AnalysisUsage | undefined;
         try {
@@ -152,8 +135,7 @@ export function POST(request: Request): Promise<Response> {
             ...new Set([...evidence.unknowns, ...generated.data.evidence.unknowns]),
           ].slice(0, 30);
           const metadata: ContentMetadata = {
-            mode,
-            ...(model ? { model } : {}),
+            ...executionUsageMetadata(execution),
             options: input.data.options,
             generatedAt: new Date().toISOString(),
             sourceUpdatedAt: plan.productSnapshot.updatedAt,

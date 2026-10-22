@@ -4,6 +4,8 @@ import { consumeAIAllowance } from './entitlements';
 import { z } from 'zod';
 import { createHash } from 'node:crypto';
 import { AppError } from '../server/errors';
+import { resolveAIExecution } from '../ai/channels';
+import { aiJobEndpoints, parseAIJobInput } from './job-input';
 
 export async function startAIJob(id: string, kind: string): Promise<void> {
   await query(
@@ -13,33 +15,46 @@ export async function startAIJob(id: string, kind: string): Promise<void> {
 }
 const queueSchema = z
   .object({
-    endpoint: z.enum(['/api/analyze-product', '/api/analyze-comparison', '/api/generate-content']),
+    endpoint: z.enum(aiJobEndpoints),
     input: z.object({ requestId: z.string().uuid() }).passthrough(),
   })
   .strict();
 export async function enqueueAIJob(body: unknown) {
   const parsed = queueSchema.safeParse(body);
   if (!parsed.success) throw new AppError(400, '后台任务类型或请求编号无效');
-  const payload = parsed.data,
-    id = payload.input.requestId,
+  const validated = parseAIJobInput(parsed.data.endpoint, parsed.data.input);
+  if (!validated.success) throw new AppError(400, 'AI 任务参数无效，请刷新并检查渠道与模型选择');
+  const payload = { endpoint: parsed.data.endpoint, input: validated.data },
+    id = parsed.data.input.requestId,
     user = currentUserId();
-  if (
-    (process.env.AI_MODE === 'real' ||
-      (process.env.AI_MODE !== 'mock' && process.env.AI_API_KEY?.trim())) &&
-    payload.input.authorizeReal !== true
-  )
-    throw new AppError(428, '请先确认真实 AI 请求及其预算');
   const fingerprint = createHash('sha256').update(JSON.stringify(payload)).digest('hex');
   return dbTransaction(async () => {
-    const existing = await query<{ payload: { fingerprint?: string }; status: string }>(
-      'SELECT payload,status FROM jobs WHERE user_id=$1 AND id=$2',
-      [user, id],
-    );
+    const existing = await query<{
+      payload: { fingerprint?: string; execution?: unknown };
+      status: string;
+    }>('SELECT payload,status FROM jobs WHERE user_id=$1 AND id=$2', [user, id]);
     if (existing.rows[0]) {
-      if (existing.rows[0].payload.fingerprint !== fingerprint)
+      const previous = existing.rows[0];
+      // Historical jobs used the raw envelope. They may be read back, but a queued
+      // historical job without a frozen execution will fail safely in the worker.
+      const legacyFingerprint = createHash('sha256')
+        .update(JSON.stringify(parsed.data))
+        .digest('hex');
+      if (
+        previous.payload.fingerprint !== fingerprint &&
+        (previous.payload.execution || previous.payload.fingerprint !== legacyFingerprint)
+      )
         throw new AppError(409, '此请求编号已用于不同任务');
-      return { id, status: existing.rows[0].status, replayed: true };
+      return { id, status: previous.status, replayed: true };
     }
+    // Resolve only after deduplication: changing the default or disabling a channel
+    // never turns a retry of an accepted request into another paid invocation.
+    const execution = await resolveAIExecution({
+      channelId: payload.input.channelId,
+      model: payload.input.model,
+    });
+    if (execution.mode === 'real' && payload.input.authorizeReal !== true)
+      throw new AppError(428, '请先确认真实 AI 请求及其预算');
     await consumeAIAllowance(id);
     const kind =
       payload.endpoint === '/api/analyze-product'
@@ -49,7 +64,7 @@ export async function enqueueAIJob(body: unknown) {
           : 'content';
     await query(
       "INSERT INTO jobs(user_id,id,kind,status,payload) VALUES($1,$2,$3,'queued',$4::jsonb)",
-      [user, id, kind, JSON.stringify({ ...payload, fingerprint })],
+      [user, id, kind, JSON.stringify({ ...payload, fingerprint, execution })],
     );
     await query('INSERT INTO job_dispatch(user_id,id) VALUES($1,$2)', [user, id]);
     return { id, status: 'queued', replayed: false };

@@ -11,4 +11,5 @@ export * from './content';
 export * from './history-management';
 export * from './business-backup';
 export * from './templates';
+export * from './ai-channels';
 export { PRODUCTSPY_EXTENSION_ID, PRODUCTSPY_EXTENSION_PUBLIC_KEY } from './extension-identity';

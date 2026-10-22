@@ -1,6 +1,7 @@
 import type { AnalysisUsageReport } from '@productspy/shared';
 import { Button } from './ui';
 import { isLegacyMode } from '../lib/session';
+import { aiSourceLabel } from './ai-channel-selector';
 
 export function AnalysisUsagePanel({
   report,
@@ -64,6 +65,7 @@ export function AnalysisUsagePanel({
                 <span>
                   {new Date(record.createdAt).toLocaleString('zh-CN', { hour12: false })} ·{' '}
                   {record.mode === 'mock' ? (isLegacyMode ? '本机演示' : 'Mock 演示') : '真实 AI'} ·{' '}
+                  {aiSourceLabel(record) && `${aiSourceLabel(record)} · `}
                   {
                     (
                       {

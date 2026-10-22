@@ -8,7 +8,10 @@ import {
   type AnalysisUsage,
   type AnalysisUsageReport,
   analysisUsageRecordSchema,
+  type AISelection,
 } from '@productspy/shared';
+import { currentAIExecution, resolveAIExecution, type ResolvedAIExecution } from '../ai/channels';
+import { resolvedAIExecutionSchema } from '../saas/job-input';
 import { AppError } from './errors';
 import { dataDirectory } from './product-repository';
 import { saasEnabled } from '../saas/context';
@@ -23,12 +26,22 @@ const usageRecordSchema = analysisUsageRecordSchema
     versionId: z.string().min(1).max(100).optional(),
     errorCode: z.number().int().optional(),
     cooldownUntil: z.string().datetime().optional(),
+    execution: resolvedAIExecutionSchema.optional(),
   })
+  .strict()
   .refine(
     (record) => Boolean(record.options) !== Boolean(record.contentOptions),
     '用量记录必须具有唯一且准确的生成参数',
   );
 export type UsageRecord = z.infer<typeof usageRecordSchema>;
+
+/** Server-only ledger parser, including the immutable execution decision. */
+export function parseStoredAnalysisUsage(value: unknown): UsageRecord[] {
+  const records = usageRecordSchema.array().parse(value);
+  if (new Set(records.map((record) => record.requestId)).size !== records.length)
+    throw new Error('Duplicate request identifiers');
+  return records;
+}
 
 interface UsageRegistry {
   queues: Map<string, Promise<unknown>>;
@@ -44,6 +57,35 @@ const registry = (globalRegistry.__productspyUsage ??= {
 
 export function requestFingerprint(value: unknown): string {
   return createHash('sha256').update(JSON.stringify(value)).digest('hex');
+}
+
+/** Replays stay bound to the original decision even after an administrator changes defaults. */
+export async function resolveUsageExecution(
+  prior: UsageRecord | undefined,
+  selection: AISelection,
+): Promise<ResolvedAIExecution> {
+  const execution = prior?.execution;
+  if (!execution)
+    return resolveAIExecution({ channelId: selection.channelId, model: selection.model });
+  if (
+    (selection.channelId !== undefined && selection.channelId !== execution.channelId) ||
+    (selection.model !== undefined && selection.model !== execution.model)
+  )
+    throw new AppError(409, '此请求编号已用于不同 AI 渠道或模型，请重新确认并使用新的请求编号。');
+  const taskExecution = currentAIExecution();
+  if (taskExecution && requestFingerprint(taskExecution) !== requestFingerprint(execution))
+    throw new AppError(409, '任务执行渠道与原请求不一致；不会重新调用 AI。');
+  return execution;
+}
+
+export function executionUsageMetadata(execution: ResolvedAIExecution) {
+  return {
+    mode: execution.mode,
+    ...(execution.mode === 'real' ? { model: execution.model } : {}),
+    channelId: execution.channelId,
+    channelLabel: execution.channelLabel,
+    provider: execution.provider,
+  };
 }
 
 export function dailyRealLimit(): number {
@@ -91,11 +133,7 @@ export class AnalysisUsageLedger {
         ? await readWorkspaceDocument(this.directory, 'analysis-usage.json')
         : await readFile(this.filePath, 'utf8');
       const parsed: unknown = JSON.parse(source);
-      const records = usageRecordSchema.array().safeParse(parsed);
-      if (!records.success) throw new Error('Invalid usage ledger');
-      const ids = records.data.map((record) => record.requestId);
-      if (new Set(ids).size !== ids.length) throw new Error('Duplicate request identifiers');
-      return records.data;
+      return parseStoredAnalysisUsage(parsed);
     } catch (error) {
       if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT')
         return [];
@@ -144,6 +182,10 @@ export class AnalysisUsageLedger {
       | 'fingerprint'
       | 'mode'
       | 'model'
+      | 'channelId'
+      | 'channelLabel'
+      | 'provider'
+      | 'execution'
       | 'options'
       | 'fields'
       | 'contentOptions'

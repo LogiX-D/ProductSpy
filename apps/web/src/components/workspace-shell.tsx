@@ -23,6 +23,17 @@ import { workspaceCopy as copy } from './workspace-copy';
 import { isLegacyMode } from '../lib/session';
 import { signOut } from '../lib/saas-api';
 import { SaasAccess, useAccount } from './saas-access';
+import { useAIChannels } from './ai-channel-selector';
+
+function AIAdminNavigation({ active }: { active: boolean }) {
+  const channels = useAIChannels();
+  return channels.catalog?.canManage ? (
+    <Link href="/settings/ai" aria-current={active ? 'page' : undefined}>
+      <Settings2 size={18} />
+      AI 渠道管理
+    </Link>
+  ) : null;
+}
 
 export function WorkspaceShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -130,6 +141,7 @@ function WorkspaceLayout({ children }: { children: ReactNode }) {
                 {active && <ChevronRight size={15} className="ws-nav-chevron" />}
               </Link>
             ))}
+            {!isLegacyMode && <AIAdminNavigation active={pathname === '/settings/ai'} />}
           </nav>
           <div className="ws-sidebar-footer">
             {!isLegacyMode && (
@@ -215,6 +227,7 @@ function WorkspaceLayout({ children }: { children: ReactNode }) {
                 {label}
               </Link>
             ))}
+            {!isLegacyMode && <AIAdminNavigation active={pathname === '/settings/ai'} />}
             {!isLegacyMode && <Link href="/privacy">隐私说明</Link>}
           </nav>
           <main id="workspace-content" tabIndex={-1} className="ws-main-content">
