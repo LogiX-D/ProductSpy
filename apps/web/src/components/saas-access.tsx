@@ -26,6 +26,16 @@ export function SaasAccess({ children }: { children: ReactNode }) {
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     let active = true;
+    let redirectStarted = false;
+    const redirectToLogin = () => {
+      if (!active || redirectStarted) return;
+      // The browser can reach /login before usePathname catches up. Combining
+      // the old pathname with that page's ?next= would nest the return address.
+      const current = window.location;
+      if (['/login', '/register', '/privacy'].includes(current.pathname)) return;
+      redirectStarted = true;
+      router.replace(`/login?next=${encodeURIComponent(current.pathname + current.search)}`);
+    };
     const sync = () => {
       if (active) setAccount(getAccountSession());
     };
@@ -41,7 +51,7 @@ export function SaasAccess({ children }: { children: ReactNode }) {
           if (!active) return;
           setAccount(undefined);
           if (cause instanceof ApiRequestError && cause.status === 401) {
-            router.replace(`/login?next=${encodeURIComponent(pathname + window.location.search)}`);
+            redirectToLogin();
           } else setError(cause instanceof Error ? cause.message : '账号验证失败，请重试。');
         });
     };
@@ -52,8 +62,7 @@ export function SaasAccess({ children }: { children: ReactNode }) {
     };
     const changed = () => {
       sync();
-      if (!getAccountSession())
-        router.replace(`/login?next=${encodeURIComponent(pathname + window.location.search)}`);
+      if (!getAccountSession()) redirectToLogin();
     };
     const visibility = () => {
       if (document.visibilityState === 'visible') verify();

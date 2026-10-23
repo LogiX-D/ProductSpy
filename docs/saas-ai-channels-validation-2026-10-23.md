@@ -25,4 +25,8 @@
 
 第二轮 `25c9e57` 的 [CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39896327729) 发现校验器把 PostgreSQL `pg_policies.roles` 的 `name[]` 返回形式当作 JS 数组；node-postgres 实际返回 `{public}`。已通过本机临时 PostgreSQL 17.11 查询证实并增加回归，仅将精确 `{public}` 规范化为单个 public 角色，额外角色仍拒绝；读写策略和实际 canary 保护未放宽。第二轮其他已执行步骤仍通过，浏览器/导出未执行，继续等待最终完整流水线。
 
+第三轮 `6d543df` 的 [CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39896974185) 已通过完整静态、单元、受限 PG、恢复、构建、standalone、容器及 Compose；浏览器 4/5 通过（多渠道、两项实际 MV3、工作台），任务历史用例在退出重登时发现嵌套 `next` 地址竞态。未放宽原 URL 断言：现改为使用当前浏览器路径构造一次登录跳转，忽略已到登录/注册/隐私页面的迟到失效通知，并增加重复账号通知及迟到 401 的回归。后续完整 CI 与部署仍待实际执行。
+
+登录竞态修复的四项回归对旧实现为 4 FAIL，对新实现为 4 PASS；原实现已在负对照后恢复为修复版本，文件摘要核对一致。修复后本机全量为 110 文件、1172 PASS / 5 SKIP，typecheck、lint、扩展/Web 默认构建通过；实际任务历史/注册/退出/重登/375px 浏览器用例连续五次通过，保留原断言与真实本机 HTTP 会话。
+
 尚未完成：本轮完整 CI、测试站升级、管理员权限绑定以及各服务商真实凭据调用。用户原先要求稍后配置真实 AI，当前仍保持 Mock、支付关闭；不将 HTTP stub、Mock、密文配置保存记为真实 AI 验收，不进行真实交易或公开发布。
