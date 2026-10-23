@@ -8,9 +8,17 @@ import {
   type AnalysisUsage,
   type AnalysisUsageReport,
   analysisUsageRecordSchema,
+  type AISelection,
 } from '@productspy/shared';
+import { currentAIExecution, resolveAIExecution, type ResolvedAIExecution } from '../ai/channels';
+import { resolvedAIExecutionSchema } from '../saas/job-input';
 import { AppError } from './errors';
 import { dataDirectory } from './product-repository';
+import { saasEnabled } from '../saas/context';
+import { dbTransaction } from '../saas/database';
+import { consumeAIAllowance } from '../saas/entitlements';
+import { startAIJob, finishAIJob } from '../saas/jobs';
+import { readWorkspaceDocument, writeWorkspaceDocument } from '../saas/workspace-storage';
 
 const usageRecordSchema = analysisUsageRecordSchema
   .extend({
@@ -18,12 +26,22 @@ const usageRecordSchema = analysisUsageRecordSchema
     versionId: z.string().min(1).max(100).optional(),
     errorCode: z.number().int().optional(),
     cooldownUntil: z.string().datetime().optional(),
+    execution: resolvedAIExecutionSchema.optional(),
   })
+  .strict()
   .refine(
     (record) => Boolean(record.options) !== Boolean(record.contentOptions),
     '用量记录必须具有唯一且准确的生成参数',
   );
 export type UsageRecord = z.infer<typeof usageRecordSchema>;
+
+/** Server-only ledger parser, including the immutable execution decision. */
+export function parseStoredAnalysisUsage(value: unknown): UsageRecord[] {
+  const records = usageRecordSchema.array().parse(value);
+  if (new Set(records.map((record) => record.requestId)).size !== records.length)
+    throw new Error('Duplicate request identifiers');
+  return records;
+}
 
 interface UsageRegistry {
   queues: Map<string, Promise<unknown>>;
@@ -39,6 +57,35 @@ const registry = (globalRegistry.__productspyUsage ??= {
 
 export function requestFingerprint(value: unknown): string {
   return createHash('sha256').update(JSON.stringify(value)).digest('hex');
+}
+
+/** Replays stay bound to the original decision even after an administrator changes defaults. */
+export async function resolveUsageExecution(
+  prior: UsageRecord | undefined,
+  selection: AISelection,
+): Promise<ResolvedAIExecution> {
+  const execution = prior?.execution;
+  if (!execution)
+    return resolveAIExecution({ channelId: selection.channelId, model: selection.model });
+  if (
+    (selection.channelId !== undefined && selection.channelId !== execution.channelId) ||
+    (selection.model !== undefined && selection.model !== execution.model)
+  )
+    throw new AppError(409, '此请求编号已用于不同 AI 渠道或模型，请重新确认并使用新的请求编号。');
+  const taskExecution = currentAIExecution();
+  if (taskExecution && requestFingerprint(taskExecution) !== requestFingerprint(execution))
+    throw new AppError(409, '任务执行渠道与原请求不一致；不会重新调用 AI。');
+  return execution;
+}
+
+export function executionUsageMetadata(execution: ResolvedAIExecution) {
+  return {
+    mode: execution.mode,
+    ...(execution.mode === 'real' ? { model: execution.model } : {}),
+    channelId: execution.channelId,
+    channelLabel: execution.channelLabel,
+    provider: execution.provider,
+  };
 }
 
 export function dailyRealLimit(): number {
@@ -68,7 +115,11 @@ export class AnalysisUsageLedger {
     const prior = registry.queues.get(this.filePath) ?? Promise.resolve();
     const result = prior
       .catch(() => undefined)
-      .then(() => withBusinessOperation(this.directory, operation));
+      .then(() =>
+        withBusinessOperation(this.directory, () =>
+          saasEnabled() ? dbTransaction(operation) : operation(),
+        ),
+      );
     registry.queues.set(
       this.filePath,
       result.catch(() => undefined),
@@ -78,12 +129,11 @@ export class AnalysisUsageLedger {
 
   private async read(): Promise<UsageRecord[]> {
     try {
-      const parsed: unknown = JSON.parse(await readFile(this.filePath, 'utf8'));
-      const records = usageRecordSchema.array().safeParse(parsed);
-      if (!records.success) throw new Error('Invalid usage ledger');
-      const ids = records.data.map((record) => record.requestId);
-      if (new Set(ids).size !== ids.length) throw new Error('Duplicate request identifiers');
-      return records.data;
+      const source = saasEnabled()
+        ? await readWorkspaceDocument(this.directory, 'analysis-usage.json')
+        : await readFile(this.filePath, 'utf8');
+      const parsed: unknown = JSON.parse(source);
+      return parseStoredAnalysisUsage(parsed);
     } catch (error) {
       if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT')
         return [];
@@ -95,6 +145,10 @@ export class AnalysisUsageLedger {
   }
 
   private async write(records: UsageRecord[]): Promise<void> {
+    if (saasEnabled()) {
+      await writeWorkspaceDocument(this.directory, 'analysis-usage.json', JSON.stringify(records));
+      return;
+    }
     await mkdir(this.directory, { recursive: true, mode: 0o700 });
     const temporary = join(this.directory, `.analysis-usage-${randomUUID()}.tmp`);
     try {
@@ -128,6 +182,10 @@ export class AnalysisUsageLedger {
       | 'fingerprint'
       | 'mode'
       | 'model'
+      | 'channelId'
+      | 'channelLabel'
+      | 'provider'
+      | 'execution'
       | 'options'
       | 'fields'
       | 'contentOptions'
@@ -191,6 +249,17 @@ export class AnalysisUsageLedger {
           'AI 请求配置或用量记录格式无效，请检查模型名称与参数；尚未调用 AI 服务。',
         );
       records.push(record.data);
+      if (saasEnabled()) {
+        await consumeAIAllowance(input.requestId);
+        await startAIJob(
+          input.requestId,
+          input.productId.startsWith('content:')
+            ? 'content'
+            : input.productId.startsWith('comparison:')
+              ? 'comparison'
+              : 'analysis',
+        );
+      }
       // Commit the reservation before any network operation. A crash remains visible as unknown.
       await this.write(records);
       if (input.mode === 'real') this.active.add(input.requestId);
@@ -225,6 +294,12 @@ export class AnalysisUsageLedger {
         record.cooldownUntil = new Date(Date.now() + seconds * 1000).toISOString();
       }
       await this.write(records);
+      if (saasEnabled())
+        await finishAIJob(
+          requestId,
+          record.status === 'succeeded' ? 'succeeded' : 'failed',
+          result.errorCode,
+        );
     }).finally(() => this.active.delete(requestId));
   }
 

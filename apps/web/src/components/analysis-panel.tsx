@@ -6,7 +6,6 @@ import {
   ApiRequestError,
   analysisSchema,
   analysisMetadataSchema,
-  apiRequest,
   errorMessage,
   productSchema,
   type AnalysisField,
@@ -18,7 +17,7 @@ import {
   type ProductAnalysis,
 } from '@productspy/shared';
 import { productRepository } from '../lib/storage/product-api';
-import { webRequest } from '../lib/session';
+import { getAccountSession, isLegacyMode, webRequest } from '../lib/session';
 import { analysisCopy } from './analysis-copy';
 import { AnalysisEditor } from './analysis-editor';
 import { AnalysisOptionsPanel } from './analysis-options';
@@ -51,6 +50,12 @@ import {
   type AnalysisSessionDraft,
 } from './analysis-utils';
 import { Badge, Button, CopyButton, EmptyState, ErrorNotice } from './ui';
+import {
+  AIChannelSelector,
+  aiSelectionInput,
+  useAIChannels,
+  type PreparedAISelection,
+} from './ai-channel-selector';
 
 export { parseScript } from './analysis-utils';
 
@@ -154,6 +159,7 @@ type EditorState = {
   mockPrefix: string;
 };
 type GenerationPlan = {
+  ai: PreparedAISelection;
   requestId: string;
   product: Product;
   options: AnalysisOptions;
@@ -170,8 +176,12 @@ function AnalysisContent({
   product: Product;
   onUpdate: (product: Product) => void;
 }) {
-  const [mode, setMode] = useState<'mock' | 'real'>();
-  const [modeFailed, setModeFailed] = useState(false);
+  const channels = useAIChannels();
+  const mode = channels.mode;
+  const privateDraftId = isLegacyMode
+    ? product.id
+    : `${getAccountSession()?.user.id ?? 'unverified'}:${product.id}`;
+  const modeFailed = Boolean(channels.error);
   const [options, setOptions] = useState<AnalysisOptions>({ ...DEFAULT_ANALYSIS_OPTIONS });
   const [pricing, setPricing] = useState<AnalysisPricingPreference>({});
   const [fields, setFields] = useState<AnalysisField[]>(
@@ -223,13 +233,7 @@ function AnalysisContent({
   const controlsDisabled = busy || saving || checkingResult;
 
   async function checkMode() {
-    setModeFailed(false);
-    try {
-      const status = await apiRequest<{ mode: 'mock' | 'real' }>('/api/status');
-      if (mounted.current) setMode(status.mode);
-    } catch {
-      if (mounted.current) setModeFailed(true);
-    }
+    await channels.reload();
   }
 
   async function loadUsage() {
@@ -308,15 +312,7 @@ function AnalysisContent({
 
   useEffect(() => {
     mounted.current = true;
-    let active = true;
-    void apiRequest<{ mode: 'mock' | 'real' }>('/api/status')
-      .then((status) => {
-        if (active) setMode(status.mode);
-      })
-      .catch(() => {
-        if (active) setModeFailed(true);
-      });
-    const volatile = volatileDrafts.get(product.id);
+    const volatile = volatileDrafts.get(privateDraftId);
     if (volatile) {
       setRetained(volatile);
       setStorageFailed(true);
@@ -332,10 +328,9 @@ function AnalysisContent({
       setStorageFailed(true);
     }
     return () => {
-      active = false;
       mounted.current = false;
     };
-  }, [product.id, product.updatedAt]);
+  }, [product.id, product.updatedAt, privateDraftId]);
 
   useEffect(() => {
     if (!dirty) return;
@@ -359,7 +354,7 @@ function AnalysisContent({
 
   function clearDraft(expectedSerialized?: string | null) {
     try {
-      const volatile = volatileDrafts.get(product.id);
+      const volatile = volatileDrafts.get(privateDraftId);
       if (
         expectedSerialized !== undefined &&
         (volatile
@@ -367,7 +362,7 @@ function AnalysisContent({
           : sessionStorage.getItem(sessionDraftKey(product.id))) !== expectedSerialized
       )
         return;
-      volatileDrafts.delete(product.id);
+      volatileDrafts.delete(privateDraftId);
       sessionStorage.removeItem(sessionDraftKey(product.id));
     } catch {
       if (mounted.current) setStorageFailed(true);
@@ -385,7 +380,7 @@ function AnalysisContent({
       draft: next.draft,
     };
     const keepVolatile = () => {
-      volatileDrafts.set(product.id, session);
+      volatileDrafts.set(privateDraftId, session);
       setRetained(session);
       setStorageFailed(true);
       return false;
@@ -394,7 +389,7 @@ function AnalysisContent({
       const serialized = JSON.stringify(session);
       if (serialized.length > sessionDraftMaxCharacters) return keepVolatile();
       sessionStorage.setItem(sessionDraftKey(product.id), serialized);
-      volatileDrafts.delete(product.id);
+      volatileDrafts.delete(privateDraftId);
       setRetained(session);
       setStorageFailed(false);
       return true;
@@ -484,11 +479,14 @@ function AnalysisContent({
 
   function prepareGeneration() {
     if (controlsDisabled || !mode) return;
+    const ai = channels.freeze();
+    if (!ai) return;
     if (analysis && fields.length === 0) {
       setError('请在分析设置中选择至少一项重新生成的内容。');
       return;
     }
     const plan: GenerationPlan = {
+      ai,
       requestId: crypto.randomUUID(),
       product,
       options: { ...options },
@@ -503,20 +501,25 @@ function AnalysisContent({
     };
     setPendingGeneration(plan);
     if (analysis || retained || editor || unconfirmedRequest) setDialog('regenerate');
-    else if (mode === 'real') setDialog('authorize');
+    else if (plan.ai.mode === 'real') setDialog('authorize');
     else void analyze(plan);
   }
 
   function confirmGeneration() {
     if (!pendingGeneration || controlsDisabled) return;
     if (editor && dirty) persistDraft(editor);
-    if (mode === 'real') setDialog('authorize');
+    if (pendingGeneration.ai.mode === 'real') setDialog('authorize');
     else void analyze(pendingGeneration);
   }
 
   async function analyze(plan: GenerationPlan, authorizeReal = false) {
     if (controlsDisabled || generationInFlight.current) return;
-    if (mode === 'real' && !authorizeReal) return;
+    if (!channels.isCurrent(plan.ai)) {
+      setError('账号已切换，请重新选择渠道并发起请求。');
+      hideDialog();
+      return;
+    }
+    if (plan.ai.mode === 'real' && !authorizeReal) return;
     generationInFlight.current = true;
     hideDialog();
     setBusy(true);
@@ -524,7 +527,7 @@ function AnalysisContent({
     setMessage('');
     const attemptedRequest: UnconfirmedRequest = {
       requestId: plan.requestId,
-      mode: mode ?? 'mock',
+      mode: plan.ai.mode,
       createdAt: new Date().toISOString(),
     };
     try {
@@ -552,6 +555,7 @@ function AnalysisContent({
           pricing: plan.pricing,
           requestId: plan.requestId,
           authorizeReal,
+          ...aiSelectionInput(plan.ai),
         }),
         signal: AbortSignal.timeout(130000),
       });
@@ -646,7 +650,7 @@ function AnalysisContent({
             : undefined;
         setMessage(
           entry
-            ? `上次请求状态：${({ started: '结果尚未确认', succeeded: '已完成，但商品中未找到对应保存版本', failed: '失败', conflict: '保存时发生版本冲突' } as const)[entry.status]}。未发起新的 AI 请求。${unconfirmedRequest.mode === 'real' ? '费用可能已产生；请核对本机用量与服务商账单，勿把结果未知视为免费。' : ''}`
+            ? `上次请求状态：${({ started: '结果尚未确认', succeeded: '已完成，但商品中未找到对应保存版本', failed: '失败', conflict: '保存时发生版本冲突' } as const)[entry.status]}。未发起新的 AI 请求。${unconfirmedRequest.mode === 'real' ? '费用可能已产生；请核对请求用量与服务商账单，勿把结果未知视为免费。' : ''}`
             : `尚未找到上次请求的保存记录。未发起新的 AI 请求。${unconfirmedRequest.mode === 'real' ? '网络中断或超时不能证明服务商没有计费，请先核对账单，再决定是否重新生成。' : ''}`,
         );
       }
@@ -762,7 +766,8 @@ function AnalysisContent({
           </Button>
         </div>
       </div>
-      {modeFailed && (
+      <AIChannelSelector controller={channels} disabled={controlsDisabled} />
+      {isLegacyMode && modeFailed && (
         <ErrorNotice
           message="无法确认工作台的 AI 模式，暂未发起生成。已保存的内容仍可编辑与导出。"
           onRetry={() => void checkMode()}
@@ -991,7 +996,9 @@ function AnalysisContent({
           </h2>
           <p>
             {dialog === 'authorize'
-              ? '本次操作将把商品文字资料和自定义要求发送至你在 Windows 启动器配置的服务商，可能消耗 API 额度。商品图片和视频不会上传，不会自动重试。'
+              ? isLegacyMode
+                ? '本次操作将把商品文字资料和自定义要求发送至你在 Windows 启动器配置的服务商，可能消耗 API 额度。商品图片和视频不会上传，不会自动重试。'
+                : '本次操作会将商品文字资料和自定义要求发送至工作台配置的 AI 服务，并消耗账号请求额度。商品图片和视频不会发送给模型，不会自动重试。'
               : dialog === 'regenerate'
                 ? analysisCopy.regenerateDescription
                 : dialog === 'close'
@@ -1000,6 +1007,11 @@ function AnalysisContent({
           </p>
           {(dialog === 'regenerate' || dialog === 'authorize') && pendingGeneration && (
             <div className="analysis-generation-confirmation">
+              {!isLegacyMode && (
+                <p>
+                  本次渠道：{pendingGeneration.ai.channelLabel} · {pendingGeneration.ai.model}
+                </p>
+              )}
               <p>{analysisOptionsSummary(pendingGeneration.options)}</p>
               <p>
                 本次生成：

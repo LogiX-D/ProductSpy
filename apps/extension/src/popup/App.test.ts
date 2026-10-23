@@ -8,6 +8,8 @@ import { extensionRequest, type ExtensionResponse } from '../background/messages
 import { hasCaptureConsent, rememberCaptureConsent } from './capture-consent';
 import { popupCopy } from './copy';
 
+vi.mock('../config', () => ({ APP_URL: 'http://127.0.0.1:3000', LEGACY_MODE: true }));
+
 vi.mock('../background/messages', () => ({
   WORKSPACE_URL: 'http://127.0.0.1:3000',
   extensionRequest: vi.fn(),

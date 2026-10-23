@@ -44,6 +44,9 @@ describe('RC complete AI routes: owned HTTP Stub, consent, replay, costs and fai
     vi.stubEnv('AI_TOKEN_PARAMETER', 'max_completion_tokens');
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
     server = createServer((request, response) => {
+      // Validate individual HTTP exchanges, not connection pooling. Reusing an owned
+      // loopback socket stalls on this Windows host even in a standalone Node probe.
+      response.setHeader('Connection', 'close');
       let body = '';
       request.setEncoding('utf8');
       request.on('data', (chunk: string) => (body += chunk));

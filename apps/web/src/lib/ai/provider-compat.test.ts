@@ -59,6 +59,7 @@ describe('Explicit compatible configuration without extra paid requests', () => 
       messages: { content: string }[];
     };
     expect(request.temperature).toBeUndefined();
+    expect(request).not.toHaveProperty('thinking');
     expect(request.max_tokens).toBe(8192);
     expect(init.cache).toBe('no-store');
     expect(init.redirect).toBe('error');
@@ -128,6 +129,48 @@ describe('Explicit compatible configuration without extra paid requests', () => 
     expect(request.max_completion_tokens).toBe(1536);
     expect(request.response_format).toBeUndefined();
     expect(request.temperature).toBeUndefined();
+  });
+  it.each(['disabled', 'enabled'] as const)(
+    'sends explicitly selected thinking mode %s in exactly one request',
+    async (thinking) => {
+      vi.stubEnv('AI_MODE', 'real');
+      vi.stubEnv('AI_API_KEY', 'local-test-placeholder');
+      vi.stubEnv('AI_THINKING', thinking);
+      const fetch = stubResponse({
+        choices: [{ message: { content: JSON.stringify(await responseBody()) } }],
+      });
+      await createAIProvider().analyze(product);
+      const request = JSON.parse(String((fetch.mock.calls[0][1] as RequestInit).body));
+      expect(request.thinking).toEqual({ type: thinking });
+      expect(fetch).toHaveBeenCalledOnce();
+    },
+  );
+  it.each(['', ' ', 'omit'])(
+    'omits provider-specific thinking when configured as %j',
+    async (thinking) => {
+      vi.stubEnv('AI_MODE', 'real');
+      vi.stubEnv('AI_API_KEY', 'local-test-placeholder');
+      vi.stubEnv('AI_THINKING', thinking);
+      const fetch = stubResponse({
+        choices: [{ message: { content: JSON.stringify(await responseBody()) } }],
+      });
+      await createAIProvider().analyze(product);
+      expect(JSON.parse(String((fetch.mock.calls[0][1] as RequestInit).body))).not.toHaveProperty(
+        'thinking',
+      );
+    },
+  );
+  it('rejects unsupported thinking configuration before any network request', () => {
+    vi.stubEnv('AI_MODE', 'real');
+    vi.stubEnv('AI_API_KEY', 'local-test-placeholder');
+    vi.stubEnv('AI_THINKING', 'unexpected-sensitive-value');
+    const fetch = vi.fn();
+    vi.stubGlobal('fetch', fetch);
+    expect(createAIProvider).toThrow('AI_THINKING 需要 omit、disabled 或 enabled');
+    expect(() => provider({ thinking: 'bad' as 'enabled' })).toThrow(
+      'AI_THINKING 需要 disabled 或 enabled',
+    );
+    expect(fetch).not.toHaveBeenCalled();
   });
   it.each([
     { timeoutMs: 0 },

@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:17-bookworm
+    environment:
+      POSTGRES_DB: productspy
+      POSTGRES_USER: productspy_migrate
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set a database administrator password in the environment}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U productspy_migrate -d productspy]
+      interval: 5s
+      retries: 12
+    # No database port exposed to the public host.
+  web:
+    build: .
+    env_file: .env.production
+    environment:
+      PRODUCTSPY_MODE: saas
+      PRODUCTSPY_ENV: production
+      PRODUCTSPY_BIND_HOST: 0.0.0.0
+      PRODUCTSPY_JOB_RUNNER: external
+    ports:
+      - '127.0.0.1:3000:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+  worker:
+    build:
+      context: .
+      target: worker
+    env_file: .env.production
+    environment:
+      PRODUCTSPY_MODE: saas
+      PRODUCTSPY_ENV: production
+      PRODUCTSPY_JOB_RUNNER: external
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    stop_grace_period: 150s
+volumes:
+  postgres-data:

@@ -8,7 +8,7 @@ import {
   type ComparisonGenerationResponse,
   type ComparisonPlan,
 } from '@productspy/shared';
-import * as ai from '../ai';
+import * as ai from '../ai/channels';
 import { mockComparison } from '../ai/comparison-mock';
 import { POST as session } from '../../app/api/session/route';
 import { GET as list, POST as create } from '../../app/api/comparisons/route';
@@ -127,7 +127,7 @@ describe('web-only comparison API, explicit authorization and request reservatio
     const plan = await newPlan();
     vi.stubEnv('AI_MODE', 'real');
     vi.stubEnv('AI_API_KEY', 'stub-not-real');
-    const factory = vi.spyOn(ai, 'createAIProvider');
+    const factory = vi.spyOn(ai, 'createAIProviderForExecution');
     const fetcher = vi.fn();
     vi.stubGlobal('fetch', fetcher);
     const response = await analyze(
@@ -147,7 +147,7 @@ describe('web-only comparison API, explicit authorization and request reservatio
     vi.stubEnv('AI_MODE', 'real');
     vi.stubEnv('AI_API_KEY', 'stub-not-real');
     const compare = vi.fn().mockRejectedValue(new Error('Stub network failure'));
-    vi.spyOn(ai, 'createAIProvider').mockReturnValue({ analyze: vi.fn(), compare });
+    vi.spyOn(ai, 'createAIProviderForExecution').mockResolvedValue({ analyze: vi.fn(), compare });
     const body = {
       comparisonId: plan.id,
       expectedUpdatedAt: plan.updatedAt,
@@ -165,7 +165,7 @@ describe('web-only comparison API, explicit authorization and request reservatio
     vi.stubEnv('AI_API_KEY', 'stub-not-real');
     vi.stubEnv('AI_DAILY_REQUEST_LIMIT', '1');
     const compare = vi.fn().mockResolvedValue(mockComparison(plan.products));
-    vi.spyOn(ai, 'createAIProvider').mockReturnValue({ analyze: vi.fn(), compare });
+    vi.spyOn(ai, 'createAIProviderForExecution').mockResolvedValue({ analyze: vi.fn(), compare });
     const response = await analyze(
       request('analyze-comparison', {
         comparisonId: plan.id,

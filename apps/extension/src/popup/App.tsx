@@ -18,9 +18,11 @@ import type { Product, ProductDraft } from '@productspy/shared';
 import { extensionRequest, WORKSPACE_URL } from '../background/messages';
 import { hasCaptureConsent, rememberCaptureConsent } from './capture-consent';
 import { popupCopy } from './copy';
+import { LEGACY_MODE, extensionLoginUrl } from '../config';
+import type { CloudUser } from '../storage/cloud-session';
 
 type CaptureState = 'loading' | 'captured' | 'unsupported' | 'error';
-type Action = 'consent' | 'save' | 'analysis' | 'sync' | 'pair';
+type Action = 'consent' | 'save' | 'analysis' | 'sync' | 'pair' | 'connect' | 'logout';
 
 export function App() {
   const lifecycle = useRef<AbortController | undefined>(undefined);
@@ -33,8 +35,14 @@ export function App() {
   const [captureError, setCaptureError] = useState('');
   const [saveFailed, setSaveFailed] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
+  const [queueError, setQueueError] = useState('');
+  const [connectionError, setConnectionError] = useState('');
   const [imageFailed, setImageFailed] = useState(false);
   const [paired, setPaired] = useState(false);
+  const [user, setUser] = useState<CloudUser>();
+  const [unassignedCount, setUnassignedCount] = useState(0);
+  const account = useRef<string | undefined>(undefined);
+  const connectionRevision = useRef(0);
   const [pairCode, setPairCode] = useState('');
   const [workspace, setWorkspace] = useState<'checking' | 'online' | 'offline'>('checking');
   const [aiMode, setAiMode] = useState<'mock' | 'real'>();
@@ -61,12 +69,22 @@ export function App() {
         !('data' in data) ||
         !data.data ||
         typeof data.data !== 'object' ||
-        !('mode' in data.data) ||
-        !['mock', 'real'].includes(String(data.data.mode))
+        (LEGACY_MODE
+          ? !('mode' in data.data) || !['mock', 'real'].includes(String(data.data.mode))
+          : !('status' in data.data) ||
+            data.data.status !== 'ok' ||
+            !('version' in data.data) ||
+            typeof data.data.version !== 'string')
       )
         throw new Error(popupCopy.workspace.invalidStatus);
       setWorkspace('online');
-      setAiMode(data.data.mode === 'mock' ? 'mock' : 'real');
+      setAiMode(
+        LEGACY_MODE && 'mode' in data.data
+          ? data.data.mode === 'mock'
+            ? 'mock'
+            : 'real'
+          : undefined,
+      );
     } catch (failure: unknown) {
       if (signal.aborted) return;
       console.warn('[ProductSpy] Workspace unavailable', failure);
@@ -78,13 +96,33 @@ export function App() {
   const refreshPending = useCallback(async () => {
     const signal = lifecycle.current?.signal;
     if (!signal || signal.aborted) return;
+    const revision = ++connectionRevision.current;
     try {
       const result = await extensionRequest({ type: 'PRODUCTSPY_PENDING_COUNT' });
-      if (signal.aborted) return;
-      if (result.status === 'pending-count') setPendingCount(result.count);
+      if (signal.aborted || revision !== connectionRevision.current) return;
+      if (LEGACY_MODE && result.status === 'pending-count') {
+        setPendingCount(result.count);
+        setUnassignedCount(result.unassignedCount ?? 0);
+        setQueueError(result.error ?? '');
+      }
       const bridge = await extensionRequest({ type: 'PRODUCTSPY_BRIDGE_STATE' });
-      if (signal.aborted) return;
-      if (bridge.status === 'bridge-state') setPaired(bridge.paired);
+      if (signal.aborted || revision !== connectionRevision.current) return;
+      if (bridge.status === 'bridge-state') {
+        if (!LEGACY_MODE && result.status === 'pending-count') {
+          // Account verification may change between the two background calls.
+          // Apply the queue and identity together, never A's metadata under B.
+          const sameAccount =
+            bridge.paired && result.userId !== undefined && result.userId === bridge.user?.id;
+          setPendingCount(sameAccount ? result.count : 0);
+          setUnassignedCount(result.unassignedCount ?? 0);
+          setQueueError(sameAccount ? (result.error ?? '') : '');
+        }
+        setPaired(bridge.paired);
+        setUser(bridge.user);
+        if (account.current !== bridge.user?.id) setSavedProduct(undefined);
+        account.current = bridge.user?.id;
+        setConnectionError(bridge.error ?? '');
+      }
     } catch (failure: unknown) {
       if (signal.aborted) return;
       console.warn('[ProductSpy] Pending count unavailable', failure);
@@ -136,7 +174,10 @@ export function App() {
       });
     void refreshPending();
     void checkWorkspace();
-    const timer = window.setInterval(() => void checkWorkspace(), 8000);
+    const timer = window.setInterval(() => {
+      void checkWorkspace();
+      if (!LEGACY_MODE) void refreshPending();
+    }, 8000);
     return () => {
       controller.abort();
       window.clearInterval(timer);
@@ -244,7 +285,45 @@ export function App() {
         setPairCode('');
         setNotice(popupCopy.feedback.paired);
         await checkWorkspace();
+        await refreshPending();
       } else if (result.status === 'error') setError(result.error);
+    } catch (failure) {
+      setError(errorMessage(failure));
+    } finally {
+      setAction(undefined);
+    }
+  }
+
+  async function connectWorkspace() {
+    const signal = lifecycle.current?.signal;
+    if (!signal || signal.aborted) return;
+    connectionRevision.current += 1;
+    setAction('connect');
+    setError('');
+    setNotice('');
+    try {
+      const result = await extensionRequest({ type: 'PRODUCTSPY_CONNECT' });
+      if (signal.aborted) return;
+      if (result.status === 'error') setError(result.error);
+      await checkWorkspace();
+      await refreshPending();
+    } catch (failure) {
+      if (!signal.aborted) setError(errorMessage(failure));
+    } finally {
+      if (!signal.aborted) setAction(undefined);
+    }
+  }
+
+  async function logout() {
+    connectionRevision.current += 1;
+    setAction('logout');
+    setError('');
+    try {
+      const result = await extensionRequest({ type: 'PRODUCTSPY_LOGOUT' });
+      if (result.status === 'error') throw new Error(result.error);
+      setSavedProduct(undefined);
+      setNotice('已退出插件；原账号的待同步记录仍保留。');
+      await refreshPending();
     } catch (failure) {
       setError(errorMessage(failure));
     } finally {
@@ -426,9 +505,36 @@ export function App() {
                 <ChevronDown size={14} className="connection-chevron" aria-hidden="true" />
               </summary>
               <div className="connection-body">
+                {connectionError && (
+                  <p role="alert" className="text-amber-900">
+                    {connectionError}
+                  </p>
+                )}
+                {!LEGACY_MODE && user && <p className="break-all">当前账号：{user.email}</p>}
+                {!LEGACY_MODE && (
+                  <>
+                    <p>
+                      扩展自动连接当前浏览器已登录的 ProductSpy
+                      账号。重启浏览器后会重新连接，原账号的待同步资料仍保留。
+                    </p>
+                    {!paired && (
+                      <>
+                        <a
+                          className="text-button mt-2"
+                          href={extensionLoginUrl()}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          登录 ProductSpy
+                        </a>
+                        <p className="mt-2">{popupCopy.workspace.pairHint}</p>
+                      </>
+                    )}
+                  </>
+                )}
                 {workspace === 'offline' && <p>{popupCopy.workspace.offlineHint}</p>}
                 {paired && workspace === 'online' && <p>{popupCopy.workspace.connectedHint}</p>}
-                {!paired && (
+                {LEGACY_MODE && !paired && (
                   <>
                     <p className={workspace === 'offline' ? 'mt-2' : ''}>
                       {popupCopy.workspace.pairHint}
@@ -459,20 +565,43 @@ export function App() {
                     </button>
                   </>
                 )}
+                {!LEGACY_MODE && paired && (
+                  <button
+                    type="button"
+                    disabled={busy}
+                    className="text-button mt-3"
+                    onClick={() => void logout()}
+                  >
+                    {action === 'logout' ? '正在退出…' : '退出此账号'}
+                  </button>
+                )}
                 <button
                   type="button"
                   disabled={busy}
                   onClick={() => {
-                    void checkWorkspace();
-                    void refreshPending();
+                    if (LEGACY_MODE) {
+                      void checkWorkspace();
+                      void refreshPending();
+                    } else void connectWorkspace();
                   }}
                   className="text-button mt-3"
                 >
                   <RefreshCw size={13} aria-hidden="true" />
-                  {popupCopy.workspace.recheck}
+                  {action === 'connect' ? '正在连接…' : popupCopy.workspace.recheck}
                 </button>
               </div>
             </details>
+            {queueError && (
+              <p role="alert" className="mt-3 text-amber-900">
+                {queueError}
+              </p>
+            )}
+            {!LEGACY_MODE && unassignedCount > 0 && (
+              <p className="mt-3 text-amber-900">
+                {unassignedCount}{' '}
+                件旧版本或未登录记录没有账号归属，未自动上传。请登录后重新采集并保存所需商品。
+              </p>
+            )}
             {pendingCount > 0 && (
               <div className="queue-panel mt-3">
                 <span>{popupCopy.feedback.pendingCount(pendingCount)}</span>

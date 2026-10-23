@@ -34,6 +34,8 @@ import {
   type LibraryImportResult,
 } from '@productspy/shared';
 import { AppError } from './errors';
+import { saasEnabled, tenantDirectory } from '../saas/context';
+import { readWorkspaceDocument, writeWorkspaceDocument } from '../saas/workspace-storage';
 
 interface TransactionQueue {
   tail: Promise<unknown>;
@@ -51,6 +53,7 @@ const registry = (globalRegistry.__productspyRepositories ??= {
 });
 
 export function dataDirectory(): string {
+  if (saasEnabled()) return tenantDirectory();
   return resolve(
     /* turbopackIgnore: true */ process.env.PRODUCTSPY_DATA_DIR ?? join(process.cwd(), '.data'),
   );
@@ -149,7 +152,9 @@ export class LocalJsonProductRepository implements ProductRepository {
   private async readLibrary(): Promise<LibrarySnapshot> {
     let source: string;
     try {
-      source = await readFile(this.filePath, 'utf8');
+      source = saasEnabled()
+        ? await readWorkspaceDocument(this.directory, 'products.json')
+        : await readFile(this.filePath, 'utf8');
     } catch (error) {
       if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT')
         return {
@@ -196,6 +201,10 @@ export class LocalJsonProductRepository implements ProductRepository {
       tags: library.tags,
     });
     validateLibraryRelations(stored);
+    if (saasEnabled()) {
+      await writeWorkspaceDocument(this.directory, 'products.json', JSON.stringify(stored));
+      return;
+    }
     await mkdir(this.directory, { recursive: true, mode: 0o700 });
     const temporaryFile = join(this.directory, `.products-${randomUUID()}.tmp`);
     try {

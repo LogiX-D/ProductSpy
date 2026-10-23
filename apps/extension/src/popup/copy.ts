@@ -1,4 +1,6 @@
-export const popupCopy = {
+import { APP_URL, LEGACY_MODE } from '../config';
+
+const legacyCopy = {
   brand: 'ProductSpy',
   header: { subtitle: '商品采集 · 本机素材库' },
   consent: {
@@ -91,3 +93,48 @@ export const popupCopy = {
     url: 'https://github.com/LogiX-D/ProductSpy/blob/main/PRIVACY.md',
   },
 } as const;
+
+export const popupCopy = LEGACY_MODE
+  ? legacyCopy
+  : {
+      ...legacyCopy,
+      header: { subtitle: '商品采集 · 在线 SaaS 工作台' },
+      consent: {
+        ...legacyCopy.consent,
+        storage:
+          '点击保存后，商品资料通过云端 API 上传至你的 ProductSpy 账号。网络异常时保存在插件当前账号的队列，恢复后自动重试。未登录和旧版本记录不会自动归入新账号。不会读取浏览历史、Amazon 登录凭据或支付信息。',
+        analysis:
+          'AI 分析由你在在线工作台发起。选定商品的文字资料将由云端提交至已配置的 AI 服务商；请先查看在线工作台的隐私说明。',
+      },
+      workspace: {
+        ...legacyCopy.workspace,
+        connected: 'SaaS 账号已登录',
+        pairedOffline: '已登录 · 云端暂不可用',
+        unpaired: '请登录 ProductSpy',
+        offline: '云端暂不可用 · 未登录',
+        checking: '正在检查云端连接…',
+        setup: '账号与连接',
+        pairHint:
+          '未登录时只需完成网页登录，再回到扩展继续。若已登录仍无法连接，请检查浏览器是否允许 ProductSpy 的 Cookie，然后点击「刷新连接」。',
+        offlineHint:
+          '请检查网络后重试。当前账号的待同步商品会保留，并在恢复网络后重试；最多自动重试 8 次。',
+        connectedHint:
+          '商品同步至此账号。退出会保留此账号的离线队列；需要再次连接时，请点击「刷新连接」。',
+        recheck: '刷新连接',
+      },
+      analysis: {
+        mock: '在在线工作台发起分析；演示与真实 AI 结果会明确标识。',
+        real: '打开在线分析页后，由你开始 AI 分析。',
+        unknown: '先保存商品，再到在线工作台发起分析。',
+      },
+      feedback: {
+        ...legacyCopy.feedback,
+        pending: '商品已暂存在插件队列中，登录并连接云端后可同步。',
+        paired: '账号已连接，当前账号的队列将恢复同步。',
+      },
+      privacy: {
+        ...legacyCopy.privacy,
+        summary: '仅读取当前商品；保存后同步至你的云端账号。AI 分析由你在工作台发起。',
+        url: `${APP_URL}/privacy`,
+      },
+    };

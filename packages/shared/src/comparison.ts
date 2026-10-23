@@ -28,6 +28,9 @@ export interface ComparisonGenerationResult {
 export interface ComparisonAnalysisMetadata {
   mode: 'mock' | 'real';
   model?: string;
+  channelId?: string;
+  channelLabel?: string;
+  provider?: string;
   options: AnalysisOptions;
   generatedAt: string;
   sourceUpdatedAt: string;
@@ -103,6 +106,9 @@ export const comparisonMetadataSchema = z
   .object({
     mode: z.enum(['mock', 'real']),
     model: z.string().max(200).optional(),
+    channelId: z.string().min(1).max(64).optional(),
+    channelLabel: z.string().min(1).max(80).optional(),
+    provider: z.string().min(1).max(64).optional(),
     options: analysisOptionsSchema,
     generatedAt: z.string().datetime(),
     sourceUpdatedAt: z.string().datetime(),

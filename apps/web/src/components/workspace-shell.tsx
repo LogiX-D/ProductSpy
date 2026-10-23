@@ -20,10 +20,39 @@ import {
   Settings2,
 } from 'lucide-react';
 import { workspaceCopy as copy } from './workspace-copy';
+import { isLegacyMode } from '../lib/session';
+import { signOut } from '../lib/saas-api';
+import { SaasAccess, useAccount } from './saas-access';
+import { useAIChannels } from './ai-channel-selector';
+
+function AIAdminNavigation({ active }: { active: boolean }) {
+  const channels = useAIChannels();
+  return channels.catalog?.canManage ? (
+    <Link href="/settings/ai" aria-current={active ? 'page' : undefined}>
+      <Settings2 size={18} />
+      AI 渠道管理
+    </Link>
+  ) : null;
+}
 
 export function WorkspaceShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  if (pathname === '/login' || pathname === '/register' || pathname === '/privacy')
+    return <>{children}</>;
+  if (isLegacyMode) return <WorkspaceLayout>{children}</WorkspaceLayout>;
+  return (
+    <SaasAccess>
+      <WorkspaceLayout>{children}</WorkspaceLayout>
+    </SaasAccess>
+  );
+}
+
+function WorkspaceLayout({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const account = useAccount();
   const [showHelp, setShowHelp] = useState(false);
+  const [logoutError, setLogoutError] = useState('');
+  const [signingOut, setSigningOut] = useState(false);
   const dialogRef = useRef<HTMLElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
   const openHelp = useCallback(() => {
@@ -77,6 +106,18 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
     { href: '/templates', label: 'AI 模板', icon: FilePenLine, active: templatesPage },
     { href: '/content', label: '内容创作', icon: WandSparkles, active: contentPage },
     { href: '/settings', label: '设置与备份', icon: Settings2, active: settingsPage },
+    ...(!isLegacyMode
+      ? [
+          { href: '/tasks', label: '任务记录', icon: Library, active: pathname === '/tasks' },
+          {
+            href: '/billing',
+            label: '订阅与账单',
+            icon: ShieldCheck,
+            active: pathname === '/billing',
+          },
+          { href: '/account', label: '账号设置', icon: Settings2, active: pathname === '/account' },
+        ]
+      : []),
   ];
   return (
     <div className="ws-shell">
@@ -100,8 +141,41 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
                 {active && <ChevronRight size={15} className="ws-nav-chevron" />}
               </Link>
             ))}
+            {!isLegacyMode && <AIAdminNavigation active={pathname === '/settings/ai'} />}
           </nav>
           <div className="ws-sidebar-footer">
+            {!isLegacyMode && (
+              <p>
+                <Link href="/privacy">隐私说明</Link>
+              </p>
+            )}
+            {account && (
+              <>
+                <Link href="/account" className="saas-user-link">
+                  {account.user.name || account.user.email}
+                </Link>
+                <p>
+                  {account.subscription.plan === 'pro' ? 'Pro' : 'Free'} ·{' '}
+                  <Link href="/billing">查看用量</Link>
+                </p>
+                <button
+                  className="saas-signout"
+                  type="button"
+                  disabled={signingOut}
+                  onClick={() => {
+                    setSigningOut(true);
+                    setLogoutError('');
+                    void signOut().catch((cause: unknown) => {
+                      setLogoutError(cause instanceof Error ? cause.message : '退出失败，请重试。');
+                      setSigningOut(false);
+                    });
+                  }}
+                >
+                  {signingOut ? '正在退出…' : '退出登录'}
+                </button>
+                {logoutError && <p role="alert">{logoutError}</p>}
+              </>
+            )}
             <p>
               <ShieldCheck size={15} />
               {copy.shell.local}
@@ -128,7 +202,13 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
                         ? '竞品对比'
                         : productPage
                           ? copy.common.library
-                          : copy.common.dashboard}
+                          : pathname === '/account'
+                            ? '账号设置'
+                            : pathname === '/billing'
+                              ? '订阅与账单'
+                              : pathname === '/tasks'
+                                ? '任务记录'
+                                : copy.common.dashboard}
               </span>
             </div>
             <button
@@ -147,6 +227,8 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
                 {label}
               </Link>
             ))}
+            {!isLegacyMode && <AIAdminNavigation active={pathname === '/settings/ai'} />}
+            {!isLegacyMode && <Link href="/privacy">隐私说明</Link>}
           </nav>
           <main id="workspace-content" tabIndex={-1} className="ws-main-content">
             {children}

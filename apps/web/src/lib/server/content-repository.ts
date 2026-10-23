@@ -28,6 +28,8 @@ import { publishAtomicFile } from './atomic-file';
 import { withBusinessOperation } from './business-lock';
 import { dataDirectory } from './product-repository';
 import { AppError } from './errors';
+import { saasEnabled } from '../saas/context';
+import { readWorkspaceDocument, writeWorkspaceDocument } from '../saas/workspace-storage';
 interface Registry {
   queues: Map<string, Promise<unknown>>;
   repositories: Map<string, LocalContentRepository>;
@@ -65,11 +67,14 @@ export class LocalContentRepository {
   }
   private async read(): Promise<ContentPlan[]> {
     try {
-      if ((await stat(this.filePath)).size > MAX_CONTENT_BACKUP_BYTES)
+      if (!saasEnabled() && (await stat(this.filePath)).size > MAX_CONTENT_BACKUP_BYTES)
         throw new Error('Content file too large');
-      const file = contentFileSchema.parse(
-        JSON.parse(await readFile(this.filePath, 'utf8')) as unknown,
-      );
+      const text = saasEnabled()
+        ? await readWorkspaceDocument(this.directory, 'content-plans.json')
+        : await readFile(this.filePath, 'utf8');
+      if (Buffer.byteLength(text) > MAX_CONTENT_BACKUP_BYTES)
+        throw new Error('Content document too large');
+      const file = contentFileSchema.parse(JSON.parse(text) as unknown);
       validateSources(file.plans);
       return file.plans;
     } catch (error) {
@@ -88,6 +93,10 @@ export class LocalContentRepository {
     const text = JSON.stringify(file, null, 2);
     if (Buffer.byteLength(text) > MAX_CONTENT_BACKUP_BYTES)
       throw new AppError(413, '内容方案超过 25 MiB，请先导出备份并整理；不会覆盖原内容。');
+    if (saasEnabled()) {
+      await writeWorkspaceDocument(this.directory, 'content-plans.json', text);
+      return;
+    }
     await mkdir(this.directory, { recursive: true, mode: 0o700 });
     const temporary = join(this.directory, `.content-${randomUUID()}.tmp`);
     try {

@@ -24,6 +24,7 @@ import { OPEN_SETUP_EVENT } from './first-use-guide';
 import { Button, ErrorNotice, LoadingState, PageHeading } from './ui';
 import { LibraryDialog } from './library-dialog';
 import './backup-workspace.css';
+import { isLegacyMode } from '../lib/session';
 
 const labels = {
   products: '商品',
@@ -140,7 +141,7 @@ export function BackupWorkspace() {
       setIncoming(undefined);
       setPreview(undefined);
       setNotice(
-        `恢复完成：新增 ${result.imported ?? 0} 条，保留本机重复记录 ${result.skipped ?? 0} 条。${preferencesWarning}`,
+        `恢复完成：新增 ${result.imported ?? 0} 条，保留已有重复记录 ${result.skipped ?? 0} 条。${preferencesWarning}`,
       );
       await refresh();
     } catch (reason) {
@@ -216,10 +217,7 @@ export function BackupWorkspace() {
         )}
         <div className="backup-privacy">
           <ShieldCheck size={18} />
-          <p>
-            不备份 API Key、Cookie、配对令牌、Windows
-            加密设置或任意浏览器存储。个人内容可能敏感，分享前请自行检查。
-          </p>
+          <p>不备份 API Key、Cookie、授权令牌或支付资料。个人内容可能敏感，分享前请自行检查。</p>
         </div>
         <label className="backup-checkbox">
           <input
@@ -288,7 +286,7 @@ export function BackupWorkspace() {
               </div>
             ))}
           </dl>
-          <p>{preview.conflicts.length} 条与本机重复；恢复不会覆盖已有内容。</p>
+          <p>{preview.conflicts.length} 条与已有资料重复；恢复不会覆盖已有内容。</p>
           {preview.conflicts.length > 0 && (
             <details>
               <summary>查看重复记录</summary>
@@ -314,7 +312,7 @@ export function BackupWorkspace() {
               onChange={(event) => setPolicy(event.target.value as 'skip' | 'preserve')}
             >
               <option value="skip">跳过重复记录</option>
-              <option value="preserve">保留本机已有资料</option>
+              <option value="preserve">保留已有资料</option>
             </select>
           </label>
           {incoming.preferences && (
@@ -404,8 +402,9 @@ export function BackupWorkspace() {
       <section className="backup-section">
         <h2>连接与 AI 设置</h2>
         <p>
-          Windows 便携版可在启动器的「AI 设置」配置 API 地址、模型与 Key。Key 保存在用户目录并由
-          Windows 保护，更新程序时不要清空用户数据目录。
+          {isLegacyMode
+            ? 'Windows 便携版可在启动器的「AI 设置」配置 API 地址、模型与 Key。Key 保存在用户目录并由 Windows 保护，更新程序时不要清空用户数据目录。'
+            : 'AI 由工作台服务端提供。账号数据保存在云端；可导出备份，也可安全导入旧 Windows 工作台的完整业务备份。账号密码、订阅和付款状态不随业务备份迁移。'}
         </p>
         <p className="muted">
           未配置 Key 时使用明确标注的 Mock 演示；真实 AI 每次需要授权，业务备份不会改变费用限制。
@@ -414,16 +413,18 @@ export function BackupWorkspace() {
           variant="secondary"
           onClick={() => window.dispatchEvent(new Event(OPEN_SETUP_EVENT))}
         >
-          打开安装与安全配对
+          {isLegacyMode ? '打开安装与安全配对' : '安装与连接 Chrome 扩展'}
         </Button>
       </section>
       {confirm && (
         <LibraryDialog title="再次确认恢复" onClose={() => setConfirm(false)}>
-          <p>即将新增业务资料并保留所有本机重复记录。不会替换分析、人工编辑或历史。</p>
+          <p>即将新增业务资料并保留所有已有重复记录。不会替换分析、人工编辑或历史。</p>
           {restorePreferences && <p>你已选择替换此浏览器的已附偏好。</p>}
           <p>恢复期间请等待完成；文件保存失败会回滚，异常退出会在下次读写前检查恢复日志。</p>
           <div className="backup-actions">
-            <Button onClick={() => void commitRestore()}>恢复并保留本机资料</Button>
+            <Button onClick={() => void commitRestore()}>
+              {isLegacyMode ? '恢复并保留本机资料' : '恢复并保留账号资料'}
+            </Button>
             <Button variant="secondary" onClick={() => setConfirm(false)}>
               返回预览
             </Button>

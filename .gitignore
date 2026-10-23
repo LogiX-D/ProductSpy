@@ -1,10 +1,12 @@
 node_modules/
 .next/
 dist/
+dist-saas-e2e/
 .data/
 .workspace-restore/
 .env*
 !.env.example
+!.env.production.example
 *.tsbuildinfo
 coverage/
 test-results/

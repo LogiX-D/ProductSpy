@@ -11,7 +11,7 @@ import {
   type ContentPlan,
   type ContentGenerationResponse,
 } from '@productspy/shared';
-import * as ai from '../ai';
+import * as ai from '../ai/channels';
 import { mockContent } from '../ai/content-generation';
 import { POST as session } from '../../app/api/session/route';
 import { GET as list, POST as create } from '../../app/api/content-plans/route';
@@ -141,7 +141,7 @@ describe('content API, explicit cost consent and protected generation history', 
     const plan = await newPlan();
     vi.stubEnv('AI_MODE', 'real');
     vi.stubEnv('AI_API_KEY', 'stub-key-not-real');
-    const factory = vi.spyOn(ai, 'createAIProvider'),
+    const factory = vi.spyOn(ai, 'createAIProviderForExecution'),
       fetcher = vi.fn();
     vi.stubGlobal('fetch', fetcher);
     expect(
@@ -184,7 +184,10 @@ describe('content API, explicit cost consent and protected generation history', 
     vi.stubEnv('AI_MODE', 'real');
     vi.stubEnv('AI_API_KEY', 'stub-key-not-real');
     const createContent = vi.fn().mockRejectedValue(new Error('Stub network failure'));
-    vi.spyOn(ai, 'createAIProvider').mockReturnValue({ analyze: vi.fn(), createContent });
+    vi.spyOn(ai, 'createAIProviderForExecution').mockResolvedValue({
+      analyze: vi.fn(),
+      createContent,
+    });
     const body = {
       planId: plan.id,
       expectedUpdatedAt: plan.updatedAt,
@@ -205,7 +208,7 @@ describe('content API, explicit cost consent and protected generation history', 
     const result = mockContent(plan);
     result.usage = { inputTokens: 100, outputTokens: 200 };
     result.evidence.facts = ['Invented sales'];
-    vi.spyOn(ai, 'createAIProvider').mockReturnValue({
+    vi.spyOn(ai, 'createAIProviderForExecution').mockResolvedValue({
       analyze: vi.fn(),
       createContent: vi.fn().mockResolvedValue(result),
     });
@@ -382,7 +385,7 @@ describe('content API, explicit cost consent and protected generation history', 
     const plan = ((await created.json()) as { data: ContentPlan }).data;
     vi.stubEnv('AI_MODE', 'real');
     vi.stubEnv('AI_API_KEY', 'stub-key-not-real');
-    const factory = vi.spyOn(ai, 'createAIProvider'),
+    const factory = vi.spyOn(ai, 'createAIProviderForExecution'),
       fetcher = vi.fn();
     vi.stubGlobal('fetch', fetcher);
     const response = await generate(

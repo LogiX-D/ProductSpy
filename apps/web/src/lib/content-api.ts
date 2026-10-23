@@ -8,6 +8,7 @@ import {
   type ContentField,
   type ContentGenerationResponse,
   type AnalysisPricing,
+  type AISelection,
 } from '@productspy/shared';
 import { webRequest } from './session';
 
@@ -59,7 +60,7 @@ export async function deleteContentPlan(plan: ContentPlan): Promise<void> {
     body: JSON.stringify({ confirmed: true, expectedUpdatedAt: plan.updatedAt }),
   });
 }
-export type ContentGenerationRequest = {
+export type ContentGenerationRequest = AISelection & {
   planId: string;
   expectedUpdatedAt: string;
   options: ContentOptions;
