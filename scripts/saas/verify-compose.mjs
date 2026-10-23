@@ -14,6 +14,71 @@ const origin = 'https://productspy-compose.test.invalid';
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
 const wait = (milliseconds) => new Promise((done) => setTimeout(done, milliseconds));
 const images = { web: 'productspy-web:ci', worker: 'productspy-worker:ci' };
+const tenantTables = [
+  'audit_events',
+  'capture_events',
+  'jobs',
+  'subscriptions',
+  'usage_events',
+  'workspace_documents',
+];
+
+export function validateRoleProof(proof) {
+  assert(
+    Object.values(proof.role).every((value) => value === false),
+    'App role has elevated privileges.',
+  );
+  assert(
+    proof.address && !['127.0.0.1', '::1'].includes(proof.address),
+    'Database traffic did not use the internal Compose network.',
+  );
+  assert.deepEqual(
+    proof.tenantTables,
+    tenantTables.map((name) => ({ name, enabled: true, forced: true })),
+    'Expected all six named tenant tables with ENABLE and FORCE RLS.',
+  );
+  assert.deepEqual(
+    proof.channelTables,
+    [{ name: 'ai_channel_settings', enabled: true, forced: true }],
+    'Global AI channel settings must have ENABLE and FORCE RLS.',
+  );
+  const normalizePolicy = (expression) =>
+    expression
+      ?.replaceAll('::text', '')
+      .replaceAll(/\s/g, '')
+      .replace(/^\((.*)\)$/, '$1');
+  assert.deepEqual(
+    proof.channelPolicies.map((policy) => ({
+      ...policy,
+      qual: normalizePolicy(policy.qual),
+      with_check: normalizePolicy(policy.with_check),
+    })),
+    [
+      {
+        policyname: 'ai_configuration_scope',
+        permissive: 'PERMISSIVE',
+        roles: ['public'],
+        cmd: 'ALL',
+        qual: "current_setting('app.ai_configuration_access',true)='trusted-server'",
+        with_check: "current_setting('app.ai_configuration_access',true)='trusted-server'",
+      },
+    ],
+    'Global AI channel policy must require the internal server scope for reads and writes.',
+  );
+  assert.equal(proof.unscoped, 0, 'Unscoped tenant records must remain invisible.');
+  assert.equal(proof.channelProbe.trusted, 1, 'Internal server scope cannot read its canary.');
+  assert.equal(proof.channelProbe.unscoped, 0, 'Unmarked app role can read global AI settings.');
+  assert.equal(
+    proof.channelProbe.userScoped,
+    0,
+    'A tenant user context must not grant access to global AI settings.',
+  );
+  assert.equal(
+    proof.channelProbe.writeError,
+    '42501',
+    'Unmarked app writes to global AI settings must be rejected by RLS.',
+  );
+}
 
 export function configuration(env = process.env, platform = process.platform) {
   assert.equal(env.PRODUCTSPY_COMPOSE_VERIFY, '1', 'Set PRODUCTSPY_COMPOSE_VERIFY=1 explicitly.');
@@ -465,28 +530,48 @@ async function main() {
         '-e',
         `
       import pg from './apps/web/node_modules/pg/lib/index.js';
+      import {randomUUID} from 'node:crypto';
       const c=new pg.Client({connectionString:process.env.DATABASE_URL}); await c.connect();
-      try {console.log(JSON.stringify({
+      try {
+        const proof={
         role:(await c.query('SELECT rolsuper,rolbypassrls,rolcreatedb,rolcreaterole FROM pg_roles WHERE rolname=current_user')).rows[0],
         address:(await c.query('SELECT inet_server_addr()::text AS address')).rows[0].address,
-        forcedRls:(await c.query("SELECT count(*)::integer AS n FROM pg_class WHERE relnamespace='public'::regnamespace AND relrowsecurity AND relforcerowsecurity")).rows[0].n,
+        tenantTables:(await c.query("SELECT relname AS name,relrowsecurity AS enabled,relforcerowsecurity AS forced FROM pg_class WHERE relnamespace='public'::regnamespace AND relname=ANY($1::text[]) ORDER BY relname",[${JSON.stringify(tenantTables)}])).rows,
+        channelTables:(await c.query("SELECT relname AS name,relrowsecurity AS enabled,relforcerowsecurity AS forced FROM pg_class WHERE relnamespace='public'::regnamespace AND relname='ai_channel_settings'")).rows,
+        channelPolicies:(await c.query("SELECT policyname,permissive,roles,cmd,qual,with_check FROM pg_policies WHERE schemaname='public' AND tablename='ai_channel_settings' ORDER BY policyname")).rows,
         unscoped:(await c.query('SELECT count(*)::integer AS n FROM workspace_documents')).rows[0].n
-      }))} finally {await c.end()}
+        };
+        // This isolated canary exists only inside a rolled-back transaction. A nonempty
+        // row makes the unmarked-read proof meaningful even on the fresh CI database.
+        const userId=randomUUID();
+        await c.query('BEGIN');
+        try {
+          await c.query('INSERT INTO users(id,email,password_hash) VALUES($1,$2,$3)',[userId,'compose-rls-'+userId+'@example.invalid','synthetic-no-login']);
+          await c.query("SELECT set_config('app.ai_configuration_access','trusted-server',true)");
+          await c.query("INSERT INTO ai_channel_settings(id,revision,encrypted_payload,updated_by) VALUES('global',1,$1,$2)",['synthetic-compose-rls-canary',userId]);
+          const count=async()=>(await c.query('SELECT count(*)::integer AS n FROM ai_channel_settings')).rows[0].n;
+          const trusted=await count();
+          await c.query("SELECT set_config('app.ai_configuration_access','',true)");
+          const unscoped=await count();
+          await c.query("SELECT set_config('app.user_id',$1,true)",[userId]);
+          const userScoped=await count();
+          await c.query('SAVEPOINT unmarked_write');
+          let writeError;
+          try {
+            await c.query("INSERT INTO ai_channel_settings(id,revision,encrypted_payload,updated_by) VALUES('global',1,$1,$2)",['synthetic-unmarked-write',userId]);
+          } catch(error) {writeError=error.code}
+          await c.query('ROLLBACK TO SAVEPOINT unmarked_write');
+          proof.channelProbe={trusted,unscoped,userScoped,writeError};
+        } finally {await c.query('ROLLBACK')}
+        console.log(JSON.stringify(proof));
+      } finally {await c.end()}
     `,
       ]),
     );
-    assert(
-      Object.values(roleProof.role).every((value) => value === false),
-      'App role has elevated privileges.',
-    );
-    assert(
-      roleProof.address && !['127.0.0.1', '::1'].includes(roleProof.address),
-      'Database traffic did not use the internal Compose network.',
-    );
-    assert.equal(roleProof.forcedRls, 6, 'Expected six FORCE RLS tenant tables.');
-    assert.equal(roleProof.unscoped, 0, 'Unscoped tenant records must remain invisible.');
+    validateRoleProof(roleProof);
     report.checks.push(
-      'db service DNS/internal network, migrations and independent restricted app role with six FORCE RLS tables',
+      'db service DNS/internal network, migrations, restricted app role and all six named tenant FORCE RLS tables',
+      'global AI settings FORCE RLS and internal-only read/write policy; transactional canary hidden from unmarked and user-scoped app role',
     );
     await compose([
       'up',

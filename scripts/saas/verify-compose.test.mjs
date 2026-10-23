@@ -7,6 +7,7 @@ import {
   configuration,
   validateModel,
   validateOwnership,
+  validateRoleProof,
 } from './verify-compose.mjs';
 
 const execute = promisify(execFile);
@@ -16,6 +17,35 @@ const project = `productspy-compose-${runId}`;
 const databaseUrl = 'postgresql://productspy_app:synthetic-test-password@db:5432/productspy';
 const marker = { 'productspy.compose.verification': runId };
 const options = { project, runId, databaseUrl };
+function roleProof() {
+  const policy =
+    "(current_setting('app.ai_configuration_access'::text, true) = 'trusted-server'::text)";
+  return {
+    role: { rolsuper: false, rolbypassrls: false, rolcreatedb: false, rolcreaterole: false },
+    address: '172.20.0.2',
+    tenantTables: [
+      'audit_events',
+      'capture_events',
+      'jobs',
+      'subscriptions',
+      'usage_events',
+      'workspace_documents',
+    ].map((name) => ({ name, enabled: true, forced: true })),
+    channelTables: [{ name: 'ai_channel_settings', enabled: true, forced: true }],
+    channelPolicies: [
+      {
+        policyname: 'ai_configuration_scope',
+        permissive: 'PERMISSIVE',
+        roles: ['public'],
+        cmd: 'ALL',
+        qual: policy,
+        with_check: policy,
+      },
+    ],
+    unscoped: 0,
+    channelProbe: { trusted: 1, unscoped: 0, userScoped: 0, writeError: '42501' },
+  };
+}
 function model() {
   const application = (image) => ({
     image,
@@ -55,6 +85,49 @@ function model() {
 }
 
 describe('isolated Compose verification boundaries (no Docker execution)', () => {
+  it('accepts six named tenant tables plus the separate protected platform configuration', () => {
+    expect(() => validateRoleProof(roleProof())).not.toThrow();
+  });
+  it('rejects a missing tenant table even when another protected table keeps the total count unchanged', () => {
+    const proof = roleProof();
+    proof.tenantTables[0].name = 'unrelated_protected_table';
+    expect(() => validateRoleProof(proof)).toThrow('all six named tenant tables');
+  });
+  it('rejects disabled or unforced RLS on the global configuration independently of tenant protection', () => {
+    for (const property of ['enabled', 'forced']) {
+      const proof = roleProof();
+      proof.channelTables[0][property] = false;
+      expect(() => validateRoleProof(proof)).toThrow('Global AI channel settings');
+    }
+  });
+  it('rejects an extra permissive policy or a weakened global write condition', () => {
+    const extra = roleProof();
+    extra.channelPolicies.push({
+      ...extra.channelPolicies[0],
+      policyname: 'allow_everyone',
+      qual: 'true',
+    });
+    expect(() => validateRoleProof(extra)).toThrow('internal server scope');
+    const write = roleProof();
+    write.channelPolicies[0].with_check = 'true';
+    expect(() => validateRoleProof(write)).toThrow('internal server scope');
+  });
+  it('requires nonempty trusted canary visibility and hides it from both unmarked and user-scoped connections', () => {
+    for (const [property, value] of [
+      ['trusted', 0],
+      ['unscoped', 1],
+      ['userScoped', 1],
+    ]) {
+      const proof = roleProof();
+      proof.channelProbe[property] = value;
+      expect(() => validateRoleProof(proof)).toThrow();
+    }
+  });
+  it('requires unmarked writes to fail for RLS rather than a duplicate-key constraint', () => {
+    const proof = roleProof();
+    proof.channelProbe.writeError = '23505';
+    expect(() => validateRoleProof(proof)).toThrow('rejected by RLS');
+  });
   it('requires explicit opt-in before any Docker command', async () => {
     const result = await execute(process.execPath, [script], {
       env: { ...process.env, PRODUCTSPY_COMPOSE_VERIFY: '' },
