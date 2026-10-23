@@ -88,6 +88,13 @@ describe('isolated Compose verification boundaries (no Docker execution)', () =>
   it('accepts six named tenant tables plus the separate protected platform configuration', () => {
     expect(() => validateRoleProof(roleProof())).not.toThrow();
   });
+  it('accepts the actual PostgreSQL name[] representation without accepting extra policy roles', () => {
+    const proof = roleProof();
+    proof.channelPolicies[0].roles = '{public}';
+    expect(() => validateRoleProof(proof)).not.toThrow();
+    proof.channelPolicies[0].roles = '{public,extra_role}';
+    expect(() => validateRoleProof(proof)).toThrow('internal server scope');
+  });
   it('rejects a missing tenant table even when another protected table keeps the total count unchanged', () => {
     const proof = roleProof();
     proof.tenantTables[0].name = 'unrelated_protected_table';

@@ -50,6 +50,8 @@ export function validateRoleProof(proof) {
   assert.deepEqual(
     proof.channelPolicies.map((policy) => ({
       ...policy,
+      // pg_policies.roles is name[]; node-postgres may return its native literal.
+      roles: policy.roles === '{public}' ? ['public'] : policy.roles,
       qual: normalizePolicy(policy.qual),
       with_check: normalizePolicy(policy.with_check),
     })),

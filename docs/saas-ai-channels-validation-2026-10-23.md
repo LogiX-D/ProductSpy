@@ -23,4 +23,6 @@
 
 首轮最终文档提交 `90417c3` 的 [Linux CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39833025253) 在 Compose 校验失败：旧断言要求整个 schema 恰好六张 FORCE RLS 表，而本次合法新增了第七张平台配置表。此前静态/完整单元（1150 PASS / 16 SKIP）、受限 PG（110/110）、恢复、默认构建、standalone 及实际 Web/Worker 容器检查均通过；后续浏览器与镜像导出未执行。现改为逐名验证六张租户表，并单独验证平台配置表、唯一内部作用域读写策略，以及回滚事务中的非空 canary 对无标记/用户上下文不可见、未授权写入被 RLS 拒绝，保留首轮失败记录。等待修复后的完整 CI，不将失败流水线记为通过。
 
+第二轮 `25c9e57` 的 [CI](https://github.com/LogiX-D/ProductSpy/actions/runs/39896327729) 发现校验器把 PostgreSQL `pg_policies.roles` 的 `name[]` 返回形式当作 JS 数组；node-postgres 实际返回 `{public}`。已通过本机临时 PostgreSQL 17.11 查询证实并增加回归，仅将精确 `{public}` 规范化为单个 public 角色，额外角色仍拒绝；读写策略和实际 canary 保护未放宽。第二轮其他已执行步骤仍通过，浏览器/导出未执行，继续等待最终完整流水线。
+
 尚未完成：本轮完整 CI、测试站升级、管理员权限绑定以及各服务商真实凭据调用。用户原先要求稍后配置真实 AI，当前仍保持 Mock、支付关闭；不将 HTTP stub、Mock、密文配置保存记为真实 AI 验收，不进行真实交易或公开发布。
