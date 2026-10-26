@@ -12,6 +12,7 @@ import {
 import { getAccountSession, isLegacyMode, webRequest } from '../lib/session';
 import { useAccount } from './saas-access';
 import { Button, ErrorNotice } from './ui';
+import styles from './ai-channel-admin.module.css';
 
 type ChannelDraft = Omit<AIChannelInput, 'models' | 'apiKey'> & {
   modelText: string;
@@ -168,7 +169,7 @@ export function AIChannelAdmin() {
     }
   }
   return (
-    <div className="creation-workspace">
+    <div className={styles.workspace}>
       <header className="creation-panel">
         <h1>AI 渠道管理</h1>
         <p className="creation-note">
@@ -194,6 +195,7 @@ export function AIChannelAdmin() {
       )}
       {settings && (
         <form
+          className={styles.form}
           onSubmit={(event) => {
             event.preventDefault();
             void save();
@@ -214,7 +216,7 @@ export function AIChannelAdmin() {
           )}
           <section className="creation-panel">
             <h2>默认渠道</h2>
-            <label className="creation-field">
+            <label className={`creation-field ${styles.defaultField}`}>
               新请求默认使用
               <select
                 aria-label="默认 AI 渠道"
@@ -257,188 +259,196 @@ export function AIChannelAdmin() {
                   移除渠道
                 </Button>
               </div>
-              <fieldset disabled={!editable} style={{ border: 0, padding: 0, margin: 0 }}>
-                <div className="creation-checks">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={channel.enabled}
-                      onChange={(event) => patch(index, { enabled: event.target.checked })}
-                    />
-                    启用渠道
-                  </label>
-                </div>
-                <label className="creation-field">
-                  名称
-                  <input
-                    aria-label={`渠道 ${index + 1} 名称`}
-                    value={channel.label}
-                    maxLength={80}
-                    onChange={(event) => patch(index, { label: event.target.value })}
-                  />
-                </label>
-                <label className="creation-field">
-                  渠道 ID
-                  <input
-                    aria-label={`渠道 ${index + 1} ID`}
-                    value={channel.id}
-                    readOnly={channel.existing}
-                    maxLength={64}
-                    onChange={(event) => patch(index, { id: event.target.value })}
-                  />
-                </label>
-                <label className="creation-field">
-                  服务商
-                  <select
-                    aria-label={`渠道 ${index + 1} 服务商`}
-                    value={channel.provider}
-                    onChange={(event) => {
-                      const preset = settings.presets.find(
-                        (item) => item.id === event.target.value,
-                      );
-                      if (preset) patch(index, { provider: preset.id, baseUrl: preset.baseUrl });
-                    }}
-                  >
-                    {settings.presets.map((preset) => (
-                      <option key={preset.id} value={preset.id}>
-                        {preset.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="creation-field">
-                  API 地址
-                  <input
-                    aria-label={`渠道 ${index + 1} API 地址`}
-                    type="url"
-                    value={channel.baseUrl}
-                    maxLength={2048}
-                    onChange={(event) => patch(index, { baseUrl: event.target.value })}
-                  />
-                </label>
-                <label className="creation-field">
-                  可用模型（每行一个模型 ID）
-                  <textarea
-                    aria-label={`渠道 ${index + 1} 模型列表`}
-                    rows={4}
-                    value={channel.modelText}
-                    maxLength={6030}
-                    onChange={(event) => patch(index, { modelText: event.target.value })}
-                  />
-                </label>
-                <label className="creation-field">
-                  默认模型
-                  <input
-                    aria-label={`渠道 ${index + 1} 默认模型`}
-                    value={channel.defaultModel}
-                    maxLength={200}
-                    onChange={(event) => patch(index, { defaultModel: event.target.value })}
-                  />
-                </label>
-                <label className="creation-field">
-                  API Key · {channel.apiKeyConfigured ? '已配置，留空保留现有密钥' : '尚未配置'}
-                  <input
-                    aria-label={`渠道 ${index + 1} API Key`}
-                    type="password"
-                    autoComplete="new-password"
-                    value={channel.apiKey}
-                    maxLength={8192}
-                    onChange={(event) => patch(index, { apiKey: event.target.value })}
-                  />
-                </label>
-                <details>
-                  <summary>高级兼容参数</summary>
+              <fieldset disabled={!editable} className={styles.fields}>
+                <div className="creation-fields">
+                  <div className="creation-checks creation-field-wide">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={channel.enabled}
+                        onChange={(event) => patch(index, { enabled: event.target.checked })}
+                      />
+                      启用渠道
+                    </label>
+                  </div>
                   <label className="creation-field">
-                    输出格式
+                    名称
+                    <input
+                      aria-label={`渠道 ${index + 1} 名称`}
+                      value={channel.label}
+                      maxLength={80}
+                      onChange={(event) => patch(index, { label: event.target.value })}
+                    />
+                  </label>
+                  <label className="creation-field">
+                    渠道 ID
+                    <input
+                      aria-label={`渠道 ${index + 1} ID`}
+                      value={channel.id}
+                      readOnly={channel.existing}
+                      maxLength={64}
+                      onChange={(event) => patch(index, { id: event.target.value })}
+                    />
+                  </label>
+                  <label className="creation-field">
+                    服务商
                     <select
-                      value={channel.responseFormat}
-                      onChange={(event) =>
-                        patch(index, {
-                          responseFormat: event.target.value as AIChannelInput['responseFormat'],
-                        })
-                      }
+                      aria-label={`渠道 ${index + 1} 服务商`}
+                      value={channel.provider}
+                      onChange={(event) => {
+                        const preset = settings.presets.find(
+                          (item) => item.id === event.target.value,
+                        );
+                        if (preset) patch(index, { provider: preset.id, baseUrl: preset.baseUrl });
+                      }}
                     >
-                      {['json_object', 'json_schema', 'text'].map((value) => (
-                        <option key={value}>{value}</option>
+                      {settings.presets.map((preset) => (
+                        <option key={preset.id} value={preset.id}>
+                          {preset.label}
+                        </option>
                       ))}
                     </select>
                   </label>
                   <label className="creation-field">
-                    Token 参数
-                    <select
-                      value={channel.tokenParameter}
-                      onChange={(event) =>
-                        patch(index, {
-                          tokenParameter: event.target.value as AIChannelInput['tokenParameter'],
-                        })
-                      }
-                    >
-                      <option>max_tokens</option>
-                      <option>max_completion_tokens</option>
-                    </select>
-                  </label>
-                  <label className="creation-field">
-                    请求超时（毫秒）
+                    API 地址
                     <input
-                      type="number"
-                      min={1}
-                      max={120000}
-                      value={channel.timeoutMs}
-                      onChange={(event) => patch(index, { timeoutMs: Number(event.target.value) })}
+                      aria-label={`渠道 ${index + 1} API 地址`}
+                      type="url"
+                      value={channel.baseUrl}
+                      maxLength={2048}
+                      onChange={(event) => patch(index, { baseUrl: event.target.value })}
+                    />
+                  </label>
+                  <label className="creation-field creation-field-wide">
+                    可用模型（每行一个模型 ID）
+                    <textarea
+                      aria-label={`渠道 ${index + 1} 模型列表`}
+                      rows={4}
+                      value={channel.modelText}
+                      maxLength={6030}
+                      onChange={(event) => patch(index, { modelText: event.target.value })}
                     />
                   </label>
                   <label className="creation-field">
-                    最大输出 Token
+                    默认模型
                     <input
-                      type="number"
-                      min={256}
-                      max={32768}
-                      value={channel.maxOutputTokens}
-                      onChange={(event) =>
-                        patch(index, { maxOutputTokens: Number(event.target.value) })
-                      }
+                      aria-label={`渠道 ${index + 1} 默认模型`}
+                      value={channel.defaultModel}
+                      maxLength={200}
+                      onChange={(event) => patch(index, { defaultModel: event.target.value })}
                     />
                   </label>
-                  <label className="creation-field">
-                    Temperature（留空使用服务默认）
+                  <label className="creation-field creation-field-wide">
+                    API Key · {channel.apiKeyConfigured ? '已配置，留空保留现有密钥' : '尚未配置'}
                     <input
-                      type="number"
-                      step="0.1"
-                      min={0}
-                      max={2}
-                      value={channel.temperature ?? ''}
-                      onChange={(event) =>
-                        patch(index, {
-                          temperature:
-                            event.target.value === '' ? undefined : Number(event.target.value),
-                        })
-                      }
+                      aria-label={`渠道 ${index + 1} API Key`}
+                      type="password"
+                      autoComplete="new-password"
+                      value={channel.apiKey}
+                      maxLength={8192}
+                      onChange={(event) => patch(index, { apiKey: event.target.value })}
                     />
                   </label>
-                  <label className="creation-field">
-                    深度思考
-                    <select
-                      value={channel.thinking ?? ''}
-                      onChange={(event) =>
-                        patch(index, {
-                          thinking: event.target.value
-                            ? (event.target.value as 'enabled' | 'disabled')
-                            : undefined,
-                        })
-                      }
-                    >
-                      <option value="">服务默认</option>
-                      <option value="disabled">关闭</option>
-                      <option value="enabled">开启</option>
-                    </select>
-                  </label>
-                </details>
+                  <details className={`creation-field-wide ${styles.advanced}`}>
+                    <summary>高级兼容参数</summary>
+                    <div className="creation-fields">
+                      <label className="creation-field">
+                        输出格式
+                        <select
+                          value={channel.responseFormat}
+                          onChange={(event) =>
+                            patch(index, {
+                              responseFormat: event.target
+                                .value as AIChannelInput['responseFormat'],
+                            })
+                          }
+                        >
+                          {['json_object', 'json_schema', 'text'].map((value) => (
+                            <option key={value}>{value}</option>
+                          ))}
+                        </select>
+                      </label>
+                      <label className="creation-field">
+                        Token 参数
+                        <select
+                          value={channel.tokenParameter}
+                          onChange={(event) =>
+                            patch(index, {
+                              tokenParameter: event.target
+                                .value as AIChannelInput['tokenParameter'],
+                            })
+                          }
+                        >
+                          <option>max_tokens</option>
+                          <option>max_completion_tokens</option>
+                        </select>
+                      </label>
+                      <label className="creation-field">
+                        请求超时（毫秒）
+                        <input
+                          type="number"
+                          min={1}
+                          max={120000}
+                          value={channel.timeoutMs}
+                          onChange={(event) =>
+                            patch(index, { timeoutMs: Number(event.target.value) })
+                          }
+                        />
+                      </label>
+                      <label className="creation-field">
+                        最大输出 Token
+                        <input
+                          type="number"
+                          min={256}
+                          max={32768}
+                          value={channel.maxOutputTokens}
+                          onChange={(event) =>
+                            patch(index, { maxOutputTokens: Number(event.target.value) })
+                          }
+                        />
+                      </label>
+                      <label className="creation-field">
+                        Temperature（留空使用服务默认）
+                        <input
+                          type="number"
+                          step="0.1"
+                          min={0}
+                          max={2}
+                          value={channel.temperature ?? ''}
+                          onChange={(event) =>
+                            patch(index, {
+                              temperature:
+                                event.target.value === '' ? undefined : Number(event.target.value),
+                            })
+                          }
+                        />
+                      </label>
+                      <label className="creation-field">
+                        深度思考
+                        <select
+                          value={channel.thinking ?? ''}
+                          onChange={(event) =>
+                            patch(index, {
+                              thinking: event.target.value
+                                ? (event.target.value as 'enabled' | 'disabled')
+                                : undefined,
+                            })
+                          }
+                        >
+                          <option value="">服务默认</option>
+                          <option value="disabled">关闭</option>
+                          <option value="enabled">开启</option>
+                        </select>
+                      </label>
+                    </div>
+                  </details>
+                </div>
               </fieldset>
             </section>
           ))}
           <section className="creation-panel">
             <h2>添加服务商</h2>
-            <div className="creation-actions">
+            <div className={`creation-actions ${styles.providerActions}`}>
               <label className="creation-field">
                 服务商预设
                 <select
@@ -468,9 +478,11 @@ export function AIChannelAdmin() {
             <p className="creation-note">
               最多 20 个渠道，每个渠道最多 30 个模型。请根据服务商账号实际可用的模型 ID 配置。
             </p>
-            <Button type="submit" disabled={!editable}>
-              {saving ? '正在保存…' : '保存渠道配置'}
-            </Button>
+            <div className={styles.saveAction}>
+              <Button type="submit" disabled={!editable}>
+                {saving ? '正在保存…' : '保存渠道配置'}
+              </Button>
+            </div>
           </section>
         </form>
       )}

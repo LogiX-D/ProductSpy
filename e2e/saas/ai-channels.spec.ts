@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Browser, type Page, type TestInfo } from '@playwright/test';
 import { createServer, type Server } from 'node:http';
 import { once } from 'node:events';
 import { randomUUID } from 'node:crypto';
@@ -7,6 +7,101 @@ import { MockAIProvider } from '../../apps/web/src/lib/ai/mock-provider';
 
 const BASE = 'http://127.0.0.1:3100';
 const headers = { Origin: BASE, 'X-ProductSpy-Client': 'web' };
+
+async function verifyColdAdminLayout(signedInPage: Page, browser: Browser, info: TestInfo) {
+  const { cookies } = await signedInPage.context().storageState();
+  // Carry authentication cookies only: a new context must load this route's CSS
+  // without previously visiting content/templates or reusing their browser cache.
+  const context = await browser.newContext({
+    storageState: { cookies, origins: [] },
+    viewport: { width: 1280, height: 900 },
+  });
+  try {
+    const page = await context.newPage();
+    await page.goto(BASE + '/settings/ai');
+    await expect(page.getByRole('heading', { name: 'AI 渠道管理', exact: true })).toBeVisible();
+    await page.getByRole('button', { name: '添加渠道', exact: true }).click();
+    const channel = page.getByRole('region', { name: '渠道 1', exact: true });
+    await page.getByLabel('渠道 1 名称', { exact: true }).fill('Synthetic layout draft');
+    await page
+      .getByLabel('渠道 1 API 地址', { exact: true })
+      .fill('https://layout-fixture.example.invalid/compatibility/long-path/v1');
+    await page
+      .getByLabel('渠道 1 模型列表', { exact: true })
+      .fill('fixture-model-short\nfixture-model-with-a-longer-id-for-layout');
+    await page.getByLabel('渠道 1 默认模型', { exact: true }).fill('fixture-model-short');
+    await channel.locator('summary').click();
+
+    for (const viewport of [
+      { width: 1280, height: 900 },
+      { width: 375, height: 812 },
+      { width: 320, height: 568 },
+    ]) {
+      await page.setViewportSize(viewport);
+      const geometry = await channel.evaluate((element) => {
+        const panel = element.getBoundingClientRect();
+        const visible = (control: Element) => control.getClientRects().length > 0;
+        return {
+          panelPadding: Number.parseFloat(getComputedStyle(element).paddingLeft),
+          panelClientWidth: element.clientWidth,
+          panelScrollWidth: element.scrollWidth,
+          viewportWidth: window.innerWidth,
+          documentWidth: document.documentElement.scrollWidth,
+          fields: [...element.querySelectorAll('.creation-field')]
+            .filter(visible)
+            .map((field) => getComputedStyle(field).display),
+          grids: [...element.querySelectorAll('.creation-fields')].filter(visible).map((grid) => ({
+            display: getComputedStyle(grid).display,
+            columns: getComputedStyle(grid).gridTemplateColumns.split(/\s+/).length,
+          })),
+          controls: [...element.querySelectorAll('input, select, textarea')]
+            .filter(visible)
+            .map((control) => {
+              const bounds = control.getBoundingClientRect();
+              return {
+                left: bounds.left - panel.left,
+                right: panel.right - bounds.right,
+                width: bounds.width,
+              };
+            }),
+        };
+      });
+      expect(geometry.panelPadding, `card padding at ${viewport.width}px`).toBeGreaterThanOrEqual(
+        16,
+      );
+      expect(geometry.panelScrollWidth).toBeLessThanOrEqual(geometry.panelClientWidth + 1);
+      expect(geometry.documentWidth).toBeLessThanOrEqual(geometry.viewportWidth + 1);
+      expect(geometry.fields.length).toBeGreaterThanOrEqual(10);
+      for (const display of geometry.fields) expect(display).toBe('grid');
+      expect(geometry.grids).toHaveLength(2);
+      for (const grid of geometry.grids) {
+        expect(grid.display).toBe('grid');
+        expect(grid.columns).toBe(viewport.width > 760 ? 2 : 1);
+      }
+      expect(geometry.controls.length).toBeGreaterThanOrEqual(10);
+      for (const control of geometry.controls) {
+        expect(control.left).toBeGreaterThanOrEqual(geometry.panelPadding - 1);
+        expect(control.right).toBeGreaterThanOrEqual(geometry.panelPadding - 1);
+        expect(control.width).toBeGreaterThan(0);
+      }
+      const save = page.getByRole('button', { name: '保存渠道配置', exact: true });
+      await save.scrollIntoViewIfNeeded();
+      await expect(save).toBeInViewport();
+      await expect(save).toBeEnabled();
+      await expect(page.getByLabel('渠道 1 API Key', { exact: true })).toHaveValue('');
+      const screenshot = info.outputPath(`ai-channel-admin-cold-${viewport.width}.png`);
+      await page.screenshot({ path: screenshot, fullPage: true });
+      await info.attach(`cold-admin-layout-${viewport.width}`, {
+        path: screenshot,
+        contentType: 'image/png',
+      });
+    }
+    // The layout draft is deliberately never saved and contains no API key.
+  } finally {
+    await context.close();
+  }
+}
+
 test('administrator configures two channels; actual browser selection reaches one frozen HTTP stub task', async ({
   page,
   browser,
@@ -51,6 +146,7 @@ test('administrator configures two channels; actual browser selection reaches on
     await page.getByLabel('密码', { exact: true }).fill('Synthetic-browser-admin-2026');
     await page.getByRole('button', { name: '登录', exact: true }).click();
     await expect(page).toHaveURL(BASE + '/');
+    await verifyColdAdminLayout(page, browser, info);
     await page.goto('/settings/ai');
     await expect(page.getByRole('heading', { name: 'AI 渠道管理', exact: true })).toBeVisible();
     for (const index of [1, 2]) {
@@ -133,7 +229,7 @@ test('administrator configures two channels; actual browser selection reaches on
     }
     await info.attach('scope', {
       body: Buffer.from(
-        'Actual browser + local HTTP/database, two synthetic configured providers, one HTTP stub generation; no real model, provider account, paid usage or physical cross-device acceptance.',
+        'Actual browser + local HTTP/database, cold authenticated admin route at 1280/375/320px with CSS/geometry checks and key-free screenshots, two synthetic configured providers, one HTTP stub generation; no real model, provider account, paid usage or physical cross-device acceptance.',
       ),
       contentType: 'text/plain',
     });
