@@ -1,5 +1,8 @@
-export const CAPTURE_CONSENT_KEY = 'productspy.capture-consent.v1';
-export const CAPTURE_CONSENT_VERSION = 1;
+import { LEGACY_MODE } from '../config';
+export const CAPTURE_CONSENT_KEY = LEGACY_MODE
+  ? 'productspy.capture-consent.v1'
+  : 'productspy.capture-consent.cloud.v2';
+export const CAPTURE_CONSENT_VERSION = LEGACY_MODE ? 1 : 2;
 export const CAPTURE_CONSENT_TIMEOUT_MS = 3000;
 
 function consentStorageRequest<T>(request: () => Promise<T>, signal?: AbortSignal): Promise<T> {

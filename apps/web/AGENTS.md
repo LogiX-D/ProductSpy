@@ -1,3 +1,8 @@
+# ProductSpy SaaS
+
+Follow the root `AGENTS.md`, `docs/saas-requirements.md` and `docs/saas-plan.md`.
+The official product is an online account-based SaaS with PostgreSQL; Windows/local-only behavior belongs to explicit legacy compatibility. All business queries require authenticated tenant context and server-side entitlements. Never substitute Mock/local tests for real cloud, AI, payment or cross-device acceptance.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 ## This is NOT the Next.js you know

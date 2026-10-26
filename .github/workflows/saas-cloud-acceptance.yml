@@ -1,0 +1,46 @@
+name: ProductSpy authorized cloud acceptance
+on:
+  push:
+    branches: [codex/saas-migration]
+    paths:
+      - .github/workflows/saas-cloud-acceptance.yml
+      - scripts/saas/verify-cloud-browser.mjs
+      - scripts/saas/verify-cloud-browser.test.mjs
+      - apps/extension/src/**
+      - apps/extension/manifest.json
+      - apps/extension/vite.config.ts
+      - apps/extension/tests/fixtures/**
+      - e2e/saas/extension.spec.ts
+permissions:
+  contents: read
+concurrency:
+  group: productspy-authorized-cloud-acceptance
+  cancel-in-progress: false
+jobs:
+  cloud-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        amazon: [fixture, live]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Verify real MV3 against authorized HTTPS staging
+        run: node scripts/saas/verify-cloud-browser.mjs
+        env:
+          PRODUCTSPY_CLOUD_VERIFY: '1'
+          PRODUCTSPY_CLOUD_ORIGIN: https://203.88.118.240:8443
+          PRODUCTSPY_CLOUD_AMAZON: ${{ matrix.amazon }}
+# No profile, credentials, screenshot, extension package or browser artifact upload.
+# Fixture and live results are separate jobs; a live failure is never a fixture pass.

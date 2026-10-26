@@ -4,5 +4,5 @@
     "types": ["node", "chrome"],
     "typeRoots": ["./node_modules/@types", "./apps/extension/node_modules/@types"]
   },
-  "include": ["e2e/**/*.ts", "vitest.config.ts", "playwright.config.ts"]
+  "include": ["e2e/**/*.ts", "scripts/saas/**/*.ts", "vitest.config.ts", "playwright.config.ts"]
 }

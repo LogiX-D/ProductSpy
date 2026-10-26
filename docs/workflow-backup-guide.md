@@ -1,3 +1,5 @@
+> 历史本地版资料（v1.0.0 及此前）。正式产品现为 Chrome Extension + 在线 SaaS + 云端后端；当前要求、部署和隐私说明以仓库根 README、PRIVACY.md 及 docs/saas-*.md 为准。本文件保留旧发行用法/证据，不作为 SaaS 发布材料。
+
 # 完整工作流、备份与历史整理
 
 适用于 v1.0.0-rc.1。只支持 Amazon；真实 AI 仍逐次明确授权，未配置时使用本机 Mock。

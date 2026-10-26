@@ -26,6 +26,7 @@ import { LocalContentRepository } from './content-repository';
 import { LocalComparisonRepository } from './comparison-repository';
 import { AnalysisUsageLedger } from './analysis-usage';
 import { MockAIProvider } from '../ai/mock-provider';
+import { resolveAIExecution } from '../ai/channels';
 import { mockComparison } from '../ai/comparison-mock';
 import { mockContent } from '../ai/content-generation';
 import { GET, POST } from '../../app/api/workspace-backup/route';
@@ -83,6 +84,57 @@ afterEach(async () => {
   await rm(directory, { recursive: true, force: true });
 });
 describe('business restore non-destructive consistency', () => {
+  it('keeps execution decisions server-only through export and same-server restore', async () => {
+    vi.stubEnv('AI_MODE', 'mock');
+    const service = new WorkspaceBackupService(directory);
+    const initial = seed();
+    const first = await service.restore(initial, {});
+    await service.restore(initial, {
+      commit: true,
+      confirmed: true,
+      policy: 'skip',
+      expectedRevision: first.preview.revision,
+    });
+    const execution = await resolveAIExecution();
+    const requestId = randomUUID();
+    const ledger = new AnalysisUsageLedger(directory);
+    await ledger.begin({
+      requestId,
+      productId: initial.library.products[0].id,
+      fingerprint: 'c'.repeat(64),
+      mode: 'mock',
+      options: DEFAULT_ANALYSIS_OPTIONS,
+      execution,
+    });
+    await ledger.finish(requestId, {
+      usage: { inputTokens: 0, outputTokens: 0, costUsd: 0, costEstimated: false },
+    });
+    const exported = await service.export();
+    expect(JSON.stringify(exported)).not.toContain('configurationFingerprint');
+    expect(JSON.stringify(exported)).not.toContain('"execution"');
+    const view = await service.restore(exported, {});
+    await service.restore(exported, {
+      commit: true,
+      confirmed: true,
+      policy: 'skip',
+      expectedRevision: view.preview.revision,
+    });
+    expect((await ledger.get(requestId))?.execution).toEqual(execution);
+    const target = join(directory, 'new-server');
+    await mkdir(target);
+    const fresh = new WorkspaceBackupService(target);
+    const importedView = await fresh.restore(exported, {});
+    await fresh.restore(exported, {
+      commit: true,
+      confirmed: true,
+      policy: 'skip',
+      expectedRevision: importedView.preview.revision,
+    });
+    expect((await new AnalysisUsageLedger(target).get(requestId))?.execution).toBeUndefined();
+    const injected = structuredClone(exported);
+    Object.assign(injected.usage[0], { execution });
+    await expect(fresh.restore(injected, {})).rejects.toThrow();
+  });
   it('retains the original snapshot ID and warns when duplicate ASIN uses another live product ID', async () => {
     const service = new WorkspaceBackupService(directory);
     const first = seed();

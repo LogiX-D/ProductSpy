@@ -21,6 +21,8 @@ import {
 } from '@productspy/shared';
 import { AppError } from './errors';
 import { dataDirectory } from './product-repository';
+import { saasEnabled } from '../saas/context';
+import { readWorkspaceDocument, writeWorkspaceDocument } from '../saas/workspace-storage';
 
 interface Registry {
   queues: Map<string, Promise<unknown>>;
@@ -82,9 +84,14 @@ export class LocalComparisonRepository {
   }
   private async read(): Promise<ComparisonPlan[]> {
     try {
-      if ((await stat(this.filePath)).size > MAX_COMPARISON_BACKUP_BYTES)
+      if (!saasEnabled() && (await stat(this.filePath)).size > MAX_COMPARISON_BACKUP_BYTES)
         throw new Error('Comparison file too large');
-      const parsed: unknown = JSON.parse(await readFile(this.filePath, 'utf8'));
+      const text = saasEnabled()
+        ? await readWorkspaceDocument(this.directory, 'comparisons.json')
+        : await readFile(this.filePath, 'utf8');
+      if (Buffer.byteLength(text) > MAX_COMPARISON_BACKUP_BYTES)
+        throw new Error('Comparison document too large');
+      const parsed: unknown = JSON.parse(text);
       const file = comparisonFileSchema.parse(parsed);
       validateSnapshots(file.plans);
       return file.plans;
@@ -104,6 +111,10 @@ export class LocalComparisonRepository {
     const text = JSON.stringify(stored, null, 2);
     if (Buffer.byteLength(text) > MAX_COMPARISON_BACKUP_BYTES)
       throw new AppError(413, '对比方案超过 25 MiB。请先导出备份并减少方案数量；原资料未覆盖。');
+    if (saasEnabled()) {
+      await writeWorkspaceDocument(this.directory, 'comparisons.json', text);
+      return;
+    }
     await mkdir(this.directory, { recursive: true, mode: 0o700 });
     const temporary = join(this.directory, `.comparisons-${randomUUID()}.tmp`);
     try {

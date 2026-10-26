@@ -11,7 +11,7 @@ import {
   type LibraryImportResult,
 } from '@productspy/shared';
 import { downloadLibraryFile, exportLibrary } from '@/lib/library-api';
-import { webRequest } from '@/lib/session';
+import { isLegacyMode, webRequest } from '@/lib/session';
 import { Button, ErrorNotice } from './ui';
 import { LibraryDialog } from './library-dialog';
 import { libraryCopy as copy } from './library-copy';
@@ -141,7 +141,7 @@ export function LibraryTransferDialog({
   return (
     <LibraryDialog title={copy.data} busy={committed || stage === 'exporting'} onClose={close}>
       <section className="library-transfer-backup">
-        <h3>备份本机商品库</h3>
+        <h3>{isLegacyMode ? '备份本机商品库' : '备份账号商品库'}</h3>
         <p className="muted">{copy.backupDescription}</p>
         <Button variant="secondary" disabled={busy} onClick={() => void backup()}>
           <Download size={15} />

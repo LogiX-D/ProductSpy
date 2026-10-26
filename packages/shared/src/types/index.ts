@@ -58,6 +58,9 @@ export interface AnalysisUsage extends GenerationTokenUsage {
 export interface AnalysisMetadata {
   mode: 'mock' | 'real' | 'legacy';
   model?: string;
+  channelId?: string;
+  channelLabel?: string;
+  provider?: string;
   options: AnalysisOptions;
   generatedAt: string;
   sourceUpdatedAt: string;
@@ -91,6 +94,9 @@ export interface AnalysisUsageRecord {
   completedAt?: string;
   mode: 'mock' | 'real';
   model?: string;
+  channelId?: string;
+  channelLabel?: string;
+  provider?: string;
   status: 'started' | 'succeeded' | 'failed' | 'conflict';
   options?: AnalysisOptions;
   contentOptions?: ContentOptions;

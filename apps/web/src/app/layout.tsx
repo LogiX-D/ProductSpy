@@ -4,6 +4,8 @@ import { WorkspaceShell } from '../components/workspace-shell';
 import './globals.css';
 import '../components/workspace.css';
 import '../components/analysis.css';
+import '../components/content-workspace.css';
+import '../components/saas.css';
 
 export const metadata: Metadata = {
   title: 'ProductSpy — 竞品素材工作台',

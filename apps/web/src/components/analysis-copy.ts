@@ -1,4 +1,5 @@
-export const analysisCopy = {
+import { isLegacyMode } from '../lib/session';
+const legacyAnalysisCopy = {
   title: 'AI 分析',
   intro: '把商品资料整理为卖点、受众洞察和可直接修改的创作素材。',
   mockBadge: '本机演示',
@@ -89,3 +90,11 @@ export const analysisCopy = {
   factNotice:
     '事实依据与 AI 推断单独列出。未采集或分析真实评论正文；发布前请核对商品事实、价格和效果表述。',
 } as const;
+export const analysisCopy = isLegacyMode
+  ? legacyAnalysisCopy
+  : {
+      ...legacyAnalysisCopy,
+      mockBadge: 'Mock 演示',
+      mockNotice: 'Mock 演示：结果来自示例模板，未调用外部 AI。手工编辑后仍是演示素材。',
+      mockGenerationNotice: '下一次生成将使用演示模板，不会调用外部 AI；仍计入套餐请求额度。',
+    };

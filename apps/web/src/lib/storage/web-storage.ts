@@ -1,4 +1,5 @@
 import Dexie, { type Table } from 'dexie';
+import { isLegacyMode } from '../session';
 import {
   mergeProduct,
   productKey,
@@ -23,13 +24,17 @@ function db(): ProductCache {
 
 /** Browser-local IndexedDB adapter. The localhost repository is the canonical source. */
 export class WebLocalStorageAdapter implements ProductStorageAdapter {
+  constructor(private readonly enabled = true) {}
   async list(): Promise<Product[]> {
+    if (!this.enabled) return [];
     return db().products.orderBy('updatedAt').reverse().toArray();
   }
   async get(id: string): Promise<Product | undefined> {
+    if (!this.enabled) return undefined;
     return db().products.get(id);
   }
   async upsert(draft: ProductDraft): Promise<Product> {
+    if (!this.enabled) return mergeProduct(draft);
     return db().transaction('rw', db().products, async () => {
       const existing = await db().products.get(productKey(draft));
       const product = mergeProduct(draft, existing);
@@ -38,6 +43,7 @@ export class WebLocalStorageAdapter implements ProductStorageAdapter {
     });
   }
   async delete(id: string): Promise<void> {
+    if (!this.enabled) return;
     await db().products.delete(id);
   }
   async saveAnalysis(
@@ -45,6 +51,7 @@ export class WebLocalStorageAdapter implements ProductStorageAdapter {
     analysis: ProductAnalysis,
     expectedUpdatedAt?: string,
   ): Promise<Product> {
+    if (!this.enabled) throw new Error('在线工作台仅通过账号 API 保存分析。');
     return db().transaction('rw', db().products, async () => {
       const existing = await this.get(id);
       if (!existing) throw new Error('商品不存在');
@@ -60,13 +67,16 @@ export class WebLocalStorageAdapter implements ProductStorageAdapter {
     });
   }
   async replace(products: Product[]): Promise<void> {
+    if (!this.enabled) return;
     await db().transaction('rw', db().products, async () => {
       await db().products.clear();
       await db().products.bulkPut(products);
     });
   }
   async put(product: Product): Promise<void> {
+    if (!this.enabled) return;
     await db().products.put(product);
   }
 }
-export const webCache = new WebLocalStorageAdapter();
+// SaaS intentionally stores no business records in a shared-origin persistent cache.
+export const webCache = new WebLocalStorageAdapter(isLegacyMode);

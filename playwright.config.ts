@@ -2,6 +2,7 @@ import { defineConfig } from '@playwright/test';
 import { resolve } from 'node:path';
 export default defineConfig({
   testDir: './e2e',
+  testIgnore: '**/saas/**',
   outputDir: 'test-results/e2e',
   timeout: 90000,
   expect: { timeout: 15000 },
@@ -18,6 +19,8 @@ export default defineConfig({
     timeout: 60000,
     reuseExistingServer: process.env.PRODUCTSPY_E2E_EXTERNAL_SERVER === '1',
     env: {
+      PRODUCTSPY_MODE: 'legacy',
+      NEXT_PUBLIC_PRODUCTSPY_MODE: 'legacy',
       AI_MODE: 'mock',
       PRODUCTSPY_DATA_DIR: resolve(
         '.test-data/e2e',

@@ -1,14 +1,8 @@
 import { randomUUID } from 'node:crypto';
-import { z } from 'zod';
 import {
   ANALYSIS_FIELDS,
-  DEFAULT_ANALYSIS_OPTIONS,
-  analysisFieldSchema,
-  analysisOptionsSchema,
-  analysisPricingSchema,
   analysisSchema,
   generationResultSchema,
-  productSchema,
   type AnalysisGenerationResponse,
   type AnalysisMetadata,
   type AnalysisPricing,
@@ -16,8 +10,15 @@ import {
   type GenerationTokenUsage,
   type ProductAnalysis,
 } from '@productspy/shared';
-import { createAIProvider, withProductAnalysisLock } from '../../../lib/ai';
-import { getAnalysisUsageLedger, requestFingerprint } from '../../../lib/server/analysis-usage';
+import { withProductAnalysisLock } from '../../../lib/ai';
+import { createAIProviderForExecution } from '../../../lib/ai/channels';
+import {
+  executionUsageMetadata,
+  getAnalysisUsageLedger,
+  requestFingerprint,
+  resolveUsageExecution,
+} from '../../../lib/server/analysis-usage';
+import { productAnalysisInputSchema } from '../../../lib/saas/job-input';
 import { AppError } from '../../../lib/server/errors';
 import {
   assertLocalRequest,
@@ -29,20 +30,6 @@ import { getProductRepository } from '../../../lib/server/product-repository';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-const envelopeSchema = z.object({
-  product: productSchema,
-  options: analysisOptionsSchema.default(DEFAULT_ANALYSIS_OPTIONS),
-  fields: z
-    .array(analysisFieldSchema)
-    .min(1)
-    .max(12)
-    .refine((fields) => new Set(fields).size === fields.length)
-    .optional(),
-  pricing: analysisPricingSchema.optional(),
-  requestId: z.string().uuid().optional(),
-  authorizeReal: z.boolean().optional(),
-});
 
 function calculateUsage(
   mode: 'mock' | 'real',
@@ -72,39 +59,30 @@ export function POST(request: Request): Promise<Response> {
     async () => {
       const raw = await readJsonBody(request);
       const modern = Boolean(raw && typeof raw === 'object' && 'product' in raw);
-      const parsed = envelopeSchema.safeParse(modern ? raw : { product: raw });
+      const parsed = productAnalysisInputSchema.safeParse(modern ? raw : { product: raw });
       if (!parsed.success)
         throw new AppError(400, '商品数据或分析参数格式无效，请刷新商品并检查参数后重试');
       const input = parsed.data;
-      const mode =
-        process.env.AI_MODE === 'mock' ||
-        (!process.env.AI_API_KEY?.trim() && process.env.AI_MODE !== 'real')
-          ? 'mock'
-          : 'real';
-      if (mode === 'real') await assertLocalRequest(request, true, { webOnly: true });
-      if (mode === 'real' && input.authorizeReal !== true)
-        throw new AppError(
-          428,
-          '真实 AI 可能产生费用。请在工作台确认此次请求与用量预算后再生成；尚未调用 AI 服务。',
-        );
-
       const repository = getProductRepository();
       const ledger = getAnalysisUsageLedger();
       const requestId = input.requestId ?? randomUUID();
       const fields = input.fields ? [...input.fields].sort() : undefined;
-      const fingerprint = requestFingerprint({
-        productId: input.product.id,
-        updatedAt: input.product.updatedAt,
-        options: input.options,
-        fields,
-        pricing: input.pricing,
-        mode,
-        model: mode === 'real' ? process.env.AI_MODEL || 'gpt-4o-mini' : undefined,
-      });
       return withProductAnalysisLock(`${repository.filePath}:${input.product.id}`, async () => {
         const product = await repository.get(input.product.id);
         if (!product) throw new AppError(404, '商品已删除或不存在，请返回商品库刷新');
         const prior = await ledger.get(requestId);
+        const execution = await resolveUsageExecution(prior, input);
+        const { mode } = execution;
+        const fingerprint = requestFingerprint({
+          productId: input.product.id,
+          updatedAt: input.product.updatedAt,
+          options: input.options,
+          fields,
+          pricing: input.pricing,
+          mode,
+          model: mode === 'real' ? execution.model : undefined,
+          ...(!prior || prior.execution ? { execution } : {}),
+        });
         if (prior) {
           if (prior.fingerprint !== fingerprint)
             throw new AppError(409, '此请求编号已用于不同的分析内容，请刷新后重新操作。');
@@ -126,20 +104,26 @@ export function POST(request: Request): Promise<Response> {
             '此分析请求已经发起或中断。请刷新查看结果；为避免重复扣费，不会自动再次请求。',
           );
         }
+        if (mode === 'real') await assertLocalRequest(request, true, { webOnly: true });
+        if (mode === 'real' && input.authorizeReal !== true)
+          throw new AppError(
+            428,
+            '真实 AI 可能产生费用。请在工作台确认此次请求与用量预算后再生成；尚未调用 AI 服务。',
+          );
         if (product.updatedAt !== input.product.updatedAt)
           throw new AppError(409, '商品资料已更新，请刷新商品后重新分析');
         if (fields && !product.aiAnalysis)
           throw new AppError(400, '请先生成完整分析，再重新生成指定内容。');
         await repository.assertAnalysisCapacity(product.id, product.updatedAt);
-        const provider = createAIProvider();
+        const provider = await createAIProviderForExecution(execution);
         await ledger.begin({
           requestId,
           productId: product.id,
           fingerprint,
-          mode,
+          ...executionUsageMetadata(execution),
+          execution,
           options: input.options,
           fields,
-          ...(mode === 'real' ? { model: process.env.AI_MODEL || 'gpt-4o-mini' } : {}),
         });
         let usage: AnalysisUsage | undefined;
         try {
@@ -170,8 +154,7 @@ export function POST(request: Request): Promise<Response> {
             analysis = analysisSchema.parse(merged);
           }
           const metadata: AnalysisMetadata = {
-            mode,
-            ...(mode === 'real' ? { model: process.env.AI_MODEL || 'gpt-4o-mini' } : {}),
+            ...executionUsageMetadata(execution),
             options: input.options,
             generatedAt: new Date().toISOString(),
             sourceUpdatedAt: product.updatedAt,

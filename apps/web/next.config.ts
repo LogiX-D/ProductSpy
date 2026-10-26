@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 import { resolve } from 'node:path';
 const config: NextConfig = {
+  serverExternalPackages: ['pg', '@electric-sql/pglite', 'stripe'],
   output: 'standalone',
   outputFileTracingRoot: resolve(import.meta.dirname, '../..'),
   outputFileTracingExcludes: {

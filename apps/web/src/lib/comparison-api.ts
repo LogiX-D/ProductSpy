@@ -3,6 +3,7 @@ import {
   comparisonPlanSchema,
   type AnalysisOptions,
   type AnalysisPricing,
+  type AISelection,
   type ComparisonAnalysis,
   type ComparisonPlan,
 } from '@productspy/shared';
@@ -51,7 +52,7 @@ export async function deleteComparison(plan: ComparisonPlan): Promise<void> {
     body: JSON.stringify({ expectedUpdatedAt: plan.updatedAt, confirmed: true }),
   });
 }
-export type ComparisonGenerationRequest = {
+export type ComparisonGenerationRequest = AISelection & {
   comparisonId: string;
   expectedUpdatedAt: string;
   options: AnalysisOptions;
